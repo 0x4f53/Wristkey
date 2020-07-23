@@ -29,7 +29,7 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
         }
     }
     //this method is giving the size of the list
-    override fun getItemCount() : Int {
+    override fun getItemCount(): Int {
         return tokenList.size
     }
     //the class is holding the list view
@@ -43,7 +43,6 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
             val timeCard=itemView.findViewById<CardView>(R.id.TimeCard)
             val accountName = itemView.findViewById<TextView>(R.id.ServiceName)
             val code  = itemView.findViewById<TextView>(R.id.Code)
-            val counter = itemView.findViewById<TextView>(R.id.Counter)
             if (currentTheme == "F7F7F7") {
                 timeCard.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
                 accountName.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
@@ -58,9 +57,6 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
                 code.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             }
             accountName.text = token.accountName
-            accountName.ellipsize = TextUtils.TruncateAt.MARQUEE
-            accountName.isSelected=true
-            accountName.isSingleLine=true
             code.text = token.code
             val tokenNumber=token.tokenNumber.toString()
             accountName.setOnLongClickListener{
@@ -121,9 +117,6 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
                 counter.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             }
             accountName.text = token.accountName
-            accountName.ellipsize = TextUtils.TruncateAt.MARQUEE
-            accountName.isSelected=true
-            accountName.isSingleLine=true
             code.text = token.code
             counter.text = "#"+token.counter
             val currentCounterValue=token.counter.toInt()
@@ -133,7 +126,7 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
                 val getCurrentData=(storage.getString(token.tokenNumber.toString(), "").toString()).replaceAfter("◆", "")
                 val newData=getCurrentData+newCounterValue+"▮"
                 storageEditor.putString(tokenNumber, newData)
-                storageEditor.commit()
+                storageEditor.apply()
             }
             accountName.setOnLongClickListener{
                 tokenNumberForDeleteActivity = tokenNumber

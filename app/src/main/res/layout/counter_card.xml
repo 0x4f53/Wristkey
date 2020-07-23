@@ -33,14 +33,10 @@
                 android:layout_gravity="center|top"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
+                android:maxLines="3"
+                android:scrollHorizontally="false"
                 android:text="Account/Service"
-                android:ellipsize="marquee"
-                android:fadingEdge="horizontal"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:overScrollMode="ifContentScrolls"
-                android:scrollbars="horizontal"
-                android:scrollHorizontally="true"
-                android:singleLine="true"
+                android:textAlignment="center"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp" />
 

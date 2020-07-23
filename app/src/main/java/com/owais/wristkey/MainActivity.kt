@@ -103,7 +103,7 @@ class MainActivity : WearableActivity() {
                         val cotp = HmacOneTimePasswordGenerator(secret.toByteArray(), config)
                         counterBasedTokens.add(Token(tokenNumber, accountName, cotp.generate(counter = counter.toLong()), counter))
                     }
-                }
+               }
             }
             val timeAdapter = TimeCardAdapter(applicationContext, timeBasedTokens){} //creating adapter
             timeRecyclerView.adapter = timeAdapter //now adding adapter to recyclerview
@@ -145,7 +145,7 @@ class MainActivity : WearableActivity() {
             override fun run() {
                 try {
                     while (!appExited) {
-                        sleep(250)
+                        sleep(1000)
                         runOnUiThread {
                             getData()
                         }
@@ -161,7 +161,7 @@ class MainActivity : WearableActivity() {
             startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(100)
-            finish()
+            //finish()
         }
         aboutButton.setOnClickListener {
             val intent = Intent(applicationContext,AboutActivity::class.java)
@@ -174,7 +174,7 @@ class MainActivity : WearableActivity() {
             startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
-            finish()
+            //finish()
         }
     }
     override fun onStop() {

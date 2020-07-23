@@ -1,5 +1,4 @@
 package com.owais.wristkey
-
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -14,7 +13,6 @@ import android.widget.*
 import android.widget.RadioGroup
 import androidx.annotation.RequiresApi
 import androidx.wear.widget.BoxInsetLayout
-
 
 class AddActivity : WearableActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
