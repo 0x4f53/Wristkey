@@ -21,31 +21,47 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/TimeTokenList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="18dp"
+                    android:foregroundGravity="center"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    android:textAlignment="center"
+                    tools:itemCount="3">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/CounterTokenList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:foregroundGravity="center"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    android:textAlignment="center"
+                    tools:itemCount="5">
+
+                </androidx.recyclerview.widget.RecyclerView>
+            </RelativeLayout>
+
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="20dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/TimeTokenList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:foregroundGravity="center"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-                tools:itemCount="0">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/CounterTokenList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:foregroundGravity="center"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-                tools:itemCount="0"></androidx.recyclerview.widget.RecyclerView>
 
             <TextView
                 android:id="@+id/AddAccountButton"

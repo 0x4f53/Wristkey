@@ -88,7 +88,7 @@ class SettingsActivity : WearableActivity() {
 
         deleteButton.setOnClickListener {
             storageEditor.clear()
-            storageEditor.commit()
+            storageEditor.apply()
             var doneToast = Toast.makeText(this, Html.fromHtml("<center><b>Deleted all\ntokens and settings<b></center>"), Toast.LENGTH_SHORT)
             doneToast.show()
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -111,7 +111,7 @@ class SettingsActivity : WearableActivity() {
             } else if (selectedIndex == "5") {
                 storageEditor.putString("accent", "434343")
             }
-            storageEditor.commit()
+            storageEditor.apply()
         })
 
         themeGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { _, _ ->
@@ -123,7 +123,7 @@ class SettingsActivity : WearableActivity() {
             } else if (selectedIndex == "2") {
                 storageEditor.putString("theme", "000000")
             }
-            storageEditor.commit()
+            storageEditor.apply()
         })
 
         backButton.setOnClickListener {

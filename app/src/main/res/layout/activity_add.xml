@@ -61,7 +61,7 @@
                 android:foregroundTint="@color/colorAccent"
                 android:gravity="center"
                 android:hint="Account Name"
-                android:inputType="textUri|textCapSentences|textEmailAddress|textCapWords|textCapCharacters"
+                android:inputType="textUri|textMultiLine|textCapSentences|textEmailAddress|textCapWords|textCapCharacters"
                 android:textColor="#FFFFFF"
                 android:textColorHint="@color/lightDemo"
                 android:textSize="15sp" />
