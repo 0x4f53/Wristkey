@@ -4,7 +4,8 @@
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
-    <string name="about_app">Wristkey is a lightweight standalone two-factor authentication client for Wear OS. It can also be used on standard Android devices.</string>
+    <string name="about_app">Wristkey is an open-source standalone two-factor authentication client for Wear OS.</string>
+    <string name="import_blurb">To import the name and key from a Bitwarden JSON file, make sure it is unencrypted and is placed in the root directory of your device.\n\nAfter your accounts are imported, please delete the JSON file.</string>
     <string name="about_url">https://gitlab.com/thomascat/wristkey</string>
     <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_add">AddActivity</string>
@@ -13,7 +14,9 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="bitwarden_import">Import from\nBitwarden</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_bitwarden_jsonimport">BitwardenJSONImport</string>
 </resources>

@@ -8,19 +8,17 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Vibrator
 import android.support.wearable.activity.WearableActivity
-import android.util.Log
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.wear.widget.BoxInsetLayout
+import com.google.gson.Gson
 import dev.turingcomplete.kotlinonetimepassword.*
+import org.json.JSONArray
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.system.exitProcess
+import kotlin.collections.ArrayList
 
 
 class MainActivity : WearableActivity() {
@@ -35,14 +33,16 @@ class MainActivity : WearableActivity() {
         val settingsButton = findViewById<ImageView>(R.id.SettingsButton)
         val aboutButton = findViewById<ImageView>(R.id.AboutButton)
         val timeLeft = findViewById<ProgressBar>(R.id.TimeLeft)
-        val storageFile = "app_storage"
-        val storage: SharedPreferences = applicationContext.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
-        val storageEditor: SharedPreferences.Editor =  storage.edit()
-        var currentTheme = storage.getString("theme", "000000")
-        var currentAccent = storage.getString("accent", "4285F4")
-        boxinsetlayout.setBackgroundColor(Color.parseColor("#"+currentTheme))
-        timeLeft.progressTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        timeLeft.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentTheme))
+        val storageFile = "wristkey_data_storage"
+        val storage: SharedPreferences = applicationContext.getSharedPreferences(
+            storageFile,
+            Context.MODE_PRIVATE
+        )
+        val currentTheme = storage.getString("theme", "000000")
+        val currentAccent = storage.getString("accent", "4285F4")
+        boxinsetlayout.setBackgroundColor(Color.parseColor("#" + currentTheme))
+        timeLeft.progressTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        timeLeft.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentTheme))
         if (currentTheme == "F7F7F7") {
             addAccountButton.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             addAccountButton.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor("#000000"))
@@ -56,52 +56,132 @@ class MainActivity : WearableActivity() {
         }
         fun getData(){
             val timeRecyclerView = findViewById<RecyclerView>(R.id.TimeTokenList)
-            timeRecyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.VERTICAL, false) // adding a LayoutManager
+            timeRecyclerView.layoutManager = LinearLayoutManager(
+                applicationContext,
+                LinearLayout.VERTICAL,
+                false
+            ) // adding a LayoutManager
             val counterRecyclerView = findViewById<RecyclerView>(R.id.CounterTokenList)
-            counterRecyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.VERTICAL, false) // adding a LayoutManager
-            val timeBasedTokens = ArrayList<Token>() //creating an arrayList to store users using the data class user
-            val counterBasedTokens = ArrayList<Token>() //creating an arrayList to store users using the data class user
-            var serialNumberCount = storage.getInt("currentSerialNumber", 0)
+            counterRecyclerView.layoutManager = LinearLayoutManager(
+                applicationContext,
+                LinearLayout.VERTICAL,
+                false
+            ) // adding a LayoutManager
+            val timeBasedTokens = ArrayList<Token>() // creating an arrayList to store users using the data class
+            val counterBasedTokens = ArrayList<Token>() // creating an arrayList to store users using the data class
+            val serialNumberCount = storage.getInt("currentSerialNumber", 0)
             for (count in 1..serialNumberCount) {
-                val tokenNumber = count
-                val accountName=((((storage.getString(count.toString(), "").toString()).replaceBefore("■", "")).replaceAfter("▰", "")).replace("■", "")).replace("▰", "")
-                val secret=((((storage.getString(count.toString(), "").toString()).replaceBefore("▰", "")).replaceAfter("◀", "")).replace("▰", "")).replace("◀", "")
-                val mode=((((storage.getString(count.toString(), "").toString()).replaceBefore("◀", "")).replaceAfter("▾", "")).replace("◀", "")).replace("▾", "")
-                val digits=((((storage.getString(count.toString(), "").toString()).replaceBefore("▾", "")).replaceAfter("●", "")).replace("▾", "")).replace("●", "")
-                val algorithm=((((storage.getString(count.toString(), "").toString()).replaceBefore("●", "")).replaceAfter("◆", "")).replace("●", "")).replace("◆", "")
-                val counter=((((storage.getString(count.toString(), "").toString()).replaceBefore("◆", "")).replaceAfter("▮", "")).replace("◆", "")).replace("▮", "")
+                val gson = Gson()
+                val tokenData = storage.getString(count.toString(), null)
+                val tokenList = ArrayList<String>()
+                val jArray = JSONArray(tokenData)
+                for (i in 0 until jArray.length()) {
+                    tokenList.add(jArray.getString(i))
+                }
+                val accountName = tokenList[1]
+                val secret = tokenList[2]
+                val mode = tokenList[3]
+                val digits = tokenList[4]
+                val algorithm = tokenList[5]
+                val counter = tokenList[6]
                 if (mode == "Time") {
                     if(algorithm=="HmacAlgorithm.SHA1" && digits == "6"){
-                        // Google authenticator
+                        // Google Authenticator
                         val googleAuthenticator = GoogleAuthenticator(base32secret = secret) // "OurSharedSecret" Base32-encoded
-                        var totp = googleAuthenticator.generate()
-                        timeBasedTokens.add(Token(tokenNumber, accountName, totp.toString(), counter))
+                        val totp = googleAuthenticator.generate()
+                        timeBasedTokens.add(Token(count, accountName, totp, counter))
                     }else if(algorithm=="HmacAlgorithm.SHA1" && digits != "6"){
-                        val config = TimeBasedOneTimePasswordConfig(codeDigits = digits.toInt(), hmacAlgorithm = HmacAlgorithm.SHA1, timeStep = 30, timeStepUnit = TimeUnit.SECONDS)
+                        val config = TimeBasedOneTimePasswordConfig(
+                            codeDigits = digits.toInt(),
+                            hmacAlgorithm = HmacAlgorithm.SHA1,
+                            timeStep = 30,
+                            timeStepUnit = TimeUnit.SECONDS
+                        )
                         val totp = TimeBasedOneTimePasswordGenerator(secret.toByteArray(), config)
-                        timeBasedTokens.add(Token(tokenNumber, accountName, totp.generate().toString(), counter))
+                        timeBasedTokens.add(
+                            Token(
+                                count,
+                                accountName,
+                                totp.generate(),
+                                counter
+                            )
+                        )
                     }else if(algorithm=="HmacAlgorithm.SHA256"){
-                        val config = TimeBasedOneTimePasswordConfig(codeDigits = digits.toInt(), hmacAlgorithm = HmacAlgorithm.SHA256, timeStep = 30, timeStepUnit = TimeUnit.SECONDS)
+                        val config = TimeBasedOneTimePasswordConfig(
+                            codeDigits = digits.toInt(),
+                            hmacAlgorithm = HmacAlgorithm.SHA256,
+                            timeStep = 30,
+                            timeStepUnit = TimeUnit.SECONDS
+                        )
                         val totp = TimeBasedOneTimePasswordGenerator(secret.toByteArray(), config)
-                        timeBasedTokens.add(Token(tokenNumber, accountName, totp.generate().toString(), counter))
+                        timeBasedTokens.add(
+                            Token(
+                                count,
+                                accountName,
+                                totp.generate().toString(),
+                                counter
+                            )
+                        )
                     }else if(algorithm=="HmacAlgorithm.SHA512"){
-                        val config = TimeBasedOneTimePasswordConfig(codeDigits = digits.toInt(), hmacAlgorithm = HmacAlgorithm.SHA512, timeStep = 30, timeStepUnit = TimeUnit.SECONDS)
+                        val config = TimeBasedOneTimePasswordConfig(
+                            codeDigits = digits.toInt(),
+                            hmacAlgorithm = HmacAlgorithm.SHA512,
+                            timeStep = 30,
+                            timeStepUnit = TimeUnit.SECONDS
+                        )
                         val totp = TimeBasedOneTimePasswordGenerator(secret.toByteArray(), config)
-                        timeBasedTokens.add(Token(tokenNumber, accountName, totp.generate().toString(), counter))
+                        timeBasedTokens.add(
+                            Token(
+                                count,
+                                accountName,
+                                totp.generate().toString(),
+                                counter
+                            )
+                        )
                     }
                 } else if (mode == "Counter") {
                     if (algorithm=="HmacAlgorithm.SHA1"){
-                        val config = HmacOneTimePasswordConfig(codeDigits = digits.toInt(), hmacAlgorithm = HmacAlgorithm.SHA1)
+                        val config = HmacOneTimePasswordConfig(
+                            codeDigits = digits.toInt(),
+                            hmacAlgorithm = HmacAlgorithm.SHA1
+                        )
                         val cotp = HmacOneTimePasswordGenerator(secret.toByteArray(), config)
-                        counterBasedTokens.add(Token(tokenNumber, accountName, cotp.generate(counter = counter.toLong()), counter))
+                        counterBasedTokens.add(
+                            Token(
+                                count,
+                                accountName,
+                                cotp.generate(counter = counter.toLong()),
+                                counter
+                            )
+                        )
                     }else if(algorithm=="HmacAlgorithm.SHA256"){
-                        val config = HmacOneTimePasswordConfig(codeDigits = digits.toInt(), hmacAlgorithm = HmacAlgorithm.SHA256)
+                        val config = HmacOneTimePasswordConfig(
+                            codeDigits = digits.toInt(),
+                            hmacAlgorithm = HmacAlgorithm.SHA256
+                        )
                         val cotp = HmacOneTimePasswordGenerator(secret.toByteArray(), config)
-                        counterBasedTokens.add(Token(tokenNumber, accountName, cotp.generate(counter = counter.toLong()), counter))
+                        counterBasedTokens.add(
+                            Token(
+                                count,
+                                accountName,
+                                cotp.generate(counter = counter.toLong()),
+                                counter
+                            )
+                        )
                     }else if(algorithm=="HmacAlgorithm.SHA512"){
-                        val config = HmacOneTimePasswordConfig(codeDigits = digits.toInt(), hmacAlgorithm = HmacAlgorithm.SHA512)
+                        val config = HmacOneTimePasswordConfig(
+                            codeDigits = digits.toInt(),
+                            hmacAlgorithm = HmacAlgorithm.SHA512
+                        )
                         val cotp = HmacOneTimePasswordGenerator(secret.toByteArray(), config)
-                        counterBasedTokens.add(Token(tokenNumber, accountName, cotp.generate(counter = counter.toLong()), counter))
+                        counterBasedTokens.add(
+                            Token(
+                                count,
+                                accountName,
+                                cotp.generate(counter = counter.toLong()),
+                                counter
+                            )
+                        )
                     }
                }
             }
@@ -164,7 +244,7 @@ class MainActivity : WearableActivity() {
             //finish()
         }
         aboutButton.setOnClickListener {
-            val intent = Intent(applicationContext,AboutActivity::class.java)
+            val intent = Intent(applicationContext, AboutActivity::class.java)
             startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
@@ -174,7 +254,7 @@ class MainActivity : WearableActivity() {
             startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
-            //finish()
+            finish()
         }
     }
     override fun onStop() {
