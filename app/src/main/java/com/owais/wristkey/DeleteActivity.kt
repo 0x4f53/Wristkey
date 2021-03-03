@@ -39,8 +39,8 @@ class DeleteActivity : WearableActivity() {
             confirmationText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
         }
         confirmButton.setOnClickListener {
-            var toast: Toast? = null
-            val storageFile = "app_storage"
+            var toast: Toast?
+            val storageFile = "wristkey_data_storage"
             val storage: SharedPreferences = applicationContext.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
             val storageEditor: SharedPreferences.Editor =  storage.edit()
             storageEditor.remove(tokenNumberForDeleteActivity)

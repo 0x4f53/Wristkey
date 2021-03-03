@@ -10,9 +10,12 @@ import android.support.wearable.activity.WearableActivity
 import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.*
-import android.widget.RadioGroup
 import androidx.annotation.RequiresApi
 import androidx.wear.widget.BoxInsetLayout
+import com.google.gson.Gson
+import java.util.*
+import kotlin.collections.LinkedHashSet
+
 
 class AddActivity : WearableActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
@@ -39,36 +42,39 @@ class AddActivity : WearableActivity() {
         algorithm.progress = 0
         var selectedAlgorithm = "HmacAlgorithm.SHA1"
         val algorithmLabel = findViewById<TextView>(R.id.AlgorithmLength)
-        val storageFile = "app_storage"
-        val storage: SharedPreferences = applicationContext.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
+        val storageFile = "wristkey_data_storage"
+        val storage: SharedPreferences = applicationContext.getSharedPreferences(
+            storageFile,
+            Context.MODE_PRIVATE
+        )
         var currentAccent = storage.getString("accent", "4285F4")
         var currentTheme = storage.getString("theme", "000000")
-        boxinsetlayout.setBackgroundColor(Color.parseColor("#"+currentTheme))
-        account.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        account.foregroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        account.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        sharedSecret.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        sharedSecret.foregroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        sharedSecret.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        timeMode.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        counterMode.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        digitLength.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        digitLength.foregroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        digitLength.progressTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        digitLength.progressBackgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        digitLength.secondaryProgressTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        digitLength.indeterminateTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        digitLength.thumbTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        digitLength.tickMarkTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        algorithm.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        algorithm.foregroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        algorithm.progressTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        algorithm.progressBackgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        algorithm.secondaryProgressTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        algorithm.indeterminateTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        algorithm.thumbTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        algorithm.tickMarkTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        confirmButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+        boxinsetlayout.setBackgroundColor(Color.parseColor("#" + currentTheme))
+        account.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        account.foregroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        account.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        sharedSecret.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        sharedSecret.foregroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        sharedSecret.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        timeMode.buttonTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        counterMode.buttonTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        digitLength.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        digitLength.foregroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        digitLength.progressTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        digitLength.progressBackgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        digitLength.secondaryProgressTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        digitLength.indeterminateTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        digitLength.thumbTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        digitLength.tickMarkTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        algorithm.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        algorithm.foregroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        algorithm.progressTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        algorithm.progressBackgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        algorithm.secondaryProgressTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        algorithm.indeterminateTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        algorithm.thumbTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        algorithm.tickMarkTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        confirmButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
         if (currentTheme == "F7F7F7") {
             addAccountLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             account.setHintTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
@@ -87,10 +93,9 @@ class AddActivity : WearableActivity() {
             algorithmLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
         }
         confirmButton.setOnClickListener {
-            var errorToast: Toast? = null
-            val storageFile = "app_storage"
-            val storage: SharedPreferences = applicationContext.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
-            val storageEditor: SharedPreferences.Editor =  storage.edit()
+            val errorToast: Toast?
+            val tokenData = ArrayList<String>()
+            val storageEditor: SharedPreferences.Editor = storage.edit()
             if (account.text.toString() == ""){
                 errorToast = Toast.makeText(this, "Enter account name", Toast.LENGTH_SHORT)
                 errorToast.show()
@@ -103,7 +108,15 @@ class AddActivity : WearableActivity() {
             }else{
                 var serialNumber = storage.getInt("currentSerialNumber", 0)
                 serialNumber+=1
-                storageEditor.putString(serialNumber.toString(), "■"+account.text.toString()+"▰"+sharedSecret.text.toString()+"◀"+mode+"▾"+selectedDigitLength+"●"+selectedAlgorithm+"◆"+"0"+"▮")
+                tokenData.add(serialNumber.toString())
+                tokenData.add(account.text.toString())
+                tokenData.add(sharedSecret.text.toString())
+                tokenData.add(mode)
+                tokenData.add(selectedDigitLength)
+                tokenData.add(selectedAlgorithm)
+                tokenData.add("0")  // If counter mode is selected, initial value must be 0.
+                val json = Gson().toJson(tokenData)
+                storageEditor.putString(serialNumber.toString(), json)
                 storageEditor.putInt("currentSerialNumber", serialNumber)
                 storageEditor.apply()
                 val addedToast = Toast.makeText(this, "Added account", Toast.LENGTH_SHORT)
@@ -118,96 +131,100 @@ class AddActivity : WearableActivity() {
             startActivity(intent)
             finish()
         }
-        modeGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { _, checkedId ->
-            if (checkedId != -1) {
-                mode = (findViewById<View>(checkedId) as RadioButton).text.toString()
+        modeGroup.setOnCheckedChangeListener { _, checkedId ->
+            mode = if (checkedId != -1) {
+                (findViewById<View>(checkedId) as RadioButton).text.toString()
             } else {
-                mode = ""
+                ""
             }
-        })
+        }
         digitLength.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                if (digitLength.progress==0){
-                    digitLengthLabel.text="4 digits"
+                if (digitLength.progress == 0) {
+                    digitLengthLabel.text = "4 digits"
                     selectedDigitLength = "4"
-                }else if (digitLength.progress==1){
+                } else if (digitLength.progress == 1) {
                     selectedDigitLength = "6"
-                    digitLengthLabel.text="6 digits"
-                }else if (digitLength.progress==2){
+                    digitLengthLabel.text = "6 digits"
+                } else if (digitLength.progress == 2) {
                     selectedDigitLength = "7"
-                    digitLengthLabel.text="7 digits"
-                }else if (digitLength.progress==3){
+                    digitLengthLabel.text = "7 digits"
+                } else if (digitLength.progress == 3) {
                     selectedDigitLength = "8"
-                    digitLengthLabel.text="8 digits"
+                    digitLengthLabel.text = "8 digits"
                 }
             }
+
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                if (digitLength.progress==0){
-                    digitLengthLabel.text="4 digits"
+                if (digitLength.progress == 0) {
+                    digitLengthLabel.text = "4 digits"
                     selectedDigitLength = "4"
-                }else if (digitLength.progress==1){
+                } else if (digitLength.progress == 1) {
                     selectedDigitLength = "6"
-                    digitLengthLabel.text="6 digits"
-                }else if (digitLength.progress==2){
+                    digitLengthLabel.text = "6 digits"
+                } else if (digitLength.progress == 2) {
                     selectedDigitLength = "7"
-                    digitLengthLabel.text="7 digits"
-                }else if (digitLength.progress==3){
+                    digitLengthLabel.text = "7 digits"
+                } else if (digitLength.progress == 3) {
                     selectedDigitLength = "8"
-                    digitLengthLabel.text="8 digits"
+                    digitLengthLabel.text = "8 digits"
                 }
             }
+
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                if (digitLength.progress==0){
-                    digitLengthLabel.text="4 digits"
+                if (digitLength.progress == 0) {
+                    digitLengthLabel.text = "4 digits"
                     selectedDigitLength = "4"
-                }else if (digitLength.progress==1){
+                } else if (digitLength.progress == 1) {
                     selectedDigitLength = "6"
-                    digitLengthLabel.text="6 digits"
-                }else if (digitLength.progress==2){
+                    digitLengthLabel.text = "6 digits"
+                } else if (digitLength.progress == 2) {
                     selectedDigitLength = "7"
-                    digitLengthLabel.text="7 digits"
-                }else if (digitLength.progress==3){
+                    digitLengthLabel.text = "7 digits"
+                } else if (digitLength.progress == 3) {
                     selectedDigitLength = "8"
-                    digitLengthLabel.text="8 digits"
+                    digitLengthLabel.text = "8 digits"
                 }
             }
         })
 
         algorithm.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                if (algorithm.progress==0){
-                    algorithmLabel.text="SHA-1"
-                    selectedAlgorithm="HmacAlgorithm.SHA1"
-                }else if (algorithm.progress==1){
-                    algorithmLabel.text="SHA-256"
-                    selectedAlgorithm="HmacAlgorithm.SHA256"
-                }else if (algorithm.progress==2){
-                    algorithmLabel.text="SHA-512"
-                    selectedAlgorithm="HmacAlgorithm.SHA512"
+                if (algorithm.progress == 0) {
+                    algorithmLabel.text = "SHA-1"
+                    selectedAlgorithm = "HmacAlgorithm.SHA1"
+                } else if (algorithm.progress == 1) {
+                    algorithmLabel.text = "SHA-256"
+                    selectedAlgorithm = "HmacAlgorithm.SHA256"
+                } else if (algorithm.progress == 2) {
+                    algorithmLabel.text = "SHA-512"
+                    selectedAlgorithm = "HmacAlgorithm.SHA512"
                 }
             }
+
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                if (algorithm.progress==0){
-                    algorithmLabel.text="SHA-1"
-                    selectedAlgorithm="HmacAlgorithm.SHA1"
-                }else if (algorithm.progress==1){
-                    algorithmLabel.text="SHA-256"
-                    selectedAlgorithm="HmacAlgorithm.SHA256"
-                }else if (algorithm.progress==2){
-                    algorithmLabel.text="SHA-512"
-                    selectedAlgorithm="HmacAlgorithm.SHA512"
+                if (algorithm.progress == 0) {
+                    algorithmLabel.text = "SHA-1"
+                    selectedAlgorithm = "HmacAlgorithm.SHA1"
+                } else if (algorithm.progress == 1) {
+                    algorithmLabel.text = "SHA-256"
+                    selectedAlgorithm = "HmacAlgorithm.SHA256"
+                } else if (algorithm.progress == 2) {
+                    algorithmLabel.text = "SHA-512"
+                    selectedAlgorithm = "HmacAlgorithm.SHA512"
                 }
             }
+
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                if (algorithm.progress==0){
-                    algorithmLabel.text="SHA-1"
-                    selectedAlgorithm="HmacAlgorithm.SHA1"
-                }else if (algorithm.progress==1){
-                    algorithmLabel.text="SHA-256"
-                    selectedAlgorithm="HmacAlgorithm.SHA256"
-                }else if (algorithm.progress==2){
-                    algorithmLabel.text="SHA-512"
-                    selectedAlgorithm="HmacAlgorithm.SHA512"
+                if (algorithm.progress == 0) {
+                    algorithmLabel.text = "SHA-1"
+                    selectedAlgorithm = "HmacAlgorithm.SHA1"
+                } else if (algorithm.progress == 1) {
+                    algorithmLabel.text = "SHA-256"
+                    selectedAlgorithm = "HmacAlgorithm.SHA256"
+                } else if (algorithm.progress == 2) {
+                    algorithmLabel.text = "SHA-512"
+                    selectedAlgorithm = "HmacAlgorithm.SHA512"
                 }
             }
         })

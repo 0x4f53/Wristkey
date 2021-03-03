@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.owais.wristkey">
-
-    <uses-permission android:name="android.permission.VIBRATE" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.owais.wristkey">
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-feature android:name="android.hardware.type.watch" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
         <uses-library
@@ -23,6 +22,9 @@
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
         <activity
+            android:name=".BitwardenJSONImport"
+            android:label="@string/title_activity_bitwarden_jsonimport" />
+        <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
             <intent-filter>
@@ -32,19 +34,15 @@
         </activity>
         <activity
             android:name=".AddActivity"
-            android:label="Add account">
-        </activity>
+            android:label="Add account" />
         <activity
             android:name=".AboutActivity"
-            android:label="About">
-        </activity>
+            android:label="About" />
         <activity
             android:name=".SettingsActivity"
-            android:label="Settings">
-        </activity>
+            android:label="Settings" />
         <activity
             android:name=".DeleteActivity"
-            android:label="Delete account">
-        </activity>
+            android:label="Delete account" />
     </application>
 </manifest>
