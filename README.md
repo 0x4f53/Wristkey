@@ -16,7 +16,7 @@ A standalone two-factor authentication application for Wear OS. This application
 
 2. Enable ADB Debugging by going to Settings → System → About and tapping 'Build Number' 7 times.
 
-3. Go back and tap on developer settings, then scroll down and enable "ADB Debugging".
+3. Go back and tap on Developer Settings, then scroll down and enable "ADB Debugging".
 
 4. Connect your watch to your computer. If prompted on watch, tap 'Always allow from this computer'.
 
