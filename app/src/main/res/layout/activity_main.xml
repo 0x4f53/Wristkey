@@ -128,20 +128,40 @@
     </ScrollView>
 
     <ProgressBar
-        android:id="@+id/TimeLeft"
+        android:id="@+id/SquareTimeLeft"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_marginTop="-5.75dp"
+        android:background="@android:color/transparent"
+        android:foregroundGravity="top"
+        android:max="30"
+        android:progress="0"
+        android:progressBackgroundTint="@android:color/transparent"
+        android:progressTint="@color/blueAccents"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/RoundTimeLeft"
         style="?android:progressBarStyleHorizontal"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="match_parent"
+
+        android:layout_height="match_parent"
         android:layout_gravity="center|top"
-        android:layout_marginTop="2.5dp"
-        android:layout_marginBottom="2.5dp"
-        android:background="@drawable/preference_wrapped_icon"
+        android:background="@android:color/transparent"
         android:foregroundGravity="center"
         android:foregroundTintMode="add"
         android:max="30"
-        android:progress="18"
+        android:progress="0"
         android:progressDrawable="@drawable/circular_progress"
         android:rotation="-90"
+        android:scaleX="1.45"
+        android:scaleY="1.45"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

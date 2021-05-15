@@ -61,8 +61,7 @@ class AboutActivity : WearableActivity() {
             finish()
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
+            finish()
         }
     }
 }
