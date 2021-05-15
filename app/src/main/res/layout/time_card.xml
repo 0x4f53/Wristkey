@@ -32,6 +32,7 @@
                 android:layout_marginRight="5dp"
                 android:ellipsize="marquee"
                 android:maxLines="3"
+                android:singleLine="true"
                 android:text="Account/Service"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"

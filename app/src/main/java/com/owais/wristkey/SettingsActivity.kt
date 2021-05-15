@@ -29,8 +29,6 @@ class SettingsActivity : WearableActivity() {
         val backButton = findViewById<ImageButton>(R.id.BackButton)
         val accentGroup = findViewById<RadioGroup>(R.id.AccentRadioGroup)
         val themeGroup = findViewById<RadioGroup>(R.id.ThemeRadioGroup)
-        var theme = "Dark"
-        var accent = "Blue"
         val storageFile = "wristkey_data_storage"
         val storage: SharedPreferences = applicationContext.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
         val storageEditor: SharedPreferences.Editor =  storage.edit()
@@ -96,6 +94,9 @@ class SettingsActivity : WearableActivity() {
             doneToast.show()
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(500)
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+            finish()
             true
         }
 
@@ -107,8 +108,9 @@ class SettingsActivity : WearableActivity() {
             finish()
         }
 
-        accentGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { _, _ ->
-            val selectedIndex = accentGroup.indexOfChild(findViewById(accentGroup.checkedRadioButtonId)).toString()
+        accentGroup.setOnCheckedChangeListener { _, _ ->
+            val selectedIndex =
+                accentGroup.indexOfChild(findViewById(accentGroup.checkedRadioButtonId)).toString()
             if (selectedIndex == "0") {
                 storageEditor.putString("accent", "FF4141")
             } else if (selectedIndex == "1") {
@@ -123,10 +125,11 @@ class SettingsActivity : WearableActivity() {
                 storageEditor.putString("accent", "434343")
             }
             storageEditor.apply()
-        })
+        }
 
-        themeGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { _, _ ->
-            val selectedIndex = themeGroup.indexOfChild(findViewById(themeGroup.checkedRadioButtonId)).toString()
+        themeGroup.setOnCheckedChangeListener { _, _ ->
+            val selectedIndex =
+                themeGroup.indexOfChild(findViewById(themeGroup.checkedRadioButtonId)).toString()
             if (selectedIndex == "0") {
                 storageEditor.putString("theme", "F7F7F7")
             } else if (selectedIndex == "1") {
@@ -135,7 +138,7 @@ class SettingsActivity : WearableActivity() {
                 storageEditor.putString("theme", "000000")
             }
             storageEditor.apply()
-        })
+        }
 
         backButton.setOnClickListener {
             val intent = Intent(applicationContext, MainActivity::class.java)

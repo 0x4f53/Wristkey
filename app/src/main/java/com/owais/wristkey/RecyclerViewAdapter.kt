@@ -5,13 +5,14 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+
+data class Token(val tokenNumber: Int, val accountName: String, val code: String, val counter: String)
 
 class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>, val clickListener: (Token) -> Unit) : RecyclerView.Adapter<TimeCardAdapter.ViewHolder>() {
     //this method is returning the view for each item in the list
@@ -35,11 +36,10 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
     //the class is holding the list view
     class ViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         val context = context
-        private val storageFile = "app_storage"
-        private val storage: SharedPreferences = context.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
-        val storageEditor: SharedPreferences.Editor =  storage.edit()
+        private val themeStorageFile = "wristkey_data_storage"
+        val theme: SharedPreferences = context.getSharedPreferences(themeStorageFile, Context.MODE_PRIVATE)
         fun bindItems(token: Token) {
-            var currentTheme = storage.getString("theme", "000000")
+            var currentTheme = theme.getString("theme", "000000")
             val timeCard=itemView.findViewById<CardView>(R.id.TimeCard)
             val accountName = itemView.findViewById<TextView>(R.id.ServiceName)
             val code  = itemView.findViewById<TextView>(R.id.Code)
@@ -47,6 +47,7 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
                 timeCard.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
                 accountName.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
                 code.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+                accountName.text = "white"
             } else if (currentTheme == "192835") {
                 timeCard.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#3A4149"))
                 accountName.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
@@ -57,6 +58,7 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
                 code.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             }
             accountName.text = token.accountName
+            accountName.isSelected = true
             code.text = token.code
             val tokenNumber=token.tokenNumber.toString()
             accountName.setOnLongClickListener{
@@ -92,10 +94,12 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
     class ViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         val context = context
         private val storageFile = "app_storage"
+        private val themeStorageFile = "wristkey_data_storage"
         private val storage: SharedPreferences = context.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
-        val storageEditor: SharedPreferences.Editor =  storage.edit()
+        val theme: SharedPreferences = context.getSharedPreferences(themeStorageFile, Context.MODE_PRIVATE)
+        private val storageEditor: SharedPreferences.Editor =  storage.edit()
         fun bindItems(token: Token) {
-            var currentTheme = storage.getString("theme", "000000")
+            var currentTheme = theme.getString("theme", "000000")
             val counterCard=itemView.findViewById<CardView>(R.id.CounterCard)
             val accountName = itemView.findViewById<TextView>(R.id.ServiceName)
             val code  = itemView.findViewById<TextView>(R.id.Code)
@@ -117,14 +121,15 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
                 counter.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             }
             accountName.text = token.accountName
+            accountName.isSelected = true
             code.text = token.code
             counter.text = "#"+token.counter
             val currentCounterValue=token.counter.toInt()
             val tokenNumber=token.tokenNumber.toString()
             code.setOnClickListener{
                 var newCounterValue=currentCounterValue+1
-                val getCurrentData=(storage.getString(token.tokenNumber.toString(), "").toString()).replaceAfter("◆", "")
-                val newData=getCurrentData+newCounterValue+"▮"
+                val getCurrentData=(storage.getString(token.tokenNumber.toString(), "").toString())
+                val newData=getCurrentData+newCounterValue
                 storageEditor.putString(tokenNumber, newData)
                 storageEditor.apply()
             }

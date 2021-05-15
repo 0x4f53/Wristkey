@@ -52,6 +52,24 @@
             android:textStyle="italic" />
 
         <View
+            android:id="@+id/divider12"
+            android:layout_width="match_parent"
+            android:layout_height="0.25dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:background="@color/darkAccents" />
+
+        <CheckBox
+            android:id="@+id/ImportUsernames"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:checked="false"
+            android:text="Import usernames"
+            android:buttonTint="@color/blueAccents" />
+
+        <View
             android:id="@+id/divider6"
             android:layout_width="match_parent"
             android:layout_height="0.25dp"
