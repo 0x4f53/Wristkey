@@ -1,7 +1,8 @@
+[![Wear OS](https://img.shields.io/badge/Made%20for-WearOS-4285f4.svg?style=flat&logo=wear%20os)](https://wearos.google.com/)
 [![License](https://img.shields.io/badge/License-MIT-purple)](LICENSE)
-[![Maintenance](https://img.shields.io/badge/Maintained-No-red.svg)](https://github.com/4f77616973/GetPerms/graphs/commit-activity)
+[![Maintenance](https://img.shields.io/badge/Maintained-No-red.svg)](https://gitlab.com/ThomasCat/wristkey/activity)
 [![Kotlin](https://img.shields.io/badge/Made%20with-Kotlin-7f52ff.svg)](https://kotlinlang.org/)
-[![Preview](https://img.shields.io/badge/Preview-Click%20Here!-blue)](/app/build/outputs/apk/debug/app-debug.apk)
+[![Preview](https://img.shields.io/badge/Preview-Click%20Here!-blue)](app/release/app-release.apk)
 
 # Wristkey
 
