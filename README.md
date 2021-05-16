@@ -2,7 +2,7 @@
 [![License](https://img.shields.io/badge/License-MIT-purple)](LICENSE)
 [![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://gitlab.com/ThomasCat/wristkey/activity)
 [![Kotlin](https://img.shields.io/badge/Made%20with-Kotlin-7f52ff.svg)](https://kotlinlang.org/)
-[![Preview](https://img.shields.io/badge/Preview-Click%20Here!-blue)](app/release/app-debug.apk)
+[![Preview](https://img.shields.io/badge/Preview-Click%20Here!-blue)](build/outputs/apk/debug/app-debug.apk)
 
 # Wristkey
 
