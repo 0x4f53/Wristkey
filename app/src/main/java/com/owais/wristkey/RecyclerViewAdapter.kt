@@ -5,12 +5,14 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import org.json.JSONArray
 
 data class Token(val tokenNumber: Int, val accountName: String, val code: String, val counter: String)
 
@@ -61,11 +63,32 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
             accountName.isSelected = true
             code.text = token.code
             val tokenNumber=token.tokenNumber.toString()
-            accountName.setOnLongClickListener{
+            accountName.setOnLongClickListener {
                 tokenNumberForDeleteActivity = tokenNumber
                 context.startActivity(Intent(context, DeleteActivity::class.java))
                 true
             }
+
+            code.setOnLongClickListener {
+                val storageFile = "wristkey_data_storage"
+                val storage: SharedPreferences =
+                    context.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
+                val qrcodeData: String
+                val sitename: String
+                val accountNameForQRCode: String
+                if (token.accountName.contains("(") && token.accountName.contains(")")) {
+                    accountNameForQRCode = token.accountName.substringAfter("(").substringBefore(")")
+                    sitename = token.accountName.substringBefore("(")
+                    qrcodeData = "otpauth://totp/${accountNameForQRCode}?secret=${JSONArray(storage.getString(tokenNumber, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
+                } else {
+                    sitename = token.accountName.substringBefore("(")
+                    qrcodeData = "otpauth://totp/?secret=${JSONArray(storage.getString(tokenNumber, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
+                }
+                otpAuthData = qrcodeData
+                context.startActivity(Intent(context, QRCodeActivity::class.java))
+                true
+            }
+
         }
     }
 }
@@ -131,10 +154,35 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
                 val newData=getCurrentData+newCounterValue
                 storage.edit().putString(tokenNumber, newData).apply()
                 storage.edit().apply()
+                code.text = "Code used"
+                Handler().postDelayed({
+                    code.text = token.code
+                }, 5000)
             }
+
             accountName.setOnLongClickListener{
                 tokenNumberForDeleteActivity = tokenNumber
                 context.startActivity(Intent(context, DeleteActivity::class.java))
+                true
+            }
+
+            code.setOnLongClickListener {
+                val storageFile = "wristkey_data_storage"
+                val storage: SharedPreferences =
+                    context.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
+                val qrcodeData: String
+                val sitename: String
+                val accountNameForQRCode: String
+                if (token.accountName.contains("(") && token.accountName.contains(")")) {
+                    accountNameForQRCode = token.accountName.substringAfter("(").substringBefore(")")
+                    sitename = token.accountName.substringBefore("(")
+                    qrcodeData = "otpauth://hotp/${accountNameForQRCode}?secret=${JSONArray(storage.getString(tokenNumber, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
+                } else {
+                    sitename = token.accountName.substringBefore("(")
+                    qrcodeData = "otpauth://hotp/?secret=${JSONArray(storage.getString(tokenNumber, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
+                }
+                otpAuthData = qrcodeData
+                context.startActivity(Intent(context, QRCodeActivity::class.java))
                 true
             }
         }

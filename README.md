@@ -2,7 +2,7 @@
 [![License](https://img.shields.io/badge/License-MIT-purple)](LICENSE)
 [![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://gitlab.com/ThomasCat/wristkey/activity)
 [![Kotlin](https://img.shields.io/badge/Made%20with-Kotlin-7f52ff.svg)](https://kotlinlang.org/)
-[![Download APK](https://img.shields.io/badge/Preview-Click%20Here!-blue)](app/build/outputs/apk/debug/app-debug.apk)
+[![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here!-blue)](app/build/outputs/apk/debug/app-debug.apk)
 
 # Wristkey
 
@@ -33,6 +33,11 @@ A standalone two-factor authentication application for Wear OS. This application
 1. Tap the '+' button to manually add a login. The default settings are for Google Authenticator codes (SHA-1, 6 digits, time-based).
 
 2. Scroll down and tap the tick button '✓' at the at the bottom when done.
+
+### Generate QR Code
+
+To transfer a code from your watch to the Authenticator app on your phone, just press and hold the 2FA code number on your watch. You can then scan the QR code that is displayed on your phone's Authenticator app.
+***Tip:** Tap the QR Code to dim it for better scanning.*
 
 ## Troubleshooting
 
