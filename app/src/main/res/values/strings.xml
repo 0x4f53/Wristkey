@@ -5,7 +5,7 @@
     values-round/strings.xml for round devices.
     -->
     <string name="about_app">Wristkey is an open-source standalone two-factor authentication client for Wear OS.</string>
-    <string name="import_blurb">To import the keys from a Bitwarden, make sure you have an unencrypted Bitwarden JSON file placed in the root directory of your watch.\n\nAfter your accounts are imported, delete the JSON file.</string>
+    <string name="import_blurb">To import secrets from Bitwarden, make sure you have an unencrypted Bitwarden JSON file placed in the root directory of your watch.\n\nAfter your accounts are imported, delete the JSON file.</string>
     <string name="about_url">https://gitlab.com/thomascat/wristkey</string>
     <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_add">AddActivity</string>
