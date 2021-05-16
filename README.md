@@ -8,11 +8,15 @@
 
 A standalone two-factor authentication application for Wear OS. This application is for the de-Googlers and custom ROM-ers out there.
 
+<img src = screenshots/home.png alt="screenshot">
+
 [Get the latest release APK](app/release/app-release.apk)
 
 ## Usage
 
 ### Bitwarden import
+
+<img src = screenshots/import.png alt="screenshot">
 
 1. Download your Bitwarden Vault in an unencrypted JSON format from the Desktop website.
 
@@ -36,10 +40,17 @@ A standalone two-factor authentication application for Wear OS. This application
 
 2. Scroll down and tap the tick button '✓' at the at the bottom when done.
 
+<img src = screenshots/add.png alt="screenshot">
+<img src = screenshots/add2.png alt="screenshot">
+
 ### Generate QR Code
 
 To transfer a code from your watch to the Authenticator app on your phone, just press and hold the 2FA code number on your watch. You can then scan the QR code that is displayed on your phone's Authenticator app.
+
 ***Tip:** Tap the QR Code to dim it for better scanning.*
+
+<img src = screenshots/qr.png alt="screenshot">
+<img src = screenshots/qr2.png alt="screenshot">
 
 ## Troubleshooting
 

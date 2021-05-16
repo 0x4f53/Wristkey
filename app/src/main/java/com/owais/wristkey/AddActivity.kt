@@ -101,7 +101,7 @@ class AddActivity : WearableActivity() {
             }else if (sharedSecret.text.toString() == ""){
                 errorToast = Toast.makeText(this, "Enter shared secret", Toast.LENGTH_SHORT)
                 errorToast.show()
-            }else if((sharedSecret.text.toString()).length < 20 && selectedDigitLength == "6" && selectedAlgorithm == "HmacAlgorithm.SHA1" && mode == "Time"){
+            }else if((sharedSecret.text.toString()).length < 8 && selectedDigitLength == "6" && selectedAlgorithm == "HmacAlgorithm.SHA1" && mode == "Time"){
                 errorToast = Toast.makeText(this, "Invalid shared secret", Toast.LENGTH_SHORT)
                 errorToast.show()
             }else{
