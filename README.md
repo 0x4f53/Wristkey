@@ -45,7 +45,7 @@ A standalone two-factor authentication application for Wear OS. This application
 
 ### Generate QR Code
 
-To transfer a code from your watch to the Authenticator app on your phone, just press and hold the 2FA code number on your watch. You can then scan the QR code that is displayed on your phone's Authenticator app.
+To transfer a code from your watch to the Authenticator app on your phone, just press and hold the 2FA code number on your watch. You can then scan the QR code that is displayed on your watch screen.
 
 ***Tip:** Tap the QR Code to dim it for better scanning.*
 
