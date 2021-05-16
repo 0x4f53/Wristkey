@@ -8,9 +8,9 @@
 
 A standalone two-factor authentication application for Wear OS. This application is for the de-Googlers and custom ROM-ers out there.
 
-<img src = screenshots/home.png alt="screenshot">
+[Get the latest release APK here](app/release/app-release.apk)
 
-[Get the latest release APK](app/release/app-release.apk)
+<img src = screenshots/home.png alt="screenshot">
 
 ## Usage
 
