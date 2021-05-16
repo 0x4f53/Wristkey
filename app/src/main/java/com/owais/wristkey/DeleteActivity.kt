@@ -26,7 +26,7 @@ class DeleteActivity : WearableActivity() {
         val confirmButton = findViewById<ImageButton>(R.id.ConfirmButton)
         val cancelButton = findViewById<ImageButton>(R.id.CancelButton)
         val boxInsetLayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val storageFile = "app_storage"
+        val storageFile = "wristkey_data_storage"
         val storage: SharedPreferences =
             applicationContext.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
         var currentAccent = storage.getString("accent", "4285F4")
@@ -40,14 +40,7 @@ class DeleteActivity : WearableActivity() {
             confirmationText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
         }
         confirmButton.setOnClickListener {
-            val storageFile = "wristkey_data_storage"
-            val storage: SharedPreferences =
-                applicationContext.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
-            val storageEditor: SharedPreferences.Editor = storage.edit()
-            storageEditor.remove(tokenNumberForDeleteActivity)
-            storageEditor.apply()
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
+            storage.edit().remove(tokenNumberForDeleteActivity).apply()
             finish()
             Toast.makeText(this, "Token deleted", Toast.LENGTH_SHORT).show()
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator

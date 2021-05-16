@@ -1,6 +1,6 @@
 [![Wear OS](https://img.shields.io/badge/Made%20for-WearOS-4285f4.svg?style=flat&logo=wear%20os)](https://wearos.google.com/)
 [![License](https://img.shields.io/badge/License-MIT-purple)](LICENSE)
-[![Maintenance](https://img.shields.io/badge/Maintained-No-red.svg)](https://gitlab.com/ThomasCat/wristkey/activity)
+[![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://gitlab.com/ThomasCat/wristkey/activity)
 [![Kotlin](https://img.shields.io/badge/Made%20with-Kotlin-7f52ff.svg)](https://kotlinlang.org/)
 [![Preview](https://img.shields.io/badge/Preview-Click%20Here!-blue)](app/release/app-debug.apk)
 
@@ -34,4 +34,14 @@ A standalone two-factor authentication application for Wear OS. This application
 
 2. Scroll down and tap the tick button '✓' at the at the bottom when done.
 
-[Grab the latest APK](https://gitlab.com/ThomasCat/wristkey/-/raw/master/app/release/app-release.apk?inline=false)
+## Troubleshooting
+
+### Wrong TOTP codes are shown
+
+If the wrong codes are being shown, then your watch may have the time set incorrectly. Please set the time by pairing it to a phone.
+
+### File import not working
+
+Make sure Wristkey has storage permissions in your watch's Settings app. Make sure the file you download from your Bitwarden account is an **Unencrypted** file in **JSON** format (Encrypted JSON and Encrypted / Unencrypted CSV files don't work).
+
+[Grab the latest APK](https://gitlab.com/ThomasCat/wristkey/-/raw/master/app/release/app-release.apk)

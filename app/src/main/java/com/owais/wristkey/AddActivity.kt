@@ -95,7 +95,6 @@ class AddActivity : WearableActivity() {
         confirmButton.setOnClickListener {
             val errorToast: Toast?
             val tokenData = ArrayList<String>()
-            val storageEditor: SharedPreferences.Editor = storage.edit()
             if (account.text.toString() == ""){
                 errorToast = Toast.makeText(this, "Enter account name", Toast.LENGTH_SHORT)
                 errorToast.show()
@@ -116,9 +115,8 @@ class AddActivity : WearableActivity() {
                 tokenData.add(selectedAlgorithm)
                 tokenData.add("0")  // If counter mode is selected, initial value must be 0.
                 val json = Gson().toJson(tokenData)
-                storageEditor.putString(serialNumber.toString(), json)
-                storageEditor.putInt("currentSerialNumber", serialNumber)
-                storageEditor.apply()
+                storage.edit().putString(serialNumber.toString(), json).apply()
+                storage.edit().putInt("currentSerialNumber", serialNumber).apply()
                 val addedToast = Toast.makeText(this, "Added account", Toast.LENGTH_SHORT)
                 addedToast.show()
                 val intent = Intent(applicationContext, MainActivity::class.java)

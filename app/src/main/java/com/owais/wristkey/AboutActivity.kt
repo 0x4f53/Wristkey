@@ -1,6 +1,7 @@
 package com.owais.wristkey
 
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -15,9 +16,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.wear.widget.BoxInsetLayout
 import com.google.android.wearable.intent.RemoteIntent
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class AboutActivity : WearableActivity() {
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
@@ -25,6 +29,7 @@ class AboutActivity : WearableActivity() {
         val doneButton = findViewById<ImageView>(R.id.DoneButton)
         val appNameText = findViewById<TextView>(R.id.AppName)
         val copyrightText = findViewById<TextView>(R.id.Copyright)
+        val versionText = findViewById<TextView>(R.id.Version)
         val descriptionText = findViewById<TextView>(R.id.Description)
         val storageFile = "wristkey_data_storage"
         val storage: SharedPreferences = applicationContext.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
@@ -37,14 +42,20 @@ class AboutActivity : WearableActivity() {
         if (currentTheme == "F7F7F7") {
             appNameText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             copyrightText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            versionText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             descriptionText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             urlLink.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor("#000000"))
         } else {
             appNameText.setTextColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")))
             copyrightText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            versionText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             descriptionText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             urlLink.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
         }
+
+        copyrightText.text = "${copyrightText.text} ${SimpleDateFormat("yyyy").format(Date())}"
+        versionText.text = "v${BuildConfig.VERSION_NAME}"
+
         urlLink.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW).addCategory(Intent.CATEGORY_BROWSABLE).setData(Uri.parse("https://gitlab.com/thomascat/wristkey"))
             RemoteIntent.startRemoteActivity(this, intent, null)

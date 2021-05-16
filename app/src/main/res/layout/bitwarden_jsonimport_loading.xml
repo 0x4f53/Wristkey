@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/BoxInsetLayout"
+    android:id="@+id/LoadingLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
@@ -38,7 +38,10 @@
             android:id="@+id/LoadingIcon"
             style="?android:attr/progressBarStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/colorAccent"
+            android:progressTint="@color/colorAccent"
+            android:secondaryProgressTint="@color/colorAccent" />
 
         <View
             android:id="@+id/divider7"

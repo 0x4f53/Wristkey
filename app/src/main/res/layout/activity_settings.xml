@@ -36,6 +36,41 @@
                 android:textSize="15sp"
                 android:textStyle="italic" />
 
+            <View
+                android:id="@+id/divider23"
+                android:layout_width="match_parent"
+                android:layout_height="0.25dp"
+                android:background="@color/darkAccents" />
+
+            <TextView
+                android:id="@+id/NotifyLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="Notify"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <CheckBox
+                android:id="@+id/Beep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:checked="false"
+                android:text="Beep on new code"
+                android:buttonTint="@color/blueAccents" />
+
+            <CheckBox
+                android:id="@+id/Vibrate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:checked="false"
+                android:text="Vibrate on new code"
+                android:buttonTint="@color/blueAccents" />
 
             <View
                 android:id="@+id/divider3"

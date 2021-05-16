@@ -1,6 +1,7 @@
 package com.owais.wristkey
 
 import android.annotation.SuppressLint
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -26,7 +27,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-
 class MainActivity : WearableActivity() {
     var appExited: Boolean = false
     @SuppressLint("WrongConstant")
@@ -34,7 +34,6 @@ class MainActivity : WearableActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         // setAmbientEnabled() disabled because app contains sensitive information
-
 
         var timeLeft: ProgressBar
 
@@ -143,7 +142,7 @@ class MainActivity : WearableActivity() {
                                 Token(
                                     count,
                                     accountName,
-                                    totp.generate().toString(),
+                                    totp.generate(),
                                     counter
                                 )
                             )
@@ -200,35 +199,60 @@ class MainActivity : WearableActivity() {
                 }
 
             }
+
             val timeAdapter = TimeCardAdapter(applicationContext, timeBasedTokens){} //creating adapter
             timeRecyclerView.adapter = timeAdapter //now adding adapter to recyclerview
+
             val counterAdapter = CounterCardAdapter(applicationContext, counterBasedTokens){} //creating adapter
             counterRecyclerView.adapter = counterAdapter //now adding adapter to recyclerview
         }
 
+        getData()
+
+        object : Thread() {
+            override fun run() {
+                try {
+                    while (!appExited) {
+                        sleep(1000)
+                        runOnUiThread {
+                            getData()
+                        }
+                    }
+                } catch (e: InterruptedException) { }
+            }
+        }.start()
+
         fun getTimerUI() {
             val toneG = ToneGenerator(AudioManager.STREAM_ALARM, 100)
             val tone = ToneGenerator.TONE_CDMA_CALL_SIGNAL_ISDN_PING_RING
+            val toneLength = 50
             var currentSecondsValue = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
             if (currentSecondsValue in 30..59) {
                 if (currentSecondsValue == 59) {
-                    toneG.startTone(tone, 50)
-                    val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                    vibratorService.vibrate(25)
+                    if (storage.getBoolean("beep", false)) toneG.startTone(tone, toneLength)
+
+                    if (storage.getBoolean("vibrate", false)) {
+                        val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                        vibratorService.vibrate(25)
+                    }
                 }
                 timeLeft.progress = 59-currentSecondsValue
             } else {
                 if (currentSecondsValue == 29) {
-                    toneG.startTone(tone, 50)
-                    val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                    vibratorService.vibrate(25)
+                    if (storage.getBoolean("beep", false)) toneG.startTone(tone, toneLength)
+
+                    if (storage.getBoolean("vibrate", false)) {
+                        val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                        vibratorService.vibrate(25)
+                    }
                 }
                 timeLeft.progress = 29-currentSecondsValue
             }
         }
 
+        getTimerUI()
+
         if (storage.getInt("currentSerialNumber", 0) != 0) {
-            Log.d ("asdfg", storage.getInt("currentSerialNumber", 0).toString())
             object : Thread() {
                 override fun run() {
                     try {
@@ -236,7 +260,6 @@ class MainActivity : WearableActivity() {
                             sleep(1000)
                             runOnUiThread {
                                 getTimerUI()
-                                getData()
                             }
                         }
                     } catch (e: InterruptedException) { }

@@ -46,7 +46,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="© Owais Shaikh 2020"
+                android:text="© Owais Shaikh"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/Version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="italic"
+                android:text="version x.x"
                 android:textColor="#FFFFFF" />
 
             <View
