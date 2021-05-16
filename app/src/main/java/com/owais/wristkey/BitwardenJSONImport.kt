@@ -43,17 +43,19 @@ class BitwardenJSONImport : Activity() {
         var accent = "Blue"
         val storageFile = "wristkey_data_storage"
         val storage: SharedPreferences = applicationContext.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
-        val storageEditor: SharedPreferences.Editor =  storage.edit()
         var currentAccent = storage.getString("accent", "4285F4")
         var currentTheme = storage.getString("theme", "000000")
         boxinsetlayout.setBackgroundColor(Color.parseColor("#"+currentTheme))
         confirmButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+        importUsernames.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         if (currentTheme == "F7F7F7") {
             importLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             description.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            importUsernames.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
         } else {
             importLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")))
             description.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            importUsernames.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
         }
 
         backButton.setOnClickListener {
@@ -89,9 +91,11 @@ class BitwardenJSONImport : Activity() {
                         var itemsArrayLength = 0
 
                         setContentView(R.layout.bitwarden_jsonimport_loading)
+                        val loadingLayout = findViewById<BoxInsetLayout>(R.id.LoadingLayout)
                         val loadingIcon = findViewById<ProgressBar>(R.id.LoadingIcon)
                         val importingLabel = findViewById<TextView>(R.id.ImportingLabel)
                         val importingDescription = findViewById<TextView>(R.id.ImportingDescription)
+                        loadingLayout.setBackgroundColor(Color.parseColor("#"+currentTheme))
                         loadingIcon.progressTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
                         loadingIcon.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentTheme))
                         if (currentTheme == "F7F7F7") {
@@ -151,9 +155,8 @@ class BitwardenJSONImport : Activity() {
                                     tokenData.add("HmacAlgorithm.SHA1")
                                     tokenData.add("0")  // If counter mode is selected, initial value must be 0.
                                     val json = Gson().toJson(tokenData)
-                                    storageEditor.putString(serialNumber.toString(), json)
-                                    storageEditor.putInt("currentSerialNumber", serialNumber)
-                                    storageEditor.apply()
+                                    storage.edit().putString(serialNumber.toString(), json).apply()
+                                    storage.edit().putInt("currentSerialNumber", serialNumber).apply()
                                 } else {
                                     importingDescription.text = "No TOTP secret for $sitename account"
                                 }

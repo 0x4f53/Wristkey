@@ -97,7 +97,6 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
         private val themeStorageFile = "wristkey_data_storage"
         private val storage: SharedPreferences = context.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
         val theme: SharedPreferences = context.getSharedPreferences(themeStorageFile, Context.MODE_PRIVATE)
-        private val storageEditor: SharedPreferences.Editor =  storage.edit()
         fun bindItems(token: Token) {
             var currentTheme = theme.getString("theme", "000000")
             val counterCard=itemView.findViewById<CardView>(R.id.CounterCard)
@@ -130,8 +129,8 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
                 var newCounterValue=currentCounterValue+1
                 val getCurrentData=(storage.getString(token.tokenNumber.toString(), "").toString())
                 val newData=getCurrentData+newCounterValue
-                storageEditor.putString(tokenNumber, newData)
-                storageEditor.apply()
+                storage.edit().putString(tokenNumber, newData).apply()
+                storage.edit().apply()
             }
             accountName.setOnLongClickListener{
                 tokenNumberForDeleteActivity = tokenNumber

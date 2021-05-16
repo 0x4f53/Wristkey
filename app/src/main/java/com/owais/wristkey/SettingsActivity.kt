@@ -21,6 +21,9 @@ class SettingsActivity : WearableActivity() {
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
         val settingsLabelText = findViewById<TextView>(R.id.SettingsLabel)
         val themeLabelText = findViewById<TextView>(R.id.ThemeLabel)
+        val notifyLabelText = findViewById<TextView>(R.id.NotifyLabel)
+        val beep = findViewById<CheckBox>(R.id.Beep)
+        val vibrate = findViewById<CheckBox>(R.id.Vibrate)
         val accentLabelText = findViewById<TextView>(R.id.AccentLabel)
         val importButtonText = findViewById<TextView>(R.id.ImportButtonLabel)
         val deleteButtonText = findViewById<TextView>(R.id.DeleteAllTokensButtonLabel)
@@ -31,21 +34,27 @@ class SettingsActivity : WearableActivity() {
         val themeGroup = findViewById<RadioGroup>(R.id.ThemeRadioGroup)
         val storageFile = "wristkey_data_storage"
         val storage: SharedPreferences = applicationContext.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
-        val storageEditor: SharedPreferences.Editor =  storage.edit()
         var currentAccent = storage.getString("accent", "4285F4")
         var currentTheme = storage.getString("theme", "000000")
         boxinsetlayout.setBackgroundColor(Color.parseColor("#"+currentTheme))
         backButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         deleteButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         importButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        if (currentTheme == "F7F7F7") {
+        beep.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+        vibrate.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+            if (currentTheme == "F7F7F7") {
             settingsLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            notifyLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            beep.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            vibrate.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             themeLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             accentLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             importButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             deleteButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
         } else {
             settingsLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")))
+            beep.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            vibrate.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             themeLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             accentLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             importButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
@@ -88,8 +97,7 @@ class SettingsActivity : WearableActivity() {
         val totalListItems = allKeys.size
 
         deleteButton.setOnClickListener {
-            storageEditor.clear()
-            storageEditor.apply()
+            storage.edit().clear().apply()
             var doneToast = Toast.makeText(this, Html.fromHtml("<center><b>Deleted all\ntokens and settings<b></center>"), Toast.LENGTH_SHORT)
             doneToast.show()
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -112,32 +120,39 @@ class SettingsActivity : WearableActivity() {
             val selectedIndex =
                 accentGroup.indexOfChild(findViewById(accentGroup.checkedRadioButtonId)).toString()
             if (selectedIndex == "0") {
-                storageEditor.putString("accent", "FF4141")
+                storage.edit().putString("accent", "FF4141").apply()
             } else if (selectedIndex == "1") {
-                storageEditor.putString("accent", "FF6D00")
+                storage.edit().putString("accent", "FF6D00").apply()
             } else if (selectedIndex == "2") {
-                storageEditor.putString("accent", "FFBB00")
+                storage.edit().putString("accent", "FFBB00").apply()
             } else if (selectedIndex == "3") {
-                storageEditor.putString("accent", "4285F4")
+                storage.edit().putString("accent", "4285F4").apply()
             } else if (selectedIndex == "4") {
-                storageEditor.putString("accent", "009688")
+                storage.edit().putString("accent", "009688").apply()
             } else if (selectedIndex == "5") {
-                storageEditor.putString("accent", "434343")
+                storage.edit().putString("accent", "434343").apply()
             }
-            storageEditor.apply()
         }
 
         themeGroup.setOnCheckedChangeListener { _, _ ->
             val selectedIndex =
                 themeGroup.indexOfChild(findViewById(themeGroup.checkedRadioButtonId)).toString()
             if (selectedIndex == "0") {
-                storageEditor.putString("theme", "F7F7F7")
+                storage.edit().putString("theme", "F7F7F7").apply()
             } else if (selectedIndex == "1") {
-                storageEditor.putString("theme", "192835")
+                storage.edit().putString("theme", "192835").apply()
             } else if (selectedIndex == "2") {
-                storageEditor.putString("theme", "000000")
+                storage.edit().putString("theme", "000000").apply()
             }
-            storageEditor.apply()
+            storage.edit().apply()
+        }
+
+        beep.setOnCheckedChangeListener { _, b ->
+            storage.edit().putBoolean("beep", b).apply()
+        }
+
+        vibrate.setOnCheckedChangeListener { _, b ->
+            storage.edit().putBoolean("vibrate", b).apply()
         }
 
         backButton.setOnClickListener {

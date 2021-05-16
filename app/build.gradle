@@ -10,9 +10,9 @@ android {
     defaultConfig {
         applicationId "com.owais.wristkey"
         minSdkVersion 23
-        targetSdkVersion 26
+        targetSdkVersion 26  // Play Store requires API29+
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
 
     }
 
