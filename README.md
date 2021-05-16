@@ -2,11 +2,13 @@
 [![License](https://img.shields.io/badge/License-MIT-purple)](LICENSE)
 [![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://gitlab.com/ThomasCat/wristkey/activity)
 [![Kotlin](https://img.shields.io/badge/Made%20with-Kotlin-7f52ff.svg)](https://kotlinlang.org/)
-[![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here!-blue)](app/build/outputs/apk/debug/app-debug.apk)
+[![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here!-blue)](app/release/app-release.apk)
 
 # Wristkey
 
 A standalone two-factor authentication application for Wear OS. This application is for the de-Googlers and custom ROM-ers out there.
+
+[Get the latest release APK](app/release/app-release.apk)
 
 ## Usage
 
@@ -48,5 +50,3 @@ If the wrong codes are being shown, then your watch may have the time set incorr
 ### File import not working
 
 Make sure Wristkey has storage permissions in your watch's Settings app. Make sure the file you download from your Bitwarden account is an **Unencrypted** file in **JSON** format (Encrypted JSON and Encrypted / Unencrypted CSV files don't work).
-
-[Grab the latest APK](https://gitlab.com/ThomasCat/wristkey/-/raw/master/app/release/app-release.apk)
