@@ -25,7 +25,7 @@
             android:layout_height="24dp" />
 
         <TextView
-            android:id="@+id/ImportLabel"
+            android:id="@+id/AuthenticatorImportLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/bitwarden_import"
@@ -43,11 +43,11 @@
             android:background="@color/darkAccents" />
 
         <TextView
-            android:id="@+id/Description"
+            android:id="@+id/AuthenticatorDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/import_blurb"
+            android:text="@string/bitwarden_import_blurb"
             android:textColor="@color/primary_text_dark"
             android:textStyle="italic" />
 
@@ -60,7 +60,7 @@
             android:background="@color/darkAccents" />
 
         <CheckBox
-            android:id="@+id/ImportUsernames"
+            android:id="@+id/AuthenticatorImportUsernames"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -92,7 +92,7 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/BackButton"
+                android:id="@+id/AuthenticatorBackButton"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
@@ -104,7 +104,7 @@
                 android:src="@drawable/ic_back" />
 
             <ImageButton
-                android:id="@+id/ConfirmButton"
+                android:id="@+id/AuthenticatorConfirmButton"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"

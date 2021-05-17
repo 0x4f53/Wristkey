@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.owais.wristkey">
+    package="com.wristkey">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
@@ -16,6 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
+        <activity android:name=".AuthenticatorQRImport"></activity>
 
         <uses-library
             android:name="com.google.android.wearable"
@@ -40,12 +41,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".QRCodeActivity"
-            android:label = "QR Code"/>
-
+            android:label="QR Code" />
         <activity
             android:name=".AddActivity"
             android:label="Add account" />

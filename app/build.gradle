@@ -5,14 +5,14 @@ plugins {
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.owais.wristkey"
+        applicationId 'com.wristkey'
         minSdkVersion 23
         targetSdkVersion 26  // Play Store requires API29+
         versionCode 1
-        versionName "1.1"
+        versionName "1.2"
 
     }
 
@@ -58,6 +58,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
     implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.3'
+    implementation 'com.google.protobuf:protobuf-java:3.10.0'
+    implementation 'com.google.zxing:core:3.3.3'
     compileOnly 'com.google.android.wearable:wearable:2.8.1'
-
+    implementation "androidx.security:security-crypto:1.1.0-alpha03"
 }
