@@ -1,4 +1,4 @@
-package com.owais.wristkey
+package com.wristkey
 
 import android.content.res.ColorStateList
 import android.graphics.Color

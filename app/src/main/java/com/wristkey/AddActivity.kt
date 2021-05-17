@@ -1,6 +1,5 @@
-package com.owais.wristkey
+package com.wristkey
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -14,7 +13,6 @@ import androidx.annotation.RequiresApi
 import androidx.wear.widget.BoxInsetLayout
 import com.google.gson.Gson
 import java.util.*
-import kotlin.collections.LinkedHashSet
 
 
 class AddActivity : WearableActivity() {
@@ -24,7 +22,7 @@ class AddActivity : WearableActivity() {
         setContentView(R.layout.activity_add)
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
         val addAccountLabel = findViewById<TextView>(R.id.AddAccountLabel)
-        val confirmButton = findViewById<ImageButton>(R.id.ConfirmButton)
+        val confirmButton = findViewById<ImageButton>(R.id.AuthenticatorConfirmButton)
         val cancelButton = findViewById<ImageButton>(R.id.CancelButton)
         val account = findViewById<EditText>(R.id.AccountField)
         val sharedSecret = findViewById<EditText>(R.id.SharedSecretField)
@@ -42,13 +40,12 @@ class AddActivity : WearableActivity() {
         algorithm.progress = 0
         var selectedAlgorithm = "HmacAlgorithm.SHA1"
         val algorithmLabel = findViewById<TextView>(R.id.AlgorithmLength)
-        val storageFile = "wristkey_data_storage"
-        val storage: SharedPreferences = applicationContext.getSharedPreferences(
-            storageFile,
+        val appData: SharedPreferences = applicationContext.getSharedPreferences(
+            appDataFile,
             Context.MODE_PRIVATE
         )
-        var currentAccent = storage.getString("accent", "4285F4")
-        var currentTheme = storage.getString("theme", "000000")
+        var currentAccent = appData.getString("accent", "4285F4")
+        var currentTheme = appData.getString("theme", "000000")
         boxinsetlayout.setBackgroundColor(Color.parseColor("#" + currentTheme))
         account.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
         account.foregroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
@@ -105,9 +102,6 @@ class AddActivity : WearableActivity() {
                 errorToast = Toast.makeText(this, "Invalid shared secret", Toast.LENGTH_SHORT)
                 errorToast.show()
             }else{
-                var serialNumber = storage.getInt("currentSerialNumber", 0)
-                serialNumber+=1
-                tokenData.add(serialNumber.toString())
                 tokenData.add(account.text.toString())
                 tokenData.add(sharedSecret.text.toString())
                 tokenData.add(mode)
@@ -115,18 +109,16 @@ class AddActivity : WearableActivity() {
                 tokenData.add(selectedAlgorithm)
                 tokenData.add("0")  // If counter mode is selected, initial value must be 0.
                 val json = Gson().toJson(tokenData)
-                storage.edit().putString(serialNumber.toString(), json).apply()
-                storage.edit().putInt("currentSerialNumber", serialNumber).apply()
+
+                val id = UUID.randomUUID().toString()
+
+                logins.edit().putString(id, json).apply()
                 val addedToast = Toast.makeText(this, "Added account", Toast.LENGTH_SHORT)
                 addedToast.show()
-                val intent = Intent(applicationContext, MainActivity::class.java)
-                startActivity(intent)
                 finish()
             }
         }
         cancelButton.setOnClickListener {
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
             finish()
         }
         modeGroup.setOnCheckedChangeListener { _, checkedId ->

@@ -1,4 +1,4 @@
-package com.owais.wristkey
+package com.wristkey
 
 import android.content.Context
 import android.content.Intent
@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.Vibrator
 import android.support.wearable.activity.WearableActivity
 import android.text.Html
-import android.util.Log
 import android.widget.*
 import androidx.wear.widget.BoxInsetLayout
 
@@ -25,31 +24,37 @@ class SettingsActivity : WearableActivity() {
         val beep = findViewById<CheckBox>(R.id.Beep)
         val vibrate = findViewById<CheckBox>(R.id.Vibrate)
         val accentLabelText = findViewById<TextView>(R.id.AccentLabel)
-        val importButtonText = findViewById<TextView>(R.id.ImportButtonLabel)
+        val importBitwardenButtonText = findViewById<TextView>(R.id.ImportBitwardenButtonLabel)
+        val importBitwardenButton = findViewById<ImageView>(R.id.ImportBitwardenButton)
+        val importAuthenticatorButtonText = findViewById<TextView>(R.id.ImportAuthenticatorButtonLabel)
+        val importAuthenticatorButton = findViewById<ImageView>(R.id.ImportAuthenticatorButton)
+        val numberOfItemsText = findViewById<TextView>(R.id.NumberOfItems)
         val deleteButtonText = findViewById<TextView>(R.id.DeleteAllTokensButtonLabel)
         val deleteButton = findViewById<ImageView>(R.id.DeleteButton)
-        val importButton = findViewById<ImageView>(R.id.ImportButton)
-        val backButton = findViewById<ImageButton>(R.id.BackButton)
+        val backButton = findViewById<ImageButton>(R.id.AuthenticatorBackButton)
         val accentGroup = findViewById<RadioGroup>(R.id.AccentRadioGroup)
         val themeGroup = findViewById<RadioGroup>(R.id.ThemeRadioGroup)
-        val storageFile = "wristkey_data_storage"
-        val storage: SharedPreferences = applicationContext.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
-        var currentAccent = storage.getString("accent", "4285F4")
-        var currentTheme = storage.getString("theme", "000000")
+        val appData: SharedPreferences = applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
+        var currentAccent = appData.getString("accent", "4285F4")
+        var currentTheme = appData.getString("theme", "000000")
+
         boxinsetlayout.setBackgroundColor(Color.parseColor("#"+currentTheme))
         backButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         deleteButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        importButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+        importBitwardenButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+        importAuthenticatorButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         beep.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         vibrate.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-            if (currentTheme == "F7F7F7") {
+
+        if (currentTheme == "F7F7F7") {
             settingsLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             notifyLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             beep.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             vibrate.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             themeLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             accentLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            importButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            importBitwardenButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            importAuthenticatorButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             deleteButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
         } else {
             settingsLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")))
@@ -57,7 +62,8 @@ class SettingsActivity : WearableActivity() {
             vibrate.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             themeLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             accentLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-            importButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            importBitwardenButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            importAuthenticatorButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             deleteButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
         }
 
@@ -82,34 +88,29 @@ class SettingsActivity : WearableActivity() {
         } else if (currentTheme == "000000") {
             themeGroup.check(R.id.DarkTheme)
         }
-        ////////
-        val allKeysMap: Map<String, *> = storage.all
-        val allKeys = mutableListOf("Select token")
-        for (key in allKeysMap) {
-            allKeys.add(((key.toString()).replaceAfter("=", "").replace("=", "")))
-            allKeys.remove("theme")
-            allKeys.remove("accent")
-            allKeys.remove("currentSerialNumber")
-        }
-        Log.d("keyList", allKeys.toString())
-        //////////////
-        var currentPosition = 0
-        val totalListItems = allKeys.size
+
+        numberOfItemsText.text = "${logins.all.size} items"
 
         deleteButton.setOnClickListener {
-            storage.edit().clear().apply()
+            appData.edit().clear().apply()
             var doneToast = Toast.makeText(this, Html.fromHtml("<center><b>Deleted all\ntokens and settings<b></center>"), Toast.LENGTH_SHORT)
             doneToast.show()
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(500)
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
             finish()
             true
         }
 
-        importButton.setOnClickListener {
+        importBitwardenButton.setOnClickListener {
             val intent = Intent(applicationContext, BitwardenJSONImport::class.java)
+            startActivity(intent)
+            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibratorService.vibrate(50)
+            finish()
+        }
+
+        importAuthenticatorButton.setOnClickListener {
+            val intent = Intent(applicationContext, AuthenticatorQRImport::class.java)
             startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
@@ -120,17 +121,17 @@ class SettingsActivity : WearableActivity() {
             val selectedIndex =
                 accentGroup.indexOfChild(findViewById(accentGroup.checkedRadioButtonId)).toString()
             if (selectedIndex == "0") {
-                storage.edit().putString("accent", "FF4141").apply()
+                appData.edit().putString("accent", "FF4141").apply()
             } else if (selectedIndex == "1") {
-                storage.edit().putString("accent", "FF6D00").apply()
+                appData.edit().putString("accent", "FF6D00").apply()
             } else if (selectedIndex == "2") {
-                storage.edit().putString("accent", "FFBB00").apply()
+                appData.edit().putString("accent", "FFBB00").apply()
             } else if (selectedIndex == "3") {
-                storage.edit().putString("accent", "4285F4").apply()
+                appData.edit().putString("accent", "4285F4").apply()
             } else if (selectedIndex == "4") {
-                storage.edit().putString("accent", "009688").apply()
+                appData.edit().putString("accent", "009688").apply()
             } else if (selectedIndex == "5") {
-                storage.edit().putString("accent", "434343").apply()
+                appData.edit().putString("accent", "434343").apply()
             }
         }
 
@@ -138,26 +139,24 @@ class SettingsActivity : WearableActivity() {
             val selectedIndex =
                 themeGroup.indexOfChild(findViewById(themeGroup.checkedRadioButtonId)).toString()
             if (selectedIndex == "0") {
-                storage.edit().putString("theme", "F7F7F7").apply()
+                appData.edit().putString("theme", "F7F7F7").apply()
             } else if (selectedIndex == "1") {
-                storage.edit().putString("theme", "192835").apply()
+                appData.edit().putString("theme", "192835").apply()
             } else if (selectedIndex == "2") {
-                storage.edit().putString("theme", "000000").apply()
+                appData.edit().putString("theme", "000000").apply()
             }
-            storage.edit().apply()
+            appData.edit().apply()
         }
 
         beep.setOnCheckedChangeListener { _, b ->
-            storage.edit().putBoolean("beep", b).apply()
+            appData.edit().putBoolean("beep", b).apply()
         }
 
         vibrate.setOnCheckedChangeListener { _, b ->
-            storage.edit().putBoolean("vibrate", b).apply()
+            appData.edit().putBoolean("vibrate", b).apply()
         }
 
         backButton.setOnClickListener {
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
             finish()

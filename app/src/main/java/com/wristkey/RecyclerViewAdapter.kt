@@ -1,4 +1,4 @@
-package com.owais.wristkey
+package com.wristkey
 
 import android.content.Context
 import android.content.Intent
@@ -14,7 +14,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import org.json.JSONArray
 
-data class Token(val tokenNumber: Int, val accountName: String, val code: String, val counter: String)
+data class Token(val id: String, val accountName: String, val code: String, val counter: String)
 
 class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>, val clickListener: (Token) -> Unit) : RecyclerView.Adapter<TimeCardAdapter.ViewHolder>() {
     //this method is returning the view for each item in the list
@@ -38,10 +38,9 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
     //the class is holding the list view
     class ViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         val context = context
-        private val themeStorageFile = "wristkey_data_storage"
-        val theme: SharedPreferences = context.getSharedPreferences(themeStorageFile, Context.MODE_PRIVATE)
+        val appData: SharedPreferences = context.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         fun bindItems(token: Token) {
-            var currentTheme = theme.getString("theme", "000000")
+            var currentTheme = appData.getString("theme", "000000")
             val timeCard=itemView.findViewById<CardView>(R.id.TimeCard)
             val accountName = itemView.findViewById<TextView>(R.id.ServiceName)
             val code  = itemView.findViewById<TextView>(R.id.Code)
@@ -61,28 +60,27 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
             }
             accountName.text = token.accountName
             accountName.isSelected = true
-            code.text = token.code
-            val tokenNumber=token.tokenNumber.toString()
+            code.text = token.code.replace("...".toRegex(), "$0 ")
+            val id=token.id
             accountName.setOnLongClickListener {
-                tokenNumberForDeleteActivity = tokenNumber
+                idForDeleteActivity = id
                 context.startActivity(Intent(context, DeleteActivity::class.java))
                 true
             }
 
             code.setOnLongClickListener {
-                val storageFile = "wristkey_data_storage"
-                val storage: SharedPreferences =
-                    context.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
+                val appData: SharedPreferences =
+                    context.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
                 val qrcodeData: String
                 val sitename: String
                 val accountNameForQRCode: String
                 if (token.accountName.contains("(") && token.accountName.contains(")")) {
                     accountNameForQRCode = token.accountName.substringAfter("(").substringBefore(")")
                     sitename = token.accountName.substringBefore("(")
-                    qrcodeData = "otpauth://totp/${accountNameForQRCode}?secret=${JSONArray(storage.getString(tokenNumber, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
+                    qrcodeData = "otpauth://totp/${accountNameForQRCode}?secret=${JSONArray(logins.getString(id, null))[1]}&issuer=${sitename}" // where 1 is the array index for the secret
                 } else {
                     sitename = token.accountName.substringBefore("(")
-                    qrcodeData = "otpauth://totp/?secret=${JSONArray(storage.getString(tokenNumber, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
+                    qrcodeData = "otpauth://totp/?secret=${JSONArray(logins.getString(id, null))[1]}&issuer=${sitename}" // where 1 is the array index for the secret
                 }
                 otpAuthData = qrcodeData
                 context.startActivity(Intent(context, QRCodeActivity::class.java))
@@ -116,12 +114,9 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
     //the class is holding the list view
     class ViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         val context = context
-        private val storageFile = "app_storage"
-        private val themeStorageFile = "wristkey_data_storage"
-        private val storage: SharedPreferences = context.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
-        val theme: SharedPreferences = context.getSharedPreferences(themeStorageFile, Context.MODE_PRIVATE)
+        private val appData: SharedPreferences = context.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         fun bindItems(token: Token) {
-            var currentTheme = theme.getString("theme", "000000")
+            var currentTheme = appData.getString("theme", "000000")
             val counterCard=itemView.findViewById<CardView>(R.id.CounterCard)
             val accountName = itemView.findViewById<TextView>(R.id.ServiceName)
             val code  = itemView.findViewById<TextView>(R.id.Code)
@@ -144,16 +139,16 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
             }
             accountName.text = token.accountName
             accountName.isSelected = true
-            code.text = token.code
+            code.text = token.code.replace("...".toRegex(), "$0 ")
             counter.text = "#"+token.counter
             val currentCounterValue=token.counter.toInt()
-            val tokenNumber=token.tokenNumber.toString()
+            val id=token.id
             code.setOnClickListener{
                 var newCounterValue=currentCounterValue+1
-                val getCurrentData=(storage.getString(token.tokenNumber.toString(), "").toString())
+                val getCurrentData=(appData.getString(token.id.toString(), "").toString())
                 val newData=getCurrentData+newCounterValue
-                storage.edit().putString(tokenNumber, newData).apply()
-                storage.edit().apply()
+                logins.edit().putString(id, newData).apply()
+                logins.edit().apply()
                 code.text = "Code used"
                 Handler().postDelayed({
                     code.text = token.code
@@ -161,25 +156,24 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
             }
 
             accountName.setOnLongClickListener{
-                tokenNumberForDeleteActivity = tokenNumber
+                idForDeleteActivity = id
                 context.startActivity(Intent(context, DeleteActivity::class.java))
                 true
             }
 
             code.setOnLongClickListener {
-                val storageFile = "wristkey_data_storage"
-                val storage: SharedPreferences =
-                    context.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
+                val appData: SharedPreferences =
+                    context.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
                 val qrcodeData: String
                 val sitename: String
                 val accountNameForQRCode: String
                 if (token.accountName.contains("(") && token.accountName.contains(")")) {
                     accountNameForQRCode = token.accountName.substringAfter("(").substringBefore(")")
                     sitename = token.accountName.substringBefore("(")
-                    qrcodeData = "otpauth://hotp/${accountNameForQRCode}?secret=${JSONArray(storage.getString(tokenNumber, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
+                    qrcodeData = "otpauth://hotp/${accountNameForQRCode}?secret=${JSONArray(appData.getString(id, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
                 } else {
                     sitename = token.accountName.substringBefore("(")
-                    qrcodeData = "otpauth://hotp/?secret=${JSONArray(storage.getString(tokenNumber, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
+                    qrcodeData = "otpauth://hotp/?secret=${JSONArray(appData.getString(id, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
                 }
                 otpAuthData = qrcodeData
                 context.startActivity(Intent(context, QRCodeActivity::class.java))

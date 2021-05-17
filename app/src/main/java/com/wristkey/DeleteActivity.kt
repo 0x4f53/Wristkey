@@ -1,7 +1,6 @@
-package com.owais.wristkey
+package com.wristkey
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -15,7 +14,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.wear.widget.BoxInsetLayout
 
-var tokenNumberForDeleteActivity: String = ""
+var idForDeleteActivity: String = ""
 
 class DeleteActivity : WearableActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
@@ -23,14 +22,13 @@ class DeleteActivity : WearableActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_delete)
         val confirmationText = findViewById<TextView>(R.id.ConfirmationText)
-        val confirmButton = findViewById<ImageButton>(R.id.ConfirmButton)
+        val confirmButton = findViewById<ImageButton>(R.id.AuthenticatorConfirmButton)
         val cancelButton = findViewById<ImageButton>(R.id.CancelButton)
         val boxInsetLayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val storageFile = "wristkey_data_storage"
-        val storage: SharedPreferences =
-            applicationContext.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
-        var currentAccent = storage.getString("accent", "4285F4")
-        var currentTheme = storage.getString("theme", "000000")
+        val appData: SharedPreferences =
+            applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
+        var currentAccent = appData.getString("accent", "4285F4")
+        var currentTheme = appData.getString("theme", "000000")
         boxInsetLayout.setBackgroundColor(Color.parseColor("#" + currentTheme))
         confirmButton.backgroundTintList =
             ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
@@ -39,16 +37,16 @@ class DeleteActivity : WearableActivity() {
         } else {
             confirmationText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
         }
+
         confirmButton.setOnClickListener {
-            storage.edit().remove(tokenNumberForDeleteActivity).apply()
+            logins.edit().remove(idForDeleteActivity).apply()
             finish()
             Toast.makeText(this, "Token deleted", Toast.LENGTH_SHORT).show()
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(500)
         }
+
         cancelButton.setOnClickListener {
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
             finish()
         }
     }

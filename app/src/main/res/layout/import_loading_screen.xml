@@ -28,7 +28,7 @@
             android:id="@+id/ImportingLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/bitwarden_importing"
+            android:text="@string/importing"
             android:textAlignment="center"
             android:textColor="@color/primary_text_dark"
             android:textSize="18sp"
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/bitwarden_import_description"
+            android:text="@string/import_description"
             android:textColor="@color/primary_text_dark"
             android:textStyle="italic" />
 

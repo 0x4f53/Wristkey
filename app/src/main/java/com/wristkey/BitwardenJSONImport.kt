@@ -1,6 +1,5 @@
-package com.owais.wristkey
+package com.wristkey
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -8,16 +7,14 @@ import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment.getExternalStorageDirectory
 import android.os.Vibrator
 import android.provider.Settings
 import android.widget.*
-import androidx.core.app.ActivityCompat
 import androidx.wear.widget.BoxInsetLayout
 import com.google.gson.Gson
-import com.owais.wristkey.databinding.ActivityBitwardenJsonimportBinding
+import com.wristkey.databinding.ActivityBitwardenJsonimportBinding
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -34,17 +31,16 @@ class BitwardenJSONImport : Activity() {
         binding = ActivityBitwardenJsonimportBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val backButton = findViewById<ImageButton>(R.id.BackButton)
-        val confirmButton = findViewById<ImageButton>(R.id.ConfirmButton)
-        val importLabel = findViewById<TextView>(R.id.ImportLabel)
-        val description = findViewById<TextView>(R.id.Description)
-        val importUsernames = findViewById<CheckBox>(R.id.ImportUsernames)
+        val backButton = findViewById<ImageButton>(R.id.AuthenticatorBackButton)
+        val confirmButton = findViewById<ImageButton>(R.id.AuthenticatorConfirmButton)
+        val importLabel = findViewById<TextView>(R.id.AuthenticatorImportLabel)
+        val description = findViewById<TextView>(R.id.AuthenticatorDescription)
+        val importUsernames = findViewById<CheckBox>(R.id.AuthenticatorImportUsernames)
         var theme = "Dark"
         var accent = "Blue"
-        val storageFile = "wristkey_data_storage"
-        val storage: SharedPreferences = applicationContext.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
-        var currentAccent = storage.getString("accent", "4285F4")
-        var currentTheme = storage.getString("theme", "000000")
+        val appData: SharedPreferences = applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
+        var currentAccent = appData.getString("accent", "4285F4")
+        var currentTheme = appData.getString("theme", "000000")
         boxinsetlayout.setBackgroundColor(Color.parseColor("#"+currentTheme))
         confirmButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         importUsernames.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
@@ -67,17 +63,8 @@ class BitwardenJSONImport : Activity() {
         }
 
         confirmButton.setOnClickListener {
-            val code = 0x3
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                try {
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), code)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    throw e
-                }
-            }
 
             // start import
             try {
@@ -90,7 +77,7 @@ class BitwardenJSONImport : Activity() {
                         val itemsArray = JSONArray(items)
                         var itemsArrayLength = 0
 
-                        setContentView(R.layout.bitwarden_jsonimport_loading)
+                        setContentView(R.layout.import_loading_screen)
                         val loadingLayout = findViewById<BoxInsetLayout>(R.id.LoadingLayout)
                         val loadingIcon = findViewById<ProgressBar>(R.id.LoadingIcon)
                         val importingLabel = findViewById<TextView>(R.id.ImportingLabel)
@@ -140,10 +127,10 @@ class BitwardenJSONImport : Activity() {
                                 if (totp.isNotEmpty()) {
                                     // begin storing data
                                     importingDescription.text = "Adding $sitename account"
-                                    var serialNumber = storage.getInt("currentSerialNumber", 0)
-                                    serialNumber+=1
                                     val tokenData = ArrayList<String>()
-                                    tokenData.add(serialNumber.toString())
+
+                                    val id = UUID.randomUUID().toString()
+
                                     tokenData.add(accountName)
                                     tokenData.add(totp)
 
@@ -155,8 +142,7 @@ class BitwardenJSONImport : Activity() {
                                     tokenData.add("HmacAlgorithm.SHA1")
                                     tokenData.add("0")  // If counter mode is selected, initial value must be 0.
                                     val json = Gson().toJson(tokenData)
-                                    storage.edit().putString(serialNumber.toString(), json).apply()
-                                    storage.edit().putInt("currentSerialNumber", serialNumber).apply()
+                                    logins.edit().putString(id, json).apply()
                                 } else {
                                     importingDescription.text = "No TOTP secret for $sitename account"
                                 }

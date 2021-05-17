@@ -1,4 +1,4 @@
-package com.owais.wristkey
+package com.wristkey
 
 
 import android.annotation.SuppressLint
@@ -30,12 +30,11 @@ class AboutActivity : WearableActivity() {
         val appNameText = findViewById<TextView>(R.id.AppName)
         val copyrightText = findViewById<TextView>(R.id.Copyright)
         val versionText = findViewById<TextView>(R.id.Version)
-        val descriptionText = findViewById<TextView>(R.id.Description)
-        val storageFile = "wristkey_data_storage"
-        val storage: SharedPreferences = applicationContext.getSharedPreferences(storageFile, Context.MODE_PRIVATE)
-        val currentTheme = storage.getString("theme", "000000")
+        val descriptionText = findViewById<TextView>(R.id.AuthenticatorDescription)
+        val appData: SharedPreferences = applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
+        val currentTheme = appData.getString("theme", "000000")
         boxinsetlayout.setBackgroundColor(Color.parseColor("#$currentTheme"))
-        val currentAccent = storage.getString("accent", "4285F4")
+        val currentAccent = appData.getString("accent", "4285F4")
         doneButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#$currentAccent"))
         val urlLink = findViewById<TextView>(R.id.SourceCode)
         urlLink.setTextColor(ColorStateList.valueOf(Color.parseColor("#$currentAccent")))
