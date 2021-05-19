@@ -11,8 +11,7 @@ Wristkey is a sideloadable / standalone two-factor authentication application fo
 
 [Get the latest release APK here](app/release/app-release.apk)
 
-<img src = screenshots/home.png alt="screenshot">
-<img src = screenshots/settings.png alt="screenshot">
+<img src = screenshots/home.png alt="screenshot"><img src = screenshots/settings.png alt="screenshot">
 
 ## Adding items
 
@@ -118,8 +117,7 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 
 2. Scroll down and tap the tick button '✓' at the at the bottom when done.
 
-<img src = screenshots/add.png alt="screenshot">
-<img src = screenshots/add2.png alt="screenshot">
+<img src = screenshots/add.png alt="screenshot"><img src = screenshots/add2.png alt="screenshot">
 
 ## Deleting items
 
@@ -131,8 +129,7 @@ To transfer a code from your watch to the Authenticator app on your phone, just 
 
 ***Tip:** Tap the QR Code to dim it for better scanning.*
 
-<img src = screenshots/qr.png alt="screenshot">
-<img src = screenshots/qr2.png alt="screenshot">
+<img src = screenshots/qr.png alt="screenshot"><img src = screenshots/qr2.png alt="screenshot">
 
 ## Troubleshooting
 
