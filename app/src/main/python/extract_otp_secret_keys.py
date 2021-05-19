@@ -41,7 +41,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import argparse
 import base64
 import fileinput
 import sys
@@ -50,73 +49,52 @@ from os import path, mkdir
 from re import sub, compile as rcompile
 import generated_python.google_auth_pb2
 
-arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument('--verbose', '-v', help='verbose output', action='store_true')
-arg_parser.add_argument('--saveqr', '-s', help='save QR code(s) as images to the "qr" subfolder', action='store_true')
-arg_parser.add_argument('--printqr', '-p', help='print QR code(s) as text to the terminal', action='store_true')
-arg_parser.add_argument('infile', help='file or - for stdin (default: -) with "otpauth-migration://..." URLs separated by newlines, lines starting with # are ignored')
-args = arg_parser.parse_args()
+def decode(url):
+    # https://stackoverflow.com/questions/40226049/find-enums-listed-in-python-descriptor-for-protobuf
+    def get_enum_name_by_number(parent, field_name):
+        field_value = getattr(parent, field_name)
+        return parent.DESCRIPTOR.fields_by_name[field_name].enum_type.values_by_number.get(field_value).name
 
-if args.saveqr or args.printqr: from qrcode import QRCode
-verbose = args.verbose
+    def convert_secret_from_bytes_to_base32_str(bytes):
+        return str(base64.b32encode(otp.secret), 'utf-8').replace('=', '')
 
-# https://stackoverflow.com/questions/40226049/find-enums-listed-in-python-descriptor-for-protobuf
-def get_enum_name_by_number(parent, field_name):
-    field_value = getattr(parent, field_name)
-    return parent.DESCRIPTOR.fields_by_name[field_name].enum_type.values_by_number.get(field_value).name
+    line = url
+    i = j = 0
 
-def convert_secret_from_bytes_to_base32_str(bytes):
-    return str(base64.b32encode(otp.secret), 'utf-8').replace('=', '')
-
-def save_qr(data, name):
-    qr = QRCode()
-    qr.add_data(data)
-    img = qr.make_image(fill_color='black', back_color='white')
-    if verbose: print('Saving to {}'.format(name))
-    img.save(name)
-
-def print_qr(data):
-    qr = QRCode()
-    qr.add_data(data)
-    qr.print_tty()
-
-i = j = 0
-for line in (line.strip() for line in fileinput.input(args.infile)):
-    if verbose: print(line)
-    if line.startswith('#') or line == '': continue
-    if not line.startswith('otpauth-migration://'): print('\nWARN: line is not a otpauth-migration:// URL\ninput file: {}\nline "{}"\nProbably a wrong file was given'.format(args.infile, line))
+    if line.startswith('#') or line == '': print("no data in string passed")
     parsed_url = urlparse(line)
     params = parse_qs(parsed_url.query)
     if not 'data' in params:
-        print('\nERROR: no data query parameter in input URL\ninput file: {}\nline "{}"\nProbably a wrong file was given'.format(args.infile, line))
-        sys.exit(1)
+        print('\nERROR: no data query parameter in input URL\ninput file: {}\nline "{}"\nProbably a wrong file was given')
+
     data_encoded = params['data'][0]
     data = base64.b64decode(data_encoded)
     payload = generated_python.google_auth_pb2.MigrationPayload()
     payload.ParseFromString(data)
     i += 1
-    if verbose: print('\n{}. Payload Line'.format(i), payload, sep='\n')
-
     # pylint: disable=no-member
+    json = ""
+    json+= "<$beginwristkeygoogleauthenticatorimport$>"
+    json+=("{")
+
     for otp in payload.otp_parameters:
         j += 1
-        if verbose: print('\n{}. Secret Key'.format(j))
-        else: print()
-        print('Name:   {}'.format(otp.name))
         secret = convert_secret_from_bytes_to_base32_str(otp.secret)
-        print('Secret: {}'.format(secret))
-        if otp.issuer: print('Issuer: {}'.format(otp.issuer))
-        print('Type:   {}'.format(get_enum_name_by_number(otp, 'type')))
         url_params = { 'secret': secret }
         if otp.type == 1: url_params['counter'] = otp.counter
         if otp.issuer: url_params['issuer'] = otp.issuer
         otp_url = 'otpauth://{}/{}?'.format('totp' if otp.type == 2 else 'hotp', quote(otp.name)) + urlencode(url_params)
-        if verbose: print(otp_url)
-        if args.printqr:
-            print_qr(otp_url)
-        if args.saveqr:
-            if not(path.exists('qr')): mkdir('qr')
-            pattern = rcompile(r'[\W_]+')
-            file_otp_name = pattern.sub('', otp.name)
-            file_otp_issuer = pattern.sub('', otp.issuer)
-            save_qr(otp_url, 'qr/{}-{}{}.png'.format(j, file_otp_name, '-' + file_otp_issuer if file_otp_issuer else ''))
+
+        if otp.issuer == "":
+            json+=("\""+otp.name+"\""+":")
+        else:
+            json+=("\""+otp.issuer+"\""+":")
+        json+=("{")
+        json+=("\"secret\""+":"+"\""+secret+"\""+",")
+        json+=("\"username\""+":"+"\""+otp.name+"\""+",")
+        json+=("\"type\""+":"+"\""+str(otp.type)+"\""+"")
+        json+=("},")
+    json=json[:-1]
+    json+=("}")
+    json+= "<$endwristkeygoogleauthenticatorimport$>"
+    print(json)

@@ -15,13 +15,13 @@ import com.google.gson.Gson
 import java.util.*
 
 
-class AddActivity : WearableActivity() {
+class ManualEntryActivity : WearableActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add)
+        setContentView(R.layout.activity_manual_entry)
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val addAccountLabel = findViewById<TextView>(R.id.AddAccountLabel)
+        val addAccountLabel = findViewById<TextView>(R.id.ManualEntryLabel)
         val confirmButton = findViewById<ImageButton>(R.id.AuthenticatorConfirmButton)
         val cancelButton = findViewById<ImageButton>(R.id.CancelButton)
         val account = findViewById<EditText>(R.id.AccountField)

@@ -14,14 +14,17 @@ import android.os.Environment.getExternalStorageDirectory
 import android.os.Vibrator
 import android.provider.Settings
 import android.util.Log
-import android.util.Base64
 import android.widget.*
 import androidx.wear.widget.BoxInsetLayout
-import com.google.protobuf.ByteString
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
+import com.google.gson.Gson
 import com.google.zxing.*
 import com.google.zxing.Reader
 import com.google.zxing.common.HybridBinarizer
 import com.wristkey.databinding.ActivityAuthenticatorQrimportBinding
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.*
 import java.util.*
 
@@ -40,12 +43,15 @@ class AuthenticatorQRImport : Activity() {
         val importUsernames = findViewById<CheckBox>(R.id.AuthenticatorImportUsernames)
         var theme = "Dark"
         var accent = "Blue"
-        val appData: SharedPreferences = applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
+        val appData: SharedPreferences =
+            applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         var currentAccent = appData.getString("accent", "4285F4")
         var currentTheme = appData.getString("theme", "000000")
-        boxinsetlayout.setBackgroundColor(Color.parseColor("#"+currentTheme))
-        confirmButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        importUsernames.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+        boxinsetlayout.setBackgroundColor(Color.parseColor("#" + currentTheme))
+        confirmButton.backgroundTintList =
+            ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+        importUsernames.buttonTintList =
+            ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
         if (currentTheme == "F7F7F7") {
             importLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             description.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
@@ -73,7 +79,7 @@ class AuthenticatorQRImport : Activity() {
                 val files: Array<File> = getExternalStorageDirectory().listFiles()
                 for (file in files) {
                     if (file.name.endsWith(".png", ignoreCase = true)) {
-                        val reader: InputStream = BufferedInputStream(FileInputStream(file))
+                        val reader: InputStream = BufferedInputStream(FileInputStream(file.path))
                         val imageBitmap = BitmapFactory.decodeStream(reader)
                         val decodedQRCodeData: String = scanQRImage(imageBitmap)
 
@@ -84,53 +90,129 @@ class AuthenticatorQRImport : Activity() {
                             val loadingLayout = findViewById<BoxInsetLayout>(R.id.LoadingLayout)
                             val loadingIcon = findViewById<ProgressBar>(R.id.LoadingIcon)
                             val importingLabel = findViewById<TextView>(R.id.ImportingLabel)
-                            val importingDescription = findViewById<TextView>(R.id.ImportingDescription)
-                            loadingLayout.setBackgroundColor(Color.parseColor("#"+currentTheme))
-                            loadingIcon.progressTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-                            loadingIcon.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentTheme))
+                            val importingDescription =
+                                findViewById<TextView>(R.id.ImportingDescription)
+                            loadingLayout.setBackgroundColor(Color.parseColor("#" + currentTheme))
+                            loadingIcon.progressTintList =
+                                ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+                            loadingIcon.backgroundTintList =
+                                ColorStateList.valueOf(Color.parseColor("#" + currentTheme))
                             if (currentTheme == "F7F7F7") {
-                                importingLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-                                importingDescription.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+                                importingLabel.setTextColor(
+                                    ColorStateList.valueOf(
+                                        Color.parseColor(
+                                            "#000000"
+                                        )
+                                    )
+                                )
+                                importingDescription.setTextColor(
+                                    ColorStateList.valueOf(
+                                        Color.parseColor(
+                                            "#000000"
+                                        )
+                                    )
+                                )
                             } else {
-                                importingLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")))
-                                importingDescription.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+                                importingLabel.setTextColor(
+                                    ColorStateList.valueOf(
+                                        Color.parseColor(
+                                            "#BDBDBD"
+                                        )
+                                    )
+                                )
+                                importingDescription.setTextColor(
+                                    ColorStateList.valueOf(
+                                        Color.parseColor(
+                                            "#FFFFFF"
+                                        )
+                                    )
+                                )
                             }
 
                             //found QR Code
 
                             importingDescription.text = "Found QR Code"
 
-                            val decoded: ByteString = ByteString.copyFrom(Base64.decode(decodedQRCodeData.substringAfter("otpauth-migration://offline?data="), Base64.DEFAULT))
-                            Log.d("decodeddata>>", decoded.toString())
+                            // put data in Python script and extract Authenticator data
+                            if (!Python.isStarted()) {
+                                Python.start(AndroidPlatform(this))
+                            }
 
+                            Python.getInstance().getModule("extract_otp_secret_keys")
+                                .callAttr("decode", decodedQRCodeData)
+
+                            var logcat: Process
+                            val log = StringBuilder()
+                            try {
+                                logcat = Runtime.getRuntime().exec(arrayOf("logcat", "-d"))
+                                val br =
+                                    BufferedReader(InputStreamReader(logcat.inputStream), 4 * 1024)
+                                var line: String?
+                                val separator = System.getProperty("line.separator")
+                                while (br.readLine().also { line = it } != null) {
+                                    log.append(line)
+                                    log.append(separator)
+                                }
+                                Runtime.getRuntime().exec("clear")
+                            } catch (e: java.lang.Exception) {
+                                e.printStackTrace()
+                            }
+
+                            val logExtractedString = log.toString()
+                                .substringAfter("python.stdout")
+                                .substringAfter("<\$beginwristkeygoogleauthenticatorimport\$>")
+                                .substringBefore("<\$endwristkeygoogleauthenticatorimport\$>")
+
+                            // convert json data and store in sharedprefs
+
+                            val items = JSONObject(logExtractedString)
+                            for (key in items.keys()) {
+                                val tokenData = ArrayList<String>()
+                                tokenData.add(key)
+                                val itemData = JSONObject(items[key].toString())
+                                tokenData.add(itemData["secret"].toString())
+                                if (itemData["type"] == "2") tokenData.add("Time") else tokenData.add("Counter")
+                                tokenData.add("6")
+                                tokenData.add("HmacAlgorithm.SHA1")
+                                tokenData.add("0")  // If counter mode is selected, initial value must be 0.
+
+                                val id = UUID.randomUUID().toString()
+                                val json = Gson().toJson(tokenData)
+                                logins.edit().putString(id, json).apply()
+                            }
 
                             importingDescription.text = "Saving data"
-                            Toast.makeText(this, "Imported logins successfully!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this,
+                                "Imported logins successfully!",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
-                            val intent = Intent(applicationContext, SettingsActivity::class.java)
-                            startActivity(intent)
-                            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                            val vibratorService =
+                                getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                             vibratorService.vibrate(50)
                             finish()
                         } else {
-                            Toast.makeText(this, "Couldn't find Google Authenticator data in image!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this,
+                                "Couldn't find Google Authenticator data in image!",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
-                            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                            val vibratorService =
+                                getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                             vibratorService.vibrate(50)
                             finish()
                         }
-                    } else {
-                        val toast = Toast.makeText(this, "Couldn't find file. Check if the file exists in external storage and if Wristkey is granted storage permission.", Toast.LENGTH_SHORT)
-                        toast.show()
-
-                        val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                        vibratorService.vibrate(50)
-                        finish()
                     }
                 }
 
             } catch (couldntFindFile: FileNotFoundException) {
-                Toast.makeText(this, "Couldn't find file. Check if the file exists in external storage and if Wristkey is granted storage permission.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Couldn't find file. Check if the file exists in external storage and if Wristkey is granted storage permission.",
+                    Toast.LENGTH_SHORT
+                ).show()
 
                 val settingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 val uri: Uri = Uri.fromParts("package", packageName, null)
@@ -164,7 +246,9 @@ class AuthenticatorQRImport : Activity() {
         try {
             val result = reader.decode(bitmap)
             contents = result.text
-        } catch (e: Exception) { contents = "No data found" }
+        } catch (e: Exception) {
+            contents = "No data found"
+        }
         return contents
     }
 }

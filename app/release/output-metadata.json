@@ -4,14 +4,14 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.owais.wristkey",
+  "applicationId": "com.wristkey",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "versionCode": 1,
-      "versionName": "1.1",
+      "versionName": "1.2",
       "outputFile": "app-release.apk"
     }
   ]
