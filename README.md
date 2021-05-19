@@ -121,6 +121,10 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 <img src = screenshots/add.png alt="screenshot">
 <img src = screenshots/add2.png alt="screenshot">
 
+## Deleting items
+
+To delete an item, tap and hold on its name. This was made difficult on purpose so that logins aren't accidentally deleted.
+
 ## Generate QR Code
 
 To transfer a code from your watch to the Authenticator app on your phone, just press and hold the 2FA code number on your watch. You can then scan the QR code that is displayed on your watch screen.
@@ -152,7 +156,7 @@ All sensitive data (including secrets to generate OTPs) is stored encrypted [usi
 
 ### Privacy
 
-Wristkey can be set to unlock after entering your watch's password / PIN / Pattern. To enable screen locking for the app, go to your watch's Settings → Personalization → Screen Lock and set a PIN / Pattern / Password. Wristkey doesn't use Wear OS's Ambient Mode to prevent bystanders from peeking at your 2FA codes and enhance privacy. 
+Wristkey can be set to unlock after entering your watch's password / PIN / Pattern. To enable screen locking for the app, go to your watch's Settings → Personalization → Screen Lock and set a PIN / Pattern / Password. Wristkey doesn't use Wear OS's Ambient Mode to prevent bystanders from peeking at your 2FA codes, enhancing privacy. 
 
 ## Acknowledgements
 
