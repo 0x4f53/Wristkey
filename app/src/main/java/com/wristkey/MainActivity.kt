@@ -2,6 +2,7 @@ package com.wristkey
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -14,10 +15,7 @@ import android.os.Bundle
 import android.os.Vibrator
 import android.support.wearable.activity.WearableActivity
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,15 +29,24 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
+
 lateinit var masterKeyAlias: String
 const val loginsFile: String = "logins"
 const val appDataFile: String = "app_data"
 lateinit var logins: SharedPreferences
+const val CODE_AUTHENTICATION_VERIFICATION = 241
 
 class MainActivity : WearableActivity() {
     var appExited: Boolean = false
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
+        if (lockscreen.isKeyguardSecure) {
+            val i = lockscreen.createConfirmDeviceCredentialIntent("Wristkey", "App locked")
+            startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
+        }
+
         masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         logins = EncryptedSharedPreferences.create(
             loginsFile,
@@ -62,8 +69,6 @@ class MainActivity : WearableActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         // setAmbientEnabled() disabled because app contains sensitive information
-
-
 
         var timeLeft: ProgressBar
 
@@ -109,7 +114,7 @@ class MainActivity : WearableActivity() {
             val counterBasedTokens = ArrayList<Token>() // creating an arrayList to store users using the data class
 
             val keys: Map<String, *> = logins.all
-            
+
             for ((key, value) in keys) {
                 val tokenData = logins.getString(key, null)
                 val tokenList = ArrayList<String>()
@@ -318,6 +323,7 @@ class MainActivity : WearableActivity() {
             startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
+            finish()
         }
     }
 
@@ -326,4 +332,12 @@ class MainActivity : WearableActivity() {
         appExited=true
         finish()
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (!(resultCode == RESULT_OK && requestCode == CODE_AUTHENTICATION_VERIFICATION)) {
+            Toast.makeText(this, "Access denied", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 }

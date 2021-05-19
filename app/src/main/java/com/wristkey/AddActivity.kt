@@ -1,11 +1,14 @@
 package com.wristkey
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Vibrator
 import android.support.wearable.activity.WearableActivity
+import android.text.Html
 import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.*
@@ -16,207 +19,70 @@ import java.util.*
 
 
 class AddActivity : WearableActivity() {
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_manual_entry)
+        setContentView(R.layout.activity_add)
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val addAccountLabel = findViewById<TextView>(R.id.ManualEntryLabel)
-        val confirmButton = findViewById<ImageButton>(R.id.AuthenticatorConfirmButton)
-        val cancelButton = findViewById<ImageButton>(R.id.CancelButton)
-        val account = findViewById<EditText>(R.id.AccountField)
-        val sharedSecret = findViewById<EditText>(R.id.SharedSecretField)
-        sharedSecret.transformationMethod = PasswordTransformationMethod.getInstance()
-        val modeGroup = findViewById<RadioGroup>(R.id.GeneratorMode)
-        val timeMode = findViewById<RadioButton>(R.id.TimeMode)
-        val counterMode = findViewById<RadioButton>(R.id.CounterMode)
-        modeGroup.check(R.id.TimeMode)
-        var mode = "Time"
-        val digitLength = findViewById<SeekBar>(R.id.DigitLengthSeekbar)
-        digitLength.progress = 1
-        var selectedDigitLength = "6"
-        val digitLengthLabel = findViewById<TextView>(R.id.DigitLength)
-        val algorithm = findViewById<SeekBar>(R.id.AlgorithmKeylengthSeekbar)
-        algorithm.progress = 0
-        var selectedAlgorithm = "HmacAlgorithm.SHA1"
-        val algorithmLabel = findViewById<TextView>(R.id.AlgorithmLength)
-        val appData: SharedPreferences = applicationContext.getSharedPreferences(
-            appDataFile,
-            Context.MODE_PRIVATE
-        )
+        val importBitwardenButtonText = findViewById<TextView>(R.id.ImportBitwardenButtonLabel)
+        val importBitwardenButton = findViewById<ImageView>(R.id.ImportBitwardenButton)
+        val manualEntry = findViewById<LinearLayout>(R.id.ManualEntry)
+        val manualEntryButton = findViewById<ImageView>(R.id.ManualEntryButton)
+        val manualEntryButtonText = findViewById<TextView>(R.id.ManualEntryButtonLabel)
+        val importBitwarden = findViewById<LinearLayout>(R.id.ImportBitwardenTokens)
+        val importAuthenticatorButtonText = findViewById<TextView>(R.id.ImportAuthenticatorButtonLabel)
+        val importAuthenticator = findViewById<LinearLayout>(R.id.ImportAuthenticatorTokens)
+        val importAuthenticatorButton = findViewById<ImageView>(R.id.ImportAuthenticatorButton)
+        val backButton = findViewById<ImageView>(R.id.BackButton)
+        val appData: SharedPreferences = applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         var currentAccent = appData.getString("accent", "4285F4")
         var currentTheme = appData.getString("theme", "000000")
-        boxinsetlayout.setBackgroundColor(Color.parseColor("#" + currentTheme))
-        account.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        account.foregroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        account.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        sharedSecret.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        sharedSecret.foregroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        sharedSecret.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        timeMode.buttonTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        counterMode.buttonTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        digitLength.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        digitLength.foregroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        digitLength.progressTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        digitLength.progressBackgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        digitLength.secondaryProgressTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        digitLength.indeterminateTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        digitLength.thumbTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        digitLength.tickMarkTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        algorithm.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        algorithm.foregroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        algorithm.progressTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        algorithm.progressBackgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        algorithm.secondaryProgressTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        algorithm.indeterminateTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        algorithm.thumbTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        algorithm.tickMarkTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        confirmButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
+
+        boxinsetlayout.setBackgroundColor(Color.parseColor("#"+currentTheme))
+        manualEntryButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+        importBitwardenButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+        importAuthenticatorButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+        backButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+
         if (currentTheme == "F7F7F7") {
-            addAccountLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            account.setHintTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            sharedSecret.setHintTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            timeMode.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            counterMode.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            digitLengthLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            algorithmLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            manualEntryButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            importBitwardenButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            importAuthenticatorButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
         } else {
-            addAccountLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-            account.setHintTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-            sharedSecret.setHintTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-            timeMode.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-            counterMode.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-            digitLengthLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-            algorithmLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            manualEntryButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            importBitwardenButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            importAuthenticatorButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
         }
-        confirmButton.setOnClickListener {
-            val errorToast: Toast?
-            val tokenData = ArrayList<String>()
-            if (account.text.toString() == ""){
-                errorToast = Toast.makeText(this, "Enter account name", Toast.LENGTH_SHORT)
-                errorToast.show()
-            }else if (sharedSecret.text.toString() == ""){
-                errorToast = Toast.makeText(this, "Enter shared secret", Toast.LENGTH_SHORT)
-                errorToast.show()
-            }else if((sharedSecret.text.toString()).length < 8 && selectedDigitLength == "6" && selectedAlgorithm == "HmacAlgorithm.SHA1" && mode == "Time"){
-                errorToast = Toast.makeText(this, "Invalid shared secret", Toast.LENGTH_SHORT)
-                errorToast.show()
-            }else{
-                tokenData.add(account.text.toString())
-                tokenData.add(sharedSecret.text.toString())
-                tokenData.add(mode)
-                tokenData.add(selectedDigitLength)
-                tokenData.add(selectedAlgorithm)
-                tokenData.add("0")  // If counter mode is selected, initial value must be 0.
-                val json = Gson().toJson(tokenData)
 
-                val id = UUID.randomUUID().toString()
-
-                logins.edit().putString(id, json).apply()
-                val addedToast = Toast.makeText(this, "Added account", Toast.LENGTH_SHORT)
-                addedToast.show()
-                finish()
-            }
-        }
-        cancelButton.setOnClickListener {
+        manualEntry.setOnClickListener {
+            val intent = Intent(applicationContext, ManualEntryActivity::class.java)
+            startActivity(intent)
+            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibratorService.vibrate(50)
             finish()
         }
-        modeGroup.setOnCheckedChangeListener { _, checkedId ->
-            mode = if (checkedId != -1) {
-                (findViewById<View>(checkedId) as RadioButton).text.toString()
-            } else {
-                ""
-            }
+
+        importBitwarden.setOnClickListener {
+            val intent = Intent(applicationContext, BitwardenJSONImport::class.java)
+            startActivity(intent)
+            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibratorService.vibrate(50)
+            finish()
         }
-        digitLength.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                if (digitLength.progress == 0) {
-                    digitLengthLabel.text = "4 digits"
-                    selectedDigitLength = "4"
-                } else if (digitLength.progress == 1) {
-                    selectedDigitLength = "6"
-                    digitLengthLabel.text = "6 digits"
-                } else if (digitLength.progress == 2) {
-                    selectedDigitLength = "7"
-                    digitLengthLabel.text = "7 digits"
-                } else if (digitLength.progress == 3) {
-                    selectedDigitLength = "8"
-                    digitLengthLabel.text = "8 digits"
-                }
-            }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                if (digitLength.progress == 0) {
-                    digitLengthLabel.text = "4 digits"
-                    selectedDigitLength = "4"
-                } else if (digitLength.progress == 1) {
-                    selectedDigitLength = "6"
-                    digitLengthLabel.text = "6 digits"
-                } else if (digitLength.progress == 2) {
-                    selectedDigitLength = "7"
-                    digitLengthLabel.text = "7 digits"
-                } else if (digitLength.progress == 3) {
-                    selectedDigitLength = "8"
-                    digitLengthLabel.text = "8 digits"
-                }
-            }
+        importAuthenticator.setOnClickListener {
+            val intent = Intent(applicationContext, AuthenticatorQRImport::class.java)
+            startActivity(intent)
+            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibratorService.vibrate(50)
+            finish()
+        }
 
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                if (digitLength.progress == 0) {
-                    digitLengthLabel.text = "4 digits"
-                    selectedDigitLength = "4"
-                } else if (digitLength.progress == 1) {
-                    selectedDigitLength = "6"
-                    digitLengthLabel.text = "6 digits"
-                } else if (digitLength.progress == 2) {
-                    selectedDigitLength = "7"
-                    digitLengthLabel.text = "7 digits"
-                } else if (digitLength.progress == 3) {
-                    selectedDigitLength = "8"
-                    digitLengthLabel.text = "8 digits"
-                }
-            }
-        })
+        backButton.setOnClickListener {
+            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibratorService.vibrate(50)
+            finish()
+        }
 
-        algorithm.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                if (algorithm.progress == 0) {
-                    algorithmLabel.text = "SHA-1"
-                    selectedAlgorithm = "HmacAlgorithm.SHA1"
-                } else if (algorithm.progress == 1) {
-                    algorithmLabel.text = "SHA-256"
-                    selectedAlgorithm = "HmacAlgorithm.SHA256"
-                } else if (algorithm.progress == 2) {
-                    algorithmLabel.text = "SHA-512"
-                    selectedAlgorithm = "HmacAlgorithm.SHA512"
-                }
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                if (algorithm.progress == 0) {
-                    algorithmLabel.text = "SHA-1"
-                    selectedAlgorithm = "HmacAlgorithm.SHA1"
-                } else if (algorithm.progress == 1) {
-                    algorithmLabel.text = "SHA-256"
-                    selectedAlgorithm = "HmacAlgorithm.SHA256"
-                } else if (algorithm.progress == 2) {
-                    algorithmLabel.text = "SHA-512"
-                    selectedAlgorithm = "HmacAlgorithm.SHA512"
-                }
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                if (algorithm.progress == 0) {
-                    algorithmLabel.text = "SHA-1"
-                    selectedAlgorithm = "HmacAlgorithm.SHA1"
-                } else if (algorithm.progress == 1) {
-                    algorithmLabel.text = "SHA-256"
-                    selectedAlgorithm = "HmacAlgorithm.SHA256"
-                } else if (algorithm.progress == 2) {
-                    algorithmLabel.text = "SHA-512"
-                    selectedAlgorithm = "HmacAlgorithm.SHA512"
-                }
-            }
-        })
     }
+
 }

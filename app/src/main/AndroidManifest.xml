@@ -8,6 +8,7 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
     <application
         android:allowBackup="false"
@@ -32,6 +33,7 @@
         <activity
             android:name=".BitwardenJSONImport"
             android:label="@string/title_activity_bitwarden_jsonimport" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
@@ -46,6 +48,10 @@
             android:label="QR Code" />
         <activity
             android:name=".AddActivity"
+            android:label="Add account" />
+
+        <activity
+            android:name=".ManualEntryActivity"
             android:label="Add account" />
         <activity
             android:name=".AboutActivity"

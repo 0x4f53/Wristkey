@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/BoxInsetLayout"
     android:layout_width="match_parent"
@@ -18,13 +17,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:orientation="vertical">
 
 
             <TextView
-                android:id="@+id/AddAccountLabel"
+                android:id="@+id/SettingsLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -32,245 +31,181 @@
                 android:layout_marginBottom="4dp"
                 android:foregroundGravity="center"
                 android:gravity="center"
-                android:text="Add account"
-                android:textColorHint="@color/lightDemo"
+                android:text="Add"
+                android:textColor="@color/lightDemo"
                 android:textSize="15sp"
-                android:textStyle="italic" />
+                android:textStyle="italic"
+                android:visibility="invisible" />
 
             <View
-                android:id="@+id/divider5"
+                android:id="@+id/divider23"
                 android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/darkAccents" />
+                android:layout_height="0.25dp"
+                android:background="@color/darkAccents"
+                android:visibility="invisible" />
 
-            <EditText
-                android:id="@+id/AccountField"
+            <LinearLayout
+                android:id="@+id/ManualEntry"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginStart="7dp"
-                android:layout_marginLeft="7dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginEnd="7dp"
-                android:layout_marginRight="7dp"
                 android:layout_marginBottom="5dp"
-                android:backgroundTint="@color/colorAccent"
-                android:cursorVisible="false"
-                android:drawableTint="@color/colorAccent"
-                android:ems="10"
-                android:foregroundTint="@color/colorAccent"
-                android:gravity="center"
-                android:hint="Account Name"
-                android:inputType="textUri|textMultiLine|textCapSentences|textEmailAddress|textCapWords|textCapCharacters"
-                android:textColor="#FFFFFF"
-                android:textColorHint="@color/lightDemo"
-                android:textSize="15sp" />
-
-            <EditText
-                android:id="@+id/SharedSecretField"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="7dp"
-                android:layout_marginRight="7dp"
-                android:layout_marginBottom="5dp"
-                android:backgroundTint="@color/colorAccent"
-                android:cursorVisible="false"
-                android:drawableTint="@color/colorAccent"
-                android:ems="10"
-                android:foregroundTint="@color/colorAccent"
-                android:gravity="center"
-                android:hint="Shared Secret"
-                android:inputType="textVisiblePassword|textWebPassword"
-                android:textColor="#FFFFFF"
-                android:textColorHint="@color/lightDemo"
-                android:textSize="15sp" />
-
-            <RadioGroup
-                android:id="@+id/GeneratorMode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="7dp"
-                android:layout_marginRight="7dp"
-                android:layout_marginBottom="5dp"
-                android:checkedButton="@id/TimeMode"
                 android:foregroundGravity="center"
                 android:gravity="center"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/TimeMode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="-1dp"
-                    android:layout_marginRight="2.5dp"
-                    android:backgroundTintMode="add"
-                    android:buttonTint="@color/colorAccent"
-                    android:foregroundTintMode="src_atop"
-                    android:text="Time"
-                    android:textSize="15sp" />
-
-                <RadioButton
-                    android:id="@+id/CounterMode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="-4dp"
-                    android:layout_marginRight="2.5dp"
-                    android:backgroundTint="#FF6767"
-                    android:backgroundTintMode="add"
-                    android:buttonTint="@color/colorAccent"
-                    android:foregroundTint="#FF0000"
-                    android:foregroundTintMode="src_atop"
-                    android:text="Counter"
-                    android:textSize="15sp" />
-            </RadioGroup>
-
-            <LinearLayout
-                android:id="@+id/Digits"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="7dp"
-                android:layout_marginRight="7dp"
-                android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/DigitLength"
+                <LinearLayout
+                    android:id="@+id/ManualEntryTokensButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:foregroundGravity="center"
-                    android:gravity="center"
-                    android:text="6 digits"
-                    android:textColor="#FFFFFF"
-                    android:textSize="15sp" />
+                    android:orientation="horizontal">
 
-                <SeekBar
-                    android:id="@+id/DigitLengthSeekbar"
-                    style="@android:style/Widget.Material.SeekBar.Discrete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorAccent"
-                    android:backgroundTintMode="src_atop"
-                    android:foregroundTint="@color/colorAccent"
-                    android:foregroundTintMode="src_atop"
-                    android:indeterminateTint="@color/colorAccent"
-                    android:indeterminateTintMode="src_atop"
-                    android:max="3"
-                    android:progress="1"
-                    android:progressBackgroundTint="@color/colorAccent"
-                    android:progressBackgroundTintMode="src_atop"
-                    android:progressTint="@color/colorAccent"
-                    android:progressTintMode="src_atop"
-                    android:secondaryProgressTint="@color/colorAccent"
-                    android:secondaryProgressTintMode="src_atop"
-                    android:thumbTint="@color/colorAccent"
-                    android:thumbTintMode="src_atop"
-                    android:tickMarkTint="@color/colorAccent" />
-            </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/ManualEntryButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/preference_wrapped_icon"
+                        android:backgroundTint="@color/colorAccent"
+                        android:foregroundGravity="center"
+                        android:src="@drawable/ic_baseline_edit_24" />
 
-            <LinearLayout
-                android:id="@+id/Algorithm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="7dp"
-                android:layout_marginRight="7dp"
-                android:layout_marginBottom="5dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/AlgorithmLength"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:foregroundGravity="center"
-                    android:gravity="center"
-                    android:text="SHA-1"
-                    android:textColor="#FFFFFF"
-                    android:textSize="15sp" />
-
-                <SeekBar
-                    android:id="@+id/AlgorithmKeylengthSeekbar"
-                    style="@android:style/Widget.Material.SeekBar.Discrete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorAccent"
-                    android:backgroundTintMode="src_atop"
-                    android:foregroundTint="@color/colorAccent"
-                    android:foregroundTintMode="src_atop"
-                    android:indeterminateTint="@color/colorAccent"
-                    android:indeterminateTintMode="src_atop"
-                    android:max="2"
-                    android:progress="0"
-                    android:progressBackgroundTint="@color/colorAccent"
-                    android:progressBackgroundTintMode="src_atop"
-                    android:progressTint="@color/colorAccent"
-                    android:progressTintMode="src_atop"
-                    android:secondaryProgressTint="@color/colorAccent"
-                    android:secondaryProgressTintMode="src_atop"
-                    android:thumbTint="@color/colorAccent"
-                    android:thumbTintMode="src_atop"
-                    android:tickMarkTint="@color/colorAccent" />
+                    <TextView
+                        android:id="@+id/ManualEntryButtonLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:foregroundGravity="center"
+                        android:gravity="center|left"
+                        android:text="Enter Manually"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
+                </LinearLayout>
 
             </LinearLayout>
 
             <View
-                android:id="@+id/divider9"
+                android:id="@+id/divider11"
                 android:layout_width="match_parent"
                 android:layout_height="0.25dp"
                 android:background="@color/darkAccents" />
 
             <LinearLayout
-                android:id="@+id/ConfirmOrCancel"
+                android:id="@+id/ImportBitwardenTokens"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="7dp"
-                android:layout_marginRight="7dp"
-                android:layout_marginBottom="48dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:foregroundGravity="center"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/CancelButton"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:background="@drawable/preference_wrapped_icon"
-                    android:backgroundTint="@color/darkAccents"
-                    android:foregroundGravity="center"
-                    android:src="@drawable/ic_cancel" />
+                <LinearLayout
+                    android:id="@+id/ImportBitwardenTokensButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/AuthenticatorConfirmButton"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:background="@drawable/preference_wrapped_icon"
-                    android:backgroundTint="@color/colorAccent"
-                    android:foregroundGravity="center"
-                    android:src="@drawable/ic_done" />
+                    <ImageButton
+                        android:id="@+id/ImportBitwardenButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/preference_wrapped_icon"
+                        android:backgroundTint="@color/colorAccent"
+                        android:foregroundGravity="center"
+                        android:src="@drawable/ic_import" />
+
+                    <TextView
+                        android:id="@+id/ImportBitwardenButtonLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:foregroundGravity="center"
+                        android:gravity="center|left"
+                        android:text="Import from\nBitwarden"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
             </LinearLayout>
+
+            <View
+                android:id="@+id/divider13"
+                android:layout_width="match_parent"
+                android:layout_height="0.25dp"
+                android:background="@color/darkAccents" />
+
+            <LinearLayout
+                android:id="@+id/ImportAuthenticatorTokens"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/ImportAuthenticatorTokensButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/ImportAuthenticatorButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/preference_wrapped_icon"
+                        android:backgroundTint="@color/colorAccent"
+                        android:src="@drawable/ic_baseline_qr_code_scanner_24" />
+
+                    <TextView
+                        android:id="@+id/ImportAuthenticatorButtonLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:foregroundGravity="center"
+                        android:gravity="center|left"
+                        android:text="Import from\nGoogle\nAuthenticator\n(Beta)"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="0.25dp"
+                android:background="@color/darkAccents" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="24dp" />
+
+            <ImageButton
+                android:id="@+id/BackButton"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/preference_wrapped_icon"
+                android:backgroundTint="@color/colorAccent"
+                android:foregroundGravity="center"
+                android:src="@drawable/ic_back" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
 
         </LinearLayout>
     </ScrollView>

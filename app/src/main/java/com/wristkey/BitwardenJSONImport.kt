@@ -55,8 +55,6 @@ class BitwardenJSONImport : Activity() {
         }
 
         backButton.setOnClickListener {
-            val intent = Intent(applicationContext, SettingsActivity::class.java)
-            startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
             finish()
@@ -152,10 +150,8 @@ class BitwardenJSONImport : Activity() {
                         val toast = Toast.makeText(this, "Imported logins successfully!", Toast.LENGTH_SHORT)
                         toast.show()
 
-                        val intent = Intent(applicationContext, SettingsActivity::class.java)
-                        startActivity(intent)
                         val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                        vibratorService.vibrate(50)
+                        vibratorService.vibrate(100)
                         finish()
                     }
                 }

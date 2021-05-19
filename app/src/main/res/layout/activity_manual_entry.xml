@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".MainActivity"
+    tools:context=".ManualEntryActivity"
     tools:deviceIds="wear">
 
     <ScrollView
@@ -24,7 +24,7 @@
 
 
             <TextView
-                android:id="@+id/AddAccountLabel"
+                android:id="@+id/ManualEntryLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -32,7 +32,7 @@
                 android:layout_marginBottom="4dp"
                 android:foregroundGravity="center"
                 android:gravity="center"
-                android:text="Add account"
+                android:text="Add Account"
                 android:textColorHint="@color/lightDemo"
                 android:textSize="15sp"
                 android:textStyle="italic" />

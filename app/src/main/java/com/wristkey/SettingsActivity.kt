@@ -12,7 +12,6 @@ import android.text.Html
 import android.widget.*
 import androidx.wear.widget.BoxInsetLayout
 
-
 class SettingsActivity : WearableActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,10 +23,6 @@ class SettingsActivity : WearableActivity() {
         val beep = findViewById<CheckBox>(R.id.Beep)
         val vibrate = findViewById<CheckBox>(R.id.Vibrate)
         val accentLabelText = findViewById<TextView>(R.id.AccentLabel)
-        val importBitwardenButtonText = findViewById<TextView>(R.id.ImportBitwardenButtonLabel)
-        val importBitwardenButton = findViewById<ImageView>(R.id.ImportBitwardenButton)
-        val importAuthenticatorButtonText = findViewById<TextView>(R.id.ImportAuthenticatorButtonLabel)
-        val importAuthenticatorButton = findViewById<ImageView>(R.id.ImportAuthenticatorButton)
         val numberOfItemsText = findViewById<TextView>(R.id.NumberOfItems)
         val deleteButtonText = findViewById<TextView>(R.id.DeleteAllTokensButtonLabel)
         val deleteButton = findViewById<ImageView>(R.id.DeleteButton)
@@ -41,8 +36,6 @@ class SettingsActivity : WearableActivity() {
         boxinsetlayout.setBackgroundColor(Color.parseColor("#"+currentTheme))
         backButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         deleteButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        importBitwardenButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        importAuthenticatorButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         beep.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         vibrate.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
 
@@ -53,8 +46,6 @@ class SettingsActivity : WearableActivity() {
             vibrate.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             themeLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             accentLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            importBitwardenButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            importAuthenticatorButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             deleteButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
         } else {
             settingsLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")))
@@ -62,8 +53,6 @@ class SettingsActivity : WearableActivity() {
             vibrate.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             themeLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             accentLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-            importBitwardenButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-            importAuthenticatorButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             deleteButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
         }
 
@@ -93,28 +82,12 @@ class SettingsActivity : WearableActivity() {
 
         deleteButton.setOnClickListener {
             appData.edit().clear().apply()
+            logins.edit().clear().apply()
             var doneToast = Toast.makeText(this, Html.fromHtml("<center><b>Deleted all\ntokens and settings<b></center>"), Toast.LENGTH_SHORT)
             doneToast.show()
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(500)
-            finish()
             true
-        }
-
-        importBitwardenButton.setOnClickListener {
-            val intent = Intent(applicationContext, BitwardenJSONImport::class.java)
-            startActivity(intent)
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-            finish()
-        }
-
-        importAuthenticatorButton.setOnClickListener {
-            val intent = Intent(applicationContext, AuthenticatorQRImport::class.java)
-            startActivity(intent)
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-            finish()
         }
 
         accentGroup.setOnCheckedChangeListener { _, _ ->
@@ -157,6 +130,8 @@ class SettingsActivity : WearableActivity() {
         }
 
         backButton.setOnClickListener {
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
             finish()
