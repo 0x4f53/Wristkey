@@ -19,9 +19,9 @@ class AddActivity : WearableActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_manual_entry)
+        setContentView(R.layout.activity_add)
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val addAccountLabel = findViewById<TextView>(R.id.ManualEntryLabel)
+        val addAccountLabel = findViewById<TextView>(R.id.AddAccountLabel)
         val confirmButton = findViewById<ImageButton>(R.id.AuthenticatorConfirmButton)
         val cancelButton = findViewById<ImageButton>(R.id.CancelButton)
         val account = findViewById<EditText>(R.id.AccountField)
