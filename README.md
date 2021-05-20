@@ -98,7 +98,7 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 
 2. Open a terminal on your computer and place this JSON file on the main directory of your watch (/sdcard/) via the following command
 
-    ```adb push <bitwarden json filename> /sdcard/```
+    ```adb push <bitwarden json filename>.json /sdcard/```
 
 3. On your watch, open Wristkey, tap the settings icon '⚙️', then scroll down and tap *Import from Bitwarden*.
 
