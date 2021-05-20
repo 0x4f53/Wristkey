@@ -179,4 +179,4 @@ Please star and support the developers below for their hard work.
 
 ## License
 
-[Copyright (c) 2021 Owais Shaikh](LICENSE)
+[Copyright  2021 Owais Shaikh](LICENSE) (GitLab: [ThomasCat](gitlab.com/thomascat) | GitHub: [4f77616973](github.com/4f77616973) | Email: [0x4f@tuta.io](mailto://0x4f@tuta.io))
