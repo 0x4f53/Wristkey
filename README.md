@@ -159,7 +159,7 @@ Wristkey can be set to unlock after entering your watch's password / PIN / Patte
 
 ### Libraries
 
-Please star and support the developers below for their hard work.
+Please star and support these developers for their hard work. All libraries, dependencies and tools used belong to their respective owners.
 
 [Marcel Kliemannel - Kotlin Onetimepassword (to generate OTPs)](https://github.com/marcelkliemannel/kotlin-onetimepassword)
 
@@ -179,4 +179,4 @@ Please star and support the developers below for their hard work.
 
 ## License
 
-[Copyright  2021 Owais Shaikh](LICENSE) (GitLab: [ThomasCat](gitlab.com/thomascat) | GitHub: [4f77616973](github.com/4f77616973) | Email: [0x4f@tuta.io](mailto://0x4f@tuta.io))
+[Copyright © 2021 Owais Shaikh](LICENSE) (GitLab: [ThomasCat](gitlab.com/thomascat) | GitHub: [4f77616973](github.com/4f77616973) | Email: [0x4f@tuta.io](mailto://0x4f@tuta.io))
