@@ -26,6 +26,7 @@ import com.wristkey.databinding.ActivityAuthenticatorQrimportBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class AuthenticatorQRImport : Activity() {
@@ -78,12 +79,10 @@ class AuthenticatorQRImport : Activity() {
             try {
                 val files: Array<File> = getExternalStorageDirectory().listFiles()
                 for (file in files) {
-                    if (file.name.endsWith(".png", ignoreCase = true)) {
+                    if (file.name.endsWith(".png", ignoreCase = true) || file.name.endsWith(".jpg", ignoreCase = true) || file.name.endsWith(".jpeg", ignoreCase = true)) {
                         val reader: InputStream = BufferedInputStream(FileInputStream(file.path))
                         val imageBitmap = BitmapFactory.decodeStream(reader)
                         val decodedQRCodeData: String = scanQRImage(imageBitmap)
-
-                        Log.d("data>>", decodedQRCodeData)
 
                         if (decodedQRCodeData.contains("otpauth-migration://")) {
                             setContentView(R.layout.import_loading_screen)
@@ -138,8 +137,8 @@ class AuthenticatorQRImport : Activity() {
                                 Python.start(AndroidPlatform(this))
                             }
 
-                            Python.getInstance().getModule("extract_otp_secret_keys")
-                                .callAttr("decode", decodedQRCodeData)
+                            Python.getInstance().getModule("extract_otp_secret_keys").callAttr("decode", decodedQRCodeData)
+                            val timeStamp: String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
 
                             var logcat: Process
                             val log = StringBuilder()
@@ -159,21 +158,25 @@ class AuthenticatorQRImport : Activity() {
                             }
 
                             val logExtractedString = log.toString()
+                                .substringAfter(timeStamp)  // get most recent occurence of data
                                 .substringAfter("python.stdout")
                                 .substringAfter("<\$beginwristkeygoogleauthenticatorimport\$>")
                                 .substringBefore("<\$endwristkeygoogleauthenticatorimport\$>")
 
                             // convert json data and store in sharedprefs
-
                             val items = JSONObject(logExtractedString)
                             for (key in items.keys()) {
                                 val tokenData = ArrayList<String>()
-                                tokenData.add(key)
+                                if (!importUsernames.isChecked) {
+                                    tokenData.add(key.toString().replaceAfter("(", "").replace("(", "")) // name without username
+                                } else {
+                                    tokenData.add(key) // name with username
+                                }
                                 val itemData = JSONObject(items[key].toString())
-                                tokenData.add(itemData["secret"].toString())
-                                if (itemData["type"] == "2") tokenData.add("Time") else tokenData.add("Counter")
-                                tokenData.add("6")
-                                tokenData.add("HmacAlgorithm.SHA1")
+                                tokenData.add(itemData["secret"].toString()) //secret
+                                if (itemData["type"] == "2") tokenData.add("Time") else tokenData.add("Counter") // mode
+                                tokenData.add("6")  // length
+                                tokenData.add("HmacAlgorithm.SHA1")  // algorithm
                                 tokenData.add("0")  // If counter mode is selected, initial value must be 0.
 
                                 val id = UUID.randomUUID().toString()
@@ -191,6 +194,9 @@ class AuthenticatorQRImport : Activity() {
                             val vibratorService =
                                 getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                             vibratorService.vibrate(50)
+
+                            val intent = Intent(applicationContext, MainActivity::class.java)
+                            startActivity(intent)
                             finish()
                         } else {
                             Toast.makeText(
@@ -202,6 +208,9 @@ class AuthenticatorQRImport : Activity() {
                             val vibratorService =
                                 getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                             vibratorService.vibrate(50)
+
+                            val intent = Intent(applicationContext, MainActivity::class.java)
+                            startActivity(intent)
                             finish()
                         }
                     }

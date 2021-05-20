@@ -71,17 +71,15 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 
 2. Select the accounts you\'d like to export and tap the export button 'Export'.
 
-3. Take a screenshot of the QR code that is displayed.
+3. Take a picture or screenshot of the QR code that is displayed. **Make sure it is a PNG or JPG file** and that it is clear with no blurring, glare or pixelation.
 
-4. place this screenshot on the main folder of your watch (/sdcard/) via ADB.
-
-5. Open a terminal on your computer and place this screenshot PNG file on the main directory of your watch (/sdcard/) via the following command
+4. Open a terminal on your computer and place this PNG or JPG file on the main directory of your watch (/sdcard/) via the following command
 
     ```adb push <screenshot filename>.png /sdcard/```
 
 6. On your watch, open Wristkey, tap the settings icon '⚙️', then scroll down and tap *Import from Authenticator*.
 
-4. After your accounts are imported, delete the PNG file from your watch via the following commands
+4. After your accounts are imported, delete the PNG or JPG file from your watch via the following commands
 
     ```
     adb shell
@@ -139,13 +137,13 @@ If the wrong codes are being shown, your watch may have the time set incorrectly
 
 ### File import not working
 
-Make sure Wristkey has storage permissions in your watch's Settings app. Make sure the file you download from your Bitwarden account is an **Unencrypted** file in **JSON** format (Encrypted JSON and Encrypted / Unencrypted CSV files don't work). If importing from Authenticator, make sure the screenshot is in **PNG** format.
+Make sure Wristkey has storage permissions in your watch's Settings app. If importing from JSON, make sure the file you download from your Bitwarden account is an **Unencrypted** file in **JSON** format (Encrypted JSON and Encrypted / Unencrypted CSV files don't work). If importing from Authenticator, make sure the screenshot or picture is in **PNG or JPG** format and is clear.
 
 ## Security
 
 ### Importing files
 
-To prevent data extraction, snooping and theft, make sure you delete the JSON and PNG files from your watch's storage once you're done importing them. You can confirm this by connecting your watch via ADB and running the ```adb shell ls /sdcard/``` command.
+To prevent data extraction, snooping and theft, make sure you delete the JSON, PNG or JPG files from your watch's storage once you're done importing them. You can confirm this by connecting your watch via ADB and running the ```adb shell ls /sdcard/``` command.
 
 ### In-app storage
 

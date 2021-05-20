@@ -51,15 +51,6 @@ class MainActivity : WearableActivity() {
             }
         }
 
-        masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        logins = EncryptedSharedPreferences.create(
-            loginsFile,
-            masterKeyAlias,
-            applicationContext,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-
         val appData: SharedPreferences = applicationContext.getSharedPreferences(
             appDataFile,
             Context.MODE_PRIVATE
@@ -72,6 +63,15 @@ class MainActivity : WearableActivity() {
                 startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
             }
         }
+
+        masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        logins = EncryptedSharedPreferences.create(
+            loginsFile,
+            masterKeyAlias,
+            applicationContext,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -318,13 +318,16 @@ class MainActivity : WearableActivity() {
             startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(100)
+            finish()
         }
+
         aboutButton.setOnClickListener {
             val intent = Intent(applicationContext, AboutActivity::class.java)
             startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
         }
+
         settingsButton.setOnClickListener {
             val intent = Intent(applicationContext, SettingsActivity::class.java)
             startActivity(intent)
@@ -343,7 +346,7 @@ class MainActivity : WearableActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (!(resultCode == RESULT_OK && requestCode == CODE_AUTHENTICATION_VERIFICATION)) {
-            Toast.makeText(this, "Access denied", Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 

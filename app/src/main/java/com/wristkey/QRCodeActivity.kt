@@ -1,5 +1,9 @@
 package com.wristkey
 
+import android.app.KeyguardManager
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Point
@@ -19,6 +23,19 @@ class QRCodeActivity : WearableActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qrcode)
+
+        val appData: SharedPreferences = applicationContext.getSharedPreferences(
+            appDataFile,
+            Context.MODE_PRIVATE
+        )
+
+        if (appData.getBoolean("screen_lock", true)) {
+            val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
+            if (lockscreen.isKeyguardSecure) {
+                val i = lockscreen.createConfirmDeviceCredentialIntent("Wristkey", "App locked")
+                startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
+            }
+        }
 
         val manager = getSystemService(WINDOW_SERVICE) as WindowManager
         val display = manager.defaultDisplay
@@ -42,6 +59,13 @@ class QRCodeActivity : WearableActivity() {
                 qrCode.imageTintList = ColorStateList.valueOf(Color.parseColor("#BF000000"))
                 Toast.makeText(applicationContext, "Dimmed", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (!(resultCode == RESULT_OK && requestCode == CODE_AUTHENTICATION_VERIFICATION)) {
+            finish()
         }
     }
 }

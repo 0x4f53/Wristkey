@@ -174,7 +174,7 @@
                         android:layout_marginRight="5dp"
                         android:foregroundGravity="center"
                         android:gravity="center|left"
-                        android:text="Import from\nGoogle\nAuthenticator\n(Beta)"
+                        android:text="Import from\nGoogle\nAuthenticator"
                         android:textColor="#FFFFFF"
                         android:textSize="15sp" />
                 </LinearLayout>

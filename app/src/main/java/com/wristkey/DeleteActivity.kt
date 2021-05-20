@@ -1,6 +1,8 @@
 package com.wristkey
 
+import android.app.KeyguardManager
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -38,6 +40,14 @@ class DeleteActivity : WearableActivity() {
             confirmationText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
         }
 
+        if (appData.getBoolean("screen_lock", true)) {
+            val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
+            if (lockscreen.isKeyguardSecure) {
+                val i = lockscreen.createConfirmDeviceCredentialIntent("Wristkey", "App locked")
+                startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
+            }
+        }
+
         confirmButton.setOnClickListener {
             logins.edit().remove(idForDeleteActivity).apply()
             finish()
@@ -47,6 +57,13 @@ class DeleteActivity : WearableActivity() {
         }
 
         cancelButton.setOnClickListener {
+            finish()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (!(resultCode == RESULT_OK && requestCode == CODE_AUTHENTICATION_VERIFICATION)) {
             finish()
         }
     }
