@@ -41,10 +41,14 @@ class MainActivity : WearableActivity() {
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
-        if (lockscreen.isKeyguardSecure) {
-            val i = lockscreen.createConfirmDeviceCredentialIntent("Wristkey", "App locked")
-            startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val code = 0x3
+            try {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), code)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                throw e
+            }
         }
 
         masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
@@ -56,19 +60,25 @@ class MainActivity : WearableActivity() {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val code = 0x3
-            try {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), code)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                throw e
+        val appData: SharedPreferences = applicationContext.getSharedPreferences(
+            appDataFile,
+            Context.MODE_PRIVATE
+        )
+
+        if (appData.getBoolean("screen_lock", true)) {
+            val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
+            if (lockscreen.isKeyguardSecure) {
+                val i = lockscreen.createConfirmDeviceCredentialIntent("Wristkey", "App locked")
+                startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
             }
         }
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        // setAmbientEnabled() disabled because app contains sensitive information
+
+        if (appData.getBoolean("ambient_mode", false)) {
+            setAmbientEnabled() // disabled by default because app contains sensitive information
+        }
 
         var timeLeft: ProgressBar
 
@@ -84,10 +94,7 @@ class MainActivity : WearableActivity() {
         val addAccountButton = findViewById<TextView>(R.id.AddAccountButton)
         val settingsButton = findViewById<ImageView>(R.id.SettingsButton)
         val aboutButton = findViewById<ImageView>(R.id.AboutButton)
-        val appData: SharedPreferences = applicationContext.getSharedPreferences(
-            appDataFile,
-            Context.MODE_PRIVATE
-        )
+
         val currentTheme = appData.getString("theme", "000000")
         val currentAccent = appData.getString("accent", "4285F4")
         boxinsetlayout.setBackgroundColor(Color.parseColor("#" + currentTheme))

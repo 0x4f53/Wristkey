@@ -1,5 +1,6 @@
 package com.wristkey
 
+import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -9,6 +10,7 @@ import android.os.Bundle
 import android.os.Vibrator
 import android.support.wearable.activity.WearableActivity
 import android.text.Html
+import android.view.View
 import android.widget.*
 import androidx.wear.widget.BoxInsetLayout
 
@@ -22,6 +24,8 @@ class SettingsActivity : WearableActivity() {
         val notifyLabelText = findViewById<TextView>(R.id.NotifyLabel)
         val beep = findViewById<CheckBox>(R.id.Beep)
         val vibrate = findViewById<CheckBox>(R.id.Vibrate)
+        val ambientMode = findViewById<CheckBox>(R.id.AmbientMode)
+        val screenLock = findViewById<CheckBox>(R.id.ScreenLock)
         val accentLabelText = findViewById<TextView>(R.id.AccentLabel)
         val numberOfItemsText = findViewById<TextView>(R.id.NumberOfItems)
         val deleteButtonText = findViewById<TextView>(R.id.DeleteAllTokensButtonLabel)
@@ -127,6 +131,19 @@ class SettingsActivity : WearableActivity() {
 
         vibrate.setOnCheckedChangeListener { _, b ->
             appData.edit().putBoolean("vibrate", b).apply()
+        }
+
+        val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
+        if (!lockscreen.isKeyguardSecure) {
+            screenLock.visibility = View.GONE
+        }
+
+        ambientMode.setOnCheckedChangeListener { _, b ->
+            appData.edit().putBoolean("ambient_mode", b).apply()
+        }
+
+        screenLock.setOnCheckedChangeListener { _, b ->
+            appData.edit().putBoolean("screen_lock", b).apply()
         }
 
         backButton.setOnClickListener {
