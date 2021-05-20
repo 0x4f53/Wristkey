@@ -40,14 +40,23 @@ class SettingsActivity : WearableActivity() {
         boxinsetlayout.setBackgroundColor(Color.parseColor("#"+currentTheme))
         backButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         deleteButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+        ambientMode.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+        screenLock.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         beep.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         vibrate.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+
+        beep.isChecked = appData.getBoolean("beep", false)
+        vibrate.isChecked = appData.getBoolean("vibrate", false)
+        ambientMode.isChecked = appData.getBoolean("ambient_mode", false)
+        screenLock.isChecked = appData.getBoolean("screen_lock", true)
 
         if (currentTheme == "F7F7F7") {
             settingsLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             notifyLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             beep.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             vibrate.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            ambientMode.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            screenLock.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             themeLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             accentLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             deleteButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
@@ -55,6 +64,8 @@ class SettingsActivity : WearableActivity() {
             settingsLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")))
             beep.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             vibrate.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            ambientMode.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            screenLock.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             themeLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             accentLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             deleteButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
@@ -136,6 +147,8 @@ class SettingsActivity : WearableActivity() {
         val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
         if (!lockscreen.isKeyguardSecure) {
             screenLock.visibility = View.GONE
+        } else {
+            screenLock.visibility = View.VISIBLE
         }
 
         ambientMode.setOnCheckedChangeListener { _, b ->
