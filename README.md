@@ -153,7 +153,7 @@ All sensitive data (including secrets to generate OTPs) is stored encrypted [usi
 
 Wristkey can be set to unlock after entering your watch's password / PIN / Pattern. To enable screen locking for the app, go to your watch's Settings → Personalization → Screen Lock and set a PIN / Pattern / Password. To override this setting, , open Wristkey, tap the settings icon '⚙️', then scroll down and disable *Screen locking*
 
-Wristkey doesn't use Wear OS's Ambient Mode by default to prevent bystanders from peeking at your 2FA codes. To enable Ambient Mode, open Wristkey, tap the settings icon '⚙️', then scroll down and enable *Ambient Mode*.
+Wristkey doesn't use Wear OS's Ambient Mode by default to prevent bystanders from peeking at your 2FA codes. To enable Ambient Mode, open Wristkey, tap the settings icon '⚙️', then scroll down and enable *Ambient mode*.
 
 ## Acknowledgements
 
