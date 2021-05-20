@@ -60,7 +60,7 @@
                 android:buttonTint="@color/blueAccents"
                 android:checked="false"
                 android:gravity="center"
-                android:text="Beep" />
+                android:text="Beep    " />
 
             <CheckBox
                 android:id="@+id/Vibrate"
@@ -74,6 +74,42 @@
 
             <View
                 android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="0.25dp"
+                android:background="@color/darkAccents" />
+
+            <TextView
+                android:id="@+id/privacyLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="Privacy"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <CheckBox
+                android:id="@+id/AmbientMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:buttonTint="@color/blueAccents"
+                android:checked="false"
+                android:gravity="center"
+                android:text="Ambient mode" />
+
+            <CheckBox
+                android:id="@+id/ScreenLock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:buttonTint="@color/blueAccents"
+                android:checked="true"
+                android:gravity="center"
+                android:text="Screen locking" />
+
+            <View
+                android:id="@+id/divider14"
                 android:layout_width="match_parent"
                 android:layout_height="0.25dp"
                 android:background="@color/darkAccents" />
