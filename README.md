@@ -198,7 +198,7 @@ Wristkey doesn't use Wear OS's Ambient Mode by default to prevent bystanders fro
 
 ## CHANGELOG
 
-A detailed changelog is available on the [tags](https://gitlab.com/ThomasCat/wristkey/-/tags) page. The latest version is [![Tag](https://img.shields.io/github/v/tag/4f77616973/Wristkey?label="")](https://gitlab.com/ThomasCat/wristkey/tags)
+A detailed changelog is available on the [tags](https://gitlab.com/ThomasCat/wristkey/-/tags) page. The latest version is [![Tag](https://img.shields.io/github/v/tag/4f77616973/Wristkey?label="")](https://gitlab.com/ThomasCat/wristkey/tags).
 
 ## ACKNOWLEDGEMENTS
 
