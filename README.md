@@ -135,11 +135,11 @@ To delete an item, tap and hold on its name. This was made difficult on purpose 
 
 ### Exporting
 
+<img src = screenshots/exportscreen.png alt="screenshot"><img src = screenshots/qr2.png alt="screenshot">
+
 Since watches are tiny devices that can be misplaced, backing up and exporting your secrets and storing them in a safe place is always a a good idea.
 
 #### Single account
-
-<img src = screenshots/qr.png alt="screenshot"><img src = screenshots/qr2.png alt="screenshot">
 
 To transfer a code from your watch to an Authenticator app on your phone, just press and hold the 2FA code number on your watch. You can then scan the QR code that is displayed on your watch screen.
 
