@@ -30,6 +30,8 @@ class SettingsActivity : WearableActivity() {
         val numberOfItemsText = findViewById<TextView>(R.id.NumberOfItems)
         val deleteButtonText = findViewById<TextView>(R.id.DeleteAllTokensButtonLabel)
         val deleteButton = findViewById<ImageView>(R.id.DeleteButton)
+        val exportButtonText = findViewById<TextView>(R.id.ExportAllTokensButtonLabel)
+        val exportButton = findViewById<ImageView>(R.id.ExportButton)
         val backButton = findViewById<ImageButton>(R.id.AuthenticatorBackButton)
         val accentGroup = findViewById<RadioGroup>(R.id.AccentRadioGroup)
         val themeGroup = findViewById<RadioGroup>(R.id.ThemeRadioGroup)
@@ -93,16 +95,25 @@ class SettingsActivity : WearableActivity() {
             themeGroup.check(R.id.DarkTheme)
         }
 
-        numberOfItemsText.text = "${logins.all.size} items"
+        numberOfItemsText.text = "${logins.all.size} accounts"
 
         deleteButton.setOnClickListener {
-            appData.edit().clear().apply()
-            logins.edit().clear().apply()
-            var doneToast = Toast.makeText(this, Html.fromHtml("<center><b>Deleted all\ntokens and settings<b></center>"), Toast.LENGTH_SHORT)
-            doneToast.show()
+            val intent = Intent(applicationContext, DeleteActivity::class.java)
+            intent.putExtra("delete_all", true)
+            startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(500)
             true
+            finish()
+        }
+
+        exportButtonText.setOnClickListener {
+            val intent = Intent(applicationContext, ExportActivity::class.java)
+            startActivity(intent)
+            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibratorService.vibrate(500)
+            true
+            finish()
         }
 
         accentGroup.setOnCheckedChangeListener { _, _ ->

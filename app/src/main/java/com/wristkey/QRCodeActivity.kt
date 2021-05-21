@@ -16,9 +16,6 @@ import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import com.google.zxing.WriterException
 
-
-var otpAuthData: String = ""
-
 class QRCodeActivity : WearableActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +42,10 @@ class QRCodeActivity : WearableActivity() {
         val height: Int = point.y
         var dimensions = if (width < height) width else height
         val qrCode = findViewById<ImageView>(R.id.qrCode)
-        val qrEncoder = QRGEncoder(otpAuthData, null, QRGContents.Type.TEXT, dimensions)
+
+        val qrData = intent.getStringExtra("qr_data")
+
+        val qrEncoder = QRGEncoder(qrData, null, QRGContents.Type.TEXT, dimensions)
 
         try {
             qrCode.setImageBitmap(qrEncoder.encodeAsBitmap())

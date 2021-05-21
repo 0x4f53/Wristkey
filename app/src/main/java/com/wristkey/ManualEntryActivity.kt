@@ -1,5 +1,6 @@
 package com.wristkey
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -115,10 +116,15 @@ class ManualEntryActivity : WearableActivity() {
                 logins.edit().putString(id, json).apply()
                 val addedToast = Toast.makeText(this, "Added account", Toast.LENGTH_SHORT)
                 addedToast.show()
+
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
                 finish()
             }
         }
         cancelButton.setOnClickListener {
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
             finish()
         }
         modeGroup.setOnCheckedChangeListener { _, checkedId ->

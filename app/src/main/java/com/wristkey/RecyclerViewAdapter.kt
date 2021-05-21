@@ -11,8 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import org.json.JSONArray
+
 
 data class Token(val id: String, val accountName: String, val code: String, val counter: String)
 
@@ -61,29 +63,30 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
             accountName.text = token.accountName
             accountName.isSelected = true
             code.text = token.code.replace("...".toRegex(), "$0 ")
-            val id=token.id
+            val tokenId=token.id
             accountName.setOnLongClickListener {
-                idForDeleteActivity = id
-                context.startActivity(Intent(context, DeleteActivity::class.java))
+                val intent = Intent(context, DeleteActivity::class.java)
+                intent.putExtra("token_id", tokenId)
+                context.startActivity(intent)
                 true
             }
 
             code.setOnLongClickListener {
-                val appData: SharedPreferences =
-                    context.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
                 val qrcodeData: String
                 val sitename: String
                 val accountNameForQRCode: String
                 if (token.accountName.contains("(") && token.accountName.contains(")")) {
                     accountNameForQRCode = token.accountName.substringAfter("(").substringBefore(")")
                     sitename = token.accountName.substringBefore("(")
-                    qrcodeData = "otpauth://totp/${accountNameForQRCode}?secret=${JSONArray(logins.getString(id, null))[1]}&issuer=${sitename}" // where 1 is the array index for the secret
+                    qrcodeData = "otpauth://totp/${accountNameForQRCode}?secret=${JSONArray(logins.getString(tokenId, null))[1]}&issuer=${sitename}" // where 1 is the array index for the secret
                 } else {
                     sitename = token.accountName.substringBefore("(")
-                    qrcodeData = "otpauth://totp/?secret=${JSONArray(logins.getString(id, null))[1]}&issuer=${sitename}" // where 1 is the array index for the secret
+                    qrcodeData = "otpauth://totp/?secret=${JSONArray(logins.getString(tokenId, null))[1]}&issuer=${sitename}" // where 1 is the array index for the secret
                 }
-                otpAuthData = qrcodeData
-                context.startActivity(Intent(context, QRCodeActivity::class.java))
+
+                val intent = Intent(context, QRCodeActivity::class.java)
+                intent.putExtra("qr_data", qrcodeData)
+                context.startActivity(intent)
                 true
             }
 
@@ -142,12 +145,12 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
             code.text = token.code.replace("...".toRegex(), "$0 ")
             counter.text = "#"+token.counter
             val currentCounterValue=token.counter.toInt()
-            val id=token.id
+            val tokenId=token.id
             code.setOnClickListener{
                 var newCounterValue=currentCounterValue+1
-                val getCurrentData=(appData.getString(token.id.toString(), "").toString())
+                val getCurrentData=(appData.getString(token.id, "").toString())
                 val newData=getCurrentData+newCounterValue
-                logins.edit().putString(id, newData).apply()
+                logins.edit().putString(tokenId, newData).apply()
                 logins.edit().apply()
                 code.text = "Code used"
                 Handler().postDelayed({
@@ -156,8 +159,9 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
             }
 
             accountName.setOnLongClickListener{
-                idForDeleteActivity = id
-                context.startActivity(Intent(context, DeleteActivity::class.java))
+                val intent = Intent(context, DeleteActivity::class.java)
+                intent.putExtra("token_id", tokenId)
+                context.startActivity(intent)
                 true
             }
 
@@ -170,13 +174,15 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
                 if (token.accountName.contains("(") && token.accountName.contains(")")) {
                     accountNameForQRCode = token.accountName.substringAfter("(").substringBefore(")")
                     sitename = token.accountName.substringBefore("(")
-                    qrcodeData = "otpauth://hotp/${accountNameForQRCode}?secret=${JSONArray(appData.getString(id, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
+                    qrcodeData = "otpauth://hotp/${accountNameForQRCode}?secret=${JSONArray(appData.getString(tokenId, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
                 } else {
                     sitename = token.accountName.substringBefore("(")
-                    qrcodeData = "otpauth://hotp/?secret=${JSONArray(appData.getString(id, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
+                    qrcodeData = "otpauth://hotp/?secret=${JSONArray(appData.getString(tokenId, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
                 }
-                otpAuthData = qrcodeData
-                context.startActivity(Intent(context, QRCodeActivity::class.java))
+
+                val intent = Intent(context, QRCodeActivity::class.java)
+                intent.putExtra("qr_data", qrcodeData)
+                context.startActivity(intent)
                 true
             }
         }

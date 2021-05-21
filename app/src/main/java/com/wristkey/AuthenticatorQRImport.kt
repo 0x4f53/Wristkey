@@ -220,7 +220,7 @@ class AuthenticatorQRImport : Activity() {
                 Toast.makeText(
                     this,
                     "Couldn't find file. Check if the file exists in external storage and if Wristkey is granted storage permission.",
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_LONG
                 ).show()
 
                 val settingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)

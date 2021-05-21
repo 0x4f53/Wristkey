@@ -7,9 +7,15 @@
 
 # Wristkey
 
-Wristkey is a sideloadable / standalone two-factor authentication application for Wear OS. I made this app as a fun project (and because the LG G Watch W100 I wear doesn't support internet access when paired with iOS).
+An offline two-factor authentication app for Wear OS.
 
 [Get the latest release APK here](app/release/app-release.apk)
+
+## What is this?
+
+Wristkey is a completely offline, open-source, sideloadable and standalone two-factor authentication application for Wear OS watches. It does not need your watch to be paired to a phone to work. It support both square and round watches, customization, backups and more!
+
+I made this app as a fun project and because the LG G Watch W100 I use doesn't support internet access when paired with iOS.
 
 <img src = screenshots/home.png alt="screenshot"><img src = screenshots/settings.png alt="screenshot">
 
@@ -75,9 +81,11 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 
 4. Open a terminal on your computer and place this PNG or JPG file on the main directory of your watch (/sdcard/) via the following command
 
-    ```adb push <screenshot filename>.png /sdcard/```
+    ```
+    adb push <screenshot filename>.png /sdcard/
+    ```
 
-6. On your watch, open Wristkey, tap the settings icon '⚙️', then scroll down and tap *Import from Authenticator*.
+6. On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Import from Authenticator*.
 
 4. After your accounts are imported, delete the PNG or JPG file from your watch via the following commands
 
@@ -96,9 +104,11 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 
 2. Open a terminal on your computer and place this JSON file on the main directory of your watch (/sdcard/) via the following command
 
-    ```adb push <bitwarden json filename>.json /sdcard/```
+    ```
+    adb push <bitwarden json filename>.json /sdcard/
+    ```
 
-3. On your watch, open Wristkey, tap the settings icon '⚙️', then scroll down and tap *Import from Bitwarden*.
+3. On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Import from Bitwarden*.
 
 4. After your accounts are imported, delete the JSON file from your watch via the following commands
 
@@ -111,7 +121,7 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 
 ### Manual entry
 
-1. Tap the '+' button to manually add a login. The default settings are for Google Authenticator codes (SHA-1, 6 digits, time-based).
+1.  On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Manual Entry*. The default settings are for Google Authenticator codes (SHA-1, 6 digits, time-based).
 
 2. Scroll down and tap the tick button '✓' at the at the bottom when done.
 
@@ -121,13 +131,38 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 
 To delete an item, tap and hold on its name. This was made difficult on purpose so that logins aren't accidentally deleted.
 
-## Generate QR Code
+## Exporting
 
-To transfer a code from your watch to the Authenticator app on your phone, just press and hold the 2FA code number on your watch. You can then scan the QR code that is displayed on your watch screen.
+Since watches are tiny devices that can be misplaced, backing up and exporting your secrets and storing them in a safe place is always a a good idea.
 
-***Tip:** Tap the QR Code to dim it for better scanning.*
+### Single account
 
 <img src = screenshots/qr.png alt="screenshot"><img src = screenshots/qr2.png alt="screenshot">
+
+To transfer a code from your watch to an Authenticator app on your phone, just press and hold the 2FA code number on your watch. You can then scan the QR code that is displayed on your watch screen.
+
+***Tip:** Tap the QR Code to dim it for better scanning.**
+
+### All accounts
+
+To backup all content, open Wristkey, tap the settings icon '⚙️', then scroll down and tap *Backup all data*.
+
+#### Via QR code
+
+Tap 'QR code' to get a (not compatible with Authenticator) QR Code data. **This QR code cannot be scanned in any 2FA application and is purely for extraction purposes.**
+
+#### Via file
+
+1. Tap 'File' to get your backups in the form of a file. If 'File' is selected, the data will be placed in ```/sdcard/wristkey/```.
+
+2. Open a terminal on your computer and extract this file via the following command
+
+    ```
+    adb pull /sdcard/wristkey/
+    adb shell rm /sdcard/wristkey/
+    ```
+
+***Note:** The data is unencrypted and must be handled with care. Delete it when not in use.*
 
 ## Troubleshooting
 
@@ -139,19 +174,23 @@ If the wrong codes are being shown, your watch may have the time set incorrectly
 
 Make sure Wristkey has storage permissions in your watch's Settings app. If importing from JSON, make sure the file you download from your Bitwarden account is an **Unencrypted** file in **JSON** format (Encrypted JSON and Encrypted / Unencrypted CSV files don't work). If importing from Authenticator, make sure the screenshot or picture is in **PNG or JPG** format and is clear.
 
+### File export not working
+
+Make sure Wristkey has storage permissions in your watch's Settings app. If already enabled, disable and enable storage permissions again.
+
 ## Security
 
 ### Importing files
 
-To prevent data extraction, snooping and theft, make sure you delete the JSON, PNG or JPG files from your watch's storage once you're done importing them. You can confirm this by connecting your watch via ADB and running the ```adb shell ls /sdcard/``` command.
+To prevent data extraction, snooping and theft, make sure you delete the JSON, PNG or JPG files from your watch's storage once you're done importing them. You can confirm the existence of items by connecting your watch via ADB and running the ```adb shell ls /sdcard/``` command.
 
 ### In-app storage
 
-All sensitive data (including secrets to generate OTPs) is stored encrypted [using 256-bit AES encryption](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences), with the decryption key [stored locally](https://developer.android.com/training/articles/keystore) on your watch. No backdoor on my end.  ;)
+All sensitive data within Wristkey (including secrets to generate OTPs) is stored encrypted [using 256-bit AES encryption](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences), with the decryption key [stored locally](https://developer.android.com/training/articles/keystore) on your watch. No backdoor on my end.  ;)
 
 ### Privacy
 
-Wristkey can be set to unlock after entering your watch's password / PIN / Pattern. To enable screen locking for the app, go to your watch's Settings → Personalization → Screen Lock and set a PIN / Pattern / Password. To override this setting, , open Wristkey, tap the settings icon '⚙️', then scroll down and disable *Screen locking*
+Wristkey can be set to unlock after entering your watch's password / PIN / Pattern. To enable screen locking for the app, go to your watch's Settings → Personalization → Screen Lock and set a PIN / Pattern / Password. To override this setting, open Wristkey, tap the settings icon '⚙️', then scroll down and disable *Screen locking*
 
 Wristkey doesn't use Wear OS's Ambient Mode by default to prevent bystanders from peeking at your 2FA codes. To enable Ambient Mode, open Wristkey, tap the settings icon '⚙️', then scroll down and enable *Ambient mode*.
 

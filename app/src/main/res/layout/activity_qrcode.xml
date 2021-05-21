@@ -15,6 +15,7 @@
         android:id="@+id/qrCode"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="20dp"
         android:tintMode="src_atop"
         app:srcCompat="@drawable/ic_twotone_qr_code_24" />
 </androidx.wear.widget.BoxInsetLayout>
