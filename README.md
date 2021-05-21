@@ -11,7 +11,7 @@ An offline two-factor authentication app for Wear OS.
 
 [Get the latest release APK here](app/release/app-release.apk)
 
-## What is this?
+## ABSTRACT
 
 Wristkey is a completely offline, open-source, sideloadable and standalone two-factor authentication application for Wear OS watches. It does not need your watch to be paired to a phone to work. It support both square and round watches, customization, backups and more!
 
@@ -19,7 +19,7 @@ I made this app as a fun project and because the LG G Watch W100 I use doesn't s
 
 <img src = screenshots/home.png alt="screenshot"><img src = screenshots/settings.png alt="screenshot">
 
-## Usage
+## USAGE
 
 ### Adding items
 
@@ -166,7 +166,7 @@ Tap 'QR code' to get a (not compatible with Authenticator) QR Code data. **This 
 
 ***Note:** The data is unencrypted and must be handled with care. Delete it when not in use.*
 
-## Troubleshooting
+## TROUBLESHOOTING
 
 #### Wrong TOTP codes are shown
 
@@ -180,7 +180,7 @@ Make sure Wristkey has storage permissions in your watch's Settings app. If impo
 
 Make sure Wristkey has storage permissions in your watch's Settings app. If already enabled, disable and enable storage permissions again.
 
-## Security
+## SECURITY
 
 ### Importing files
 
@@ -196,12 +196,11 @@ Wristkey can be set to unlock after entering your watch's password / PIN / Patte
 
 Wristkey doesn't use Wear OS's Ambient Mode by default to prevent bystanders from peeking at your 2FA codes. To enable Ambient Mode, open Wristkey, tap the settings icon '⚙️', then scroll down and enable *Ambient mode*.
 
-## Changelog
+## CHANGELOG
 
-A detailed changelog is available on the [tags](https://gitlab.com/ThomasCat/wristkey/-/tags) page. The latest version is  
-[![Tag](https://img.shields.io/github/v/tag/4f77616973/Wristkey?label="")](https://gitlab.com/ThomasCat/wristkey/tags)
+A detailed changelog is available on the [tags](https://gitlab.com/ThomasCat/wristkey/-/tags) page. The latest version is [![Tag](https://img.shields.io/github/v/tag/4f77616973/Wristkey?label="")](https://gitlab.com/ThomasCat/wristkey/tags)
 
-## Acknowledgements
+## ACKNOWLEDGEMENTS
 
 Please star and support these developers for their hard work. All libraries, dependencies and tools used belong to their respective owners.
 
