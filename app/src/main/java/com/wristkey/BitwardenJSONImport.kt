@@ -157,7 +157,7 @@ class BitwardenJSONImport : Activity() {
                 }
 
             } catch (noFileFound: IllegalStateException) {
-                val toast = Toast.makeText(this, "Couldn't find file. Check if the file exists in external storage and if Wristkey is granted storage permission.", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(this, "Couldn't find file. Check if the file exists in external storage and if Wristkey is granted storage permission.", Toast.LENGTH_LONG)
                 toast.show()
 
                 val settingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)

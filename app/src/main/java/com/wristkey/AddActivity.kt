@@ -4,17 +4,11 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
 import android.support.wearable.activity.WearableActivity
-import android.text.Html
-import android.text.method.PasswordTransformationMethod
-import android.view.View
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.wear.widget.BoxInsetLayout
-import com.google.gson.Gson
 import java.util.*
 
 
@@ -23,15 +17,15 @@ class AddActivity : WearableActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val importBitwardenButtonText = findViewById<TextView>(R.id.ImportBitwardenButtonLabel)
-        val importBitwardenButton = findViewById<ImageView>(R.id.ImportBitwardenButton)
+        val importBitwardenButtonText = findViewById<TextView>(R.id.FileExportLabel)
+        val importBitwardenButton = findViewById<ImageView>(R.id.FileExportButton)
         val manualEntry = findViewById<LinearLayout>(R.id.ManualEntry)
         val manualEntryButton = findViewById<ImageView>(R.id.ManualEntryButton)
         val manualEntryButtonText = findViewById<TextView>(R.id.ManualEntryButtonLabel)
-        val importBitwarden = findViewById<LinearLayout>(R.id.ImportBitwardenTokens)
-        val importAuthenticatorButtonText = findViewById<TextView>(R.id.ImportAuthenticatorButtonLabel)
-        val importAuthenticator = findViewById<LinearLayout>(R.id.ImportAuthenticatorTokens)
-        val importAuthenticatorButton = findViewById<ImageView>(R.id.ImportAuthenticatorButton)
+        val importBitwarden = findViewById<LinearLayout>(R.id.FileExport)
+        val importAuthenticatorButtonText = findViewById<TextView>(R.id.QrCodeExportLabel)
+        val importAuthenticator = findViewById<LinearLayout>(R.id.QrCodeExport)
+        val importAuthenticatorButton = findViewById<ImageView>(R.id.QrCodeExportButton)
         val backButton = findViewById<ImageView>(R.id.BackButton)
         val appData: SharedPreferences = applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         var currentAccent = appData.getString("accent", "4285F4")

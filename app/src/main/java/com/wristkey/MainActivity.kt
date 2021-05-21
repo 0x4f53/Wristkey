@@ -122,7 +122,7 @@ class MainActivity : WearableActivity() {
 
             val keys: Map<String, *> = logins.all
 
-            for ((key, value) in keys) {
+            for ((key, _) in keys) {
                 val tokenData = logins.getString(key, null)
                 val tokenList = ArrayList<String>()
                 try {

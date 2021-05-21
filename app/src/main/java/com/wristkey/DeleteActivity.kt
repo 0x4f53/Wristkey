@@ -16,9 +16,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.wear.widget.BoxInsetLayout
 
-var idForDeleteActivity: String = ""
-
 class DeleteActivity : WearableActivity() {
+
+
+
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,16 +49,39 @@ class DeleteActivity : WearableActivity() {
             }
         }
 
-        confirmButton.setOnClickListener {
-            logins.edit().remove(idForDeleteActivity).apply()
-            finish()
-            Toast.makeText(this, "Token deleted", Toast.LENGTH_SHORT).show()
+        cancelButton.setOnClickListener {
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(500)
+            vibratorService.vibrate(50)
+            finish()
         }
 
-        cancelButton.setOnClickListener {
-            finish()
+        val isDeleteAll = intent.getBooleanExtra("delete_all", false)
+        val tokenIdToDelete = intent.getStringExtra("token_id")
+
+        if (isDeleteAll) {
+            confirmationText.text = "Delete all accounts and app settings?"
+            confirmButton.setOnClickListener {
+                appData.edit().clear().apply()
+                logins.edit().clear().apply()
+                finish()
+                Toast.makeText(this, "All items deleted!", Toast.LENGTH_SHORT).show()
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+                val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                vibratorService.vibrate(500)
+            }
+        } else {
+            confirmButton.setOnClickListener {
+                logins.edit().remove(tokenIdToDelete).apply()
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+                Toast.makeText(this, "Token deleted", Toast.LENGTH_SHORT).show()
+                val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                vibratorService.vibrate(500)
+            }
         }
     }
 
