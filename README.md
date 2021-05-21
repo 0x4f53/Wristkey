@@ -220,7 +220,7 @@ Please star and support these developers for their hard work. All libraries, dep
 
 [Chaquo Ltd - Chaquopy (to run Python to decode protobuf3 data)](https://github.com/chaquo/chaquopy)
 
-## License
+## LICENSE
 
 [Copyright © 2021 Owais Shaikh](LICENSE) 
 
