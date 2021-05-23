@@ -143,7 +143,7 @@ Since watches are tiny devices that can be misplaced, backing up and exporting y
 
 To transfer a code from your watch to an Authenticator app on your phone, just press and hold the 2FA code number on your watch. You can then scan the QR code that is displayed on your watch screen.
 
-***Tip:** Tap the QR Code to dim it for better scanning.**
+***Tip:** Tap the QR Code to dim it for better scanning.*
 
 #### All accounts
 
@@ -155,16 +155,20 @@ Tap 'QR code' to get a (not compatible with Authenticator) QR Code data. **This 
 
 ##### Via file
 
-1. Tap 'File' to get your backups in the form of a file. If 'File' is selected, the data will be placed in ```/sdcard/wristkey/```.
+1. Tap 'File' to get your backups in the form of a file. The data will be placed in ```/sdcard/wristkey/```.
 
 2. Open a terminal on your computer and extract this file via the following command
 
     ```
     adb pull /sdcard/wristkey/
+    ```
+3. To delete the directory, type 
+
+    ```
     adb shell rm /sdcard/wristkey/
     ```
 
-***Note:** The data is unencrypted and must be handled with care. Delete it when not in use.*
+***Note:** The exported data is unencrypted and must be handled with care. Delete it when not in use.*
 
 ## TROUBLESHOOTING
 
