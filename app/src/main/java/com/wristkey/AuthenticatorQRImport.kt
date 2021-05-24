@@ -64,7 +64,7 @@ class AuthenticatorQRImport : Activity() {
         }
 
         backButton.setOnClickListener {
-            val intent = Intent(applicationContext, SettingsActivity::class.java)
+            val intent = Intent(applicationContext, AddActivity::class.java)
             startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)

@@ -110,23 +110,20 @@ class SettingsActivity : WearableActivity() {
             finish()
         }
 
-        exportButtonText.setOnClickListener {
-
-            if (logins.all.isNotEmpty()) {
+        if (logins.all.isNotEmpty()) {
+            exportButtonText.setOnClickListener {
                 val intent = Intent(applicationContext, ExportActivity::class.java)
                 startActivity(intent)
                 val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                 vibratorService.vibrate(50)
                 true
                 finish()
-            } else {
-                exportButton.visibility = View.GONE
-                exportButtonText.visibility = View.GONE
-                val divider2 = findViewById<View>(R.id.divider2)
-                divider2.visibility = View.GONE
             }
-
-
+        } else {
+            exportButton.visibility = View.GONE
+            exportButtonText.visibility = View.GONE
+            val divider2 = findViewById<View>(R.id.divider2)
+            divider2.visibility = View.GONE
         }
 
         accentGroup.setOnCheckedChangeListener { _, _ ->
