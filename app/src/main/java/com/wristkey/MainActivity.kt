@@ -29,12 +29,11 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-
 lateinit var masterKeyAlias: String
-const val loginsFile: String = "logins"
-const val appDataFile: String = "app_data"
-lateinit var logins: SharedPreferences
-const val CODE_AUTHENTICATION_VERIFICATION = 241
+public const val loginsFile: String = "logins"
+public const val appDataFile: String = "app_data"
+public lateinit var logins: SharedPreferences
+public const val CODE_AUTHENTICATION_VERIFICATION = 241
 
 class MainActivity : WearableActivity() {
     var appExited: Boolean = false

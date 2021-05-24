@@ -66,9 +66,24 @@ class BitwardenJSONImport : Activity() {
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
 
+            val files: Array<File> = getExternalStorageDirectory().listFiles()
+            var noOfFiles = 0
+            for (file in files) {
+                if (file.name.startsWith("bitwarden") && file.name.endsWith(".json")) {
+                    noOfFiles++
+                }
+            }
+            if (noOfFiles > 0) {
+                Toast.makeText(
+                    this,
+                    "Couldn't find any JSON files. Check if the file exists and if Wristkey is granted storage permission.",
+                    Toast.LENGTH_LONG
+                ).show()
+                finish()
+            }
+
             // start import
             try {
-                val files: Array<File> = getExternalStorageDirectory().listFiles()
                 for (file in files) {
                     if (file.name.startsWith("bitwarden") && file.name.endsWith(".json")) {
                         val reader = FileReader(file.path)
@@ -159,7 +174,7 @@ class BitwardenJSONImport : Activity() {
                 }
 
             } catch (noFileFound: IllegalStateException) {
-                val toast = Toast.makeText(this, "Couldn't find file. Check if the file exists in external storage and if Wristkey is granted storage permission.", Toast.LENGTH_LONG)
+                val toast = Toast.makeText(this, "Couldn't find file. Check if the file exists and if Wristkey is granted storage permission.", Toast.LENGTH_LONG)
                 toast.show()
 
                 val settingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
