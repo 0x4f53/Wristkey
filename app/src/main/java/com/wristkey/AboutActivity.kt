@@ -52,7 +52,7 @@ class AboutActivity : WearableActivity() {
             urlLink.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
         }
 
-        copyrightText.text = "${copyrightText.text} ${SimpleDateFormat("yyyy").format(Date())}"
+        copyrightText.text = "${copyrightText.text} ${Calendar.getInstance().get(Calendar.YEAR)}"
         versionText.text = "v${BuildConfig.VERSION_NAME}"
 
         urlLink.setOnClickListener {
@@ -71,6 +71,8 @@ class AboutActivity : WearableActivity() {
             finish()
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
             finish()
         }
     }

@@ -143,7 +143,7 @@
             android:background="@android:color/transparent"
             android:foregroundGravity="top"
             android:max="30"
-            android:progress="20"
+            android:progress="0"
             android:progressBackgroundTint="@android:color/transparent"
             android:progressTint="@color/blueAccents"
             android:translationY="-5dp"
