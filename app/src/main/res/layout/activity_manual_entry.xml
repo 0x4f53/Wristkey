@@ -91,9 +91,8 @@
 
             <RadioGroup
                 android:id="@+id/GeneratorMode"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_marginStart="7dp"
                 android:layout_marginLeft="7dp"
                 android:layout_marginTop="5dp"
@@ -101,7 +100,7 @@
                 android:layout_marginRight="7dp"
                 android:layout_marginBottom="5dp"
                 android:checkedButton="@id/TimeMode"
-                android:foregroundGravity="center"
+                android:foregroundGravity="left"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -109,8 +108,6 @@
                     android:id="@+id/TimeMode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="-1dp"
-                    android:layout_marginRight="2.5dp"
                     android:backgroundTintMode="add"
                     android:buttonTint="@color/colorAccent"
                     android:foregroundTintMode="src_atop"
@@ -121,8 +118,6 @@
                     android:id="@+id/CounterMode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="-4dp"
-                    android:layout_marginRight="2.5dp"
                     android:backgroundTint="#FF6767"
                     android:backgroundTintMode="add"
                     android:buttonTint="@color/colorAccent"

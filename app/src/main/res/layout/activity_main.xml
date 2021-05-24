@@ -13,7 +13,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:rotationX="0">
 
         <LinearLayout
             android:id="@+id/LinearLayout"
@@ -127,24 +128,30 @@
         </LinearLayout>
     </ScrollView>
 
-    <ProgressBar
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/SquareTimeLeft"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:layout_marginTop="-5.75dp"
-        android:background="@android:color/transparent"
-        android:foregroundGravity="top"
-        android:max="30"
-        android:progress="0"
-        android:progressBackgroundTint="@android:color/transparent"
-        android:progressTint="@color/blueAccents"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ProgressBar
+            android:id="@+id/SquareTimeLeftTop"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@android:color/transparent"
+            android:foregroundGravity="top"
+            android:max="30"
+            android:progress="20"
+            android:progressBackgroundTint="@android:color/transparent"
+            android:progressTint="@color/blueAccents"
+            android:translationY="-5dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar
         android:id="@+id/RoundTimeLeft"
