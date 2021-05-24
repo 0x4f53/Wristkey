@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.os.Environment.getExternalStorageDirectory
 import android.os.Vibrator
 import android.provider.Settings
-import android.util.Log
 import android.widget.*
 import androidx.wear.widget.BoxInsetLayout
 import com.chaquo.python.Python
@@ -23,7 +22,6 @@ import com.google.zxing.*
 import com.google.zxing.Reader
 import com.google.zxing.common.HybridBinarizer
 import com.wristkey.databinding.ActivityAuthenticatorQrimportBinding
-import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
 import java.text.SimpleDateFormat
@@ -75,9 +73,24 @@ class AuthenticatorQRImport : Activity() {
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
 
+            val files: Array<File> = getExternalStorageDirectory().listFiles()
+            var noOfFiles = 0
+            for (file in files) {
+                if (file.name.endsWith(".png", ignoreCase = true) || file.name.endsWith(".jpg", ignoreCase = true) || file.name.endsWith(".jpeg", ignoreCase = true)) {
+                    noOfFiles++
+                }
+            }
+            if (noOfFiles > 0) {
+                Toast.makeText(
+                    this,
+                    "Couldn't find any PNG files. Check if the file exists and if Wristkey is granted storage permission.",
+                    Toast.LENGTH_LONG
+                ).show()
+                finish()
+            }
+
             // start import
             try {
-                val files: Array<File> = getExternalStorageDirectory().listFiles()
                 for (file in files) {
                     if (file.name.endsWith(".png", ignoreCase = true) || file.name.endsWith(".jpg", ignoreCase = true) || file.name.endsWith(".jpeg", ignoreCase = true)) {
                         val reader: InputStream = BufferedInputStream(FileInputStream(file.path))
@@ -216,10 +229,10 @@ class AuthenticatorQRImport : Activity() {
                     }
                 }
 
-            } catch (couldntFindFile: FileNotFoundException) {
+            } catch (noFileFound: FileNotFoundException) {
                 Toast.makeText(
                     this,
-                    "Couldn't find file. Check if the file exists in external storage and if Wristkey is granted storage permission.",
+                    "Couldn't find file. Check if the file exists and if Wristkey is granted storage permission.",
                     Toast.LENGTH_LONG
                 ).show()
 
