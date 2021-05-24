@@ -67,21 +67,6 @@ class BitwardenJSONImport : Activity() {
             vibratorService.vibrate(50)
 
             val files: Array<File> = getExternalStorageDirectory().listFiles()
-            var noOfFiles = 0
-            for (file in files) {
-                if (file.name.startsWith("bitwarden") && file.name.endsWith(".json")) {
-                    noOfFiles++
-                }
-            }
-            if (noOfFiles > 0) {
-                Toast.makeText(
-                    this,
-                    "Couldn't find any JSON files. Check if the file exists and if Wristkey is granted storage permission.",
-                    Toast.LENGTH_LONG
-                ).show()
-                finish()
-            }
-
             // start import
             try {
                 for (file in files) {

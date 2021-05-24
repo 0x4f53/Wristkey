@@ -52,7 +52,9 @@ class AboutActivity : WearableActivity() {
             urlLink.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
         }
 
-        copyrightText.text = "${copyrightText.text} ${Calendar.getInstance().get(Calendar.YEAR)}"
+        var year = Calendar.getInstance().get(Calendar.YEAR).toString()
+        if (year == "1970") year = "2021"
+        copyrightText.text = "${copyrightText.text} $year"
         versionText.text = "v${BuildConfig.VERSION_NAME}"
 
         urlLink.setOnClickListener {
