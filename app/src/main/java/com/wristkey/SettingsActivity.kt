@@ -46,6 +46,7 @@ class SettingsActivity : WearableActivity() {
         screenLock.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         beep.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         vibrate.buttonTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+        exportButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
 
         beep.isChecked = appData.getBoolean("beep", false)
         vibrate.isChecked = appData.getBoolean("vibrate", false)
@@ -62,6 +63,7 @@ class SettingsActivity : WearableActivity() {
             themeLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             accentLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             deleteButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            exportButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
         } else {
             settingsLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")))
             beep.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
@@ -71,6 +73,7 @@ class SettingsActivity : WearableActivity() {
             themeLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             accentLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             deleteButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            exportButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
         }
 
         if (currentAccent == "FF4141") {
@@ -108,12 +111,22 @@ class SettingsActivity : WearableActivity() {
         }
 
         exportButtonText.setOnClickListener {
-            val intent = Intent(applicationContext, ExportActivity::class.java)
-            startActivity(intent)
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(500)
-            true
-            finish()
+
+            if (logins.all.isNotEmpty()) {
+                val intent = Intent(applicationContext, ExportActivity::class.java)
+                startActivity(intent)
+                val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                vibratorService.vibrate(50)
+                true
+                finish()
+            } else {
+                exportButton.visibility = View.GONE
+                exportButtonText.visibility = View.GONE
+                val divider2 = findViewById<View>(R.id.divider2)
+                divider2.visibility = View.GONE
+            }
+
+
         }
 
         accentGroup.setOnCheckedChangeListener { _, _ ->
