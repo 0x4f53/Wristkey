@@ -86,7 +86,7 @@ class MainActivity : WearableActivity() {
             timeLeft = findViewById(R.id.RoundTimeLeft)
             timeLeft.visibility = View.GONE
         } else {
-            timeLeft = findViewById(R.id.SquareTimeLeft)
+            timeLeft = findViewById(R.id.SquareTimeLeftTop)
             timeLeft.visibility = View.GONE
         }
 
