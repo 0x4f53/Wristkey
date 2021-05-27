@@ -1,23 +1,20 @@
-[![Wear OS](https://img.shields.io/badge/Made%20for-WearOS%20(Android%206.0+)-4285f4.svg?style=flat&logo=wear%20os)](https://wearos.google.com)
-[![License](https://img.shields.io/badge/License-MIT-purple)](LICENSE)
+[![Wear OS](https://img.shields.io/badge/Made%20for-WearOS%20-4285f4.svg?style=flat&logo=wear%20os)](https://wearos.google.com)
 [![Kotlin](https://img.shields.io/badge/Made%20with-Kotlin-7f52ff.svg)](https://kotlinlang.org/)
-[![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://gitlab.com/ThomasCat/wristkey/activity)
 [![Tag](https://img.shields.io/github/v/tag/4f77616973/Wristkey?label=Version)](https://gitlab.com/ThomasCat/wristkey/tags)
+[![License](https://img.shields.io/badge/License-MIT-purple)](LICENSE)
+[![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)](https://github.com/Naereen/badges/)
+[![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://gitlab.com/ThomasCat/wristkey/activity)
 [![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here!-blue)](app/release/app-release.apk)
 
 # Wristkey
 
-An offline two-factor authentication app for Wear OS.
+A completely offline, open-source, sideloadable and standalone two-factor authentication application for Wear OS watches. It does not need your watch to be paired to a phone to work. It supports both square and round watches, has theme customization, backup options and more!
 
-[Get the latest release APK here](app/release/app-release.apk)
-
-## ABSTRACT
-
-Wristkey is a completely offline, open-source, sideloadable and standalone two-factor authentication application for Wear OS watches. It does not need your watch to be paired to a phone to work. It supports both square and round watches, has theme customization, backup options and more!
+<img src = screenshots/wristkey-mockup.png alt="screenshot">
 
 I made this app as a fun project and because the LG G Watch W100 I use doesn't support internet access when paired with iOS.
 
-<img src = screenshots/home.png alt="screenshot"><img src = screenshots/settings.png alt="screenshot">
+[Get the latest release APK here](app/release/app-release.apk)
 
 ## USAGE
 
@@ -135,7 +132,7 @@ To delete an item, tap and hold on its name. This was made difficult on purpose 
 
 ### Exporting
 
-<img src = screenshots/exportscreen.png alt="screenshot"><img src = screenshots/qr2.png alt="screenshot">
+<img src = screenshots/exportscreen.png alt="screenshot"><img src = screenshots/qr.png alt="screenshot">
 
 Since watches are tiny devices that can be misplaced, backing up and exporting your secrets and storing them in a safe place is always a a good idea.
 
