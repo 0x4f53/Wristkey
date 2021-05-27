@@ -8,7 +8,7 @@
 
 # Wristkey
 
-A completely offline, open-source, sideloadable and standalone two-factor authentication application for Wear OS watches. It does not need your watch to be paired to a phone to work. It supports both square and round watches, has theme customization, backup options and more!
+A completely offline, open-source, sideloadable and standalone two-factor authentication application for Wear OS watches. Wristkey does not need your watch to be paired to a phone to work. It supports both square and round watches, has theme customization, backup options and more!
 
 <img src = screenshots/wristkey-mockup.png alt="mockup">
 
