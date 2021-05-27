@@ -2,7 +2,7 @@
 [![Kotlin](https://img.shields.io/badge/Made%20with-Kotlin-7f52ff.svg)](https://kotlinlang.org/)
 [![Tag](https://img.shields.io/github/v/tag/4f77616973/Wristkey?label=Version)](https://gitlab.com/ThomasCat/wristkey/tags)
 [![License](https://img.shields.io/badge/License-MIT-purple)](LICENSE)
-[![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)](https://github.com/Naereen/badges/)
+[![Open Source](https://img.shields.io/badge/Open%20Source-Yes-blue)](https://opensource.org/)
 [![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://gitlab.com/ThomasCat/wristkey/activity)
 [![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here!-blue)](app/release/app-release.apk)
 
@@ -10,7 +10,7 @@
 
 A completely offline, open-source, sideloadable and standalone two-factor authentication application for Wear OS watches. It does not need your watch to be paired to a phone to work. It supports both square and round watches, has theme customization, backup options and more!
 
-<img src = screenshots/wristkey-mockup.png alt="screenshot">
+<img src = screenshots/wristkey-mockup.png alt="mockup">
 
 I made this app as a fun project and because the LG G Watch W100 I use doesn't support internet access when paired with iOS.
 
@@ -22,7 +22,7 @@ I made this app as a fun project and because the LG G Watch W100 I use doesn't s
 
 Wristkey supports both Bitwarden and Google Authenticator importing for ease-of-use, though the procedures differ slightly for each. For Bitwarden, a JSON file is parsed and the ```totp``` field is extracted from each login. For Google Authenticator, a QR code image file is scanned, the base64 string in it is converted from Google's protobuf format and the ```secret``` field is extracted from ```OtpParameters```.
 
-<img src = screenshots/addscreen.png alt="screenshot">
+<img src = screenshots/addscreen.png alt="add">
 
 #### Transferring data
 
@@ -70,7 +70,7 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 
 #### Google Authenticator import
 
-<img src = screenshots/authenticatorimport.png alt="screenshot">
+<img src = screenshots/authenticatorimport.png alt="importauthenticator">
 
 1. Tap the three dots on the top right corner in the Google Authenticator app, then tap on 'Export accounts'.
 
@@ -97,7 +97,7 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 
 #### Bitwarden import
 
-<img src = screenshots/bitwardenimport.png alt="screenshot">
+<img src = screenshots/bitwardenimport.png alt="importbitwarden">
 
 1. Download your Bitwarden Vault in an unencrypted JSON format from the Bitwarden Desktop website.
 
@@ -124,7 +124,7 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 
 2. Scroll down and tap the tick button '✓' at the at the bottom when done.
 
-<img src = screenshots/add.png alt="screenshot"><img src = screenshots/add2.png alt="screenshot">
+<img src = screenshots/add.png alt="add"><img src = screenshots/add2.png alt="add">
 
 ### Deleting items
 
@@ -132,7 +132,7 @@ To delete an item, tap and hold on its name. This was made difficult on purpose 
 
 ### Exporting
 
-<img src = screenshots/exportscreen.png alt="screenshot"><img src = screenshots/qr.png alt="screenshot">
+<img src = screenshots/exportscreen.png alt="export"><img src = screenshots/qr.png alt="qrcode">
 
 Since watches are tiny devices that can be misplaced, backing up and exporting your secrets and storing them in a safe place is always a a good idea.
 
