@@ -13,7 +13,7 @@ An offline two-factor authentication app for Wear OS.
 
 ## ABSTRACT
 
-Wristkey is a completely offline, open-source, sideloadable and standalone two-factor authentication application for Wear OS watches. It does not need your watch to be paired to a phone to work. It supports both square and round watches, has theme customization, backup options and more!
+Wristkey is a completely offline, open-source and standalone two-factor authentication application for Wear OS watches. It does not need your watch to be paired to a phone to work. Data can be imported from Bitwarden or by simply taking a picture of your Google Authenticator export QR Code. It supports both square and round watches, has theme customization, backup options and more!
 
 I made this app as a fun project and because the LG G Watch W100 I use doesn't support internet access when paired with iOS.
 
