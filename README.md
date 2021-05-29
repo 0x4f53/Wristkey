@@ -11,11 +11,7 @@
     <h1>Wristkey</h1>
 </center>
 
-<<<<<<< HEAD
 Want 2FA codes quickly, right on your wrist without always needing a phone? Wristkey is an open-source 2FA client for Wear OS watches that does just that! Supports Android Wear 7.1 (Nougat) and above. [Get the APK here.](app/release/app-release.apk)
-=======
-A completely offline, open-source, sideloadable and standalone two-factor authentication application for Wear OS watches. Wristkey does not need your watch to be paired to a phone to work. It supports both square and round watches, has theme customization, backup options and more!
->>>>>>> f700b3bc3872dfcff48cd83ca1f899e19f6d385d
 
 <center>
     <img src = screenshots/wristkey-mockup.png alt="mockup">
