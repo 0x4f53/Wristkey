@@ -6,15 +6,33 @@
 [![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://gitlab.com/ThomasCat/wristkey/activity)
 [![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here!-blue)](app/release/app-release.apk)
 
-# Wristkey
+<center>
+    <img src = app/src/main/res/mipmap-hdpi/ic_launcher_round.png alt="logo">
+    <h1>Wristkey</h1>
+</center>
 
-A completely offline, open-source, sideloadable and standalone two-factor authentication application for Wear OS watches. It does not need your watch to be paired to a phone to work. It supports both square and round watches, has theme customization, backup options and more!
+Want 2FA codes quickly, right on your wrist without always needing a phone? Wristkey is an open-source 2FA client for Wear OS watches that does just that! Supports Android Wear 7.1 (Nougat) and above. [Get the APK here.](app/release/app-release.apk)
 
-<img src = screenshots/wristkey-mockup.png alt="mockup">
+<center>
+    <img src = screenshots/wristkey-mockup.png alt="mockup">
+</center>
 
-I made this app as a fun project and because the LG G Watch W100 I use doesn't support internet access when paired with iOS.
+## FEATURES
 
-[Get the latest release APK here](app/release/app-release.apk)
+- Works without being paired to phone (standalone) and without internet connection.
+
+- Direct import from Google Authenticator and Bitwarden.
+
+- Secure app by locking via PIN, pattern and password.
+
+- Safe data storage using 256-bit encryption.
+
+- Supports time and counter mode OTPs, upto SHA-512 and 8 digits.
+
+
+- Supports round and square devices and theming.
+
+- Backup options via QR code and JSON.
 
 ## USAGE
 
@@ -171,7 +189,7 @@ Tap 'QR code' to get a (not compatible with Authenticator) QR Code data. **This 
 
 #### Wrong TOTP codes are shown
 
-If the wrong codes are being shown, your watch may have the time set incorrectly. Please set the time by pairing it to a phone.
+If the wrong codes are being shown, your watch may have the time set incorrectly. Please set the time by pairing it to a phone or connecting to WiFi, or by running ```adb shell date -s "yyyymmdd.[[[hh]mm]ss]"``` if rooted.
 
 #### File import not working
 
@@ -193,13 +211,26 @@ All sensitive data within Wristkey (including secrets to generate OTPs) is store
 
 ### Privacy
 
-Wristkey can be set to unlock after entering your watch's password / PIN / Pattern. To enable screen locking for the app, go to your watch's Settings → Personalization → Screen Lock and set a PIN / Pattern / Password. To override this setting, open Wristkey, tap the settings icon '⚙️', then scroll down and disable *Screen locking*
+Wristkey can be set to unlock after entering your watch's password / PIN / pattern. To enable screen locking for the app, go to your watch's Settings → Personalization → Screen Lock and set a PIN / pattern / password. To override this setting, open Wristkey, tap the settings icon '⚙️', then scroll down and disable *Screen locking*
 
 Wristkey doesn't use Wear OS's Ambient Mode by default to prevent bystanders from peeking at your 2FA codes. To enable Ambient Mode, open Wristkey, tap the settings icon '⚙️', then scroll down and enable *Ambient mode*.
 
 ## CHANGELOG
 
 A detailed changelog is available on the [tags](https://gitlab.com/ThomasCat/wristkey/-/tags) page. The latest version is [![Tag](https://img.shields.io/github/v/tag/4f77616973/Wristkey?label="")](https://gitlab.com/ThomasCat/wristkey/tags).
+
+## CONTRIBUTION
+
+
+### Code of Conduct
+
+Make sure to adhere to the [code of conduct](CODE_OF_CONDUCT.md) when interacting with others on this project.
+
+### Contributing
+
+I made this app as a fun project and because the LG G Watch W100 I use doesn't support internet access when paired with iOS. [Click here to read the rules](CONTRIBUTING.md) if you'd like to contribute. 
+
+
 
 ## ACKNOWLEDGEMENTS
 
