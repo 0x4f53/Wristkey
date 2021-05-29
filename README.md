@@ -6,16 +6,12 @@
 [![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://gitlab.com/ThomasCat/wristkey/activity)
 [![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here!-blue)](app/release/app-release.apk)
 
-<center>
-    <img src = app/src/main/res/mipmap-hdpi/ic_launcher_round.png alt="logo">
-    <h1>Wristkey</h1>
-</center>
+<img src = app/src/main/res/mipmap-hdpi/ic_launcher_round.png alt="logo">
+<h1>Wristkey</h1>
 
 Want 2FA codes quickly, right on your wrist without always needing a phone? Wristkey is an open-source 2FA client for Wear OS watches that does just that! Supports Android Wear 7.1 (Nougat) and above. [Get the APK here.](app/release/app-release.apk)
 
-<center>
-    <img src = screenshots/wristkey-mockup.png alt="mockup">
-</center>
+<img src = screenshots/wristkey-mockup.png alt="mockup">
 
 ## FEATURES
 
