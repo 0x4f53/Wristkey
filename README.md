@@ -8,16 +8,7 @@
 
 # Wristkey
 
-<table align = "center">
-  <tr>
-    <td>
-      <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" alt="Wristkey logo" width = "75dp">
-    </td>
-    <td>
-      <p style = "font-size: 30px; weight: bold;">Wristkey</p>
-    </td>
-  </tr>
-</table>
+<img src = "app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" alt = "Wristkey logo" width = "75dp">
 
 Want 2FA codes quickly, right on your wrist without always needing a phone? Wristkey is an open-source 2FA client for Wear OS watches that does just that! Supports Android Wear 7.1 (Nougat) and above. [Get the APK here.](app/release/app-release.apk)
 
