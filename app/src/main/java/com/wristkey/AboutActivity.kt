@@ -56,14 +56,15 @@ class AboutActivity : WearableActivity() {
         if (year == "1970") year = "2021"
         copyrightText.text = "${copyrightText.text} $year"
         versionText.text = "v${BuildConfig.VERSION_NAME}"
+        val uri: String = getString(R.string.about_url)
 
         urlLink.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW).addCategory(Intent.CATEGORY_BROWSABLE).setData(Uri.parse("https://gitlab.com/thomascat/wristkey"))
+            val intent = Intent(Intent.ACTION_VIEW).addCategory(Intent.CATEGORY_BROWSABLE).setData(Uri.parse(uri))
             RemoteIntent.startRemoteActivity(this, intent, null)
             val toast = Toast.makeText(this, "URL opened\non phone", Toast.LENGTH_SHORT)
             toast.show()
             try {
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://gitlab.com/thomascat/wristkey"))
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
                 startActivity(browserIntent)
                 val toast2 = Toast.makeText(this, "URL opened\nin browser", Toast.LENGTH_SHORT)
                 toast2.show()
