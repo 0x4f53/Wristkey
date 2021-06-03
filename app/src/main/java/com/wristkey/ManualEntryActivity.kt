@@ -8,11 +8,13 @@ import android.os.Build
 import android.os.Bundle
 import android.support.wearable.activity.WearableActivity
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.wear.widget.BoxInsetLayout
 import com.google.gson.Gson
+import org.json.JSONArray
 import java.util.*
 
 
@@ -24,7 +26,9 @@ class ManualEntryActivity : WearableActivity() {
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
         val addAccountLabel = findViewById<TextView>(R.id.ManualEntryLabel)
         val confirmButton = findViewById<ImageButton>(R.id.AuthenticatorConfirmButton)
+        val deleteButton = findViewById<ImageButton>(R.id.DeleteButton)
         val cancelButton = findViewById<ImageButton>(R.id.CancelButton)
+        val other = findViewById<LinearLayout>(R.id.Other)
         val account = findViewById<EditText>(R.id.AccountField)
         val sharedSecret = findViewById<EditText>(R.id.SharedSecretField)
         sharedSecret.transformationMethod = PasswordTransformationMethod.getInstance()
@@ -87,6 +91,47 @@ class ManualEntryActivity : WearableActivity() {
             digitLengthLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             algorithmLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
         }
+
+        val tokenId = intent.getStringExtra("token_id")
+
+        if (tokenId != null) {
+            addAccountLabel.text = "Edit Account"
+            other.visibility = View.VISIBLE
+
+            val data = JSONArray(logins.getString(tokenId, null))
+
+            account.setText(data[0].toString())
+            sharedSecret.setText(data[1].toString())
+
+            if (data[2].toString() == "Time") {
+                modeGroup.check(R.id.TimeMode)
+            } else {
+                modeGroup.check(R.id.CounterMode)
+            }
+
+            when(data[3].toString()) {
+                "4" -> digitLength.progress = 0
+                "6" -> digitLength.progress = 1
+                "7" -> digitLength.progress = 2
+                "8" -> digitLength.progress = 3
+                else -> digitLength.progress = 1
+            }
+
+            when(data[4].toString()) {
+                "HmacAlgorithm.SHA1" -> algorithm.progress = 0
+                "HmacAlgorithm.SHA256" -> algorithm.progress = 1
+                "HmacAlgorithm.SHA512" -> algorithm.progress = 2
+                else -> algorithm.progress = 1
+            }
+
+            deleteButton.setOnClickListener {
+                val intent = Intent(applicationContext, DeleteActivity::class.java)
+                intent.putExtra("token_id", tokenId)
+                startActivity(intent)
+                finish()
+            }
+        }
+
         confirmButton.setOnClickListener {
             val errorToast: Toast?
             val tokenData = ArrayList<String>()

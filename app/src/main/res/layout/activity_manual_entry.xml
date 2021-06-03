@@ -231,7 +231,7 @@
             <LinearLayout
                 android:id="@+id/ConfirmOrCancel"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginStart="7dp"
                 android:layout_marginLeft="7dp"
                 android:layout_marginTop="24dp"
@@ -265,6 +265,34 @@
                     android:backgroundTint="@color/colorAccent"
                     android:foregroundGravity="center"
                     android:src="@drawable/ic_done" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/Other"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:layout_marginLeft="7dp"
+                android:layout_marginTop="-36dp"
+                android:layout_marginEnd="7dp"
+                android:layout_marginRight="7dp"
+                android:layout_marginBottom="48dp"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:id="@+id/DeleteButton"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/preference_wrapped_icon"
+                    android:backgroundTint="@color/darkAccents"
+                    android:foregroundGravity="center"
+                    android:src="@drawable/ic_trash" />
             </LinearLayout>
 
         </LinearLayout>
