@@ -110,6 +110,27 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
     exit
     ```
 
+#### Aegis Authenticator import
+
+1. Export your Aegis Authenticator database in an unencrypted JSON format.
+
+2. Open a terminal on your computer and place this JSON file on the main directory of your watch (/sdcard/) via the following command
+
+    ```
+    adb push <aegis json filename>.json /sdcard/
+    ```
+
+3. On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Import from Aegis Authenticator*.
+
+4. After your accounts are imported, delete the JSON file from your watch via the following commands
+
+    ```
+    adb shell
+    cd /sdcard/
+    rm <aegis filename>.json
+    exit
+    ```
+
 #### Bitwarden import
 
 <img src = screenshots/bitwardenimport.png alt="importbitwarden">
@@ -133,6 +154,25 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
     exit
     ```
 
+#### Wristkey backup import
+
+1. Place your Wristkey backup file on on the main directory of your watch (/sdcard/, **not** in the /Wristkey folder) via the following command
+
+    ```
+    adb push <wristkey filename>.backup /sdcard/
+    ```
+
+3. On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Import from Wristkey backup*.
+
+4. After your accounts are imported, delete the JSON file from your watch via the following commands
+
+    ```
+    adb shell
+    cd /sdcard/
+    rm <wristkey filename>.backup
+    exit
+    ```
+
 #### Manual entry
 
 1.  On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Manual Entry*. The default settings are for Google Authenticator codes (SHA-1, 6 digits, time-based).
@@ -141,9 +181,9 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 
 <img src = screenshots/add.png alt="add"><img src = screenshots/add2.png alt="add">
 
-### Deleting items
+### Editing and Deleting items
 
-To delete an item, tap and hold on its name. This was made difficult on purpose so that logins aren't accidentally deleted.
+To edit or delete an item, tap and hold on its name. This was made difficult on purpose so that logins aren't accidentally edited or deleted. To delete an item, scroll all the way to the bottom of the edit screen and tap the trash icon.
 
 ### Exporting
 
@@ -186,7 +226,7 @@ Tap 'QR code' to get a (not compatible with Authenticator) QR Code data. **This 
 
 #### Wrong TOTP codes are shown
 
-If the wrong codes are being shown, your watch may have the time set incorrectly. Please set the time by pairing it to a phone or connecting to WiFi, or by running ```adb shell date -s "yyyymmdd.[[[hh]mm]ss]"``` if rooted.
+Make sure you set your secret key, digit length and algorithm correctly. If the displayed codes are still wrong, your watch may have the time set incorrectly. Please set the time by pairing it to a phone or connecting to WiFi.
 
 #### File import not working
 
