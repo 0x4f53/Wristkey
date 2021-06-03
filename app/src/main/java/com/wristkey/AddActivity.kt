@@ -9,7 +9,6 @@ import android.os.Vibrator
 import android.support.wearable.activity.WearableActivity
 import android.widget.*
 import androidx.wear.widget.BoxInsetLayout
-import java.util.*
 
 
 class AddActivity : WearableActivity() {
@@ -17,15 +16,18 @@ class AddActivity : WearableActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val importBitwardenButtonText = findViewById<TextView>(R.id.FileExportLabel)
-        val importBitwardenButton = findViewById<ImageView>(R.id.FileExportButton)
+        val importBitwardenButtonText = findViewById<TextView>(R.id.BitwardenImportLabel)
+        val importBitwardenButton = findViewById<ImageView>(R.id.BitwardenImportButton)
         val manualEntry = findViewById<LinearLayout>(R.id.ManualEntry)
         val manualEntryButton = findViewById<ImageView>(R.id.ManualEntryButton)
         val manualEntryButtonText = findViewById<TextView>(R.id.ManualEntryButtonLabel)
-        val importBitwarden = findViewById<LinearLayout>(R.id.FileExport)
-        val importAuthenticatorButtonText = findViewById<TextView>(R.id.QrCodeExportLabel)
-        val importAuthenticator = findViewById<LinearLayout>(R.id.QrCodeExport)
-        val importAuthenticatorButton = findViewById<ImageView>(R.id.QrCodeExportButton)
+        val importBitwarden = findViewById<LinearLayout>(R.id.BitwardenImport)
+        val importAuthenticatorButtonText = findViewById<TextView>(R.id.AuthenticatorImportLabel)
+        val importAuthenticator = findViewById<LinearLayout>(R.id.AuthenticatorImport)
+        val importAuthenticatorButton = findViewById<ImageView>(R.id.AuthenticatorImportButton)
+        val aegisImportButton = findViewById<ImageView>(R.id.AegisImportButton)
+        val aegisImportLabel = findViewById<TextView>(R.id.AegisImportLabel)
+        val aegisImport = findViewById<LinearLayout>(R.id.AegisImport)
         val backButton = findViewById<ImageView>(R.id.BackButton)
         val appData: SharedPreferences = applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         var currentAccent = appData.getString("accent", "4285F4")
@@ -65,6 +67,14 @@ class AddActivity : WearableActivity() {
 
         importAuthenticator.setOnClickListener {
             val intent = Intent(applicationContext, AuthenticatorQRImport::class.java)
+            startActivity(intent)
+            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibratorService.vibrate(50)
+            finish()
+        }
+
+        aegisImport.setOnClickListener {
+            val intent = Intent(applicationContext, AegisJSONImport::class.java)
             startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
