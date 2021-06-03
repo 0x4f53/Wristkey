@@ -117,7 +117,7 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 2. Open a terminal on your computer and place this JSON file on the main directory of your watch (/sdcard/) via the following command
 
     ```
-    adb push <aegis json filename>.json /sdcard/
+    adb push <aegis filename>.json /sdcard/
     ```
 
 3. On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Import from Aegis Authenticator*.
