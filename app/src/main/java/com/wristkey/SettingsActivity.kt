@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Vibrator
 import android.support.wearable.activity.WearableActivity
-import android.text.Html
 import android.view.View
 import android.widget.*
 import androidx.wear.widget.BoxInsetLayout
@@ -21,7 +20,8 @@ class SettingsActivity : WearableActivity() {
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
         val settingsLabelText = findViewById<TextView>(R.id.SettingsLabel)
         val themeLabelText = findViewById<TextView>(R.id.ThemeLabel)
-        val notifyLabelText = findViewById<TextView>(R.id.NotifyLabel)
+        val alertsLabelText = findViewById<TextView>(R.id.AlertsLabel)
+        val privacyLabelText = findViewById<TextView>(R.id.privacyLabel)
         val beep = findViewById<CheckBox>(R.id.Beep)
         val vibrate = findViewById<CheckBox>(R.id.Vibrate)
         val ambientMode = findViewById<CheckBox>(R.id.AmbientMode)
@@ -35,7 +35,6 @@ class SettingsActivity : WearableActivity() {
         val backButton = findViewById<ImageButton>(R.id.AuthenticatorBackButton)
         val accentGroup = findViewById<RadioGroup>(R.id.AccentRadioGroup)
         val themeGroup = findViewById<RadioGroup>(R.id.ThemeRadioGroup)
-        val appData: SharedPreferences = applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         var currentAccent = appData.getString("accent", "4285F4")
         var currentTheme = appData.getString("theme", "000000")
 
@@ -55,7 +54,8 @@ class SettingsActivity : WearableActivity() {
 
         if (currentTheme == "F7F7F7") {
             settingsLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            notifyLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            alertsLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            privacyLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             beep.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             vibrate.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             ambientMode.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
@@ -66,6 +66,8 @@ class SettingsActivity : WearableActivity() {
             exportButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
         } else {
             settingsLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")))
+            alertsLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            privacyLabelText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             beep.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             vibrate.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             ambientMode.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))

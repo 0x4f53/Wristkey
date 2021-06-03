@@ -39,7 +39,6 @@ class AegisJSONImport : Activity() {
         val importUsernames = findViewById<CheckBox>(R.id.AuthenticatorImportUsernames)
         var theme = "Dark"
         var accent = "Blue"
-        val appData: SharedPreferences = applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         var currentAccent = appData.getString("accent", "4285F4")
         var currentTheme = appData.getString("theme", "000000")
         boxinsetlayout.setBackgroundColor(Color.parseColor("#"+currentTheme))

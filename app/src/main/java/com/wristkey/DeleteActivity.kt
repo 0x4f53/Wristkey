@@ -28,8 +28,6 @@ class DeleteActivity : WearableActivity() {
         val confirmButton = findViewById<ImageButton>(R.id.AuthenticatorConfirmButton)
         val cancelButton = findViewById<ImageButton>(R.id.CancelButton)
         val boxInsetLayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val appData: SharedPreferences =
-            applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         var currentAccent = appData.getString("accent", "4285F4")
         var currentTheme = appData.getString("theme", "000000")
         boxInsetLayout.setBackgroundColor(Color.parseColor("#" + currentTheme))

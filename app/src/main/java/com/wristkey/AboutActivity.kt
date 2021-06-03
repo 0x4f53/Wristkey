@@ -31,7 +31,6 @@ class AboutActivity : WearableActivity() {
         val copyrightText = findViewById<TextView>(R.id.Copyright)
         val versionText = findViewById<TextView>(R.id.Version)
         val descriptionText = findViewById<TextView>(R.id.AuthenticatorDescription)
-        val appData: SharedPreferences = applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         val currentTheme = appData.getString("theme", "000000")
         boxinsetlayout.setBackgroundColor(Color.parseColor("#$currentTheme"))
         val currentAccent = appData.getString("accent", "4285F4")

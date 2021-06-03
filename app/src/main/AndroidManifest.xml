@@ -41,6 +41,10 @@
             android:label="@string/title_activity_aegis_jsonimport" />
 
         <activity
+            android:name=".WristkeyImport"
+            android:label="@string/title_activity_wristkey_import" />
+
+        <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
             <intent-filter>

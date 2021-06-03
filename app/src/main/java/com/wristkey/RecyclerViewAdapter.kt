@@ -41,7 +41,6 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
     //the class is holding the list view
     class ViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         val context = context
-        val appData: SharedPreferences = context.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         fun bindItems(token: Token) {
             var currentTheme = appData.getString("theme", "000000")
             val timeCard=itemView.findViewById<CardView>(R.id.TimeCard)
@@ -120,7 +119,6 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
     //the class is holding the list view
     class ViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         val context = context
-        private val appData: SharedPreferences = context.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         fun bindItems(token: Token) {
             var currentTheme = appData.getString("theme", "000000")
             val counterCard=itemView.findViewById<CardView>(R.id.CounterCard)
@@ -170,8 +168,6 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
             }
 
             code.setOnLongClickListener {
-                val appData: SharedPreferences =
-                    context.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
                 val qrcodeData: String
                 val sitename: String
                 val accountNameForQRCode: String
