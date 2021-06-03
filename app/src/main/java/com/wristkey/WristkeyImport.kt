@@ -71,8 +71,6 @@ class WristkeyImport : Activity() {
                         val jsonData = reader.readText()
                         val itemsArray = JSONArray(jsonData)
 
-                        Log.d("wristkeyimport", itemsArray.toString())
-
                         setContentView(R.layout.import_loading_screen)
                         val loadingLayout = findViewById<BoxInsetLayout>(R.id.LoadingLayout)
                         val loadingIcon = findViewById<ProgressBar>(R.id.LoadingIcon)
@@ -95,12 +93,13 @@ class WristkeyImport : Activity() {
 
                         for (itemIndex in 0 until itemsArray.length()) {
                             try {
-                                val name = JSONArray(itemIndex)[0].toString()
-                                val totpSecret = JSONArray(itemIndex)[1].toString()
-                                val mode = JSONArray(itemIndex)[2].toString()
-                                val digits = JSONArray(itemIndex)[3].toString()
-                                val algorithm = JSONArray(itemIndex)[4].toString()
-                                val counter = JSONArray(itemIndex)[5].toString()
+                                val item = itemsArray[itemIndex].toString()
+                                val name = JSONArray(item)[0].toString()
+                                val totpSecret = JSONArray(item)[1].toString()
+                                val mode = JSONArray(item)[2].toString()
+                                val digits = JSONArray(item)[3].toString()
+                                val algorithm = JSONArray(item)[4].toString()
+                                val counter = JSONArray(item)[5].toString()
 
                                 if (totpSecret.isNotEmpty()) { // begin storing data
                                     importingDescription.text = "Adding $name"

@@ -10,7 +10,6 @@ import android.support.wearable.activity.WearableActivity
 import android.widget.*
 import androidx.wear.widget.BoxInsetLayout
 
-
 class AddActivity : WearableActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
