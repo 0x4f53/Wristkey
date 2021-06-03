@@ -22,11 +22,6 @@ class QRCodeActivity : WearableActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qrcode)
 
-        val appData: SharedPreferences = applicationContext.getSharedPreferences(
-            appDataFile,
-            Context.MODE_PRIVATE
-        )
-
         if (appData.getBoolean("screen_lock", true)) {
             val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
             if (lockscreen.isKeyguardSecure) {
