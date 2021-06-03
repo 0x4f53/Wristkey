@@ -42,7 +42,7 @@
                 android:background="@color/darkAccents" />
 
             <TextView
-                android:id="@+id/NotifyLabel"
+                android:id="@+id/AlertsLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

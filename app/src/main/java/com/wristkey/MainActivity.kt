@@ -33,6 +33,7 @@ lateinit var masterKeyAlias: String
 public const val loginsFile: String = "logins"
 public const val appDataFile: String = "app_data"
 public lateinit var logins: SharedPreferences
+public lateinit var appData: SharedPreferences
 public const val CODE_AUTHENTICATION_VERIFICATION = 241
 
 class MainActivity : WearableActivity() {
@@ -50,9 +51,14 @@ class MainActivity : WearableActivity() {
             }
         }
 
-        val appData: SharedPreferences = applicationContext.getSharedPreferences(
+        masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+
+        appData = EncryptedSharedPreferences.create(
             appDataFile,
-            Context.MODE_PRIVATE
+            masterKeyAlias,
+            applicationContext,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
 
         if (appData.getBoolean("screen_lock", true)) {
@@ -63,7 +69,6 @@ class MainActivity : WearableActivity() {
             }
         }
 
-        masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         logins = EncryptedSharedPreferences.create(
             loginsFile,
             masterKeyAlias,

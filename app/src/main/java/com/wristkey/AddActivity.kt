@@ -28,8 +28,10 @@ class AddActivity : WearableActivity() {
         val aegisImportButton = findViewById<ImageView>(R.id.AegisImportButton)
         val aegisImportLabel = findViewById<TextView>(R.id.AegisImportLabel)
         val aegisImport = findViewById<LinearLayout>(R.id.AegisImport)
+        val wristkeyImportButton = findViewById<ImageView>(R.id.WristkeyImportButton)
+        val wristkeyImportLabel = findViewById<TextView>(R.id.WristkeyImportLabel)
+        val wristkeyImport = findViewById<LinearLayout>(R.id.WristkeyImport)
         val backButton = findViewById<ImageView>(R.id.BackButton)
-        val appData: SharedPreferences = applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         var currentAccent = appData.getString("accent", "4285F4")
         var currentTheme = appData.getString("theme", "000000")
 
@@ -37,16 +39,22 @@ class AddActivity : WearableActivity() {
         manualEntryButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         importBitwardenButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         importAuthenticatorButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+        aegisImportButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
+        wristkeyImportButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
         backButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
 
         if (currentTheme == "F7F7F7") {
             manualEntryButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             importBitwardenButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             importAuthenticatorButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            aegisImportLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            wristkeyImportLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
         } else {
             manualEntryButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             importBitwardenButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             importAuthenticatorButtonText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            aegisImportLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            wristkeyImportLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
         }
 
         manualEntry.setOnClickListener {
@@ -75,6 +83,14 @@ class AddActivity : WearableActivity() {
 
         aegisImport.setOnClickListener {
             val intent = Intent(applicationContext, AegisJSONImport::class.java)
+            startActivity(intent)
+            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibratorService.vibrate(50)
+            finish()
+        }
+
+        wristkeyImport.setOnClickListener {
+            val intent = Intent(applicationContext, WristkeyImport::class.java)
             startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)

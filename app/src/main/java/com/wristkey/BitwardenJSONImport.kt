@@ -38,7 +38,6 @@ class BitwardenJSONImport : Activity() {
         val importUsernames = findViewById<CheckBox>(R.id.AuthenticatorImportUsernames)
         var theme = "Dark"
         var accent = "Blue"
-        val appData: SharedPreferences = applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         var currentAccent = appData.getString("accent", "4285F4")
         var currentTheme = appData.getString("theme", "000000")
         boxinsetlayout.setBackgroundColor(Color.parseColor("#"+currentTheme))
@@ -75,7 +74,6 @@ class BitwardenJSONImport : Activity() {
                         val jsonData = reader.readText()
                         val items = JSONObject(jsonData)["items"].toString()
                         val itemsArray = JSONArray(items)
-                        var itemsArrayLength = 0
 
                         setContentView(R.layout.import_loading_screen)
                         val loadingLayout = findViewById<BoxInsetLayout>(R.id.LoadingLayout)
@@ -94,13 +92,10 @@ class BitwardenJSONImport : Activity() {
                         }
 
                         //found x number of items
-                        for (i in 0 until itemsArray.length()) {
-                            itemsArrayLength++
-                        }
 
-                        importingDescription.text = "Found $itemsArrayLength items"
+                        importingDescription.text = "Found ${itemsArray.length()} items"
 
-                        for (itemIndex in 0 until itemsArrayLength) {
+                        for (itemIndex in 0 until itemsArray.length()) {
                             val itemData = JSONObject(itemsArray[itemIndex].toString())
 
                             try {
