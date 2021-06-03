@@ -94,7 +94,7 @@
                 android:background="@color/darkAccents" />
 
             <LinearLayout
-                android:id="@+id/FileExport"
+                android:id="@+id/BitwardenImport"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -105,13 +105,13 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/FileExportButtonLayout"
+                    android:id="@+id/BitwardenImportButtonLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <ImageButton
-                        android:id="@+id/FileExportButton"
+                        android:id="@+id/BitwardenImportButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -121,7 +121,7 @@
                         android:src="@drawable/ic_import" />
 
                     <TextView
-                        android:id="@+id/FileExportLabel"
+                        android:id="@+id/BitwardenImportLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -143,7 +143,7 @@
                 android:background="@color/darkAccents" />
 
             <LinearLayout
-                android:id="@+id/QrCodeExport"
+                android:id="@+id/AuthenticatorImport"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
@@ -151,13 +151,13 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/QrCodeExportLayout"
+                    android:id="@+id/AuthenticatorImportLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <ImageButton
-                        android:id="@+id/QrCodeExportButton"
+                        android:id="@+id/AuthenticatorImportButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -166,7 +166,7 @@
                         android:src="@drawable/ic_baseline_qr_code_scanner_24" />
 
                     <TextView
-                        android:id="@+id/QrCodeExportLabel"
+                        android:id="@+id/AuthenticatorImportLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -183,6 +183,51 @@
 
             <View
                 android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="0.25dp"
+                android:background="@color/darkAccents" />
+
+            <LinearLayout
+                android:id="@+id/AegisImport"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/AegisImportLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/AegisImportButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/preference_wrapped_icon"
+                        android:backgroundTint="@color/colorAccent"
+                        android:src="@drawable/ic_import" />
+
+                    <TextView
+                        android:id="@+id/AegisImportLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:foregroundGravity="center"
+                        android:gravity="center|left"
+                        android:text="Import from\nAegis\nAuthenticator"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider16"
                 android:layout_width="match_parent"
                 android:layout_height="0.25dp"
                 android:background="@color/darkAccents" />

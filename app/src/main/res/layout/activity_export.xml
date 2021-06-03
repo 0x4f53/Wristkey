@@ -44,7 +44,7 @@
                 android:background="@color/darkAccents" />
 
             <LinearLayout
-                android:id="@+id/FileExport"
+                android:id="@+id/BitwardenImport"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -55,13 +55,13 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/FileExportButtonLayout"
+                    android:id="@+id/BitwardenImportButtonLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <ImageButton
-                        android:id="@+id/FileExportButton"
+                        android:id="@+id/BitwardenImportButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -71,7 +71,7 @@
                         android:src="@drawable/ic_twotone_insert_drive_file_24" />
 
                     <TextView
-                        android:id="@+id/FileExportLabel"
+                        android:id="@+id/BitwardenImportLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -93,7 +93,7 @@
                 android:background="@color/darkAccents" />
 
             <LinearLayout
-                android:id="@+id/QrCodeExport"
+                android:id="@+id/AuthenticatorImport"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
@@ -101,13 +101,13 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/QrCodeExportLayout"
+                    android:id="@+id/AuthenticatorImportLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <ImageButton
-                        android:id="@+id/QrCodeExportButton"
+                        android:id="@+id/AuthenticatorImportButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -116,7 +116,7 @@
                         android:src="@drawable/ic_baseline_qr_code_scanner_24" />
 
                     <TextView
-                        android:id="@+id/QrCodeExportLabel"
+                        android:id="@+id/AuthenticatorImportLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"

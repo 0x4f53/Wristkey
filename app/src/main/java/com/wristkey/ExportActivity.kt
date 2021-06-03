@@ -19,7 +19,6 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import androidx.wear.widget.BoxInsetLayout
 import java.io.File
-import java.io.FileOutputStream
 import java.io.FileWriter
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -31,12 +30,12 @@ class ExportActivity : WearableActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_export)
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val jsonFileExportLabel = findViewById<TextView>(R.id.FileExportLabel)
-        val jsonFileExportButton = findViewById<ImageView>(R.id.FileExportButton)
-        val fileExport = findViewById<LinearLayout>(R.id.FileExport)
-        val jsonQrCodeExportLabel = findViewById<TextView>(R.id.QrCodeExportLabel)
-        val qrCodeExport = findViewById<LinearLayout>(R.id.QrCodeExport)
-        val jsonQrCodeExportButton = findViewById<ImageView>(R.id.QrCodeExportButton)
+        val jsonFileExportLabel = findViewById<TextView>(R.id.BitwardenImportLabel)
+        val jsonFileExportButton = findViewById<ImageView>(R.id.BitwardenImportButton)
+        val fileExport = findViewById<LinearLayout>(R.id.BitwardenImport)
+        val jsonQrCodeExportLabel = findViewById<TextView>(R.id.AuthenticatorImportLabel)
+        val qrCodeExport = findViewById<LinearLayout>(R.id.AuthenticatorImport)
+        val jsonQrCodeExportButton = findViewById<ImageView>(R.id.AuthenticatorImportButton)
         val backButton = findViewById<ImageView>(R.id.BackButton)
         val appData: SharedPreferences = applicationContext.getSharedPreferences(appDataFile, Context.MODE_PRIVATE)
         var currentAccent = appData.getString("accent", "4285F4")
