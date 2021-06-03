@@ -69,8 +69,6 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
                 intent.putExtra("token_id", tokenId)
                 intent.flags = FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(intent)
-                val activity : MainActivity = context as MainActivity
-                activity.finish()
                 true
             }
 
@@ -166,8 +164,6 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
                 intent.putExtra("token_id", tokenId)
                 intent.flags = FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(intent)
-                val activity : MainActivity = context as MainActivity
-                activity.finish()
                 true
             }
 
