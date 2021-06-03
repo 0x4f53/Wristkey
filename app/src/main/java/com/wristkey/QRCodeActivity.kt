@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
+import androidx.wear.widget.BoxInsetLayout
 import com.google.zxing.WriterException
 
 class QRCodeActivity : WearableActivity() {
@@ -40,8 +41,9 @@ class QRCodeActivity : WearableActivity() {
         display.getSize(point)
         val width: Int = point.x
         val height: Int = point.y
-        var dimensions = if (width < height) width else height
+        val dimensions = if (width < height) width else height
         val qrCode = findViewById<ImageView>(R.id.qrCode)
+        val boxInsetLayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
 
         val qrData = intent.getStringExtra("qr_data")
 
@@ -54,9 +56,11 @@ class QRCodeActivity : WearableActivity() {
         qrCode.setOnClickListener {
             if (qrCode.imageTintList == ColorStateList.valueOf(Color.parseColor("#BF000000"))) {
                 qrCode.imageTintList = ColorStateList.valueOf(Color.parseColor("#00000000"))
+                boxInsetLayout.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFFFF"))
                 Toast.makeText(applicationContext, "Normal", Toast.LENGTH_SHORT).show()
             } else {
                 qrCode.imageTintList = ColorStateList.valueOf(Color.parseColor("#BF000000"))
+                boxInsetLayout.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#40FFFFFF"))
                 Toast.makeText(applicationContext, "Dimmed", Toast.LENGTH_SHORT).show()
             }
         }

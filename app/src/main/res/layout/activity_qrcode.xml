@@ -5,7 +5,7 @@
     android:id="@+id/BoxInsetLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/white"
     android:foregroundTintMode="add"
     android:padding="@dimen/box_inset_layout_padding"
     tools:context=".AboutActivity"
