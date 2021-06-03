@@ -65,7 +65,7 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
             code.text = token.code.replace("...".toRegex(), "$0 ")
             val tokenId=token.id
             accountName.setOnLongClickListener {
-                val intent = Intent(context, DeleteActivity::class.java)
+                val intent = Intent(context, ManualEntryActivity::class.java)
                 intent.putExtra("token_id", tokenId)
                 intent.flags = FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(intent)
@@ -160,7 +160,7 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
             }
 
             accountName.setOnLongClickListener{
-                val intent = Intent(context, DeleteActivity::class.java)
+                val intent = Intent(context, ManualEntryActivity::class.java)
                 intent.putExtra("token_id", tokenId)
                 intent.flags = FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(intent)
