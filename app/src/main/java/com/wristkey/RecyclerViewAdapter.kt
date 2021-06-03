@@ -2,6 +2,7 @@ package com.wristkey
 
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -67,6 +68,7 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
             accountName.setOnLongClickListener {
                 val intent = Intent(context, DeleteActivity::class.java)
                 intent.putExtra("token_id", tokenId)
+                intent.flags = FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(intent)
                 true
             }
@@ -86,6 +88,7 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
 
                 val intent = Intent(context, QRCodeActivity::class.java)
                 intent.putExtra("qr_data", qrcodeData)
+                intent.flags = FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(intent)
                 true
             }
@@ -161,6 +164,7 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
             accountName.setOnLongClickListener{
                 val intent = Intent(context, DeleteActivity::class.java)
                 intent.putExtra("token_id", tokenId)
+                intent.flags = FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(intent)
                 true
             }
@@ -182,6 +186,7 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
 
                 val intent = Intent(context, QRCodeActivity::class.java)
                 intent.putExtra("qr_data", qrcodeData)
+                intent.flags = FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(intent)
                 true
             }
