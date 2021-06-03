@@ -108,6 +108,7 @@ class BitwardenJSONImport : Activity() {
                                 val totpSecret = loginData["totp"]
                                 val username = loginData["username"]
                                 val sitename = itemData["name"]
+                                val uuid = itemData["id"].toString()
 
                                 val accountName: String = if (username.toString() == "null") {
                                     sitename.toString()
@@ -123,26 +124,52 @@ class BitwardenJSONImport : Activity() {
                                     totp = totpSecret.toString()
                                 }
 
-
-                                if (totp.isNotEmpty()) {
-                                    // begin storing data
+                                if (totp.isNotEmpty()) { // begin storing data
                                     importingDescription.text = "Adding $sitename account"
-                                    val tokenData = ArrayList<String>()
+                                    if (totp.startsWith("otpauth://")) {
+                                        var type = totp.substringAfter("otpauth://").substringBefore("/")
+                                        var secret = totp.substringAfter("secret=").substringBefore("&")
+                                        var algorithm = totp.substringAfter("algorithm=").substringBefore("&")
+                                        var digits = totp.substringAfter("digits=").substringBefore("&")
+                                        var label = totp.substringAfterLast("/").substringBefore("?")
+                                        var issuer = totp.substringAfterLast("issuer=").substringBefore("&")
 
-                                    val id = UUID.randomUUID().toString()
+                                        type = if (type.equals("totp")) "Time" else "Counter"
 
-                                    tokenData.add(accountName)
-                                    tokenData.add(totp)
+                                        if (algorithm == "SHA1") {
+                                            algorithm = "HmacAlgorithm.SHA1"
+                                        } else if (algorithm == "SHA256") {
+                                            algorithm = "HmacAlgorithm.SHA256"
+                                        } else if (algorithm == "SHA512") {
+                                            algorithm = "HmacAlgorithm.SHA512"
+                                        }
 
-                                    // Bitwarden only supports Google Authenticator OTPS,
-                                    // so default params for those are set.
+                                        val tokenData = ArrayList<String>()
 
-                                    tokenData.add("Time")
-                                    tokenData.add("6")
-                                    tokenData.add("HmacAlgorithm.SHA1")
-                                    tokenData.add("0")  // If counter mode is selected, initial value must be 0.
-                                    val json = Gson().toJson(tokenData)
-                                    logins.edit().putString(id, json).apply()
+                                        tokenData.add(accountName)
+                                        tokenData.add(totp)
+
+                                        tokenData.add(type)
+                                        tokenData.add(digits)
+                                        tokenData.add(algorithm)
+                                        tokenData.add("0")  // If counter mode is selected, initial value must be 0.
+                                        val json = Gson().toJson(tokenData)
+                                        logins.edit().putString(uuid, json).apply()
+
+                                    } else { // Google Authenticator
+
+                                        val tokenData = ArrayList<String>()
+
+                                        tokenData.add(accountName)
+                                        tokenData.add(totp)
+
+                                        tokenData.add("Time")
+                                        tokenData.add("6")
+                                        tokenData.add("HmacAlgorithm.SHA1")
+                                        tokenData.add("0")  // If counter mode is selected, initial value must be 0.
+                                        val json = Gson().toJson(tokenData)
+                                        logins.edit().putString(uuid, json).apply()
+                                    }
                                 } else {
                                     importingDescription.text = "No TOTP secret for $sitename account"
                                 }
