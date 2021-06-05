@@ -13,13 +13,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat.startActivity
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import org.json.JSONArray
 
 
-data class Token(val id: String, val accountName: String, val code: String, val counter: String)
+data class Account(val id: String, val accountName: String, val code: String, val counter: String)
 
-class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>, val clickListener: (Token) -> Unit) : RecyclerView.Adapter<TimeCardAdapter.ViewHolder>() {
+class TimeCardAdapter(context: Context, private val accountList: ArrayList<Account>, val clickListener: (Account) -> Unit) : RecyclerView.Adapter<TimeCardAdapter.ViewHolder>() {
     //this method is returning the view for each item in the list
     val context = context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,20 +29,20 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
     }
     //this method is binding the data on the list
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindItems(tokenList[position])
-        val item : Token = tokenList[position]
+        holder.bindItems(accountList[position])
+        val item : Account = accountList[position]
         holder.itemView.setOnClickListener {
             clickListener(item)
         }
     }
     //this method is giving the size of the list
     override fun getItemCount(): Int {
-        return tokenList.size
+        return accountList.size
     }
     //the class is holding the list view
     class ViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         val context = context
-        fun bindItems(token: Token) {
+        fun bindItems(account: Account) {
             var currentTheme = appData.getString("theme", "000000")
             val timeCard=itemView.findViewById<CardView>(R.id.TimeCard)
             val accountName = itemView.findViewById<TextView>(R.id.ServiceName)
@@ -60,13 +61,13 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
                 accountName.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
                 code.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             }
-            accountName.text = token.accountName
+            accountName.text = account.accountName
             accountName.isSelected = true
-            code.text = token.code.replace("...".toRegex(), "$0 ")
-            val tokenId=token.id
+            code.text = account.code.replace("...".toRegex(), "$0 ")
+            val accountID=account.id
             accountName.setOnLongClickListener {
                 val intent = Intent(context, ManualEntryActivity::class.java)
-                intent.putExtra("token_id", tokenId)
+                intent.putExtra("account_id", accountID)
                 intent.flags = FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(intent)
                 true
@@ -76,13 +77,13 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
                 val qrcodeData: String
                 val sitename: String
                 val accountNameForQRCode: String
-                if (token.accountName.contains("(") && token.accountName.contains(")")) {
-                    accountNameForQRCode = token.accountName.substringAfter("(").substringBefore(")")
-                    sitename = token.accountName.substringBefore("(")
-                    qrcodeData = "otpauth://totp/${accountNameForQRCode}?secret=${JSONArray(logins.getString(tokenId, null))[1]}&issuer=${sitename}" // where 1 is the array index for the secret
+                if (account.accountName.contains("(") && account.accountName.contains(")")) {
+                    accountNameForQRCode = account.accountName.substringAfter("(").substringBefore(")")
+                    sitename = account.accountName.substringBefore("(")
+                    qrcodeData = "otpauth://totp/${accountNameForQRCode}?secret=${JSONArray(accounts.getString(accountID, null))[1]}&issuer=${sitename}" // where 1 is the array index for the secret
                 } else {
-                    sitename = token.accountName.substringBefore("(")
-                    qrcodeData = "otpauth://totp/?secret=${JSONArray(logins.getString(tokenId, null))[1]}&issuer=${sitename}" // where 1 is the array index for the secret
+                    sitename = account.accountName.substringBefore("(")
+                    qrcodeData = "otpauth://totp/?secret=${JSONArray(accounts.getString(accountID, null))[1]}&issuer=${sitename}" // where 1 is the array index for the secret
                 }
 
                 val intent = Intent(context, QRCodeActivity::class.java)
@@ -97,7 +98,7 @@ class TimeCardAdapter(context: Context, private val tokenList: ArrayList<Token>,
 }
 
 
-class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Token>, val clickListener: (Token) -> Unit) : RecyclerView.Adapter<CounterCardAdapter.ViewHolder>() {
+class CounterCardAdapter(context: Context, private val accountList: ArrayList<Account>, val clickListener: (Account) -> Unit) : RecyclerView.Adapter<CounterCardAdapter.ViewHolder>() {
     //this method is returning the view for each item in the list
     val context = context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -106,20 +107,20 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
     }
     //this method is binding the data on the list
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindItems(tokenList[position])
-        val item : Token = tokenList[position]
+        holder.bindItems(accountList[position])
+        val item : Account = accountList[position]
         holder.itemView.setOnClickListener {
             clickListener(item)
         }
     }
     //this method is giving the size of the list
     override fun getItemCount(): Int {
-        return tokenList.size
+        return accountList.size
     }
     //the class is holding the list view
     class ViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         val context = context
-        fun bindItems(token: Token) {
+        fun bindItems(account: Account) {
             var currentTheme = appData.getString("theme", "000000")
             val counterCard=itemView.findViewById<CardView>(R.id.CounterCard)
             val accountName = itemView.findViewById<TextView>(R.id.ServiceName)
@@ -141,27 +142,27 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
                 code.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
                 counter.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             }
-            accountName.text = token.accountName
+            accountName.text = account.accountName
             accountName.isSelected = true
-            code.text = token.code.replace("...".toRegex(), "$0 ")
-            counter.text = "#"+token.counter
-            val currentCounterValue=token.counter.toInt()
-            val tokenId=token.id
+            code.text = account.code.replace("...".toRegex(), "$0 ")
+            counter.text = "#"+account.counter
+            val currentCounterValue=account.counter.toInt()
+            val accountID=account.id
             code.setOnClickListener{
-                var newCounterValue=currentCounterValue+1
-                val getCurrentData=(appData.getString(token.id, "").toString())
-                val newData=getCurrentData+newCounterValue
-                logins.edit().putString(tokenId, newData).apply()
-                logins.edit().apply()
+                var newCounterValue = currentCounterValue+1
+                val data =
+                    accounts
+                        .getString(accountID, null).toString()
+                        .removeSuffix("\"]")
+                        .replaceAfterLast("\"", "")
+                val newData = "$data$newCounterValue\"]"
+                accounts.edit().putString(accountID, newData).apply()
                 code.text = "Code used"
-                Handler().postDelayed({
-                    code.text = token.code
-                }, 5000)
             }
 
             accountName.setOnLongClickListener{
                 val intent = Intent(context, ManualEntryActivity::class.java)
-                intent.putExtra("token_id", tokenId)
+                intent.putExtra("account_id", accountID)
                 intent.flags = FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(intent)
                 true
@@ -171,13 +172,13 @@ class CounterCardAdapter(context: Context, private val tokenList: ArrayList<Toke
                 val qrcodeData: String
                 val sitename: String
                 val accountNameForQRCode: String
-                if (token.accountName.contains("(") && token.accountName.contains(")")) {
-                    accountNameForQRCode = token.accountName.substringAfter("(").substringBefore(")")
-                    sitename = token.accountName.substringBefore("(")
-                    qrcodeData = "otpauth://hotp/${accountNameForQRCode}?secret=${JSONArray(appData.getString(tokenId, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
+                if (account.accountName.contains("(") && account.accountName.contains(")")) {
+                    accountNameForQRCode = account.accountName.substringAfter("(").substringBefore(")")
+                    sitename = account.accountName.substringBefore("(")
+                    qrcodeData = "otpauth://hotp/${accountNameForQRCode}?secret=${JSONArray(appData.getString(accountID, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
                 } else {
-                    sitename = token.accountName.substringBefore("(")
-                    qrcodeData = "otpauth://hotp/?secret=${JSONArray(appData.getString(tokenId, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
+                    sitename = account.accountName.substringBefore("(")
+                    qrcodeData = "otpauth://hotp/?secret=${JSONArray(appData.getString(accountID, null))[2]}&issuer=${sitename}" // where 2 is the array index for the secret
                 }
 
                 val intent = Intent(context, QRCodeActivity::class.java)

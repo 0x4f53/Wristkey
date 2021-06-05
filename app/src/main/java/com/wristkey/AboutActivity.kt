@@ -69,12 +69,11 @@ class AboutActivity : WearableActivity() {
                 toast2.show()
             } catch (ex: Exception) { }
         }
+
         doneButton.setOnClickListener {
             finish()
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
             finish()
         }
     }

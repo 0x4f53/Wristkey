@@ -303,7 +303,7 @@
                 android:background="@color/darkAccents" />
 
             <LinearLayout
-                android:id="@+id/DeleteAllTokens"
+                android:id="@+id/DeleteAllAccounts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -314,7 +314,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/DeleteAllTokensButton"
+                    android:id="@+id/DeleteAllAccountsButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -336,7 +336,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/DeleteAllTokensButtonLabel"
+                            android:id="@+id/DeleteAllAccountsButtonLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
@@ -368,7 +368,7 @@
                 android:background="@color/darkAccents" />
 
             <LinearLayout
-                android:id="@+id/ExportAllTokens"
+                android:id="@+id/ExportAllAccounts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -379,7 +379,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/ExportAllTokensButton"
+                    android:id="@+id/ExportAllAccountsButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -401,7 +401,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/ExportAllTokensButtonLabel"
+                            android:id="@+id/ExportAllAccountsButtonLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"

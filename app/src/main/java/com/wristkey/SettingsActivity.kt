@@ -28,9 +28,9 @@ class SettingsActivity : WearableActivity() {
         val screenLock = findViewById<CheckBox>(R.id.ScreenLock)
         val accentLabelText = findViewById<TextView>(R.id.AccentLabel)
         val numberOfItemsText = findViewById<TextView>(R.id.NumberOfItems)
-        val deleteButtonText = findViewById<TextView>(R.id.DeleteAllTokensButtonLabel)
+        val deleteButtonText = findViewById<TextView>(R.id.DeleteAllAccountsButtonLabel)
         val deleteButton = findViewById<ImageView>(R.id.DeleteButton)
-        val exportButtonText = findViewById<TextView>(R.id.ExportAllTokensButtonLabel)
+        val exportButtonText = findViewById<TextView>(R.id.ExportAllAccountsButtonLabel)
         val exportButton = findViewById<ImageView>(R.id.ExportButton)
         val backButton = findViewById<ImageButton>(R.id.AuthenticatorBackButton)
         val accentGroup = findViewById<RadioGroup>(R.id.AccentRadioGroup)
@@ -100,7 +100,7 @@ class SettingsActivity : WearableActivity() {
             themeGroup.check(R.id.DarkTheme)
         }
 
-        numberOfItemsText.text = "${logins.all.size} accounts"
+        numberOfItemsText.text = "${accounts.all.size} accounts"
 
         deleteButton.setOnClickListener {
             val intent = Intent(applicationContext, DeleteActivity::class.java)
@@ -112,7 +112,7 @@ class SettingsActivity : WearableActivity() {
             finish()
         }
 
-        if (logins.all.isNotEmpty()) {
+        if (accounts.all.isNotEmpty()) {
             exportButtonText.setOnClickListener {
                 val intent = Intent(applicationContext, ExportActivity::class.java)
                 startActivity(intent)

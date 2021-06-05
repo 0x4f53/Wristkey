@@ -14,6 +14,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
 import android.support.wearable.activity.WearableActivity
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.app.ActivityCompat
@@ -30,9 +31,9 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 lateinit var masterKeyAlias: String
-public const val loginsFile: String = "logins"
+public const val accountsFile: String = "accounts"
 public const val appDataFile: String = "app_data"
-public lateinit var logins: SharedPreferences
+public lateinit var accounts: SharedPreferences
 public lateinit var appData: SharedPreferences
 public const val CODE_AUTHENTICATION_VERIFICATION = 241
 
@@ -69,8 +70,8 @@ class MainActivity : WearableActivity() {
             }
         }
 
-        logins = EncryptedSharedPreferences.create(
-            loginsFile,
+        accounts = EncryptedSharedPreferences.create(
+            accountsFile,
             masterKeyAlias,
             applicationContext,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
@@ -117,36 +118,37 @@ class MainActivity : WearableActivity() {
         }
 
         fun getData(){
-            val timeRecyclerView = findViewById<RecyclerView>(R.id.TimeTokenList)
+            val timeRecyclerView = findViewById<RecyclerView>(R.id.TimeaccountList)
             timeRecyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.VERTICAL, false) // adding a LayoutManager
-            val counterRecyclerView = findViewById<RecyclerView>(R.id.CounterTokenList)
+            val counterRecyclerView = findViewById<RecyclerView>(R.id.CounteraccountList)
             counterRecyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.VERTICAL, false) // adding a LayoutManager
-            val timeBasedTokens = ArrayList<Token>() // creating an arrayList to store users using the data class
-            val counterBasedTokens = ArrayList<Token>() // creating an arrayList to store users using the data class
+            val timeBasedAccounts = ArrayList<Account>() // creating an arrayList to store users using the data class
+            val counterBasedAccounts = ArrayList<Account>() // creating an arrayList to store users using the data class
 
-            val keys: Map<String, *> = logins.all
+            val keys: Map<String, *> = accounts.all
 
             for ((key, _) in keys) {
-                val tokenData = logins.getString(key, null)
-                val tokenList = ArrayList<String>()
+                val accountData = accounts.getString(key, null)
+                val accountList = ArrayList<String>()
+
                 try {
-                    val jArray = JSONArray(tokenData)
+                    val jArray = JSONArray(accountData)
                     for (i in 0 until jArray.length()) {
-                        tokenList.add(jArray.getString(i))
+                        accountList.add(jArray.getString(i))
                     }
 
-                    val accountName = tokenList[0]
-                    val secret = tokenList[1]
-                    val mode = tokenList[2]
-                    val digits = tokenList[3]
-                    val algorithm = tokenList[4]
-                    val counter = tokenList[5]
+                    val accountName = accountList[0]
+                    val secret = accountList[1]
+                    val mode = accountList[2]
+                    val digits = accountList[3]
+                    val algorithm = accountList[4]
+                    val counter = accountList[5]
                     if (mode == "Time") {
                         if(algorithm=="HmacAlgorithm.SHA1" && digits == "6"){
                             // Google Authenticator
                             val googleAuthenticator = GoogleAuthenticator(base32secret = secret) // "OurSharedSecret" Base32-encoded
                             val totp = googleAuthenticator.generate()
-                            timeBasedTokens.add(Token(key, accountName, totp, counter))
+                            timeBasedAccounts.add(Account(key, accountName, totp, counter))
                         }else if(algorithm=="HmacAlgorithm.SHA1" && digits != "6"){
                             val config = TimeBasedOneTimePasswordConfig(
                                 codeDigits = digits.toInt(),
@@ -155,8 +157,8 @@ class MainActivity : WearableActivity() {
                                 timeStepUnit = TimeUnit.SECONDS
                             )
                             val totp = TimeBasedOneTimePasswordGenerator(secret.toByteArray(), config)
-                            timeBasedTokens.add(
-                                Token(
+                            timeBasedAccounts.add(
+                                Account(
                                     key,
                                     accountName,
                                     totp.generate(),
@@ -171,8 +173,8 @@ class MainActivity : WearableActivity() {
                                 timeStepUnit = TimeUnit.SECONDS
                             )
                             val totp = TimeBasedOneTimePasswordGenerator(secret.toByteArray(), config)
-                            timeBasedTokens.add(
-                                Token(
+                            timeBasedAccounts.add(
+                                Account(
                                     key,
                                     accountName,
                                     totp.generate().toString(),
@@ -187,8 +189,8 @@ class MainActivity : WearableActivity() {
                                 timeStepUnit = TimeUnit.SECONDS
                             )
                             val totp = TimeBasedOneTimePasswordGenerator(secret.toByteArray(), config)
-                            timeBasedTokens.add(
-                                Token(
+                            timeBasedAccounts.add(
+                                Account(
                                     key,
                                     accountName,
                                     totp.generate(),
@@ -203,8 +205,8 @@ class MainActivity : WearableActivity() {
                                 hmacAlgorithm = HmacAlgorithm.SHA1
                             )
                             val cotp = HmacOneTimePasswordGenerator(secret.toByteArray(), config)
-                            counterBasedTokens.add(
-                                Token(
+                            counterBasedAccounts.add(
+                                Account(
                                     key,
                                     accountName,
                                     cotp.generate(counter = counter.toLong()),
@@ -217,8 +219,8 @@ class MainActivity : WearableActivity() {
                                 hmacAlgorithm = HmacAlgorithm.SHA256
                             )
                             val cotp = HmacOneTimePasswordGenerator(secret.toByteArray(), config)
-                            counterBasedTokens.add(
-                                Token(
+                            counterBasedAccounts.add(
+                                Account(
                                     key,
                                     accountName,
                                     cotp.generate(counter = counter.toLong()),
@@ -231,8 +233,8 @@ class MainActivity : WearableActivity() {
                                 hmacAlgorithm = HmacAlgorithm.SHA512
                             )
                             val cotp = HmacOneTimePasswordGenerator(secret.toByteArray(), config)
-                            counterBasedTokens.add(
-                                Token(
+                            counterBasedAccounts.add(
+                                Account(
                                     key,
                                     accountName,
                                     cotp.generate(counter = counter.toLong()),
@@ -249,10 +251,10 @@ class MainActivity : WearableActivity() {
 
             }
 
-            val timeAdapter = TimeCardAdapter(applicationContext, timeBasedTokens){} //creating adapter
+            val timeAdapter = TimeCardAdapter(applicationContext, timeBasedAccounts){} //creating adapter
             timeRecyclerView.adapter = timeAdapter //now adding adapter to recyclerview
 
-            val counterAdapter = CounterCardAdapter(applicationContext, counterBasedTokens){} //creating adapter
+            val counterAdapter = CounterCardAdapter(applicationContext, counterBasedAccounts){} //creating adapter
             counterRecyclerView.adapter = counterAdapter //now adding adapter to recyclerview
         }
 
@@ -301,7 +303,7 @@ class MainActivity : WearableActivity() {
 
         getTimerUI()
 
-        if (logins.all.isNotEmpty()) {
+        if (accounts.all.isNotEmpty()) {
             timeLeft.visibility = View.VISIBLE
             object : Thread() {
                 override fun run() {
