@@ -61,18 +61,9 @@ class ExportActivity : WearableActivity() {
             }
         }
 
-        masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        logins = EncryptedSharedPreferences.create(
-            loginsFile,
-            masterKeyAlias,
-            applicationContext,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-
         // Begin unpacking data
 
-        val exportData: String = logins.all.values.toString()
+        val exportData: String = accounts.all.values.toString()
 
         fileExport.setOnClickListener {
 

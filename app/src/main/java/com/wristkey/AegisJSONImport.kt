@@ -100,14 +100,14 @@ class AegisJSONImport : Activity() {
 
                         for (itemIndex in 0 until itemsArray.length()) {
                             try {
-                                val loginData = JSONObject(itemsArray[itemIndex].toString())
-                                var type = loginData["type"]
-                                val uuid = loginData["uuid"].toString()
-                                val sitename = loginData["issuer"]
-                                val username = loginData["name"]
-                                val totpSecret = JSONObject(loginData["info"].toString())["secret"]
-                                val digits = JSONObject(loginData["info"].toString())["digits"].toString()
-                                var algorithm = JSONObject(loginData["info"].toString())["algo"].toString()
+                                val accountData = JSONObject(itemsArray[itemIndex].toString())
+                                var type = accountData["type"]
+                                val uuid = accountData["uuid"].toString()
+                                val sitename = accountData["issuer"]
+                                val username = accountData["name"]
+                                val totpSecret = JSONObject(accountData["info"].toString())["secret"]
+                                val digits = JSONObject(accountData["info"].toString())["digits"].toString()
+                                var algorithm = JSONObject(accountData["info"].toString())["algo"].toString()
 
                                 type = if (type.equals("totp")) "Time" else "Counter"
 
@@ -136,30 +136,32 @@ class AegisJSONImport : Activity() {
                                 if (totp.isNotEmpty()) {
                                     // begin storing data
                                     importingDescription.text = "Adding $sitename account"
-                                    val tokenData = ArrayList<String>()
+                                    val accountData = ArrayList<String>()
 
                                     val id = uuid
 
-                                    tokenData.add(accountName)
-                                    tokenData.add(totp)
+                                    accountData.add(accountName)
+                                    accountData.add(totp)
 
-                                    tokenData.add(type)
-                                    tokenData.add(digits)
-                                    tokenData.add(algorithm)
-                                    tokenData.add("0")  // If counter mode is selected, initial value must be 0.
-                                    val json = Gson().toJson(tokenData)
-                                    logins.edit().putString(id, json).apply()
+                                    accountData.add(type)
+                                    accountData.add(digits)
+                                    accountData.add(algorithm)
+                                    accountData.add("0")  // If counter mode is selected, initial value must be 0.
+                                    val json = Gson().toJson(accountData)
+                                    accounts.edit().putString(id, json).apply()
                                 } else {
                                     importingDescription.text = "No TOTP secret for $sitename account"
                                 }
                             } catch (noData: JSONException) {  }
                         }
                         importingDescription.text = "Saving data"
-                        val toast = Toast.makeText(this, "Imported logins successfully!", Toast.LENGTH_SHORT)
+                        val toast = Toast.makeText(this, "Imported accounts successfully!", Toast.LENGTH_SHORT)
                         toast.show()
 
                         val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                         vibratorService.vibrate(100)
+                        val intent = Intent(applicationContext, MainActivity::class.java)
+                        startActivity(intent)
                         finish()
                     }
                 }

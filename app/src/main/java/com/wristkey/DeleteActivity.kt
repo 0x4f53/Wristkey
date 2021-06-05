@@ -56,13 +56,13 @@ class DeleteActivity : WearableActivity() {
         }
 
         val isDeleteAll = intent.getBooleanExtra("delete_all", false)
-        val tokenIdToDelete = intent.getStringExtra("token_id")
+        val accountIDToDelete = intent.getStringExtra("account_id")
 
         if (isDeleteAll) {
             confirmationText.text = "Delete all accounts and app settings?"
             confirmButton.setOnClickListener {
                 appData.edit().clear().apply()
-                logins.edit().clear().apply()
+                accounts.edit().clear().apply()
                 finish()
                 Toast.makeText(this, "All items deleted!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(applicationContext, MainActivity::class.java)
@@ -72,11 +72,11 @@ class DeleteActivity : WearableActivity() {
             }
         } else {
             confirmButton.setOnClickListener {
-                logins.edit().remove(tokenIdToDelete).apply()
+                accounts.edit().remove(accountIDToDelete).apply()
                 val intent = Intent(applicationContext, MainActivity::class.java)
                 startActivity(intent)
                 finish()
-                Toast.makeText(this, "Token deleted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Account deleted", Toast.LENGTH_SHORT).show()
                 val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                 vibratorService.vibrate(500)
             }

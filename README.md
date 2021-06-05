@@ -1,10 +1,10 @@
-[![Wear OS](https://img.shields.io/badge/Made%20for-WearOS%20-4285f4.svg?style=flat&logo=wear%20os)](https://wearos.google.com)
-[![Kotlin](https://img.shields.io/badge/Made%20with-Kotlin-7f52ff.svg)](https://kotlinlang.org/)
-[![Tag](https://img.shields.io/github/v/tag/4f77616973/Wristkey?label=Version)](https://gitlab.com/ThomasCat/wristkey/tags)
-[![License](https://img.shields.io/badge/License-MIT-purple)](LICENSE)
-[![Open Source](https://img.shields.io/badge/Open%20Source-Yes-blue)](https://opensource.org/)
-[![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://gitlab.com/ThomasCat/wristkey/activity)
-[![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here!-blue)](app/release/app-release.apk)
+[![Wear OS](https://img.shields.io/badge/Made%20for-WearOS%20-4285f4.svg?style=flat-square&logo=wear%20os)](https://wearos.google.com)
+[![Kotlin](https://img.shields.io/badge/Made%20with-Kotlin-7f52ff.svg?style=flat-square)](https://kotlinlang.org/)
+[![Tag](https://img.shields.io/github/v/tag/4f77616973/Wristkey?label=Version&style=flat-square)](https://gitlab.com/ThomasCat/wristkey/tags)
+[![License](https://img.shields.io/badge/License-MIT-purple?style=flat-square)](LICENSE)
+[![Open Source](https://img.shields.io/badge/Open%20Source-Yes-blue?style=flat-square)](https://opensource.org/)
+[![Maintenance](https://img.shields.io/badge/Maintained-Yes-success.svg?style=flat-square)](https://gitlab.com/ThomasCat/wristkey/activity)
+[![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here!-blue?style=flat-square)](app/release/app-release.apk)
 
 # Wristkey
 
@@ -35,7 +35,7 @@ Want 2FA codes quickly, right on your wrist without always needing a phone? Wris
 
 ### Adding items
 
-Wristkey supports both Bitwarden and Google Authenticator importing for ease-of-use, though the procedures differ slightly for each. For Bitwarden, a JSON file is parsed and the ```totp``` field is extracted from each login. For Google Authenticator, a QR code image file is scanned, the base64 string in it is converted from Google's protobuf format and the ```secret``` field is extracted from ```OtpParameters```.
+Wristkey supports both Bitwarden and Google Authenticator importing for ease-of-use, though the procedures differ slightly for each. For example, for Bitwarden, a JSON file is parsed and the ```totp``` field is extracted from each account. For Google Authenticator, a QR code image file is scanned, the base64 string in it is converted from Google's protobuf format and the ```secret``` field is extracted from ```OtpParameters```.
 
 <img src = screenshots/addscreen.png alt="add">
 
@@ -83,41 +83,35 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
     Target: connected
     ```
 
-#### Google Authenticator import
+#### Google Authenticator and normal QR Code imports
 
-<img src = screenshots/authenticatorimport.png alt="importauthenticator">
+1. If using a QR Code from a website, save it as a screenshot and make sure it is clearly visible with no pixelation. If importing from Google Authenticator, tap the three dots on the top right corner, then tap on 'Export accounts'. Then select the accounts you\'d like to export and tap the export button 'Export'. Take a picture or screenshot of the QR code that is displayed and **make sure it is a PNG or JPG file** and is clear with no blurring, glare or pixelation.
 
-1. Tap the three dots on the top right corner in the Google Authenticator app, then tap on 'Export accounts'.
-
-2. Select the accounts you\'d like to export and tap the export button 'Export'.
-
-3. Take a picture or screenshot of the QR code that is displayed. **Make sure it is a PNG or JPG file** and that it is clear with no blurring, glare or pixelation.
-
-4. Open a terminal on your computer and place this PNG or JPG file on the main directory of your watch (/sdcard/) via the following command
+2. Open a terminal on your computer and place this PNG or JPG file on the main directory of your watch (/sdcard/) via the following command
 
     ```
-    adb push <screenshot filename>.png /sdcard/
+    adb push <filename>.png /sdcard/
     ```
 
-6. On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Import from Authenticator*.
+3. On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Import from Authenticator*.
 
 4. After your accounts are imported, delete the PNG or JPG file from your watch via the following commands
 
     ```
     adb shell
     cd /sdcard/
-    rm <screenshot filename>.png
+    rm <filename>.png
     exit
     ```
 
-#### Aegis Authenticator import
+#### Aegis Authenticator, andOTP, Bitwarden and Wristkey backup imports
 
-1. Export your Aegis Authenticator database in an unencrypted JSON format.
+1. Export your data in an unencrypted JSON format. Make sure you don't rename the file. 
 
-2. Open a terminal on your computer and place this JSON file on the main directory of your watch (/sdcard/) via the following command
+2. Open a terminal on your computer and place this JSON file on the main directory of your watch (/sdcard/). If using a Wristkey backup file, do **not** place it in the /Wristkey folder. Do this via the following command
 
     ```
-    adb push <aegis filename>.json /sdcard/
+    adb push <filename> /sdcard/
     ```
 
 3. On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Import from Aegis Authenticator*.
@@ -127,49 +121,7 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
     ```
     adb shell
     cd /sdcard/
-    rm <aegis filename>.json
-    exit
-    ```
-
-#### Bitwarden import
-
-<img src = screenshots/bitwardenimport.png alt="importbitwarden">
-
-1. Download your Bitwarden Vault in an unencrypted JSON format from the Bitwarden Desktop website.
-
-2. Open a terminal on your computer and place this JSON file on the main directory of your watch (/sdcard/) via the following command
-
-    ```
-    adb push <bitwarden json filename>.json /sdcard/
-    ```
-
-3. On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Import from Bitwarden*.
-
-4. After your accounts are imported, delete the JSON file from your watch via the following commands
-
-    ```
-    adb shell
-    cd /sdcard/
-    rm <bitwarden filename>.json
-    exit
-    ```
-
-#### Wristkey backup import
-
-1. Place your Wristkey backup file on on the main directory of your watch (/sdcard/, **not** in the /Wristkey folder) via the following command
-
-    ```
-    adb push <wristkey filename>.backup /sdcard/
-    ```
-
-3. On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Import from Wristkey backup*.
-
-4. After your accounts are imported, delete the JSON file from your watch via the following commands
-
-    ```
-    adb shell
-    cd /sdcard/
-    rm <wristkey filename>.backup
+    rm <filename>
     exit
     ```
 
@@ -183,7 +135,7 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 
 ### Editing and Deleting items
 
-To edit or delete an item, tap and hold on its name. This was made difficult on purpose so that logins aren't accidentally edited or deleted. To delete an item, scroll all the way to the bottom of the edit screen and tap the trash icon.
+To edit or delete an item, tap and hold on its name. This was made difficult on purpose so that accounts aren't accidentally edited or deleted. To delete an item, scroll all the way to the bottom of the edit screen and tap the trash icon.
 
 ### Exporting
 
@@ -230,7 +182,7 @@ Make sure you set your secret key, digit length and algorithm correctly. If the 
 
 #### File import not working
 
-Make sure Wristkey has storage permissions in your watch's Settings app. If importing from JSON, make sure the file you download from your Bitwarden account is an **Unencrypted** file in **JSON** format (Encrypted JSON and Encrypted / Unencrypted CSV files don't work). If importing from Authenticator, make sure the screenshot or picture is in **PNG or JPG** format and is clear.
+Make sure Wristkey has storage permissions in your watch's Settings app. If importing from JSON, make sure the file you export is an **Unencrypted** file in **JSON** format. If importing from Authenticator, make sure the screenshot or picture is in **PNG or JPG** format and is clear. If using a Wristkey backup file, make sure it has the _.backup_ extension.
 
 #### File export not working
 
@@ -268,6 +220,8 @@ I made this app as a fun project and because the LG G Watch W100 I use doesn't s
 
 ## ACKNOWLEDGEMENTS
 
+The [Aegis Authenticator](https://getaegis.app/), [andOTP](https://github.com/andOTP/andOTP), [Google Authenticator](https://github.com/google/google-authenticator) and [Bitwarden](https://bitwarden.com/) names, data export formats, logos and trademarks belong to their respective owners.
+
 Please star and support these developers for their hard work. All libraries, dependencies and tools used belong to their respective owners.
 
 [Marcel Kliemannel - Kotlin Onetimepassword (to generate OTPs)](https://github.com/marcelkliemannel/kotlin-onetimepassword)
@@ -280,14 +234,12 @@ Please star and support these developers for their hard work. All libraries, dep
 
 [EncryptedSharedPreferences (to store data in an encrypted format securely)](https://android.googlesource.com/platform/frameworks/support/+/refs/heads/androidx-main/security/crypto/src/main/java/androidx/security/crypto/EncryptedSharedPreferences.java)
 
-[Aegis (for the ```.protobuf``` file that made Google Authenticator imports possible)](https://github.com/beemdevelopment/Aegis/blob/master/app/src/main/proto/google_auth.proto)
-
 [Roland Kurmann - extract_otp_secret_keys (to extract Google Authenticator data)](https://github.com/scito/extract_otp_secret_keys)
 
 [Chaquo Ltd - Chaquopy (to run Python to decode protobuf3 data)](https://github.com/chaquo/chaquopy)
 
 ## LICENSE
 
-[Copyright © 2021 Owais Shaikh](LICENSE) 
+Multimedia licensed under [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/) 
 
-(GitLab: [ThomasCat](https://gitlab.com/thomascat) | GitHub: [4f77616973](https://github.com/4f77616973) | Email: [0x4f@tuta.io](mailto://0x4f@tuta.io))
+[Copyright © 2021 Owais Shaikh](LICENSE)

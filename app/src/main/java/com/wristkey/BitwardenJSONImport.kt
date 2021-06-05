@@ -99,9 +99,9 @@ class BitwardenJSONImport : Activity() {
                             val itemData = JSONObject(itemsArray[itemIndex].toString())
 
                             try {
-                                val loginData = JSONObject(itemData["login"].toString())
-                                val totpSecret = loginData["totp"]
-                                val username = loginData["username"]
+                                val accountData = JSONObject(itemData["login"].toString())
+                                val totpSecret = accountData["totp"]
+                                val username = accountData["username"]
                                 val sitename = itemData["name"]
                                 val uuid = itemData["id"].toString()
 
@@ -139,31 +139,31 @@ class BitwardenJSONImport : Activity() {
                                             algorithm = "HmacAlgorithm.SHA512"
                                         }
 
-                                        val tokenData = ArrayList<String>()
+                                        val accountData = ArrayList<String>()
 
-                                        tokenData.add(accountName)
-                                        tokenData.add(totp)
+                                        accountData.add(accountName)
+                                        accountData.add(secret)
 
-                                        tokenData.add(type)
-                                        tokenData.add(digits)
-                                        tokenData.add(algorithm)
-                                        tokenData.add("0")  // If counter mode is selected, initial value must be 0.
-                                        val json = Gson().toJson(tokenData)
-                                        logins.edit().putString(uuid, json).apply()
+                                        accountData.add(type)
+                                        accountData.add(digits)
+                                        accountData.add(algorithm)
+                                        accountData.add("0")  // If counter mode is selected, initial value must be 0.
+                                        val json = Gson().toJson(accountData)
+                                        accounts.edit().putString(uuid, json).apply()
 
                                     } else { // Google Authenticator
 
-                                        val tokenData = ArrayList<String>()
+                                        val accountData = ArrayList<String>()
 
-                                        tokenData.add(accountName)
-                                        tokenData.add(totp)
+                                        accountData.add(accountName)
+                                        accountData.add(totp)
 
-                                        tokenData.add("Time")
-                                        tokenData.add("6")
-                                        tokenData.add("HmacAlgorithm.SHA1")
-                                        tokenData.add("0")  // If counter mode is selected, initial value must be 0.
-                                        val json = Gson().toJson(tokenData)
-                                        logins.edit().putString(uuid, json).apply()
+                                        accountData.add("Time")
+                                        accountData.add("6")
+                                        accountData.add("HmacAlgorithm.SHA1")
+                                        accountData.add("0")  // If counter mode is selected, initial value must be 0.
+                                        val json = Gson().toJson(accountData)
+                                        accounts.edit().putString(uuid, json).apply()
                                     }
                                 } else {
                                     importingDescription.text = "No TOTP secret for $sitename account"
@@ -171,11 +171,13 @@ class BitwardenJSONImport : Activity() {
                             } catch (noData: JSONException) {  }
                         }
                         importingDescription.text = "Saving data"
-                        val toast = Toast.makeText(this, "Imported logins successfully!", Toast.LENGTH_SHORT)
+                        val toast = Toast.makeText(this, "Imported accounts successfully!", Toast.LENGTH_SHORT)
                         toast.show()
 
                         val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                         vibratorService.vibrate(100)
+                        val intent = Intent(applicationContext, MainActivity::class.java)
+                        startActivity(intent)
                         finish()
                     }
                 }
