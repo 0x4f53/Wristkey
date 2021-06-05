@@ -56,7 +56,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/ManualEntryTokensButton"
+                    android:id="@+id/ManualEntryAccountsButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -94,7 +94,7 @@
                 android:background="@color/darkAccents" />
 
             <LinearLayout
-                android:id="@+id/BitwardenImport"
+                android:id="@+id/ScanQRCode"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -105,68 +105,23 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/BitwardenImportButtonLayout"
+                    android:id="@+id/ScanQRCodeButtonLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <ImageButton
-                        android:id="@+id/BitwardenImportButton"
+                        android:id="@+id/ScanQRCodeButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:background="@drawable/preference_wrapped_icon"
                         android:backgroundTint="@color/colorAccent"
                         android:foregroundGravity="center"
-                        android:src="@drawable/ic_import" />
-
-                    <TextView
-                        android:id="@+id/BitwardenImportLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:foregroundGravity="center"
-                        android:gravity="center|left"
-                        android:text="Import from\nBitwarden"
-                        android:textColor="#FFFFFF"
-                        android:textSize="15sp" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <View
-                android:id="@+id/divider13"
-                android:layout_width="match_parent"
-                android:layout_height="0.25dp"
-                android:background="@color/darkAccents" />
-
-            <LinearLayout
-                android:id="@+id/AuthenticatorImport"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/AuthenticatorImportLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/AuthenticatorImportButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/preference_wrapped_icon"
-                        android:backgroundTint="@color/colorAccent"
                         android:src="@drawable/ic_baseline_qr_code_scanner_24" />
 
                     <TextView
-                        android:id="@+id/AuthenticatorImportLabel"
+                        android:id="@+id/ScanQRCodeLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -174,7 +129,7 @@
                         android:layout_marginRight="5dp"
                         android:foregroundGravity="center"
                         android:gravity="center|left"
-                        android:text="Import from\nGoogle\nAuthenticator"
+                        android:text="Scan QR code"
                         android:textColor="#FFFFFF"
                         android:textSize="15sp" />
                 </LinearLayout>
@@ -182,7 +137,7 @@
             </LinearLayout>
 
             <View
-                android:id="@+id/divider2"
+                android:id="@+id/divider18"
                 android:layout_width="match_parent"
                 android:layout_height="0.25dp"
                 android:background="@color/darkAccents" />
@@ -208,7 +163,7 @@
                         android:layout_gravity="center"
                         android:background="@drawable/preference_wrapped_icon"
                         android:backgroundTint="@color/colorAccent"
-                        android:src="@drawable/ic_import" />
+                        android:src="@drawable/aegis_authenticator" />
 
                     <TextView
                         android:id="@+id/AegisImportLabel"
@@ -227,7 +182,146 @@
             </LinearLayout>
 
             <View
+                android:id="@+id/divider13"
+                android:layout_width="match_parent"
+                android:layout_height="0.25dp"
+                android:background="@color/darkAccents" />
+
+            <LinearLayout
+                android:id="@+id/AndOTPImport"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/AndOTPImportLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/AndOTPImportButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/preference_wrapped_icon"
+                        android:backgroundTint="@color/colorAccent"
+                        android:src="@drawable/andotp" />
+
+                    <TextView
+                        android:id="@+id/AndOTPImportImportLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:foregroundGravity="center"
+                        android:gravity="center|left"
+                        android:text="Import from\nandOTP"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="0.25dp"
+                android:background="@color/darkAccents" />
+
+            <LinearLayout
+                android:id="@+id/BitwardenImport"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/BitwardenImportButtonLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/BitwardenImportButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/preference_wrapped_icon"
+                        android:backgroundTint="@color/colorAccent"
+                        android:foregroundGravity="center"
+                        android:src="@drawable/bitwarden" />
+
+                    <TextView
+                        android:id="@+id/BitwardenImportLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:foregroundGravity="center"
+                        android:gravity="center|left"
+                        android:text="Import from\nBitwarden"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
                 android:id="@+id/divider16"
+                android:layout_width="match_parent"
+                android:layout_height="0.25dp"
+                android:background="@color/darkAccents" />
+
+            <LinearLayout
+                android:id="@+id/AuthenticatorImport"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/AuthenticatorImportLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/AuthenticatorImportButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/preference_wrapped_icon"
+                        android:backgroundTint="@color/colorAccent"
+                        android:src="@drawable/google_authenticator" />
+
+                    <TextView
+                        android:id="@+id/AuthenticatorImportLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:foregroundGravity="center"
+                        android:gravity="center|left"
+                        android:text="Import from\nGoogle\nAuthenticator"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider19"
                 android:layout_width="match_parent"
                 android:layout_height="0.25dp"
                 android:background="@color/darkAccents" />
@@ -253,7 +347,7 @@
                         android:layout_gravity="center"
                         android:background="@drawable/preference_wrapped_icon"
                         android:backgroundTint="@color/colorAccent"
-                        android:src="@drawable/ic_import" />
+                        android:src="@drawable/wristkey" />
 
                     <TextView
                         android:id="@+id/WristkeyImportLabel"

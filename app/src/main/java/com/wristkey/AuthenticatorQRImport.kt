@@ -162,28 +162,28 @@ class AuthenticatorQRImport : Activity() {
                             // convert json data and store in sharedprefs
                             val items = JSONObject(logExtractedString)
                             for (key in items.keys()) {
-                                val tokenData = ArrayList<String>()
+                                val accountData = ArrayList<String>()
                                 if (!importUsernames.isChecked) {
-                                    tokenData.add(key.toString().replaceAfter("(", "").replace("(", "")) // name without username
+                                    accountData.add(key.toString().replaceAfter("(", "").replace("(", "")) // name without username
                                 } else {
-                                    tokenData.add(key) // name with username
+                                    accountData.add(key) // name with username
                                 }
                                 val itemData = JSONObject(items[key].toString())
-                                tokenData.add(itemData["secret"].toString()) //secret
-                                if (itemData["type"] == "2") tokenData.add("Time") else tokenData.add("Counter") // mode
-                                tokenData.add("6")  // length
-                                tokenData.add("HmacAlgorithm.SHA1")  // algorithm
-                                tokenData.add("0")  // If counter mode is selected, initial value must be 0.
+                                accountData.add(itemData["secret"].toString()) //secret
+                                if (itemData["type"] == "2") accountData.add("Time") else accountData.add("Counter") // mode
+                                accountData.add("6")  // length
+                                accountData.add("HmacAlgorithm.SHA1")  // algorithm
+                                accountData.add("0")  // If counter mode is selected, initial value must be 0.
 
                                 val id = UUID.randomUUID().toString()
-                                val json = Gson().toJson(tokenData)
-                                logins.edit().putString(id, json).apply()
+                                val json = Gson().toJson(accountData)
+                                accounts.edit().putString(id, json).apply()
                             }
 
                             importingDescription.text = "Saving data"
                             Toast.makeText(
                                 this,
-                                "Imported logins successfully!",
+                                "Imported accounts successfully!",
                                 Toast.LENGTH_SHORT
                             ).show()
 
@@ -201,8 +201,7 @@ class AuthenticatorQRImport : Activity() {
                                 Toast.LENGTH_SHORT
                             ).show()
 
-                            val vibratorService =
-                                getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                             vibratorService.vibrate(50)
 
                             val intent = Intent(applicationContext, MainActivity::class.java)

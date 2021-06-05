@@ -41,6 +41,14 @@
             android:label="@string/title_activity_aegis_jsonimport" />
 
         <activity
+            android:name=".AndOtpJSONImport"
+            android:label="@string/title_activity_andotp_import" />
+
+        <activity
+            android:name=".OtpAuthImport"
+            android:label="@string/title_activity_otpauth_import" />
+
+        <activity
             android:name=".WristkeyImport"
             android:label="@string/title_activity_wristkey_import" />
 

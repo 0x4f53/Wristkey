@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/TimeTokenList"
+                    android:id="@+id/TimeaccountList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/CounterTokenList"
+                    android:id="@+id/CounteraccountList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -73,7 +73,7 @@
                 android:drawableTop="@drawable/ic_add"
                 android:foregroundGravity="center"
                 android:gravity="center"
-                android:text="Add new account\n"
+                android:text="Add account\n"
                 android:textColor="@color/white"
                 android:textSize="15sp" />
 
@@ -162,7 +162,7 @@
         android:progress="0"
         android:progressBackgroundTint="@android:color/transparent"
         android:progressTint="@color/blueAccents"
-        android:translationY="-5dp" />
+        android:translationY="-6dp" />
 
 
 </androidx.wear.widget.BoxInsetLayout>
