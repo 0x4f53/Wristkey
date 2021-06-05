@@ -3,7 +3,6 @@ package com.wristkey
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
@@ -11,14 +10,15 @@ import android.os.Bundle
 import android.os.Environment.getExternalStorageDirectory
 import android.os.Vibrator
 import android.provider.Settings
-import android.util.Log
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.wear.widget.BoxInsetLayout
 import com.google.gson.Gson
 import com.wristkey.databinding.ActivityWristkeyImportBinding
 import org.json.JSONArray
 import org.json.JSONException
-import org.json.JSONObject
 import java.io.File
 import java.io.FileReader
 import java.util.*
@@ -103,27 +103,29 @@ class WristkeyImport : Activity() {
 
                                 if (totpSecret.isNotEmpty()) { // begin storing data
                                     importingDescription.text = "Adding $name"
-                                    val tokenData = ArrayList<String>()
-                                    tokenData.add(name)
-                                    tokenData.add(totpSecret)
-                                    tokenData.add(mode)
-                                    tokenData.add(digits)
-                                    tokenData.add(algorithm)
-                                    tokenData.add(counter)
-                                    val json = Gson().toJson(tokenData)
+                                    val accountData = ArrayList<String>()
+                                    accountData.add(name)
+                                    accountData.add(totpSecret)
+                                    accountData.add(mode)
+                                    accountData.add(digits)
+                                    accountData.add(algorithm)
+                                    accountData.add(counter)
+                                    val json = Gson().toJson(accountData)
                                     val id = UUID.randomUUID().toString()
-                                    logins.edit().putString(id, json).apply()
+                                    accounts.edit().putString(id, json).apply()
                                 } else {
                                     importingDescription.text = "No TOTP secret for $name"
                                 }
                             } catch (noData: JSONException) {  }
                         }
                         importingDescription.text = "Saving data"
-                        val toast = Toast.makeText(this, "Imported logins successfully!", Toast.LENGTH_SHORT)
+                        val toast = Toast.makeText(this, "Imported accounts successfully!", Toast.LENGTH_SHORT)
                         toast.show()
 
                         val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                         vibratorService.vibrate(100)
+                        val intent = Intent(applicationContext, MainActivity::class.java)
+                        startActivity(intent)
                         finish()
                     }
                 }

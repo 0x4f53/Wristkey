@@ -39,7 +39,7 @@
                 android:ems="10"
                 android:foregroundTint="@color/colorAccent"
                 android:gravity="center"
-                android:text="Delete token?"
+                android:text="Delete account?"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"
                 android:textStyle="italic" />

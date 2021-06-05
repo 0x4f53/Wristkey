@@ -77,7 +77,9 @@ class ManualEntryActivity : WearableActivity() {
         if (currentTheme == "F7F7F7") {
             addAccountLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             account.setHintTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            account.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             sharedSecret.setHintTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
+            sharedSecret.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             timeMode.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             counterMode.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
             digitLengthLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
@@ -85,20 +87,22 @@ class ManualEntryActivity : WearableActivity() {
         } else {
             addAccountLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             account.setHintTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            account.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             sharedSecret.setHintTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
+            sharedSecret.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             timeMode.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             counterMode.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             digitLengthLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
             algorithmLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
         }
 
-        val tokenId = intent.getStringExtra("token_id")
+        var accountID = intent.getStringExtra("account_id")
 
-        if (tokenId != null) {
+        if (accountID != null) {
             addAccountLabel.text = "Edit Account"
             other.visibility = View.VISIBLE
 
-            val data = JSONArray(logins.getString(tokenId, null))
+            val data = JSONArray(accounts.getString(accountID, null))
 
             account.setText(data[0].toString())
             sharedSecret.setText(data[1].toString())
@@ -111,10 +115,11 @@ class ManualEntryActivity : WearableActivity() {
 
             when(data[3].toString()) {
                 "4" -> digitLength.progress = 0
-                "6" -> digitLength.progress = 1
-                "7" -> digitLength.progress = 2
-                "8" -> digitLength.progress = 3
-                else -> digitLength.progress = 1
+                "5" -> digitLength.progress = 1
+                "6" -> digitLength.progress = 2
+                "7" -> digitLength.progress = 3
+                "8" -> digitLength.progress = 4
+                else -> digitLength.progress = 2
             }
 
             when(data[4].toString()) {
@@ -126,7 +131,7 @@ class ManualEntryActivity : WearableActivity() {
 
             deleteButton.setOnClickListener {
                 val intent = Intent(applicationContext, DeleteActivity::class.java)
-                intent.putExtra("token_id", tokenId)
+                intent.putExtra("account_id", accountID)
                 startActivity(intent)
                 finish()
             }
@@ -134,7 +139,7 @@ class ManualEntryActivity : WearableActivity() {
 
         confirmButton.setOnClickListener {
             val errorToast: Toast?
-            val tokenData = ArrayList<String>()
+            val accountData = ArrayList<String>()
             if (account.text.toString() == ""){
                 errorToast = Toast.makeText(this, "Enter account name", Toast.LENGTH_SHORT)
                 errorToast.show()
@@ -145,17 +150,17 @@ class ManualEntryActivity : WearableActivity() {
                 errorToast = Toast.makeText(this, "Invalid shared secret", Toast.LENGTH_SHORT)
                 errorToast.show()
             }else{
-                tokenData.add(account.text.toString())
-                tokenData.add(sharedSecret.text.toString())
-                tokenData.add(mode)
-                tokenData.add(selectedDigitLength)
-                tokenData.add(selectedAlgorithm)
-                tokenData.add("0")  // If counter mode is selected, initial value must be 0.
-                val json = Gson().toJson(tokenData)
+                accountData.add(account.text.toString())
+                accountData.add(sharedSecret.text.toString())
+                accountData.add(mode)
+                accountData.add(selectedDigitLength)
+                accountData.add(selectedAlgorithm)
+                accountData.add("0")  // If counter mode is selected, initial value must be 0.
+                val json = Gson().toJson(accountData)
 
-                val id = UUID.randomUUID().toString()
+                if (accountID.isNullOrEmpty()) accountID = UUID.randomUUID().toString()
 
-                logins.edit().putString(id, json).apply()
+                accounts.edit().putString(accountID, json).apply()
                 val addedToast = Toast.makeText(this, "Added account", Toast.LENGTH_SHORT)
                 addedToast.show()
 
@@ -164,11 +169,13 @@ class ManualEntryActivity : WearableActivity() {
                 finish()
             }
         }
+
         cancelButton.setOnClickListener {
             val intent = Intent(applicationContext, MainActivity::class.java)
             startActivity(intent)
             finish()
         }
+
         modeGroup.setOnCheckedChangeListener { _, checkedId ->
             mode = if (checkedId != -1) {
                 (findViewById<View>(checkedId) as RadioButton).text.toString()
@@ -176,18 +183,22 @@ class ManualEntryActivity : WearableActivity() {
                 ""
             }
         }
+
         digitLength.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                 if (digitLength.progress == 0) {
                     digitLengthLabel.text = "4 digits"
                     selectedDigitLength = "4"
                 } else if (digitLength.progress == 1) {
+                    selectedDigitLength = "5"
+                    digitLengthLabel.text = "5 digits"
+                } else if (digitLength.progress == 2) {
                     selectedDigitLength = "6"
                     digitLengthLabel.text = "6 digits"
-                } else if (digitLength.progress == 2) {
+                } else if (digitLength.progress == 3) {
                     selectedDigitLength = "7"
                     digitLengthLabel.text = "7 digits"
-                } else if (digitLength.progress == 3) {
+                } else if (digitLength.progress == 4) {
                     selectedDigitLength = "8"
                     digitLengthLabel.text = "8 digits"
                 }
@@ -198,12 +209,15 @@ class ManualEntryActivity : WearableActivity() {
                     digitLengthLabel.text = "4 digits"
                     selectedDigitLength = "4"
                 } else if (digitLength.progress == 1) {
+                    selectedDigitLength = "5"
+                    digitLengthLabel.text = "5 digits"
+                } else if (digitLength.progress == 2) {
                     selectedDigitLength = "6"
                     digitLengthLabel.text = "6 digits"
-                } else if (digitLength.progress == 2) {
+                } else if (digitLength.progress == 3) {
                     selectedDigitLength = "7"
                     digitLengthLabel.text = "7 digits"
-                } else if (digitLength.progress == 3) {
+                } else if (digitLength.progress == 4) {
                     selectedDigitLength = "8"
                     digitLengthLabel.text = "8 digits"
                 }
@@ -214,12 +228,15 @@ class ManualEntryActivity : WearableActivity() {
                     digitLengthLabel.text = "4 digits"
                     selectedDigitLength = "4"
                 } else if (digitLength.progress == 1) {
+                    selectedDigitLength = "5"
+                    digitLengthLabel.text = "5 digits"
+                } else if (digitLength.progress == 2) {
                     selectedDigitLength = "6"
                     digitLengthLabel.text = "6 digits"
-                } else if (digitLength.progress == 2) {
+                } else if (digitLength.progress == 3) {
                     selectedDigitLength = "7"
                     digitLengthLabel.text = "7 digits"
-                } else if (digitLength.progress == 3) {
+                } else if (digitLength.progress == 4) {
                     selectedDigitLength = "8"
                     digitLengthLabel.text = "8 digits"
                 }
