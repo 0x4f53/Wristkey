@@ -2,15 +2,19 @@
 
 ### Current Security Features
 
-Wristkey uses file encryption to secure your data, rather than storing it unencrypted. This means that data is stored in a scrambled form such that only the person with the key to decrypt it can view it. This is done by using [EncryptedSharedPreferences](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences), the encrypted version of the popular SharedPreferences library in Android.
+Wristkey uses file encryption to secure your data, rather than storing it unencrypted. This means that data is stored in a scrambled form in a way that only the party with the key to decrypt it can view it, similar to a door lock. This is done by using [EncryptedSharedPreferences](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences), the encrypted version of the popular [SharedPreferences](https://developer.android.com/training/data-storage/shared-preferences) library in Android.
 
-SharedPreferences (and all its variants) stores data in a key-value pair. Your account data is stored against a randomly-generated UUID4 key, with the value being a JSONObject of your account data, including usernames, secrets and parameters.
+SharedPreferences (and all its variants) stores data in a key-value pair. Your account data is stored against a randomly-generated [UUID4](https://docs.oracle.com/javase/8/docs/api/java/util/UUID.html) string as the key, with the value being a [JSONObject](https://developer.android.com/reference/org/json/JSONObject) of your account data, including usernames, secrets and parameters. Using UUID4 as the key helps anonymize your account data and prevents attackers from associating the value with the key.
 
 Both the key and value stored in EncryptedSharedPreferences are symmetrically encrypted using the [Advanced Encryption Standard (AES)](https://web.archive.org/web/20210622171351/https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf). A 256-bit private key is generated using AES-GCM from the [MasterKey](https://developer.android.com/reference/androidx/security/crypto/MasterKey) class. The key is stored in the [Android Keystore](https://developer.android.com/training/articles/keystore), and the encrypted data is stored in the `/storage/emulated/0/Android/data/` directory. Both the key and the ciphertext are stored locally and do not leave your watch, be it through WiFi, Bluetooth, USB or NFC (_unless you specifically choose to do so via an unencrypted export_).
 
+Wristkey can also be set to unlock after entering your watch's password / PIN / pattern. To enable screen locking for the app, go to your watch's Settings → Personalization → Screen Lock and set a PIN / pattern / password.
+
+### Recommended Practices
+
 To prevent data extraction, snooping, phishing and theft, make sure you delete the unencrypted JSON, PNG or JPG export files from your watch storage once you're done importing / exporting them. Not doing so could lead to a compromising situation, such as social engineering attacks, or a thief bruteforcing their way into your online accounts by stealing your watch and trying to access the sensitive data on it via ADB.
 
-Wristkey can also be set to unlock after entering your watch's password / PIN / pattern. To enable screen locking for the app, go to your watch's Settings → Personalization → Screen Lock and set a PIN / pattern / password.
+Every time you switch to a major version of Wristkey, make sure to completely uninstall and reinstall it. This helps in keeping the local SharedPreferences data format up-to-date. To make this process easy, use the _Backup all data_ option present in the app, under the settings icon '⚙️'.
 
 ### Supported Versions
 
