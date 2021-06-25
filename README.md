@@ -189,6 +189,8 @@ Make sure Wristkey has storage permissions in your watch's Settings app. If alre
 
 ## SECURITY
 
+_Further reading: [Security Policy](https://github.com/4f77616973/Wristkey/security/policy)_
+
 ### Importing files
 
 To prevent data extraction, snooping and theft, make sure you delete the JSON, PNG or JPG files from your watch's storage once you're done importing them. You can confirm the existence of items by connecting your watch via ADB and running the ```adb shell ls /sdcard/``` command.
