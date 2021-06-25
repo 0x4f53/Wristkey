@@ -10,11 +10,13 @@ Both the key and value stored in EncryptedSharedPreferences are symmetrically en
 
 Wristkey can also be set to unlock after entering your watch's password / PIN / pattern. To enable screen locking for the app, go to your watch's Settings → Personalization → Screen Lock and set a PIN / pattern / password.
 
-### Recommended Practices
+### Recommended Security Practices
 
 To prevent data extraction, snooping, phishing and theft, make sure you delete the unencrypted JSON, PNG or JPG export files from your watch storage once you're done importing / exporting them. Not doing so could lead to a compromising situation, such as social engineering attacks, or a thief bruteforcing their way into your online accounts by stealing your watch and trying to access the sensitive data on it via ADB.
 
 Every time you switch to a major version of Wristkey, make sure to completely uninstall and reinstall it. This helps in keeping the local SharedPreferences data format up-to-date. To make this process easy, use the _Backup all data_ option present in the app, under the settings icon '⚙️'.
+
+Use a password / PIN / pattern screen lock to prevent unauthorized access to your codes. This can be either via a single watch screen lock, or a combined app + screen lock for an added a layer of security. Avoid using Wear OS's Ambient Mode to prevent bystanders from peeking at your 2FA codes.
 
 ### Supported Versions
 
