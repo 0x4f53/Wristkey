@@ -8,8 +8,6 @@ SharedPreferences (and all its variants) stores data in a key-value pair. Your a
 
 Both the key and value stored in EncryptedSharedPreferences are symmetrically encrypted using the [Advanced Encryption Standard (AES)](https://web.archive.org/web/20210622171351/https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf). A 256-bit private key is generated using AES-GCM from the [MasterKey](https://developer.android.com/reference/androidx/security/crypto/MasterKey) class. The key is stored in the [Android Keystore](https://developer.android.com/training/articles/keystore), and the encrypted data is stored in the `/sdcard/Android/data/` directory. Both the key and the ciphertext are stored locally and do not leave your watch, be it through WiFi, Bluetooth, USB or NFC (_unless you specifically choose to do so via an unencrypted export_).
 
-Wristkey can also be set to unlock after entering your watch's password / PIN / pattern. To enable screen locking for the app, go to your watch's Settings → Personalization → Screen Lock and set a PIN / pattern / password.
-
 ### Recommended Security Practices
 
 To prevent data extraction, snooping, phishing and theft, make sure you delete the unencrypted JSON, PNG or JPG export files from your watch storage once you're done importing / exporting them. Not doing so could lead to a compromising situation, such as social engineering attacks, or a thief bruteforcing their way into your online accounts by stealing your watch and trying to access the sensitive data on it via ADB.
