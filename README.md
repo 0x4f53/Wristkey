@@ -244,9 +244,3 @@ Please star and support these developers for their hard work. All libraries, dep
 Multimedia licensed under [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/) 
 
 [Copyright © 2021 Owais Shaikh](LICENSE)
-
-## DONATE
-
- <a href="https://4f77616973.github.io/miami-theme/upi_address.html"><img src="https://img.icons8.com/fluency/48/000000/bhim.png"/></a>
- <a href="https://4f77616973.github.io/miami-theme/btc_address.html"><img src="https://img.icons8.com/color/48/000000/bitcoin--v1.png"/></a>
- <a href="https://4f77616973.github.io/miami-theme/eth_address.html"><img src="https://img.icons8.com/fluency/48/000000/ethereum.png"/></a>
