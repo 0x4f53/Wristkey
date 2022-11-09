@@ -5,21 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Vibrator
 import android.support.wearable.activity.WearableActivity
-import android.widget.CheckBox
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.switchmaterial.SwitchMaterial
 import wristkey.R
 
-class SettingsActivity : WearableActivity() {
+class ColorPickerActivity : WearableActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        setContentView(R.layout.activity_color_picker)
         val boxinsetlayout = findViewById<ConstraintLayout>(R.id.BoxInsetLayout)
-        val settingsLabelText = findViewById<TextView>(R.id.SettingsLabel)
+        val themeButton = findViewById<CardView>(R.id.themeButton)
         val beep = findViewById<SwitchMaterial>(R.id.beepButton)
         val vibrate = findViewById<SwitchMaterial>(R.id.vibrateButton)
         val screenLock = findViewById<SwitchMaterial>(R.id.lockButton)

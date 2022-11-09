@@ -51,29 +51,6 @@ class OtpAuthImport : Activity() {
 
         val otpAuth = findViewById<EditText>(R.id.OtpAuth)
 
-        var currentAccent = appData.getString("accent", "4285F4")
-        var currentTheme = appData.getString("theme", "000000")
-        boxinsetlayout.setBackgroundColor(Color.parseColor("#" + currentTheme))
-
-        otpAuth.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        otpAuth.foregroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        otpAuth.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-
-        confirmButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-
-        if (currentTheme == "F7F7F7") {
-            importLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            otpAuth.setHintTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            otpAuth.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            previous.imageTintList = ColorStateList.valueOf(Color.parseColor("#000000"))
-            next.imageTintList = ColorStateList.valueOf(Color.parseColor("#000000"))
-        } else {
-            importLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")))
-            otpAuth.setHintTextColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")))
-            otpAuth.setTextColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")))
-            previous.imageTintList = ColorStateList.valueOf(Color.parseColor("#BDBDBD"))
-            next.imageTintList = ColorStateList.valueOf(Color.parseColor("#BDBDBD"))
-        }
 
         val files: Array<File> = getExternalStorageDirectory().listFiles()
 
@@ -227,17 +204,7 @@ class OtpAuthImport : Activity() {
 
                 val id = UUID.randomUUID().toString()
                 val json = Gson().toJson(accountData)
-                if (accounts.all.values.toString().contains(accountData[1])) {
-                    Toast.makeText(this, "This account already exists.", Toast.LENGTH_LONG).show()
-                } else {
-                    accounts.edit().putString(id, json).apply()
-                    val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                    vibratorService.vibrate(50)
 
-                    val intent = Intent(applicationContext, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
 
             }
         }

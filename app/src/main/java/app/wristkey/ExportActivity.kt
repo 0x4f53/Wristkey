@@ -35,33 +35,6 @@ class ExportActivity : WearableActivity() {
         val qrCodeExport = findViewById<LinearLayout>(R.id.AuthenticatorImport)
         val jsonQrCodeExportButton = findViewById<ImageView>(R.id.AuthenticatorImportButton)
         val backButton = findViewById<ImageView>(R.id.BackButton)
-        var currentAccent = appData.getString("accent", "4285F4")
-        var currentTheme = appData.getString("theme", "000000")
-
-        boxinsetlayout.setBackgroundColor(Color.parseColor("#"+currentTheme))
-        jsonFileExportButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        jsonQrCodeExportButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-        backButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#"+currentAccent))
-
-        if (currentTheme == "F7F7F7") {
-            jsonFileExportLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            jsonQrCodeExportLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-        } else {
-            jsonFileExportLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-            jsonQrCodeExportLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-        }
-
-        if (appData.getBoolean("screen_lock", true)) {
-            val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
-            if (lockscreen.isKeyguardSecure) {
-                val i = lockscreen.createConfirmDeviceCredentialIntent("Wristkey", "App locked")
-                startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
-            }
-        }
-
-        // Begin unpacking data
-
-        val exportData: String = accounts.all.values.toString()
 
         fileExport.setOnClickListener {
 
@@ -76,7 +49,6 @@ class ExportActivity : WearableActivity() {
                 }
                 val file = File(root, fileName)
                 val writer = FileWriter(file)
-                writer.append(exportData)
                 writer.flush()
                 writer.close()
                 Toast.makeText(this, "Exported successfully. Make sure to delete after use.", Toast.LENGTH_SHORT).show()
@@ -102,7 +74,6 @@ class ExportActivity : WearableActivity() {
 
         qrCodeExport.setOnClickListener {
             val intent = Intent(applicationContext, QRCodeActivity::class.java)
-            intent.putExtra("qr_data", exportData)
             startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
