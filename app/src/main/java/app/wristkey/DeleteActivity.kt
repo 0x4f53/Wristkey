@@ -28,24 +28,6 @@ class DeleteActivity : WearableActivity() {
         val confirmButton = findViewById<ImageButton>(R.id.AuthenticatorConfirmButton)
         val cancelButton = findViewById<ImageButton>(R.id.CancelButton)
         val boxInsetLayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        var currentAccent = appData.getString("accent", "4285F4")
-        var currentTheme = appData.getString("theme", "000000")
-        boxInsetLayout.setBackgroundColor(Color.parseColor("#" + currentTheme))
-        confirmButton.backgroundTintList =
-            ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        if (currentTheme == "F7F7F7") {
-            confirmationText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-        } else {
-            confirmationText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-        }
-
-        if (appData.getBoolean("screen_lock", true)) {
-            val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
-            if (lockscreen.isKeyguardSecure) {
-                val i = lockscreen.createConfirmDeviceCredentialIntent("Wristkey", "App locked")
-                startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
-            }
-        }
 
         cancelButton.setOnClickListener {
             val intent = Intent(applicationContext, MainActivity::class.java)
@@ -61,8 +43,6 @@ class DeleteActivity : WearableActivity() {
         if (isDeleteAll) {
             confirmationText.text = "Delete all accounts and app settings?"
             confirmButton.setOnClickListener {
-                appData.edit().clear().apply()
-                accounts.edit().clear().apply()
                 finish()
                 Toast.makeText(this, "All items deleted!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(applicationContext, MainActivity::class.java)
@@ -72,7 +52,6 @@ class DeleteActivity : WearableActivity() {
             }
         } else {
             confirmButton.setOnClickListener {
-                accounts.edit().remove(accountIDToDelete).apply()
                 val intent = Intent(applicationContext, MainActivity::class.java)
                 startActivity(intent)
                 finish()
