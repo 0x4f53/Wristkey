@@ -23,7 +23,7 @@ class AboutActivity : WearableActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val doneButton = findViewById<CardView>(R.id.DoneButton)
+        val backButton = findViewById<CardView>(R.id.backButton)
         val appNameText = findViewById<TextView>(R.id.AppName)
         val heart = findViewById<TextView>(R.id.heart)
         val versionText = findViewById<TextView>(R.id.Version)
@@ -48,8 +48,8 @@ class AboutActivity : WearableActivity() {
             } catch (ex: Exception) { }
         }
 
-        doneButton.setOnClickListener {
-            doneButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        backButton.setOnClickListener {
+            backButton.performHapticFeedback(HapticGenerator.SUCCESS)
             finish()
         }
     }

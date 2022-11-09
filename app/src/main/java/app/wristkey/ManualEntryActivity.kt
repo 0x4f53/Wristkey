@@ -1,9 +1,10 @@
 package app.wristkey
+import android.content.Intent
+import android.media.audiofx.HapticGenerator
 import android.os.Build
 import android.os.Bundle
 import android.support.wearable.activity.WearableActivity
 import android.text.method.PasswordTransformationMethod
-import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
@@ -43,6 +44,8 @@ class ManualEntryActivity : WearableActivity() {
     private var length by Delegates.notNull<Int>()
     private var period by Delegates.notNull<Int>()
 
+    private lateinit var uuid: String
+
     private lateinit var loginData: Utilities.MfaCode
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -51,6 +54,7 @@ class ManualEntryActivity : WearableActivity() {
         setContentView(R.layout.activity_manual_entry)
 
         utilities = Utilities(applicationContext)
+        uuid = UUID.randomUUID().toString()
 
         initializeUI()
 
@@ -151,7 +155,7 @@ class ManualEntryActivity : WearableActivity() {
             }
 
             loginData = Utilities.MfaCode (
-                uuid4 = UUID.randomUUID().toString(),
+                uuid4 = uuid,
                 type = utilities.DEFAULT_TYPE,
                 mode = mode,
                 issuer = issuerInput.text.toString(),
@@ -165,12 +169,19 @@ class ManualEntryActivity : WearableActivity() {
                 label = labelInput.text.toString()
             )
 
-            Log.d ("Wristkey", "Saved data: " + utilities.encodeOTPAuthURL(loginData)!!)
+            val encodedData = utilities.encodeOTPAuthURL(loginData)
+            utilities.vault.edit().putString(uuid, encodedData).apply()
             finish()
+
         }
 
+        deleteButton.visibility = View.GONE
         deleteButton.setOnClickListener {
-            finish()
+            //utilities.vault.edit().remove(uuid).apply()
+            val intent = Intent(applicationContext, DeleteActivity::class.java)
+            intent.putExtra(utilities.INTENT_UUID, uuid)
+            startActivity(intent)
+            deleteButton.performHapticFeedback(HapticGenerator.ERROR)
         }
 
         backButton.setOnClickListener {
