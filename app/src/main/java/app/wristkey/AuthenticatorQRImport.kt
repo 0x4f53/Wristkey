@@ -41,24 +41,6 @@ class AuthenticatorQRImport : Activity() {
         val importLabel = findViewById<TextView>(R.id.AuthenticatorImportLabel)
         val description = findViewById<TextView>(R.id.AuthenticatorDescription)
         val importUsernames = findViewById<CheckBox>(R.id.AuthenticatorImportUsernames)
-        var theme = "Dark"
-        var accent = "Blue"
-        var currentAccent = appData.getString("accent", "4285F4")
-        var currentTheme = appData.getString("theme", "000000")
-        boxinsetlayout.setBackgroundColor(Color.parseColor("#" + currentTheme))
-        confirmButton.backgroundTintList =
-            ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        importUsernames.buttonTintList =
-            ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-        if (currentTheme == "F7F7F7") {
-            importLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            description.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            importUsernames.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-        } else {
-            importLabel.setTextColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")))
-            description.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-            importUsernames.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-        }
 
         backButton.setOnClickListener {
             val intent = Intent(applicationContext, AddActivity::class.java)
@@ -88,42 +70,6 @@ class AuthenticatorQRImport : Activity() {
                             val importingLabel = findViewById<TextView>(R.id.ImportingLabel)
                             val importingDescription =
                                 findViewById<TextView>(R.id.ImportingDescription)
-                            loadingLayout.setBackgroundColor(Color.parseColor("#" + currentTheme))
-                            loadingIcon.progressTintList =
-                                ColorStateList.valueOf(Color.parseColor("#" + currentAccent))
-                            loadingIcon.backgroundTintList =
-                                ColorStateList.valueOf(Color.parseColor("#" + currentTheme))
-                            if (currentTheme == "F7F7F7") {
-                                importingLabel.setTextColor(
-                                    ColorStateList.valueOf(
-                                        Color.parseColor(
-                                            "#000000"
-                                        )
-                                    )
-                                )
-                                importingDescription.setTextColor(
-                                    ColorStateList.valueOf(
-                                        Color.parseColor(
-                                            "#000000"
-                                        )
-                                    )
-                                )
-                            } else {
-                                importingLabel.setTextColor(
-                                    ColorStateList.valueOf(
-                                        Color.parseColor(
-                                            "#BDBDBD"
-                                        )
-                                    )
-                                )
-                                importingDescription.setTextColor(
-                                    ColorStateList.valueOf(
-                                        Color.parseColor(
-                                            "#FFFFFF"
-                                        )
-                                    )
-                                )
-                            }
 
                             //found QR Code
 
@@ -178,7 +124,6 @@ class AuthenticatorQRImport : Activity() {
 
                                 val id = UUID.randomUUID().toString()
                                 val json = Gson().toJson(accountData)
-                                accounts.edit().putString(id, json).apply()
                             }
 
                             importingDescription.text = "Saving data"
