@@ -15,13 +15,15 @@ class Utilities (context: Context) {
 
     val context = context
     val DEFAULT_TYPE = "otpauth"
+    val CONFIG_SCREEN_ROUND = "CONFIG_SCREEN_ROUND"
+    val INTENT_UUID = "INTENT_UUID"
 
     var masterKeyAlias: String = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
     private val accountsFilename: String = "vault.wfs" // WristkeyFS
     var vault: SharedPreferences
 
     init {
-        vault = EncryptedSharedPreferences.create(
+        vault = EncryptedSharedPreferences.create (
             accountsFilename,
             masterKeyAlias,
             context,
@@ -55,15 +57,15 @@ class Utilities (context: Context) {
                 if (url.substringAfter("://").substringBefore("/").contains("totp"))
                     "totp"
                 else "hotp"
-            val issuer: String? = if (url.contains("issuer")) url.substringAfter("issuer=").substringBefore("&") else null
-            val account: String? = if (url.contains("otp")) url.substringAfter("otp/").substringBefore("?") else null
+            val issuer: String = url.substringAfterLast("otp/").substringBefore(":")
+            val account: String = url.substringAfterLast(":").substringBefore("?")
             val secret: String? = if (url.contains("secret")) url.substringAfter("secret=").substringBefore("&") else null
             val algorithm: String? = if (url.contains("algorithm")) url.substringAfter("algorithm=").substringBefore("&") else null
             val digits: Int? = if (url.contains("digits")) url.substringAfter("digits=").substringBefore("&").toInt() else null
             val period: Int? = if (url.contains("period")) url.substringAfter("period=").substringBefore("&").toInt() else null
             val lock: Boolean? = if (url.contains("lock")) url.substringAfter("lock=").substringBefore("&").toBoolean() else null
             val counter: Int? = if (url.contains("counter")) url.substringAfter("counter=").substringBefore("&").toInt() else null
-            val label: String? = if (url.contains("label")) url.substringAfter("label=").substringBefore("&") else null
+            val label: String? = if (url.contains("label")) url.substringAfter("label=").substringBefore("&") else account
 
             return MfaCode (
                 uuid4 = UUID.randomUUID().toString(),
@@ -98,9 +100,7 @@ class Utilities (context: Context) {
             if (mfaCodeObject.mode.toString().lowercase().contains("time") || mfaCodeObject.mode.toString().contains("totp")) "totp" else "hotp"
         else "totp"
 
-        if (mfaCodeObject.account.toString().isNotEmpty())
-            account = mfaCodeObject.account.toString()
-        else return null
+        account = mfaCodeObject.account.toString().ifEmpty { "" }
 
         issuer = mfaCodeObject.issuer.toString().ifEmpty { account }
 
@@ -110,9 +110,7 @@ class Utilities (context: Context) {
 
         val algorithm: String = mfaCodeObject.algorithm.toString().ifEmpty { "SHA1" }
 
-        val digits: String = if (mfaCodeObject.digits.toString().isNotEmpty())
-            mfaCodeObject.digits.toString()
-        else "6"
+        val digits: String = mfaCodeObject.digits.toString().ifEmpty { "6" }
 
         val period: String = mfaCodeObject.period.toString().ifEmpty { "30" }
 
@@ -120,7 +118,7 @@ class Utilities (context: Context) {
 
         val counter: String = mfaCodeObject.counter.toString().ifEmpty { "0" }
 
-        val label: String = mfaCodeObject.label.toString().ifEmpty { "label" }
+        val label: String = mfaCodeObject.label.toString().ifEmpty { "" }
 
         return "$type://$mode/$issuer:$account?secret=$secret&algorithm=$algorithm&digits=$digits&period=$period&lock=$lock&counter=$counter&label=$label"
     }
