@@ -29,13 +29,7 @@ class SettingsActivity : WearableActivity() {
         val accentGroup = findViewById<RadioGroup>(R.id.AccentRadioGroup)
         val themeGroup = findViewById<RadioGroup>(R.id.ThemeRadioGroup)
 
-        backButton.setOnClickListener {
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-            finish()
-        }
+
 
     }
 }
