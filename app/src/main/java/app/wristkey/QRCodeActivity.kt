@@ -21,13 +21,6 @@ class QRCodeActivity : WearableActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qrcode)
 
-        if (appData.getBoolean("screen_lock", true)) {
-            val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
-            if (lockscreen.isKeyguardSecure) {
-                val i = lockscreen.createConfirmDeviceCredentialIntent("Wristkey", "App locked")
-                startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
-            }
-        }
 
         val manager = getSystemService(WINDOW_SERVICE) as WindowManager
         val display = manager.defaultDisplay

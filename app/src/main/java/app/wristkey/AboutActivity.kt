@@ -2,22 +2,19 @@ package app.wristkey
 
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
+import android.media.audiofx.HapticGenerator
 import android.net.Uri
 import android.os.Bundle
-import android.os.Vibrator
 import android.support.wearable.activity.WearableActivity
-import android.widget.ImageView
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.wear.widget.BoxInsetLayout
 import com.google.android.wearable.intent.RemoteIntent
 import wristkey.BuildConfig
 import wristkey.R
-import java.util.*
 
 
 class AboutActivity : WearableActivity() {
@@ -26,36 +23,17 @@ class AboutActivity : WearableActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val doneButton = findViewById<ImageView>(R.id.DoneButton)
+        val doneButton = findViewById<CardView>(R.id.DoneButton)
         val appNameText = findViewById<TextView>(R.id.AppName)
-        val copyrightText = findViewById<TextView>(R.id.Copyright)
+        val heart = findViewById<TextView>(R.id.heart)
         val versionText = findViewById<TextView>(R.id.Version)
         val descriptionText = findViewById<TextView>(R.id.AuthenticatorDescription)
-        val currentTheme = appData.getString("theme", "000000")
-        boxinsetlayout.setBackgroundColor(Color.parseColor("#$currentTheme"))
-        val currentAccent = appData.getString("accent", "4285F4")
-        doneButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#$currentAccent"))
         val urlLink = findViewById<TextView>(R.id.SourceCode)
-        urlLink.setTextColor(ColorStateList.valueOf(Color.parseColor("#$currentAccent")))
-        if (currentTheme == "F7F7F7") {
-            appNameText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            copyrightText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            versionText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            descriptionText.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")))
-            urlLink.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor("#000000"))
-        } else {
-            appNameText.setTextColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")))
-            copyrightText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-            versionText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-            descriptionText.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-            urlLink.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
-        }
 
-        var year = Calendar.getInstance().get(Calendar.YEAR).toString()
-        if (year == "1970") year = "2021"
-        copyrightText.text = "${copyrightText.text} $year"
         versionText.text = "v${BuildConfig.VERSION_NAME}"
         val uri: String = getString(R.string.about_url)
+
+        heart.startAnimation(AnimationUtils.loadAnimation(this, R.anim.heartbeat))
 
         urlLink.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW).addCategory(Intent.CATEGORY_BROWSABLE).setData(Uri.parse(uri))
@@ -71,9 +49,7 @@ class AboutActivity : WearableActivity() {
         }
 
         doneButton.setOnClickListener {
-            finish()
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
+            doneButton.performHapticFeedback(HapticGenerator.SUCCESS)
             finish()
         }
     }
