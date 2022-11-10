@@ -1,35 +1,65 @@
 package app.wristkey
 
-import android.content.Context
 import android.content.Intent
+import android.media.audiofx.HapticGenerator
+import android.os.Build
 import android.os.Bundle
-import android.os.Vibrator
 import android.support.wearable.activity.WearableActivity
-import android.widget.CheckBox
-import android.widget.RadioGroup
-import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.switchmaterial.SwitchMaterial
 import wristkey.R
 
 class SettingsActivity : WearableActivity() {
+
+    lateinit var utilities: Utilities
+
+    lateinit var beepButton: SwitchMaterial
+    lateinit var vibrateButton: SwitchMaterial
+    lateinit var lockButton: SwitchMaterial
+    lateinit var clockButton: SwitchMaterial
+    lateinit var twentyFourHourClockButton: SwitchMaterial
+    lateinit var roundButton: SwitchMaterial
+    lateinit var deleteButton: CardView
+    lateinit var exportButton: CardView
+    lateinit var themeButton: CardView
+    lateinit var backButton: CardView
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-        val boxinsetlayout = findViewById<ConstraintLayout>(R.id.BoxInsetLayout)
-        val settingsLabelText = findViewById<TextView>(R.id.SettingsLabel)
-        val beep = findViewById<SwitchMaterial>(R.id.beepButton)
-        val vibrate = findViewById<SwitchMaterial>(R.id.vibrateButton)
-        val screenLock = findViewById<SwitchMaterial>(R.id.lockButton)
-        val deleteButton = findViewById<CardView>(R.id.deleteButton)
-        val exportButton = findViewById<CardView>(R.id.exportButton)
-        val backButton = findViewById<CardView>(R.id.backButton)
-        val accentGroup = findViewById<RadioGroup>(R.id.AccentRadioGroup)
-        val themeGroup = findViewById<RadioGroup>(R.id.ThemeRadioGroup)
 
+        utilities = Utilities(applicationContext)
 
+        initializeUI()
 
     }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun initializeUI () {
+        beepButton = findViewById (R.id.beepButton)
+        vibrateButton = findViewById (R.id.vibrateButton)
+        lockButton = findViewById (R.id.lockButton)
+        clockButton = findViewById (R.id.clockButton)
+        twentyFourHourClockButton = findViewById (R.id.twentyFourHourClockButton)
+        roundButton = findViewById (R.id.roundButton)
+        deleteButton = findViewById (R.id.deleteButton)
+        exportButton = findViewById (R.id.exportButton)
+        backButton = findViewById (R.id.backButton)
+        themeButton = findViewById (R.id.themeButton)
+
+        backButton.setOnClickListener {
+            finish()
+        }
+
+        deleteButton.setOnClickListener {
+            val intent = Intent(applicationContext, DeleteActivity::class.java)
+            intent.putExtra(utilities.INTENT_DELETE_MODE, utilities.INTENT_WIPE)
+            startActivity(intent)
+            deleteButton.performHapticFeedback(HapticGenerator.ERROR)
+        }
+
+    }
+
 }
