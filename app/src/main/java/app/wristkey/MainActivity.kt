@@ -234,7 +234,8 @@ class MainActivity : AppCompatActivity() {
                     otp = TimeBasedOneTimePasswordGenerator(login.secret!!.toByteArray(), config)
                         .generate(loginCard.counter.text.toString().toLong())
 
-                    loginCard.code.text = otp.replace("...".toRegex(), "$0 ")
+                    loginCard.code.text =
+                        if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ") else otp!!.replace("....".toRegex(), "$0 ")
 
                     try {
                         mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
@@ -248,7 +249,8 @@ class MainActivity : AppCompatActivity() {
                                         loginCard.code.startAnimation(blinkAnimation)
                                     }
 
-                                    loginCard.code.text = otp!!.replace("...".toRegex(), "$0 ")
+                                    loginCard.code.text =
+                                        if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ") else otp!!.replace("....".toRegex(), "$0 ")
 
                                     otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config)
                                     .generate(loginCard.counter.text.toString().toLong())
@@ -282,7 +284,8 @@ class MainActivity : AppCompatActivity() {
                             otp = HmacOneTimePasswordGenerator(login.secret!!.toByteArray(), config)
                                 .generate(loginCard.counter.text.toString().toLong())
 
-                            loginCard.code.text = otp!!.replace("...".toRegex(), "$0 ")
+                            loginCard.code.text =
+                                if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ") else otp!!.replace("....".toRegex(), "$0 ")
 
                             loginCard.code.startAnimation(singleBlinkAnimation)
                             loginCard.incrementCounter.startAnimation(singleBlinkAnimation)
@@ -317,7 +320,8 @@ class MainActivity : AppCompatActivity() {
                             otp = HmacOneTimePasswordGenerator(login.secret!!.toByteArray(), config)
                                 .generate(loginCard.counter.text.toString().toLong())
 
-                            loginCard.code.text = otp!!.replace("...".toRegex(), "$0 ")
+                            loginCard.code.text =
+                                if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ") else otp!!.replace("....".toRegex(), "$0 ")
 
                             loginCard.code.startAnimation(singleBlinkAnimation)
                             loginCard.decrementCounter.startAnimation(singleBlinkAnimation)
@@ -348,7 +352,8 @@ class MainActivity : AppCompatActivity() {
                     otp = HmacOneTimePasswordGenerator(login.secret!!.toByteArray(), config)
                         .generate(loginCard.counter.text.toString().toLong())
 
-                    loginCard.code.text = otp!!.replace("...".toRegex(), "$0 ")
+                    loginCard.code.text =
+                        if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ") else otp!!.replace("....".toRegex(), "$0 ")
 
                 }
             }

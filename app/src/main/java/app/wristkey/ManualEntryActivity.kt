@@ -208,8 +208,8 @@ class ManualEntryActivity : WearableActivity() {
         }
 
         when (login?.digits) {
-            6 -> modeSeekbar.progress = 0
-            8 -> modeSeekbar.progress = 1
+            6 -> lengthSeekbar.progress = 0
+            8 -> lengthSeekbar.progress = 1
         }
 
         periodSeekbar.progress = login?.period!!
