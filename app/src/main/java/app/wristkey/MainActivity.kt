@@ -232,7 +232,7 @@ class MainActivity : AppCompatActivity() {
                     )
 
                     otp = TimeBasedOneTimePasswordGenerator(login.secret!!.toByteArray(), config)
-                        .generate(loginCard.counter.text.toString().toLong())
+                        .generate()
 
                     loginCard.code.text =
                         if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ") else otp!!.replace("....".toRegex(), "$0 ")
@@ -253,7 +253,7 @@ class MainActivity : AppCompatActivity() {
                                         if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ") else otp!!.replace("....".toRegex(), "$0 ")
 
                                     otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config)
-                                    .generate(loginCard.counter.text.toString().toLong())
+                                        .generate()
 
                                 } catch (_: Exception) { }
                             }
