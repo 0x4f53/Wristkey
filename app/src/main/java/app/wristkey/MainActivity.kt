@@ -12,10 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -207,31 +204,43 @@ class MainActivity : AppCompatActivity() {
 
             loginCard.name.text = login.issuer
 
-
             loginCard.setIsRecyclable(false)
 
             var otpCode: String?
             otpCode = GoogleAuthenticator(base32secret = login.secret!!).generate()
             loginCard.code.text = otpCode!!.replace("...".toRegex(), "$0 ")
 
-            try {
-                mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
-                    override fun run() {
-                        runOnUiThread {
-                            try {
-                                val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-                                otpCode = GoogleAuthenticator(base32secret = login.secret).generate()
-                                var halfMinuteElapsed = abs((60-currentSecond))
-                                if (halfMinuteElapsed >= 30) halfMinuteElapsed -= 30
-                                if (halfMinuteElapsed in 0..1) {
-                                    loginCard.code.animation = blinkAnimation
-                                }
-                                loginCard.code.text = otpCode!!.replace("...".toRegex(), "$0 ")
-                            } catch (_: Exception) { }
-                        }
-                    }
-                }, 0, 1000) // 1000 milliseconds = 1 second
-            } catch (_: IllegalStateException) { }
+            when (login.mode) {
+                utilities.MFA_TIME_MODE -> {
+
+                    loginCard.counterControls.visibility = View.GONE
+
+                    try {
+                        mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
+                            override fun run() {
+                                try {
+                                    val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
+                                    var halfMinuteElapsed = abs((60-currentSecond))
+                                    if (halfMinuteElapsed >= 30) halfMinuteElapsed -= 30
+
+                                    if (halfMinuteElapsed == 1) {
+                                        loginCard.code.startAnimation(blinkAnimation)
+                                    }
+
+                                    loginCard.code.text = otpCode!!.replace("...".toRegex(), "$0 ")
+                                    otpCode = GoogleAuthenticator(base32secret = login.secret).generate()
+                                } catch (_: Exception) { }
+                            }
+                        }, 0, 1000) // 1000 milliseconds = 1 second
+                    } catch (_: IllegalStateException) { }
+                }
+
+                utilities.MFA_COUNTER_MODE -> {
+                    try {
+
+                    } catch (_: IllegalStateException) { }
+                }
+            }
 
             // tap on totp / mfa / 2fa
             loginCard.code.setOnClickListener {
@@ -251,11 +260,15 @@ class MainActivity : AppCompatActivity() {
             val name: TextView = itemView.findViewById(R.id.name)
             val code: TextView = itemView.findViewById(R.id.code)
 
+            val counterControls: LinearLayout = itemView.findViewById(R.id.counterControls)
+
             val incrementCounter: ImageView = itemView.findViewById(R.id.increment_counter)
             val counter: TextView = itemView.findViewById(R.id.counter)
             val decrementCounter: ImageView = itemView.findViewById(R.id.decrement_counter)
 
             init {
+                name.isSelected = true
+
                 blinkAnimation = AlphaAnimation (0.25f, 1f)
                 blinkAnimation.duration = 500
                 blinkAnimation.startOffset = 20

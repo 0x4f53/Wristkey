@@ -17,6 +17,12 @@ class Utilities (context: Context) {
     val DEFAULT_TYPE = "otpauth"
     val CONFIG_SCREEN_ROUND = "CONFIG_SCREEN_ROUND"
     val INTENT_UUID = "INTENT_UUID"
+    val INTENT_WIPE = "INTENT_WIPE"
+    val INTENT_DELETE = "INTENT_DELETE"
+    val INTENT_DELETE_MODE = "INTENT_DELETE_MODE"
+
+    val MFA_TIME_MODE = "totp"
+    val MFA_COUNTER_MODE = "hotp"
 
     var masterKeyAlias: String = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
     private val accountsFilename: String = "vault.wfs" // WristkeyFS
