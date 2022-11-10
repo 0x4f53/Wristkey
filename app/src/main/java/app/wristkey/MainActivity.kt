@@ -134,6 +134,7 @@ class MainActivity : AppCompatActivity() {
         loginsRecycler.invalidate()
         loginsRecycler.refreshDrawableState()
         loginsRecycler.scheduleLayoutAnimation()
+        loginsRecycler.setItemViewCacheSize(10)
 
     }
 
