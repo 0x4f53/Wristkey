@@ -11,7 +11,6 @@ import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
-import androidx.wear.widget.BoxInsetLayout
 import com.google.android.wearable.intent.RemoteIntent
 import wristkey.BuildConfig
 import wristkey.R
@@ -22,7 +21,6 @@ class AboutActivity : WearableActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
-        val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
         val backButton = findViewById<CardView>(R.id.backButton)
         val appNameText = findViewById<TextView>(R.id.AppName)
         val heart = findViewById<TextView>(R.id.heart)
