@@ -202,9 +202,9 @@ class ManualEntryActivity : WearableActivity() {
         if (login?.mode == utilities.MFA_TIME_MODE) modeSeekbar.progress = 0 else modeSeekbar.progress = 1
 
         when (login?.algorithm) {
-            utilities.ALGO_SHA1 -> modeSeekbar.progress = 0
-            utilities.ALGO_SHA256 -> modeSeekbar.progress = 1
-            utilities.ALGO_SHA512 -> modeSeekbar.progress = 2
+            utilities.ALGO_SHA1 -> hashSeekbar.progress = 0
+            utilities.ALGO_SHA256 -> hashSeekbar.progress = 1
+            utilities.ALGO_SHA512 -> hashSeekbar.progress = 2
         }
 
         when (login?.digits) {
