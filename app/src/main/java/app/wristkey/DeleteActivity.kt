@@ -23,6 +23,8 @@ class DeleteActivity : WearableActivity() {
 
     private lateinit var backButton: CardView
 
+    private lateinit var uuid: String
+
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate (savedInstanceState: Bundle?) {
         super.onCreate (savedInstanceState)
@@ -34,6 +36,11 @@ class DeleteActivity : WearableActivity() {
 
         if (intent.getStringExtra(utilities.INTENT_DELETE_MODE) == utilities.INTENT_WIPE) {
             initializeForWipe()
+        }
+
+        if (intent.hasExtra(utilities.INTENT_UUID)) {
+            uuid = intent.getStringExtra(utilities.INTENT_UUID)!!
+            initializeForDeletingLogin ()
         }
 
     }
@@ -51,6 +58,24 @@ class DeleteActivity : WearableActivity() {
             finish()
         }
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun initializeForDeletingLogin () {
+        var login = utilities.getLogin(uuid)
+        var itemName = login?.issuer
+        if (!login?.account.isNullOrEmpty()) itemName += " (${login?.account})"
+
+        deleteLabel.text = "Would you like to delete \"$itemName\"?"
+        deleteButtonIcon.setImageDrawable(AppCompatResources.getDrawable(applicationContext, R.drawable.ic_outline_delete_24))
+        deleteButtonLabel.text = "Delete"
+
+        deleteButton.setOnClickListener {
+            utilities.deleteFromVault (uuid)
+            finish()
+            finishAffinity()
+            startActivity(Intent(applicationContext, MainActivity::class.java))
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

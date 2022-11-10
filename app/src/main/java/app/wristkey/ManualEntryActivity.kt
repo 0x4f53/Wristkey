@@ -58,6 +58,11 @@ class ManualEntryActivity : WearableActivity() {
 
         initializeUI()
 
+        if (intent.hasExtra(utilities.INTENT_UUID)) {
+            uuid = intent.getStringExtra(utilities.INTENT_UUID)!!
+            loadLogin ()
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -109,9 +114,9 @@ class ManualEntryActivity : WearableActivity() {
         hashSeekbar.setOnSeekBarChangeListener (object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged (p0: SeekBar?, p1: Int, p2: Boolean) {
                 when (p0?.progress) {
-                    0 -> hashingAlgorithm = "SHA1"
-                    1 -> hashingAlgorithm = "SHA256"
-                    2 -> hashingAlgorithm = "SHA512"
+                    0 -> hashingAlgorithm = utilities.ALGO_SHA1
+                    1 -> hashingAlgorithm = utilities.ALGO_SHA256
+                    2 -> hashingAlgorithm = utilities.ALGO_SHA512
                 }
                 hashLabel.text = hashingAlgorithm
             }
@@ -150,12 +155,11 @@ class ManualEntryActivity : WearableActivity() {
             }
 
             if (secretInput.length() <= 7) {
-                Toast.makeText(applicationContext, "Enter a secret", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Enter a valid secret", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             loginData = Utilities.MfaCode (
-                uuid4 = uuid,
                 type = utilities.DEFAULT_TYPE,
                 mode = mode,
                 issuer = issuerInput.text.toString(),
@@ -169,23 +173,54 @@ class ManualEntryActivity : WearableActivity() {
                 label = labelInput.text.toString()
             )
 
-            val encodedData = utilities.encodeOTPAuthURL(loginData)
-            utilities.vault.edit().putString(uuid, encodedData).apply()
+            utilities.writeToVault(loginData, uuid)
+
             finish()
+            finishAffinity()
+            startActivity(Intent(applicationContext, MainActivity::class.java))
 
         }
 
         deleteButton.visibility = View.GONE
+
+        backButton.setOnClickListener {
+            finish()
+        }
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun loadLogin () {
+        val login = utilities.getLogin(uuid)
+
+        issuerInput.setText (login?.issuer.toString())
+
+        val label = if (login?.account.isNullOrEmpty()) login?.label.toString() else login?.account
+        labelInput.setText (label)
+        secretInput.setText (login?.secret.toString())
+
+        if (login?.mode == utilities.MFA_TIME_MODE) modeSeekbar.progress = 0 else modeSeekbar.progress = 1
+
+        when (login?.algorithm) {
+            utilities.ALGO_SHA1 -> modeSeekbar.progress = 0
+            utilities.ALGO_SHA256 -> modeSeekbar.progress = 1
+            utilities.ALGO_SHA512 -> modeSeekbar.progress = 2
+        }
+
+        when (login?.digits) {
+            6 -> modeSeekbar.progress = 0
+            8 -> modeSeekbar.progress = 1
+        }
+
+        periodSeekbar.progress = login?.period!!
+
+        deleteButton.visibility = View.VISIBLE
+
         deleteButton.setOnClickListener {
-            //utilities.vault.edit().remove(uuid).apply()
             val intent = Intent(applicationContext, DeleteActivity::class.java)
             intent.putExtra(utilities.INTENT_UUID, uuid)
             startActivity(intent)
             deleteButton.performHapticFeedback(HapticGenerator.ERROR)
-        }
-
-        backButton.setOnClickListener {
-            finish()
         }
 
     }
