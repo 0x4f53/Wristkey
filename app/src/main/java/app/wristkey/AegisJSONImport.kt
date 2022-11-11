@@ -32,8 +32,8 @@ class AegisJSONImport : Activity() {
         binding = ActivityAegisJsonimportBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val backButton = findViewById<ImageButton>(R.id.AuthenticatorBackButton)
-        val confirmButton = findViewById<ImageButton>(R.id.AuthenticatorConfirmButton)
+        val backButton = findViewById<ImageButton>(R.id.backButton)
+        val confirmButton = findViewById<ImageButton>(R.id.doneButton)
         val importLabel = findViewById<TextView>(R.id.AuthenticatorImportLabel)
         val description = findViewById<TextView>(R.id.AuthenticatorDescription)
         val importUsernames = findViewById<CheckBox>(R.id.AuthenticatorImportUsernames)
@@ -59,8 +59,6 @@ class AegisJSONImport : Activity() {
                         val jsonData = reader.readText()
                         val db = JSONObject(jsonData)["db"].toString()
                         val entries = JSONObject(db)["entries"].toString()
-
-
 
                         var itemsArray = JSONArray(entries)
 
