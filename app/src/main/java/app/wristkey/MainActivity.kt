@@ -7,10 +7,12 @@ import android.content.Intent
 import android.media.audiofx.HapticGenerator
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +26,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 import kotlin.math.abs
+import kotlin.properties.Delegates
 
 public const val CODE_AUTHENTICATION_VERIFICATION = 241
 
@@ -59,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         initializeUI()
 
         startClock()
+
         start2faTimer()
 
         addAccountButton.setOnClickListener {
@@ -102,39 +106,46 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setShape () {
-        if (!resources.configuration.isScreenRound && !utilities.vault.all.keys.contains(utilities.CONFIG_SCREEN_ROUND)) {
+        if (
+            utilities.vault.getBoolean (
+                utilities.CONFIG_SCREEN_ROUND,
+                resources.configuration.isScreenRound
+            )
+        ) {
+            roundTimeLeft.visibility = View.VISIBLE
+            squareTimeLeft.visibility = View.GONE
+        } else {
             roundTimeLeft.visibility = View.GONE
             squareTimeLeft.visibility = View.VISIBLE
-        } else {
-            if (utilities.vault.getBoolean(utilities.CONFIG_SCREEN_ROUND, false)) {
-                roundTimeLeft.visibility = View.GONE
-                squareTimeLeft.visibility = View.VISIBLE
-            } else {
-                roundTimeLeft.visibility = View.VISIBLE
-                squareTimeLeft.visibility = View.GONE
-            }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initializeUI () {
         clock = findViewById(R.id.clock)
+
         loginsRecycler = findViewById(R.id.loginsRecycler)
+
         roundTimeLeft = findViewById(R.id.RoundTimeLeft)
         squareTimeLeft = findViewById(R.id.SquareTimeLeftTop)
+
         addAccountButton = findViewById(R.id.AddAccountButton)
         settingsButton = findViewById(R.id.SettingsButton)
         aboutButton = findViewById(R.id.AboutButton)
 
         setShape()
 
-        val adapter = LoginsAdapter(utilities.vault.all.values.toMutableList() as MutableList<String>)
+        val adapter = LoginsAdapter(utilities.getLogins().toMutableList())
         loginsRecycler.layoutManager = LinearLayoutManager(this@MainActivity)
         loginsRecycler.adapter = adapter
         loginsRecycler.invalidate()
         loginsRecycler.refreshDrawableState()
         loginsRecycler.scheduleLayoutAnimation()
-        loginsRecycler.setItemViewCacheSize(10)
+        loginsRecycler.setItemViewCacheSize(vault.size)
+
+        addAccountButton.animation = AnimationUtils.loadAnimation(applicationContext, R.anim.slide_right)
+        settingsButton.animation = AnimationUtils.loadAnimation(applicationContext, R.anim.slide_right)
+        aboutButton.animation = AnimationUtils.loadAnimation(applicationContext, R.anim.slide_right)
 
     }
 
@@ -170,7 +181,13 @@ class MainActivity : AppCompatActivity() {
         } catch (_: IllegalStateException) {}
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun startClock () {
+
+        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) {
+            findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
+        }
+
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
@@ -178,10 +195,18 @@ class MainActivity : AppCompatActivity() {
                     val currentHour = SimpleDateFormat("hh", Locale.getDefault()).format(Date())
                     val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
                     val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
+                    val currentAmPm = SimpleDateFormat("a", Locale.getDefault()).format(Date())
                     runOnUiThread {
                         try {
-                            clock.text = "$currentHour:$currentMinute"
-                            if ((currentSecond % 2) == 0) clock.text = "$currentHour $currentMinute"
+
+                            if (utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, false)) {
+                                clock.text = "$currentHour24:$currentMinute"
+                                if ((currentSecond % 2) == 0) clock.text = "$currentHour24 $currentMinute"
+                            } else {
+                                clock.text = "$currentHour:$currentMinute"
+                                if ((currentSecond % 2) == 0) clock.text = "$currentHour $currentMinute"
+                            }
+
                         } catch (_: Exception) { }
                     }
                 }
@@ -189,11 +214,14 @@ class MainActivity : AppCompatActivity() {
         } catch (_: IllegalStateException) { }
     }
 
-    inner class LoginsAdapter (private val logins: MutableList<String>) : RecyclerView.Adapter<LoginsAdapter.ViewHolder>() {
+    inner class LoginsAdapter (private val logins: MutableList<Utilities.MfaCode>) : RecyclerView.Adapter<LoginsAdapter.ViewHolder>() {
 
         lateinit var blinkAnimation: AlphaAnimation
         lateinit var singleBlinkAnimation: AlphaAnimation
+        var beepEnabled by Delegates.notNull<Boolean>()
+        var hapticsEnabled by Delegates.notNull<Boolean>()
 
+        @RequiresApi(Build.VERSION_CODES.M)
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : ViewHolder {  // create new views
             val loginCard: View = LayoutInflater.from(parent.context).inflate(R.layout.login_card, parent, false)
             loginCard.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
@@ -205,7 +233,7 @@ class MainActivity : AppCompatActivity() {
 
             loginCard.setIsRecyclable(false)
 
-            val login = utilities.decodeOTPAuthURL(logins[loginCard.adapterPosition])!!
+            val login = logins[loginCard.adapterPosition]
 
             lateinit var algorithm: HmacAlgorithm
             if (login.algorithm!!.contains(utilities.ALGO_SHA1)) algorithm = HmacAlgorithm.SHA1
@@ -223,7 +251,20 @@ class MainActivity : AppCompatActivity() {
             when (login.mode) {
                 utilities.MFA_TIME_MODE -> {
 
-                    loginCard.counterControls.visibility = View.GONE
+                    when (login.period) {
+                        15, 60 -> {
+                            loginCard.counterControls.visibility = View.VISIBLE
+                            loginCard.incrementCounter.visibility = View.GONE
+                            loginCard.decrementCounter.visibility = View.GONE
+                            loginCard.counter.visibility = View.VISIBLE
+                            loginCard.counter.text = "${login.period}s"
+                        }
+
+                        30 -> {
+                            loginCard.counterControls.visibility = View.GONE
+                        }
+
+                    }
 
                     val config = TimeBasedOneTimePasswordConfig (
                         timeStep = login.period!!.toLong(),
@@ -236,18 +277,45 @@ class MainActivity : AppCompatActivity() {
                         .generate()
 
                     loginCard.code.text =
-                        if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ") else otp!!.replace("....".toRegex(), "$0 ")
+                        if (otp.length == 6) otp.replace("...".toRegex(), "$0 ") else otp.replace("....".toRegex(), "$0 ")
 
+                    var timerElapsed = 0
                     try {
-                        mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
+                        mfaCodesTimer.scheduleAtFixedRate (object : TimerTask() {
                             override fun run() {
+
                                 try {
                                     val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-                                    var halfMinuteElapsed = abs((60-currentSecond))
-                                    if (halfMinuteElapsed >= 30) halfMinuteElapsed -= 30
 
-                                    if (halfMinuteElapsed == 1) {
-                                        loginCard.code.startAnimation(blinkAnimation)
+                                    Log.d("asdasdas", timerElapsed.toString())
+
+                                    if (timerElapsed == 1) {
+                                        try {
+                                            loginCard.code.startAnimation(blinkAnimation)
+                                        } catch (_: Exception) { }
+
+                                        if (beepEnabled) utilities.beep()
+                                        if (hapticsEnabled)
+                                            loginCard.incrementCounter.performHapticFeedback(HapticGenerator.ERROR)
+
+                                    }
+
+                                    when (login.period) {
+
+                                        15 -> {
+                                            if (currentSecond % 15 == 0) timerElapsed = 0
+                                            else timerElapsed += 1
+                                        }
+
+                                        30 -> {
+                                            if (currentSecond % 30 == 0) timerElapsed = 0
+                                            else timerElapsed += 1
+                                        }
+
+                                        60 -> {
+                                            timerElapsed = abs((60-currentSecond))
+                                        }
+
                                     }
 
                                     loginCard.code.text =
@@ -288,9 +356,14 @@ class MainActivity : AppCompatActivity() {
                             loginCard.code.text =
                                 if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ") else otp!!.replace("....".toRegex(), "$0 ")
 
-                            loginCard.code.startAnimation(singleBlinkAnimation)
-                            loginCard.incrementCounter.startAnimation(singleBlinkAnimation)
+                            try {
+                                loginCard.code.startAnimation(singleBlinkAnimation)
+                                loginCard.incrementCounter.startAnimation(singleBlinkAnimation)
+                            } catch (_: Exception) { }
+
                             loginCard.incrementCounter.performHapticFeedback(HapticGenerator.ALREADY_EXISTS)
+                            if (beepEnabled) utilities.beep()
+                            if (hapticsEnabled) loginCard.incrementCounter.performHapticFeedback(HapticGenerator.ERROR)
 
                             if (currentCount+1 == 69L) Toast.makeText(applicationContext, "Nice ;)", Toast.LENGTH_SHORT).show()
 
@@ -324,9 +397,14 @@ class MainActivity : AppCompatActivity() {
                             loginCard.code.text =
                                 if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ") else otp!!.replace("....".toRegex(), "$0 ")
 
-                            loginCard.code.startAnimation(singleBlinkAnimation)
-                            loginCard.decrementCounter.startAnimation(singleBlinkAnimation)
+                            try {
+                                loginCard.code.startAnimation(singleBlinkAnimation)
+                                loginCard.incrementCounter.startAnimation(singleBlinkAnimation)
+                            } catch (_: Exception) { }
+
                             loginCard.decrementCounter.performHapticFeedback(HapticGenerator.ALREADY_EXISTS)
+                            if (beepEnabled) utilities.beep()
+                            if (hapticsEnabled) loginCard.incrementCounter.performHapticFeedback(HapticGenerator.ERROR)
 
                             if (currentCount-1 == 69L) Toast.makeText(applicationContext, "Nice ;)", Toast.LENGTH_SHORT).show()
 
@@ -392,6 +470,7 @@ class MainActivity : AppCompatActivity() {
             return logins.size
         }
 
+        @RequiresApi(Build.VERSION_CODES.M)
         inner class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {  // Holds the views for adding it to image and text
             val loginCard: CardView = itemView.findViewById(R.id.loginCard)
 
@@ -417,6 +496,10 @@ class MainActivity : AppCompatActivity() {
                 singleBlinkAnimation.duration = 500
                 singleBlinkAnimation.startOffset = 20
                 singleBlinkAnimation.repeatCount = 0
+
+                beepEnabled = utilities.vault.getBoolean(utilities.SETTINGS_BEEP_ENABLED, true)
+                hapticsEnabled = utilities.vault.getBoolean(utilities.SETTINGS_HAPTICS_ENABLED, true)
+
             }
 
         }

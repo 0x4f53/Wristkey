@@ -8,17 +8,15 @@ import wristkey.R
 
 class AddActivity : WearableActivity() {
     private lateinit var manualEntry: CardView
+    private lateinit var aegisImportButton: CardView
+
+    private lateinit var backButton: CardView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
 
         initializeUI()
-
-        manualEntry.setOnClickListener {
-            startActivity(Intent(applicationContext, ManualEntryActivity::class.java))
-            manualEntry.performHapticFeedback(HapticGenerator.SUCCESS)
-        }
 
         /*val importBitwardenButtonText = findViewById<TextView>(R.id.BitwardenImportLabel)
         val importBitwardenButton = findViewById<ImageView>(R.id.BitwardenImportButton)
@@ -73,14 +71,6 @@ class AddActivity : WearableActivity() {
             finish()
         }
 
-        aegisImport.setOnClickListener {
-            val intent = Intent(applicationContext, AegisJSONImport::class.java)
-            startActivity(intent)
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-            finish()
-        }
-
         wristkeyImport.setOnClickListener {
             val intent = Intent(applicationContext, WristkeyImport::class.java)
             startActivity(intent)
@@ -101,6 +91,24 @@ class AddActivity : WearableActivity() {
 
     fun initializeUI () {
         manualEntry = findViewById (R.id.manualEntry)
+        aegisImportButton = findViewById (R.id.aegisImportButton)
+
+        backButton = findViewById (R.id.backButton)
+
+        manualEntry.setOnClickListener {
+            startActivity(Intent(applicationContext, ManualEntryActivity::class.java))
+            manualEntry.performHapticFeedback(HapticGenerator.SUCCESS)
+        }
+
+        aegisImportButton.setOnClickListener {
+            val intent = Intent(applicationContext, AegisJSONImport::class.java)
+            startActivity(intent)
+            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        }
+
+        backButton.setOnClickListener {
+            finish()
+        }
     }
 
 }
