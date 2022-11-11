@@ -140,8 +140,12 @@ class ManualEntryActivity : WearableActivity() {
         period = 30
         periodSeekbar.setOnSeekBarChangeListener (object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged (p0: SeekBar?, p1: Int, p2: Boolean) {
-                periodLabel.text = "${((p0?.progress)?.plus(1)).toString()} seconds"
-                period = (p0?.progress)?.plus(1)!!
+                when (p0?.progress) {
+                    0 -> period = 15
+                    1 -> period = 30
+                    2 -> period = 60
+                }
+                periodLabel.text = "$period seconds"
             }
             override fun onStartTrackingTouch (seekBar: SeekBar?) { }
             override fun onStopTrackingTouch (seekBar: SeekBar?) { }
@@ -212,7 +216,11 @@ class ManualEntryActivity : WearableActivity() {
             8 -> lengthSeekbar.progress = 1
         }
 
-        periodSeekbar.progress = login?.period!!
+        when (login?.period) {
+            15 -> periodSeekbar.progress = 0
+            30 -> periodSeekbar.progress = 1
+            60 -> periodSeekbar.progress = 2
+        }
 
         deleteButton.visibility = View.VISIBLE
 

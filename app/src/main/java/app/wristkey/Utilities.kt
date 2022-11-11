@@ -2,6 +2,8 @@ package app.wristkey
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.AudioManager
+import android.media.ToneGenerator
 import android.os.Build
 import android.util.Log
 import android.view.GestureDetector
@@ -11,17 +13,27 @@ import androidx.annotation.RequiresApi
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import java.net.URLDecoder
+import java.util.*
+
 
 @RequiresApi(Build.VERSION_CODES.M)
 class Utilities (context: Context) {
 
     val context = context
     val DEFAULT_TYPE = "otpauth"
-    val CONFIG_SCREEN_ROUND = "CONFIG_SCREEN_ROUND"
     val INTENT_UUID = "INTENT_UUID"
     val INTENT_WIPE = "INTENT_WIPE"
     val INTENT_DELETE = "INTENT_DELETE"
     val INTENT_DELETE_MODE = "INTENT_DELETE_MODE"
+
+    val SETTINGS_BACKGROUND_COLOR = "SETTINGS_BACKGROUND_COLOR"
+    val SETTINGS_ACCENT_COLOR = "SETTINGS_ACCENT_COLOR"
+
+    val SETTINGS_CLOCK_ENABLED = "SETTINGS_CLOCK_ENABLED"
+    val SETTINGS_24H_CLOCK_ENABLED = "SETTINGS_24H_CLOCK_ENABLED"
+    val SETTINGS_HAPTICS_ENABLED = "SETTINGS_HAPTICS_ENABLED"
+    val SETTINGS_BEEP_ENABLED = "SETTINGS_BEEP_ENABLED"
+    val CONFIG_SCREEN_ROUND = "CONFIG_SCREEN_ROUND"
 
     val MFA_TIME_MODE = "totp"
     val MFA_COUNTER_MODE = "hotp"
@@ -174,10 +186,12 @@ class Utilities (context: Context) {
         var value: MfaCode? = null
 
         for (item in items) {
-            value = decodeOTPAuthURL(item.value as String) as MfaCode
-            if (item.key == uuid) {
-                return value
-            }
+            try {
+                value = decodeOTPAuthURL(item.value as String) as MfaCode
+                if (item.key == uuid) {
+                    return value
+                }
+            } catch (_: Exception) { }
         }
 
         return value
@@ -205,6 +219,29 @@ class Utilities (context: Context) {
         var vault = vault.all.values.toList()
         if (vault.isEmpty()) vault = mutableListOf<MfaCode>()
         return vault as MutableList<MfaCode>
+    }
+
+    fun getLogins (): List<MfaCode> {
+        val items  = vault.all
+        val logins = mutableListOf<MfaCode>()
+        var key: String? = null
+
+        for (item in items) {
+            key = item.key
+            try {
+                val uuid = UUID.fromString(item.key as String)
+                logins.add(decodeOTPAuthURL(item.value as String)!!)
+            } catch (_: IllegalArgumentException) { }
+        }
+
+        return logins
+    }
+
+    fun beep () {
+        try {
+            val toneGen1 = ToneGenerator(AudioManager.STREAM_MUSIC, 100)
+            toneGen1.startTone(ToneGenerator.TONE_SUP_INTERCEPT, 150)
+        } catch (_: Exception) { }
     }
 
 }
