@@ -1,6 +1,7 @@
 package app.wristkey
 
 import android.annotation.SuppressLint
+import android.app.KeyguardManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
@@ -60,25 +61,10 @@ class MainActivity : AppCompatActivity() {
         keys = utilities.vault.all.keys.toList() as List<String>
 
         initializeUI()
-
+        setShape()
+        lockScreen()
         startClock()
-
         start2faTimer()
-
-        addAccountButton.setOnClickListener {
-            startActivity(Intent(applicationContext, AddActivity::class.java))
-            aboutButton.performHapticFeedback(HapticGenerator.SUCCESS)
-        }
-
-        aboutButton.setOnClickListener {
-            startActivity(Intent(applicationContext, AboutActivity::class.java))
-            aboutButton.performHapticFeedback(HapticGenerator.SUCCESS)
-        }
-
-        settingsButton.setOnClickListener {
-            startActivity(Intent(applicationContext, SettingsActivity::class.java))
-            aboutButton.performHapticFeedback(HapticGenerator.SUCCESS)
-        }
     }
 
     override fun onStop() {
@@ -95,13 +81,6 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         mfaCodesTimer = Timer()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (!(resultCode == RESULT_OK && requestCode == CODE_AUTHENTICATION_VERIFICATION)) {
-            finish()
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -133,8 +112,6 @@ class MainActivity : AppCompatActivity() {
         settingsButton = findViewById(R.id.SettingsButton)
         aboutButton = findViewById(R.id.AboutButton)
 
-        setShape()
-
         val adapter = LoginsAdapter(utilities.getLogins().toMutableList())
         loginsRecycler.layoutManager = LinearLayoutManager(this@MainActivity)
         loginsRecycler.adapter = adapter
@@ -146,6 +123,21 @@ class MainActivity : AppCompatActivity() {
         addAccountButton.animation = AnimationUtils.loadAnimation(applicationContext, R.anim.slide_right)
         settingsButton.animation = AnimationUtils.loadAnimation(applicationContext, R.anim.slide_right)
         aboutButton.animation = AnimationUtils.loadAnimation(applicationContext, R.anim.slide_right)
+
+        addAccountButton.setOnClickListener {
+            startActivity(Intent(applicationContext, AddActivity::class.java))
+            aboutButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        }
+
+        aboutButton.setOnClickListener {
+            startActivity(Intent(applicationContext, AboutActivity::class.java))
+            aboutButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        }
+
+        settingsButton.setOnClickListener {
+            startActivity(Intent(applicationContext, SettingsActivity::class.java))
+            aboutButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        }
 
     }
 
@@ -212,6 +204,24 @@ class MainActivity : AppCompatActivity() {
                 }
             }, 0, 1000) // 1000 milliseconds = 1 second
         } catch (_: IllegalStateException) { }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun lockScreen () {
+        if (utilities.vault.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)) {
+            val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
+            if (lockscreen.isKeyguardSecure) {
+                val i = lockscreen.createConfirmDeviceCredentialIntent ("Wristkey", "App locked")
+                startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (!(resultCode == RESULT_OK && requestCode == CODE_AUTHENTICATION_VERIFICATION)) {
+            finish()
+        }
     }
 
     inner class LoginsAdapter (private val logins: MutableList<Utilities.MfaCode>) : RecyclerView.Adapter<LoginsAdapter.ViewHolder>() {
