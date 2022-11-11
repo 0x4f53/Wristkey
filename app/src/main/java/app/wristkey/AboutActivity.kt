@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.wearable.activity.WearableActivity
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
@@ -25,7 +26,7 @@ class AboutActivity : WearableActivity() {
         val appNameText = findViewById<TextView>(R.id.AppName)
         val heart = findViewById<TextView>(R.id.heart)
         val versionText = findViewById<TextView>(R.id.Version)
-        val descriptionText = findViewById<TextView>(R.id.AuthenticatorDescription)
+        val bitcoinDonateQrCode = findViewById<ImageView>(R.id.bitcoinDonateQrCode)
         val urlLink = findViewById<TextView>(R.id.SourceCode)
 
         versionText.text = "v${BuildConfig.VERSION_NAME}"
