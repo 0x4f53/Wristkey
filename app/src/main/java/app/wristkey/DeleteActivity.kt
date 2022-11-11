@@ -4,10 +4,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.wearable.activity.WearableActivity
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
 import wristkey.R
 
@@ -16,10 +14,7 @@ class DeleteActivity : WearableActivity() {
     lateinit var utilities: Utilities
 
     private lateinit var deleteLabel: TextView
-
     private lateinit var deleteButton: CardView
-    private lateinit var deleteButtonLabel: TextView
-    private lateinit var deleteButtonIcon: ImageView
 
     private lateinit var backButton: CardView
 
@@ -49,8 +44,6 @@ class DeleteActivity : WearableActivity() {
         deleteLabel = findViewById (R.id.deleteLabel)
 
         deleteButton = findViewById (R.id.deleteButton)
-        deleteButtonLabel = findViewById (R.id.deleteButtonLabel)
-        deleteButtonIcon = findViewById (R.id.deleteButtonIcon)
 
         backButton = findViewById (R.id.backButton)
 
@@ -67,8 +60,6 @@ class DeleteActivity : WearableActivity() {
         if (!login?.account.isNullOrEmpty()) itemName += " (${login?.account})"
 
         deleteLabel.text = "Would you like to delete \"$itemName\"?"
-        deleteButtonIcon.setImageDrawable(AppCompatResources.getDrawable(applicationContext, R.drawable.ic_outline_delete_24))
-        deleteButtonLabel.text = "Delete"
 
         deleteButton.setOnClickListener {
             utilities.deleteFromVault (uuid)
@@ -82,8 +73,6 @@ class DeleteActivity : WearableActivity() {
     private fun initializeForWipe () {
 
         deleteLabel.text = "Wipe Wristkey vault?\nThis cannot be undone."
-        deleteButtonIcon.setImageDrawable(AppCompatResources.getDrawable(applicationContext, R.drawable.ic_outline_delete_forever_24))
-        deleteButtonLabel.text = "Wipe vault"
 
         deleteButton.setOnClickListener {
             utilities.vault.edit().clear().apply()
