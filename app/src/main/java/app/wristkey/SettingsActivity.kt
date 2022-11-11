@@ -121,12 +121,20 @@ class SettingsActivity : WearableActivity() {
         }
 
         val beepButton: SwitchMaterial = findViewById(R.id.beepButton)
-        beepButton.isChecked = utilities.vault.getBoolean(utilities.SETTINGS_BEEP_ENABLED, true)
+        beepButton.isChecked = utilities.vault.getBoolean(utilities.SETTINGS_BEEP_ENABLED, false)
         beepButton.setOnCheckedChangeListener { _, isChecked ->
             settingsChanged = true
             utilities.vault.edit().remove(utilities.SETTINGS_BEEP_ENABLED).apply()
             utilities.vault.edit().putBoolean(utilities.SETTINGS_BEEP_ENABLED, isChecked).apply()
             if (isChecked) utilities.beep()
+        }
+
+        val lockButton: SwitchMaterial = findViewById(R.id.lockButton)
+        lockButton.isChecked = utilities.vault.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)
+        lockButton.setOnCheckedChangeListener { _, isChecked ->
+            settingsChanged = true
+            utilities.vault.edit().remove(utilities.SETTINGS_LOCK_ENABLED).apply()
+            utilities.vault.edit().putBoolean(utilities.SETTINGS_LOCK_ENABLED, isChecked).apply()
         }
 
         val roundButton: SwitchMaterial = findViewById(R.id.roundButton)
