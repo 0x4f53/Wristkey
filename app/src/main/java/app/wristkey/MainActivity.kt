@@ -289,7 +289,8 @@ class MainActivity : AppCompatActivity() {
                     loginCard.code.text =
                         if (otp.length == 6) otp.replace("...".toRegex(), "$0 ") else otp.replace("....".toRegex(), "$0 ")
 
-                    var timerElapsed = 0
+                    var timerElapsed = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
+
                     try {
                         mfaCodesTimer.scheduleAtFixedRate (object : TimerTask() {
                             override fun run() {
@@ -310,22 +311,12 @@ class MainActivity : AppCompatActivity() {
 
                                     }
 
+                                    timerElapsed += 1
+
                                     when (login.period) {
-
-                                        15 -> {
-                                            if (currentSecond % 15 == 0) timerElapsed = 0
-                                            else timerElapsed += 1
-                                        }
-
-                                        30 -> {
-                                            if (currentSecond % 30 == 0) timerElapsed = 0
-                                            else timerElapsed += 1
-                                        }
-
-                                        60 -> {
-                                            timerElapsed = abs((60-currentSecond))
-                                        }
-
+                                        15 -> if (timerElapsed >= 15) timerElapsed = 0
+                                        30 -> if (timerElapsed >= 30) timerElapsed = 0
+                                        60 -> timerElapsed = currentSecond
                                     }
 
                                     loginCard.code.text =
