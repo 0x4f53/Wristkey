@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="10dp"
-            android:paddingTop="55dp"
+            android:paddingTop="60dp"
             android:paddingBottom="75dp"
             android:layout_marginRight="10dp"
             android:fitsSystemWindows="true"
@@ -37,6 +37,7 @@
                 android:animateLayoutChanges="false"
                 android:nestedScrollingEnabled="false"
                 tools:itemCount="5"
+                android:layoutAnimation="@anim/slide_right_controller"
                 tools:listitem="@layout/login_card">
 
             </androidx.recyclerview.widget.RecyclerView>
