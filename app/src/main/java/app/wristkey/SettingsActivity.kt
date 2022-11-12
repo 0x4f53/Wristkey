@@ -1,5 +1,6 @@
 package app.wristkey
 
+import android.app.KeyguardManager
 import android.content.Intent
 import android.media.audiofx.HapticGenerator
 import android.os.Build
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.support.wearable.activity.WearableActivity
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -129,12 +131,21 @@ class SettingsActivity : WearableActivity() {
             if (isChecked) utilities.beep()
         }
 
+        val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
+        if (!lockscreen.isKeyguardSecure) utilities.vault.edit().putBoolean(utilities.SETTINGS_LOCK_ENABLED, false).apply()
         val lockButton: SwitchMaterial = findViewById(R.id.lockButton)
         lockButton.isChecked = utilities.vault.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)
         lockButton.setOnCheckedChangeListener { _, isChecked ->
-            settingsChanged = true
-            utilities.vault.edit().remove(utilities.SETTINGS_LOCK_ENABLED).apply()
-            utilities.vault.edit().putBoolean(utilities.SETTINGS_LOCK_ENABLED, isChecked).apply()
+            if (!lockscreen.isKeyguardSecure) {
+                lockButton.isChecked = false
+                Toast.makeText(this, "Enable screen lock in device settings first!", Toast.LENGTH_LONG).show()
+                utilities.vault.edit().remove(utilities.SETTINGS_LOCK_ENABLED).apply()
+                utilities.vault.edit().putBoolean(utilities.SETTINGS_LOCK_ENABLED, false).apply()
+            } else {
+                settingsChanged = true
+                utilities.vault.edit().remove(utilities.SETTINGS_LOCK_ENABLED).apply()
+                utilities.vault.edit().putBoolean(utilities.SETTINGS_LOCK_ENABLED, isChecked).apply()
+            }
         }
 
         val roundButton: SwitchMaterial = findViewById(R.id.roundButton)
