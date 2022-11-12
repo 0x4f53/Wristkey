@@ -8,7 +8,6 @@ import android.content.Intent
 import android.media.audiofx.HapticGenerator
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -297,9 +296,11 @@ class MainActivity : AppCompatActivity() {
                                             try { loginCard.code.startAnimation(blinkAnimation) } catch (_: Exception) { }
                                             if (beepEnabled) utilities.beep()
                                             if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticGenerator.ERROR)
-                                            loginCard.code.text =
-                                                if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
-                                                else otp!!.replace("....".toRegex(), "$0 ")
+                                            runOnUiThread {
+                                                loginCard.code.text =
+                                                    if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
+                                                    else otp!!.replace("....".toRegex(), "$0 ")
+                                            }
                                             otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
                                         }
                                     }
@@ -309,10 +310,12 @@ class MainActivity : AppCompatActivity() {
                                             try { loginCard.code.startAnimation(blinkAnimation) } catch (_: Exception) { }
                                             if (beepEnabled) utilities.beep()
                                             if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticGenerator.ERROR)
-                                            loginCard.code.text =
-                                                if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
-                                                else otp!!.replace("....".toRegex(), "$0 ")
-                                            otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
+                                            runOnUiThread {
+                                                loginCard.code.text =
+                                                    if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
+                                                    else otp!!.replace("....".toRegex(), "$0 ")
+                                                otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
+                                            }
                                         }
                                     }
 
@@ -321,19 +324,15 @@ class MainActivity : AppCompatActivity() {
                                             try { loginCard.code.startAnimation(blinkAnimation) } catch (_: Exception) { }
                                             if (beepEnabled) utilities.beep()
                                             if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticGenerator.ERROR)
-                                            loginCard.code.text =
-                                                if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
-                                                else otp!!.replace("....".toRegex(), "$0 ")
-                                            otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
+                                            runOnUiThread {
+                                                loginCard.code.text =
+                                                    if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
+                                                    else otp!!.replace("....".toRegex(), "$0 ")
+                                                otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
+                                            }
                                         }
                                     }
                                 }
-
-                                Log.d("TIMERELAPSED", timerElapsed.toString())
-                                Log.d("LOGINS", utilities.getLogins().toString())
-
-
-
                             }
                         }, 0, 1000) // 1000 milliseconds = 1 second
                     } catch (_: Exception) { }
