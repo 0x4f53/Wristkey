@@ -4,10 +4,10 @@
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
-    <string name="about_app">Wristkey is an open-source standalone two-factor authentication client for Wear OS.</string>
+    <string name="about_app">A sexy, secure, open-source, standalone two-factor authentication client for watches.</string>
     <string name="bitwarden_import_blurb">To import secrets from Bitwarden, make sure you have an unencrypted Bitwarden JSON file placed in the main directory of your watch (/sdcard/).\n\nAfter your accounts are imported, delete the JSON file.</string>
     <string name="authenticator_import_blurb">To import secrets from Google Authenticator, make sure you have a PNG or JPG image of the QR code placed on the main folder of your watch (/sdcard/).\n\nAfter your accounts are imported, delete the PNG file.</string>
-    <string name="aegis_import_blurb">To import secrets from Aegis Authenticator, make sure you have an unencrypted Aegis JSON file placed in the main directory of your watch (/sdcard/).\n\nAfter your accounts are imported, delete the JSON file.</string>
+    <string name="aegis_import_blurb">To import secrets from Aegis Authenticator, make sure you have an unencrypted Aegis JSON file placed in the main directory of your device (/sdcard/).\n\nAfter your accounts are imported, delete the JSON file.</string>
     <string name="andotp_import_blurb">To import secrets from andOTP, make sure you have an unencrypted andOTP JSON file placed in the main directory of your watch (/sdcard/).\n\nAfter your accounts are imported, delete the JSON file.</string>
     <string name="wristkey_import_blurb">To import secrets from a Wristkey backup, make sure you have a Wristkey backup file placed in the main directory of your watch (/sdcard/).\n\nAfter your accounts are imported, delete the backup file.</string>
     <string name="about_url">https://github.com/4f77616973/Wristkey</string>
@@ -20,7 +20,7 @@
     <string name="previous">Previous</string>
     <string name="importing">Importing...</string>
     <string name="bitwarden_import">Import from\nBitwarden</string>
-    <string name="aegis_import">Import from\nAegis\nAuthenticator</string>
+    <string name="aegis_import">Aegis\nAuthenticator</string>
     <string name="andotp_import">Import from\nandOTP</string>
     <string name="wristkey_import">Import from\nWristkey\nbackup</string>
     <string name="import_description">Opening file</string>
@@ -33,4 +33,11 @@
     <string name="title_activity_andotp_import">AndOtpImport</string>
 
     <string name="message_keyguard">Unlock app</string>
+
+    <string name="copyright">MIT License
+\n\nCopyright © 2022 Owais Shaikh
+\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    </string>
 </resources>

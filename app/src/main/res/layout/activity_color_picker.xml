@@ -20,11 +20,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="55dp"
             android:layout_marginEnd="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="75dp">
 
             <TextView
-                android:id="@+id/SettingsLabel"
+                android:id="@+id/ColorPickerLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -33,182 +35,10 @@
                 android:fontFamily="@font/productsans"
                 android:foregroundGravity="center"
                 android:gravity="center"
-                android:text="Settings"
+                android:text="Color Picker"
                 android:textColor="@color/lightDemo"
                 android:textSize="16dp"
                 android:textStyle="normal" />
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:foreground="@drawable/gradient_background"
-                app:cardCornerRadius="25dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_baseline_vibration_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Haptics"
-                        android:textSize="16dp" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/vibrateButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.025" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:foreground="@drawable/gradient_background"
-                app:cardCornerRadius="25dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_baseline_volume_up_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Beep"
-                        android:textSize="16dp" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/beepButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.025" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:foreground="@drawable/gradient_background"
-                app:cardCornerRadius="25dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_baseline_lock_person_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Lock screen"
-                        android:textSize="16dp" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/lockButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.025" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:foreground="@drawable/gradient_background"
-                app:cardCornerRadius="25dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_baseline_watch_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Round screen"
-                        android:textSize="16dp" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/roundButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.025" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
 
 
             <LinearLayout
@@ -220,241 +50,145 @@
                 android:layout_marginBottom="5dp"
                 android:foregroundGravity="center"
                 android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/ThemeLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/productsans"
-                    android:text="Theme"
-                    android:textColor="@color/white"
-                    android:textSize="15sp" />
+                android:orientation="vertical"
+                android:paddingBottom="10dp">
 
                 <RadioGroup
                     android:id="@+id/ThemeRadioGroup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:checkedButton="@id/DarkTheme"
-                    android:foregroundGravity="center"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:layout_gravity="start"
+                    android:checkedButton="@id/darkTheme"
+                    android:orientation="vertical">
 
-                    <RadioButton
-                        android:id="@+id/LightTheme"
+                    <TextView
+                        android:id="@+id/backgroundLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_marginStart="7dp"
+                        android:fontFamily="@font/productsans"
+                        android:text="Background"
+                        android:textColor="@color/lightDemo"
+                        android:textSize="16dp"
+                        android:textStyle="normal" />
+
+                    <RadioButton
+                        android:id="@+id/lightTheme"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:buttonTint="@color/lightDemo"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
+                        android:fontFamily="@font/productsans"
+                        android:padding="10dp"
+                        android:text="White"
+                        android:textSize="16sp" />
 
                     <RadioButton
-                        android:id="@+id/DarkTheme"
+                        android:id="@+id/darkTheme"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
                         android:layout_weight="1"
                         android:buttonTint="@color/darkAccents"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
+                        android:fontFamily="@font/productsans"
+                        android:padding="10dp"
+                        android:text="Black"
+                        android:textSize="16sp" />
                 </RadioGroup>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/Accent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/AccentLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/productsans"
-                    android:text="Accent"
-                    android:textColor="@color/white"
-                    android:textSize="15sp" />
 
                 <RadioGroup
-
                     android:id="@+id/AccentRadioGroup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_gravity="start"
                     android:checkedButton="@id/Blue"
-                    android:foregroundGravity="center"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/accentLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="7dp"
+                        android:fontFamily="@font/productsans"
+                        android:text="Accent"
+                        android:textColor="@color/lightDemo"
+                        android:textSize="16dp"
+                        android:textStyle="normal" />
 
                     <RadioButton
                         android:id="@+id/Red"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
                         android:layout_weight="1"
                         android:buttonTint="@color/redAccents"
                         android:ellipsize="none"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
+                        android:fontFamily="@font/productsans"
+                        android:padding="10dp"
+                        android:text="Red"
+                        android:textSize="16sp" />
 
                     <RadioButton
                         android:id="@+id/Saffron"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
                         android:layout_weight="1"
                         android:buttonTint="@color/saffronAccents"
                         android:ellipsize="none"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
+                        android:fontFamily="@font/productsans"
+                        android:padding="10dp"
+                        android:text="Saffron"
+                        android:textSize="16sp" />
 
                     <RadioButton
                         android:id="@+id/Yellow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
                         android:layout_weight="1"
                         android:buttonTint="@color/yellowAccents"
                         android:ellipsize="none"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
+                        android:fontFamily="@font/productsans"
+                        android:padding="10dp"
+                        android:text="Yellow"
+                        android:textSize="16sp" />
 
                     <RadioButton
                         android:id="@+id/Blue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
                         android:layout_weight="1"
                         android:buttonTint="@color/blueAccents"
                         android:ellipsize="none"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
+                        android:fontFamily="@font/productsans"
+                        android:padding="10dp"
+                        android:text="Blue"
+                        android:textSize="16sp" />
 
                     <RadioButton
                         android:id="@+id/Teal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
                         android:layout_weight="1"
                         android:buttonTint="@color/tealAccents"
                         android:ellipsize="none"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
+                        android:fontFamily="@font/productsans"
+                        android:padding="10dp"
+                        android:text="Teal"
+                        android:textSize="16sp" />
 
                 </RadioGroup>
+
             </LinearLayout>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/deleteButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:foreground="@drawable/gradient_background"
-                app:cardCornerRadius="25dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_outline_delete_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Delete everything"
-                        android:textSize="16dp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/exportButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:foreground="@drawable/gradient_background"
-                app:cardCornerRadius="25dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_outline_send_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Export vault"
-                        android:textSize="16dp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/backButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:foreground="@drawable/gradient_background"
                 app:cardCornerRadius="25dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@drawable/gradient_background"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -484,5 +218,39 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/clockBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/black"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
+                android:fontFamily="@font/productsans"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:letterSpacing="0.085"
+                android:paddingHorizontal="5dp"
+                android:text="12:00"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
