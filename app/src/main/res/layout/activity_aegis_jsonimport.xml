@@ -24,14 +24,14 @@
         android:paddingBottom="75dp">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/aegisLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/aegis_authenticator" />
 
         <TextView
-            android:id="@+id/AuthenticatorImportLabel"
+            android:id="@+id/aegisLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -43,30 +43,19 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/AuthenticatorDescription"
+            android:id="@+id/aegisDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
             android:fontFamily="@font/productsans"
             android:gravity="center"
             android:text="@string/aegis_import_blurb"
             android:textColor="@color/primary_text_dark"
             android:textStyle="normal" />
 
-        <CheckBox
-            android:id="@+id/AuthenticatorImportUsernames"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:buttonTint="@color/blueAccents"
-            android:checked="false"
-            android:fontFamily="@font/productsans"
-            android:gravity="center"
-            android:text="Import usernames" />
-
         <LinearLayout
-            android:id="@+id/ConfirmOrCancel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"

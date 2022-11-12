@@ -5,19 +5,23 @@ import android.content.SharedPreferences
 import android.media.AudioManager
 import android.media.ToneGenerator
 import android.os.Build
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.net.URLDecoder
 import java.util.*
 
 
 @RequiresApi(Build.VERSION_CODES.M)
 class Utilities (context: Context) {
+
+    val FILES_REQUEST_CODE = 69
 
     val context = context
     val DEFAULT_TYPE = "otpauth"
@@ -70,6 +74,63 @@ class Utilities (context: Context) {
         val counter: Long?,
         val label: String?,
     )
+
+    fun aegisToWristkey (unencryptedAegisJsonString: String): MutableList<MfaCode> {
+
+        val logins = mutableListOf<MfaCode>()
+
+        val db = JSONObject(unencryptedAegisJsonString)["db"].toString()
+        val entries = JSONObject(db)["entries"].toString()
+
+        val itemsArray = JSONArray(entries)
+
+        for (itemIndex in 0 until itemsArray.length()) {
+            try {
+
+                val accountData = JSONObject(itemsArray[itemIndex].toString())
+                var type = accountData["type"]
+                val uuid = accountData["uuid"].toString()
+                val issuer = accountData["issuer"].toString()
+                var username = accountData["name"].toString()
+
+                if (username == issuer || username == "null" || username.isNullOrEmpty()) {
+                    username = ""
+                }
+
+                var totpSecret = JSONObject(accountData["info"].toString())["secret"].toString()
+                val digits = JSONObject(accountData["info"].toString())["digits"].toString().toInt()
+                var algorithm = JSONObject(accountData["info"].toString())["algo"].toString()
+                var period = JSONObject(accountData["info"].toString())["period"].toString().toInt()
+                var counter = try { JSONObject(accountData["info"].toString())["counter"].toString().toLong() } catch (_: JSONException) { 0L }
+
+                type = if (type.equals("totp")) "totp" else "hotp"
+
+                if (totpSecret.isNotEmpty() && totpSecret != "null") {
+                    logins.add (
+                        MfaCode (
+                            type = "otpauth",
+                            mode = type,
+                            issuer = issuer,
+                            account = username,
+                            secret = totpSecret,
+                            algorithm = algorithm,
+                            digits = digits,
+                            period = period,
+                            lock = false,
+                            counter = counter,
+                            label = ""
+                        )
+                    )
+                }
+
+            } catch (noData: JSONException) {
+                noData.printStackTrace()
+            }
+        }
+
+        return logins
+
+    }
 
     fun decodeOTPAuthURL (OTPAuthURL: String): MfaCode? {
         val url = URLDecoder.decode(OTPAuthURL, "UTF-8")
@@ -148,10 +209,10 @@ class Utilities (context: Context) {
 
     fun writeToVault (mfaCodeObject: MfaCode, uuid4: String): Boolean {
         val mfaCodeObjectAsString = encodeOTPAuthURL (mfaCodeObject = mfaCodeObject)
-        val data = vault.getString(accountsFilename, null)
+        val data = getLogins()
 
-        if (data == null) Log.d ("Wristkey", "Congratulations on your first entry!")
-        vault.edit().putString(uuid4, mfaCodeObjectAsString).apply()
+        vault.edit().remove(uuid4).commit()
+        vault.edit().putString(uuid4, mfaCodeObjectAsString).commit()
 
         return true
     }

@@ -115,6 +115,8 @@
                         android:id="@+id/clockButton"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
                         android:layout_weight="0.025" />
 
                 </LinearLayout>
@@ -158,6 +160,8 @@
                         android:id="@+id/twentyFourHourClockButton"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
                         android:layout_weight="0.025" />
 
                 </LinearLayout>
@@ -201,6 +205,8 @@
                         android:id="@+id/vibrateButton"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
                         android:layout_weight="0.025" />
 
                 </LinearLayout>
@@ -225,7 +231,7 @@
                         android:paddingStart="20dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:src="@drawable/ic_baseline_volume_up_24"
+                        android:src="@drawable/ic_outline_volume_up_24"
                         android:tint="@color/white" />
 
                     <TextView
@@ -244,6 +250,8 @@
                         android:id="@+id/beepButton"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
                         android:layout_weight="0.025" />
 
                 </LinearLayout>
@@ -268,7 +276,7 @@
                         android:paddingStart="20dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:src="@drawable/ic_baseline_lock_person_24"
+                        android:src="@drawable/ic_outline_lock_24"
                         android:tint="@color/white" />
 
                     <TextView
@@ -287,6 +295,8 @@
                         android:id="@+id/lockButton"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
                         android:layout_weight="0.025" />
 
                 </LinearLayout>
@@ -330,6 +340,8 @@
                         android:id="@+id/roundButton"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
                         android:layout_weight="0.025" />
 
                 </LinearLayout>

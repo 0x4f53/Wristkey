@@ -69,7 +69,6 @@ class AndOtpJSONImport : Activity() {
                         importingDescription.text = "Found ${itemsArray.length()} items"
 
                         for (itemIndex in 0 until itemsArray.length()) {
-                            Log.d ("rtyu", itemsArray[itemIndex].toString())
 
                             val account = itemsArray[itemIndex].toString()
                             val secret = JSONObject(account)["secret"].toString().replace("=", "")

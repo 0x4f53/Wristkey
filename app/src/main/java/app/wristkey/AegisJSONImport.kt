@@ -1,137 +1,136 @@
 package app.wristkey
 
+import android.Manifest
 import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.audiofx.HapticGenerator
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.widget.*
-import androidx.wear.widget.BoxInsetLayout
-import com.google.gson.Gson
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
+import android.util.Log
+import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import wristkey.R
 import java.io.File
 import java.io.FileReader
+import java.util.*
+
 
 class AegisJSONImport : Activity() {
 
+    lateinit var utilities: Utilities
+
     lateinit var backButton: ImageButton
-    lateinit var confirmButton: ImageButton
+    lateinit var doneButton: ImageButton
     lateinit var importLabel: TextView
     lateinit var description: TextView
-    lateinit var importUsernames: CheckBox
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_aegis_jsonimport)
-        backButton = findViewById<ImageButton>(R.id.backButton)
-        confirmButton = findViewById<ImageButton>(R.id.doneButton)
-        importLabel = findViewById<TextView>(R.id.AuthenticatorImportLabel)
-        description = findViewById<TextView>(R.id.AuthenticatorDescription)
-        importUsernames = findViewById<CheckBox>(R.id.AuthenticatorImportUsernames)
+
+        utilities = Utilities (applicationContext)
+
+        initializeUI()
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun initializeUI () {
+        backButton = findViewById (R.id.backButton)
+        doneButton = findViewById (R.id.doneButton)
+        importLabel = findViewById (R.id.aegisLabel)
+        description = findViewById (R.id.aegisDescription)
+
+        description.text = getString (R.string.aegis_import_blurb) + " " + applicationContext.filesDir.toString() + "\n\n" + getString (R.string.use_adb_blurb)
 
         backButton.setOnClickListener {
             backButton.performHapticFeedback(HapticGenerator.SUCCESS)
             finish()
         }
 
-        confirmButton.setOnClickListener {
-            backButton.performHapticFeedback(HapticGenerator.SUCCESS)
-            scanAegisJson()
+        doneButton.setOnClickListener {
+            doneButton.performHapticFeedback(HapticGenerator.SUCCESS)
+            checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, utilities.FILES_REQUEST_CODE)
         }
 
     }
 
-    private fun scanAegisJson (): Boolean {
-        val files: Array<File> = Environment.getExternalStorageDirectory().listFiles()
-        // start import
+    // Function to check and request permission.
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun checkPermission(permission: String, requestCode: Int) {
+        if (ContextCompat.checkSelfPermission(this@AegisJSONImport, permission) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this@AegisJSONImport, arrayOf(permission), requestCode)
+        } else {
+            initializeScanUI()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == utilities.FILES_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                initializeScanUI()
+            } else {
+                Toast.makeText(this@AegisJSONImport, "Please grant Wristkey storage permissions in settings", Toast.LENGTH_LONG).show()
+                val intent = Intent (android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = Uri.parse("package:$packageName")
+                startActivity(intent)
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun initializeScanUI () {
+        setContentView(R.layout.import_loading_screen)
+        val importingDescription = findViewById<TextView>(R.id.ImportingDescription)
+
+        var logins = mutableListOf<Utilities.MfaCode>()
+
         try {
-            for (file in files) {
-                if (file.name.startsWith("aegis") && file.name.endsWith(".json")) {
+            val directory = File (applicationContext.filesDir.toString())
+            Log.d ("Wristkey", "Looking for files in: " + applicationContext.filesDir.toString())
+            importingDescription.text = "Looking for files in: \n${directory}"
+
+            for (file in directory.listFiles()!!) {
+                if (file.name.contains("aegis") && file.name.endsWith(".json")) {
+                    importingDescription.text = "Found file: \n${file.name}"
+
                     val reader = FileReader(file.path)
                     val jsonData = reader.readText()
-                    val db = JSONObject(jsonData)["db"].toString()
-                    val entries = JSONObject(db)["entries"].toString()
+                    logins = utilities.aegisToWristkey (jsonData)
 
-                    var itemsArray = JSONArray(entries)
+                    Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                    importingDescription.performHapticFeedback(HapticGenerator.ERROR)
+                    file.delete()
 
-                    setContentView(R.layout.import_loading_screen)
-                    val loadingLayout = findViewById<BoxInsetLayout>(R.id.LoadingLayout)
-                    val loadingIcon = findViewById<ProgressBar>(R.id.LoadingIcon)
-                    val importingLabel = findViewById<TextView>(R.id.ImportingLabel)
-                    val importingDescription = findViewById<TextView>(R.id.ImportingDescription)
-                    importingDescription.text = "Found ${itemsArray.length()} items"
-
-                    for (itemIndex in 0 until itemsArray.length()) {
-                        try {
-                            val accountData = JSONObject(itemsArray[itemIndex].toString())
-                            var type = accountData["type"]
-                            val uuid = accountData["uuid"].toString()
-                            val sitename = accountData["issuer"]
-                            val username = accountData["name"]
-                            val totpSecret = JSONObject(accountData["info"].toString())["secret"]
-                            val digits = JSONObject(accountData["info"].toString())["digits"].toString()
-                            var algorithm = JSONObject(accountData["info"].toString())["algo"].toString()
-
-                            type = if (type.equals("totp")) "Time" else "Counter"
-
-                            if (algorithm == "SHA1") {
-                                algorithm = "HmacAlgorithm.SHA1"
-                            } else if (algorithm == "SHA256") {
-                                algorithm = "HmacAlgorithm.SHA256"
-                            } else if (algorithm == "SHA512") {
-                                algorithm = "HmacAlgorithm.SHA512"
-                            }
-
-                            val accountName: String = if (username.toString() == "null") {
-                                sitename.toString()
-                            } else {
-                                if (importUsernames.isChecked)
-                                    "$sitename ($username)"
-                                else
-                                    sitename.toString()
-                            }
-
-                            var totp = ""
-                            if (totpSecret.toString() != "null") {
-                                totp = totpSecret.toString()
-                            }
-
-                            if (totp.isNotEmpty()) {
-                                // begin storing data
-                                importingDescription.text = "Adding $sitename account"
-                                val accountData = ArrayList<String>()
-
-                                val id = uuid
-
-                                accountData.add(accountName)
-                                accountData.add(totp)
-
-                                accountData.add(type)
-                                accountData.add(digits)
-                                accountData.add(algorithm)
-                                accountData.add("0")  // If counter mode is selected, initial value must be 0.
-                                val json = Gson().toJson(accountData)
-                            } else {
-                                importingDescription.text = "No TOTP secret for $sitename account"
-                            }
-                        } catch (noData: JSONException) {  }
+                    for (login in logins) {
+                        importingDescription.text = "${login.issuer}"
+                        utilities.writeToVault(login, UUID.randomUUID().toString())
                     }
-                    importingDescription.text = "Saving data"
-                    Toast.makeText(this, "Imported accounts successfully!", Toast.LENGTH_SHORT).show()
-                    backButton.performHapticFeedback(HapticGenerator.ERROR)
-
-                    return true
                 }
             }
 
-        } catch (_: IllegalStateException) { }
+            if (logins.isEmpty()) {
+                Toast.makeText(applicationContext, "Couldn't find any files. Please try again.", Toast.LENGTH_SHORT).show()
+                finish()
+            } else {
+                finishAffinity()
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+            }
 
-        Toast.makeText(this, "Couldn't find an Aegis JSON file. Check if it exists and if Wristkey has storage permission.", Toast.LENGTH_LONG).show()
-
-        return false
+        } catch (noDirectory: NullPointerException) {
+            setContentView(R.layout.activity_aegis_jsonimport)
+            Toast.makeText(this, "Couldn't access storage. Please raise an issue on Wristkey's GitHub repo.", Toast.LENGTH_LONG).show()
+            noDirectory.printStackTrace()
+        }
 
     }
 
