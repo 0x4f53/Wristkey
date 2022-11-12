@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/BoxInsetLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".MainActivity"
+    tools:context="app.wristkey.SettingsActivity"
     tools:deviceIds="wear">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -17,432 +19,477 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="7dp"
-            android:orientation="vertical">
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical"
+            android:paddingTop="55dp"
+            android:paddingBottom="75dp">
 
             <TextView
                 android:id="@+id/SettingsLabel"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="@font/productsans"
                 android:foregroundGravity="center"
                 android:gravity="center"
                 android:text="Settings"
                 android:textColor="@color/lightDemo"
-                android:textSize="15sp"
-                android:textStyle="italic" />
+                android:textSize="16dp"
+                android:textStyle="normal" />
 
-            <View
-                android:id="@+id/divider23"
-                android:layout_width="match_parent"
-                android:layout_height="0.25dp"
-                android:background="@color/darkAccents" />
-
-            <TextView
-                android:id="@+id/AlertsLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Alerts"
-                android:textColor="@color/white"
-                android:textSize="15sp" />
-
-            <CheckBox
-                android:id="@+id/Beep"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:buttonTint="@color/blueAccents"
-                android:checked="false"
-                android:gravity="center"
-                android:text="Beep    " />
-
-            <CheckBox
-                android:id="@+id/Vibrate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:buttonTint="@color/blueAccents"
-                android:checked="false"
-                android:gravity="center"
-                android:text="Vibrate" />
-
-            <View
-                android:id="@+id/divider3"
-                android:layout_width="match_parent"
-                android:layout_height="0.25dp"
-                android:background="@color/darkAccents" />
-
-            <TextView
-                android:id="@+id/privacyLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Privacy"
-                android:textColor="@color/white"
-                android:textSize="15sp" />
-
-            <CheckBox
-                android:id="@+id/AmbientMode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:buttonTint="@color/blueAccents"
-                android:checked="false"
-                android:gravity="center"
-                android:text="Ambient mode" />
-
-            <CheckBox
-                android:id="@+id/ScreenLock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:buttonTint="@color/blueAccents"
-                android:checked="true"
-                android:gravity="center"
-                android:text="Screen locking" />
-
-            <View
-                android:id="@+id/divider14"
-                android:layout_width="match_parent"
-                android:layout_height="0.25dp"
-                android:background="@color/darkAccents" />
-
-            <LinearLayout
-                android:id="@+id/Theme"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/themeButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/ThemeLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Theme"
-                    android:textColor="@color/white"
-                    android:textSize="15sp" />
-
-                <RadioGroup
-                    android:id="@+id/ThemeRadioGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:checkedButton="@id/DarkTheme"
-                    android:foregroundGravity="center"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/LightTheme"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:buttonTint="@color/lightDemo"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
-
-                    <RadioButton
-                        android:id="@+id/GrayTheme"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:buttonTint="@color/grayDemo"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
-
-                    <RadioButton
-                        android:id="@+id/DarkTheme"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:buttonTint="@color/darkDemo"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
-                </RadioGroup>
-            </LinearLayout>
-
-            <View
-                android:id="@+id/divider4"
-                android:layout_width="match_parent"
-                android:layout_height="0.25dp"
-                android:background="@color/darkAccents" />
-
-            <LinearLayout
-                android:id="@+id/Accent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/AccentLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Accent"
-                    android:textColor="@color/white"
-                    android:textSize="15sp" />
-
-                <RadioGroup
-
-                    android:id="@+id/AccentRadioGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:checkedButton="@id/Blue"
-                    android:foregroundGravity="center"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/Red"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
-                        android:layout_weight="1"
-                        android:buttonTint="@color/redAccents"
-                        android:ellipsize="none"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
-
-                    <RadioButton
-                        android:id="@+id/Saffron"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
-                        android:layout_weight="1"
-                        android:buttonTint="@color/saffronAccents"
-                        android:ellipsize="none"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
-
-                    <RadioButton
-                        android:id="@+id/Yellow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
-                        android:layout_weight="1"
-                        android:buttonTint="@color/yellowAccents"
-                        android:ellipsize="none"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
-
-                    <RadioButton
-                        android:id="@+id/Blue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
-                        android:layout_weight="1"
-                        android:buttonTint="@color/blueAccents"
-                        android:ellipsize="none"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
-
-                    <RadioButton
-                        android:id="@+id/Teal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
-                        android:layout_weight="1"
-                        android:buttonTint="@color/tealAccents"
-                        android:ellipsize="none"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
-
-                    <RadioButton
-                        android:id="@+id/Dark"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
-                        android:layout_weight="1"
-                        android:buttonTint="@color/darkDemo"
-                        android:ellipsize="none"
-                        android:foregroundGravity="left|center"
-                        android:gravity="center|left"
-                        android:scaleX="1.25"
-                        android:scaleY="1.25" />
-                </RadioGroup>
-            </LinearLayout>
-
-            <View
-                android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="0.25dp"
-                android:background="@color/darkAccents" />
-
-            <LinearLayout
-                android:id="@+id/DeleteAllAccounts"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:visibility="gone"
+                app:cardCornerRadius="25dp">
 
                 <LinearLayout
-                    android:id="@+id/DeleteAllAccountsButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gradient_background"
                     android:orientation="horizontal">
 
-                    <ImageButton
-                        android:id="@+id/DeleteButton"
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="20dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_outline_palette_24"
+                        android:tint="@color/white" />
+
+                    <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/preference_wrapped_icon"
-                        android:backgroundTint="@color/colorAccent"
-                        android:foregroundGravity="center"
-                        android:src="@drawable/ic_trash" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/DeleteAllAccountsButtonLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:text="Delete all data"
-                            android:textColor="#FFFFFF"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/NumberOfItems"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:text="0 items"
-                            android:textColor="@color/darkAccents"
-                            android:textSize="15sp"
-                            android:textStyle="italic" />
-                    </LinearLayout>
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="Theme"
+                        android:textSize="16dp" />
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-            <View
-                android:id="@+id/divider2"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="0.25dp"
-                android:background="@color/darkAccents" />
-
-            <LinearLayout
-                android:id="@+id/ExportAllAccounts"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                android:orientation="vertical">
+                app:cardCornerRadius="25dp">
 
                 <LinearLayout
-                    android:id="@+id/ExportAllAccountsButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:background="@drawable/gradient_background"
                     android:orientation="horizontal">
 
-                    <ImageButton
-                        android:id="@+id/ExportButton"
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="20dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_outline_access_time_24"
+                        android:tint="@color/white" />
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/preference_wrapped_icon"
-                        android:backgroundTint="@color/colorAccent"
-                        android:foregroundGravity="center"
-                        android:src="@drawable/ic_twotone_send_24" />
+                        android:layout_weight="0.5"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="Show clock"
+                        android:textSize="16dp" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/ExportAllAccountsButtonLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:text="Export all data"
-                            android:textColor="#FFFFFF"
-                            android:textSize="15sp" />
-
-                    </LinearLayout>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/clockButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.025" />
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-            <View
-                android:id="@+id/divider15"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="0.25dp"
-                android:background="@color/darkAccents" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:cardCornerRadius="25dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gradient_background"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="20dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_baseline_more_time_24"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="24 hour clock"
+                        android:textSize="16dp" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/twentyFourHourClockButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.025" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:cardCornerRadius="25dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gradient_background"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="20dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_baseline_vibration_24"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="Haptics"
+                        android:textSize="16dp" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/vibrateButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.025" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:cardCornerRadius="25dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gradient_background"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="20dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_baseline_volume_up_24"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="Beep"
+                        android:textSize="16dp" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/beepButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.025" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:cardCornerRadius="25dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gradient_background"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="20dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_baseline_lock_person_24"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="Lock screen"
+                        android:textSize="16dp" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/lockButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.025" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:cardCornerRadius="25dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gradient_background"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="20dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_baseline_watch_24"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="Round screen"
+                        android:textSize="16dp" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/roundButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.025" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/exportButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:cardCornerRadius="25dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gradient_background"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="20dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_outline_send_24"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="Export vault"
+                        android:textSize="16dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/backButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:cardCornerRadius="25dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gradient_background"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="25dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_baseline_arrow_back_ios_24"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="Back"
+                        android:textSize="16dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="24dp" />
+                android:layout_height="75dp" />
 
-            <ImageButton
-                android:id="@+id/AuthenticatorBackButton"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:background="@drawable/preference_wrapped_icon"
-                android:backgroundTint="@color/colorAccent"
-                android:foregroundGravity="center"
-                android:src="@drawable/ic_back" />
-
-            <Space
+            <androidx.cardview.widget.CardView
+                android:id="@+id/deleteButton"
                 android:layout_width="match_parent"
-                android:layout_height="48dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:cardCornerRadius="25dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gradient_background"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="20dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_outline_delete_24"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="Delete everything"
+                        android:textSize="16dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-</androidx.wear.widget.BoxInsetLayout>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/clockBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/black"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
+                android:fontFamily="@font/productsans"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:letterSpacing="0.085"
+                android:paddingHorizontal="5dp"
+                android:text="12:00"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

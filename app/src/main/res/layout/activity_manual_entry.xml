@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/BoxInsetLayout"
@@ -7,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".ManualEntryActivity"
+    tools:context="app.wristkey.ManualEntryActivity"
     tools:deviceIds="wear">
 
     <ScrollView
@@ -18,141 +19,108 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:orientation="vertical">
-
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical"
+            android:paddingTop="55dp"
+            android:paddingBottom="75dp" >
 
             <TextView
-                android:id="@+id/ManualEntryLabel"
-                android:layout_width="match_parent"
+                android:id="@+id/manualEntryLabel"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="@font/productsans"
                 android:foregroundGravity="center"
                 android:gravity="center"
-                android:text="Add Account"
-                android:textColorHint="@color/lightDemo"
-                android:textSize="15sp"
-                android:textStyle="italic" />
+                android:text="Manual entry"
+                android:textColor="@color/lightDemo"
+                android:textSize="16sp"
+                android:textStyle="normal" />
 
-            <View
-                android:id="@+id/divider5"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/darkAccents" />
-
-            <EditText
-                android:id="@+id/AccountField"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="7dp"
-                android:layout_marginRight="7dp"
-                android:layout_marginBottom="5dp"
-                android:backgroundTint="@color/colorAccent"
-                android:cursorVisible="false"
-                android:drawableTint="@color/colorAccent"
-                android:ems="10"
-                android:foregroundTint="@color/colorAccent"
-                android:gravity="center"
-                android:hint="Account Name"
-                android:inputType="textUri|textMultiLine|textCapSentences|textEmailAddress|textCapWords|textCapCharacters"
-                android:textColor="#FFFFFF"
-                android:textColorHint="@color/lightDemo"
-                android:textSize="15sp" />
+                android:hint="Issuer"
+                app:endIconMode="clear_text">
 
-            <EditText
-                android:id="@+id/SharedSecretField"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="7dp"
-                android:layout_marginRight="7dp"
-                android:layout_marginBottom="5dp"
-                android:backgroundTint="@color/colorAccent"
-                android:cursorVisible="false"
-                android:drawableTint="@color/colorAccent"
-                android:ems="10"
-                android:foregroundTint="@color/colorAccent"
-                android:gravity="center"
-                android:hint="Shared Secret"
-                android:inputType="textVisiblePassword|textWebPassword"
-                android:textColor="#FFFFFF"
-                android:textColorHint="@color/lightDemo"
-                android:textSize="15sp" />
-
-            <RadioGroup
-                android:id="@+id/GeneratorMode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="7dp"
-                android:layout_marginRight="7dp"
-                android:layout_marginBottom="5dp"
-                android:checkedButton="@id/TimeMode"
-                android:foregroundGravity="left"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/TimeMode"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/issuerInput"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTintMode="add"
-                    android:buttonTint="@color/colorAccent"
-                    android:foregroundTintMode="src_atop"
-                    android:text="Time"
-                    android:textSize="15sp" />
+                    android:layout_marginBottom="5dp"
+                    android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
+                    android:fontFamily="@font/productsans"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPhonetic"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <RadioButton
-                    android:id="@+id/CounterMode"
-                    android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Label"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/labelInput"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="#FF6767"
-                    android:backgroundTintMode="add"
-                    android:buttonTint="@color/colorAccent"
-                    android:foregroundTint="#FF0000"
-                    android:foregroundTintMode="src_atop"
-                    android:text="Counter"
-                    android:textSize="15sp" />
-            </RadioGroup>
+                    android:layout_marginBottom="5dp"
+                    android:capitalize="none"
+                    android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
+                    android:fontFamily="@font/productsans"
+                    android:imeOptions="actionDone"
+                    android:inputType="textUri|textEmailAddress|textWebEmailAddress"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/secret"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Secret"
+                app:endIconMode="password_toggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/secretInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
+                    android:fontFamily="@font/productsans"
+                    android:imeOptions="actionDone"
+                    android:inputType="textUri"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
-                android:id="@+id/Digits"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="7dp"
-                android:layout_marginRight="7dp"
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/DigitLength"
-                    android:layout_width="match_parent"
+                    android:id="@+id/typeLabel"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:fontFamily="@font/productsans"
                     android:foregroundGravity="center"
                     android:gravity="center"
-                    android:text="6 digits"
+                    android:text="Time"
                     android:textColor="#FFFFFF"
-                    android:textSize="15sp" />
+                    android:textSize="18sp" />
 
                 <SeekBar
-                    android:id="@+id/DigitLengthSeekbar"
-                    style="@android:style/Widget.Material.SeekBar.Discrete"
+                    android:id="@+id/modeSeekbar"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/colorAccent"
@@ -161,8 +129,8 @@
                     android:foregroundTintMode="src_atop"
                     android:indeterminateTint="@color/colorAccent"
                     android:indeterminateTintMode="src_atop"
-                    android:max="4"
-                    android:progress="2"
+                    android:max="1"
+                    android:progress="0"
                     android:progressBackgroundTint="@color/colorAccent"
                     android:progressBackgroundTintMode="src_atop"
                     android:progressTint="@color/colorAccent"
@@ -172,34 +140,31 @@
                     android:thumbTint="@color/colorAccent"
                     android:thumbTintMode="src_atop"
                     android:tickMarkTint="@color/colorAccent" />
+
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/Algorithm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="7dp"
-                android:layout_marginRight="7dp"
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/AlgorithmLength"
-                    android:layout_width="match_parent"
+                    android:id="@+id/hashLabel"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:fontFamily="@font/productsans"
                     android:foregroundGravity="center"
                     android:gravity="center"
-                    android:text="SHA-1"
+                    android:text="SHA1"
                     android:textColor="#FFFFFF"
-                    android:textSize="15sp" />
+                    android:textSize="18sp" />
 
                 <SeekBar
-                    android:id="@+id/AlgorithmKeylengthSeekbar"
-                    style="@android:style/Widget.Material.SeekBar.Discrete"
+                    android:id="@+id/hashSeekbar"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/colorAccent"
@@ -222,80 +187,207 @@
 
             </LinearLayout>
 
-            <View
-                android:id="@+id/divider9"
-                android:layout_width="match_parent"
-                android:layout_height="0.25dp"
-                android:background="@color/darkAccents" />
-
             <LinearLayout
-                android:id="@+id/ConfirmOrCancel"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="7dp"
-                android:layout_marginRight="7dp"
-                android:layout_marginBottom="48dp"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/CancelButton"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:background="@drawable/preference_wrapped_icon"
-                    android:backgroundTint="@color/darkAccents"
-                    android:foregroundGravity="center"
-                    android:src="@drawable/ic_cancel" />
-
-                <ImageButton
-                    android:id="@+id/AuthenticatorConfirmButton"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:background="@drawable/preference_wrapped_icon"
-                    android:backgroundTint="@color/colorAccent"
-                    android:foregroundGravity="center"
-                    android:src="@drawable/ic_done" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/Other"
+                android:id="@+id/Digits"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="-36dp"
-                android:layout_marginEnd="7dp"
-                android:layout_marginRight="7dp"
-                android:layout_marginBottom="48dp"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:layout_marginBottom="5dp"
+                android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/DeleteButton"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                <TextView
+                    android:id="@+id/lengthLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:background="@drawable/preference_wrapped_icon"
-                    android:backgroundTint="@color/darkAccents"
+                    android:fontFamily="@font/productsans"
                     android:foregroundGravity="center"
-                    android:src="@drawable/ic_trash" />
+                    android:gravity="center"
+                    android:text="6 digits"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp" />
+
+                <SeekBar
+                    android:id="@+id/lengthSeekbar"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorAccent"
+                    android:backgroundTintMode="src_atop"
+                    android:foregroundTint="@color/colorAccent"
+                    android:foregroundTintMode="src_atop"
+                    android:indeterminateTint="@color/colorAccent"
+                    android:indeterminateTintMode="src_atop"
+                    android:max="1"
+                    android:progress="0"
+                    android:progressBackgroundTint="@color/colorAccent"
+                    android:progressBackgroundTintMode="src_atop"
+                    android:progressTint="@color/colorAccent"
+                    android:progressTintMode="src_atop"
+                    android:secondaryProgressTint="@color/colorAccent"
+                    android:secondaryProgressTintMode="src_atop"
+                    android:thumbTint="@color/colorAccent"
+                    android:thumbTintMode="src_atop"
+                    android:tickMarkTint="@color/colorAccent" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/periodLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/productsans"
+                    android:foregroundGravity="center"
+                    android:gravity="center"
+                    android:text="30 seconds"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp" />
+
+                <SeekBar
+                    android:id="@+id/periodSeekbar"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorAccent"
+                    android:backgroundTintMode="src_atop"
+                    android:foregroundTint="@color/colorAccent"
+                    android:foregroundTintMode="src_atop"
+                    android:indeterminateTint="@color/colorAccent"
+                    android:indeterminateTintMode="src_atop"
+                    android:max="2"
+                    android:progress="1"
+                    android:progressBackgroundTint="@color/colorAccent"
+                    android:progressBackgroundTintMode="src_atop"
+                    android:progressTint="@color/colorAccent"
+                    android:progressTintMode="src_atop"
+                    android:secondaryProgressTint="@color/colorAccent"
+                    android:secondaryProgressTintMode="src_atop"
+                    android:thumbTint="@color/colorAccent"
+                    android:thumbTintMode="src_atop"
+                    android:tickMarkTint="@color/colorAccent" />
+
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/doneButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:cardCornerRadius="25dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gradient_background"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="20dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_done"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="Done"
+                        android:textSize="16dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/deleteButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:cardCornerRadius="25dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gradient_background"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="20dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_outline_delete_24"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="Delete"
+                        android:textSize="16dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/backButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:cardCornerRadius="25dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gradient_background"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="25dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_baseline_arrow_back_ios_24"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="Back"
+                        android:textSize="16dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
     </ScrollView>
 
-</androidx.wear.widget.BoxInsetLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
