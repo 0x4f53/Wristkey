@@ -72,8 +72,23 @@ class DeleteActivity : WearableActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initializeForWipe () {
 
-        deleteLabel.text = "Wipe ${utilities.getLogins().size} items and ${utilities.vault.all.size - utilities.getLogins().size} saved settings?\nThis cannot be undone."
+        val logins = utilities.getLogins().size
+        val settings = utilities.vault.all.size - utilities.getLogins().size
 
+        var deleteLabelString =
+            if (logins == 1) "Wipe $logins login"
+            else if (logins > 1) "Wipe $logins logins"
+            else "Reset Wristkey"
+
+        deleteLabelString +=
+            if (settings == 1 && logins != 0) " and $settings setting"
+            else if (settings > 1 && logins != 0) " and $settings settings"
+            else if (settings > 1) "Reset Wristkey"
+            else ""
+
+        deleteLabelString += "?"
+
+        deleteLabel.text = deleteLabelString
         deleteButton.setOnClickListener {
             utilities.vault.edit().clear().apply()
             finish()
