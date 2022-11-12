@@ -9,54 +9,56 @@
     tools:context="app.wristkey.BitwardenJSONImport"
     tools:deviceIds="wear">
 
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="55dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="75dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/ImportingLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/productsans"
-            android:text="@string/importing"
-            android:textAlignment="center"
-            android:textColor="@color/primary_text_dark"
-            android:textSize="16sp"
-            android:textStyle="normal" />
-
-        <ProgressBar
-            android:id="@+id/LoadingIcon"
-            style="?android:attr/progressBarStyle"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:indeterminateTint="@color/colorAccent"
-            android:progressTint="@color/colorAccent"
-            android:secondaryProgressTint="@color/colorAccent" />
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="55dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="75dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/ImportingDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:fontFamily="@font/productsans"
-            android:gravity="center"
-            android:text="@string/import_description"
-            android:textColor="@color/primary_text_dark"
-            android:textStyle="normal" />
+            <TextView
+                android:id="@+id/ImportingLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/productsans"
+                android:text="@string/importing"
+                android:textAlignment="center"
+                android:textColor="@color/primary_text_dark"
+                android:textSize="16sp"
+                android:textStyle="normal" />
 
-    </LinearLayout>
-</ScrollView>
+            <ProgressBar
+                android:id="@+id/LoadingIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:indeterminate="true"
+                android:indeterminateBehavior="repeat"
+                android:indeterminateTint="@color/colorAccent"
+                android:progressTint="@color/colorAccent"
+                android:secondaryProgressTint="@color/colorAccent" />
+
+            <TextView
+                android:id="@+id/ImportingDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/productsans"
+                android:gravity="center"
+                android:text="@string/import_description"
+                android:textColor="@color/primary_text_dark"
+                android:textStyle="normal" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.wear.widget.BoxInsetLayout>

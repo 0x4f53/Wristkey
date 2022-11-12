@@ -83,7 +83,7 @@ class DeleteActivity : WearableActivity() {
         deleteLabelString +=
             if (settings == 1 && logins != 0) " and $settings setting"
             else if (settings > 1 && logins != 0) " and $settings settings"
-            else if (settings > 1) "Reset Wristkey"
+            else if (settings > 1) if (!deleteLabelString.contains("Reset")) "Reset Wristkey" else ""
             else ""
 
         deleteLabelString += "?"

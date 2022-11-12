@@ -301,7 +301,6 @@ class MainActivity : AppCompatActivity() {
                                                     if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
                                                     else otp!!.replace("....".toRegex(), "$0 ")
                                             }
-                                            otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
                                         }
                                     }
 
@@ -314,8 +313,7 @@ class MainActivity : AppCompatActivity() {
                                                 loginCard.code.text =
                                                     if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
                                                     else otp!!.replace("....".toRegex(), "$0 ")
-                                                otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
-                                            }
+                                                }
                                         }
                                     }
 
@@ -328,11 +326,12 @@ class MainActivity : AppCompatActivity() {
                                                 loginCard.code.text =
                                                     if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
                                                     else otp!!.replace("....".toRegex(), "$0 ")
-                                                otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
-                                            }
+                                                }
                                         }
                                     }
                                 }
+
+                                otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
                             }
                         }, 0, 1000) // 1000 milliseconds = 1 second
                     } catch (_: Exception) { }
@@ -491,7 +490,7 @@ class MainActivity : AppCompatActivity() {
                 blinkAnimation = AlphaAnimation (0.25f, 1f)
                 blinkAnimation.duration = 500
                 blinkAnimation.startOffset = 20
-                blinkAnimation.repeatCount = 2
+                blinkAnimation.repeatCount = 1
 
                 singleBlinkAnimation = AlphaAnimation (0.25f, 1f)
                 singleBlinkAnimation.duration = 500
