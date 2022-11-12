@@ -151,9 +151,7 @@ class MainActivity : AppCompatActivity() {
                         val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
                         var halfMinuteElapsed = abs((60-currentSecond))
                         if (halfMinuteElapsed >= 30) halfMinuteElapsed -= 30
-                        try {
-                            roundTimeLeft.progress = halfMinuteElapsed
-                        } catch (_: Exception) {  }
+                        try { roundTimeLeft.progress = halfMinuteElapsed } catch (_: Exception) { }
                     }
                 }, 0, 1000) // 1000 milliseconds = 1 second
 
@@ -163,9 +161,7 @@ class MainActivity : AppCompatActivity() {
                         val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
                         var halfMinuteElapsed = abs((60-currentSecond))
                         if (halfMinuteElapsed >= 30) halfMinuteElapsed -= 30
-                        try {
-                            squareTimeLeft.progress = halfMinuteElapsed
-                        } catch (_: Exception) {  }
+                        try { roundTimeLeft.progress = halfMinuteElapsed } catch (_: Exception) { }
                     }
                 }, 0, 1000) // 1000 milliseconds = 1 second
 
@@ -217,6 +213,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (!(resultCode == RESULT_OK && requestCode == CODE_AUTHENTICATION_VERIFICATION)) {
@@ -270,9 +267,7 @@ class MainActivity : AppCompatActivity() {
                             loginCard.counter.text = "${login.period}s"
                         }
 
-                        30 -> {
-                            loginCard.counterControls.visibility = View.GONE
-                        }
+                        30 -> loginCard.counterControls.visibility = View.GONE
 
                     }
 
@@ -283,8 +278,7 @@ class MainActivity : AppCompatActivity() {
                         hmacAlgorithm = algorithm
                     )
 
-                    otp = TimeBasedOneTimePasswordGenerator(login.secret!!.toByteArray(), config)
-                        .generate()
+                    otp = TimeBasedOneTimePasswordGenerator(login.secret!!.toByteArray(), config).generate()
 
                     loginCard.code.text =
                         if (otp.length == 6) otp.replace("...".toRegex(), "$0 ") else otp.replace("....".toRegex(), "$0 ")
@@ -294,41 +288,55 @@ class MainActivity : AppCompatActivity() {
                     try {
                         mfaCodesTimer.scheduleAtFixedRate (object : TimerTask() {
                             override fun run() {
+                                timerElapsed = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
+                                timerElapsed = 60 - timerElapsed
 
-                                try {
-                                    val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-
-                                    Log.d("asdasdas", timerElapsed.toString())
-
-                                    if (timerElapsed == 1) {
-                                        try {
-                                            loginCard.code.startAnimation(blinkAnimation)
-                                        } catch (_: Exception) { }
-
-                                        if (beepEnabled) utilities.beep()
-                                        if (hapticsEnabled)
-                                            loginCard.incrementCounter.performHapticFeedback(HapticGenerator.ERROR)
-
+                                when (login.period) {
+                                    15 -> when(timerElapsed) {
+                                        15, 30, 45, 60 -> {
+                                            try { loginCard.code.startAnimation(blinkAnimation) } catch (_: Exception) { }
+                                            if (beepEnabled) utilities.beep()
+                                            if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticGenerator.ERROR)
+                                            loginCard.code.text =
+                                                if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
+                                                else otp!!.replace("....".toRegex(), "$0 ")
+                                            otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
+                                        }
                                     }
 
-                                    timerElapsed += 1
-
-                                    when (login.period) {
-                                        15 -> if (timerElapsed >= 15) timerElapsed = 0
-                                        30 -> if (timerElapsed >= 30) timerElapsed = 0
-                                        60 -> timerElapsed = currentSecond
+                                    30 -> when(timerElapsed) {
+                                        30, 60 -> {
+                                            try { loginCard.code.startAnimation(blinkAnimation) } catch (_: Exception) { }
+                                            if (beepEnabled) utilities.beep()
+                                            if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticGenerator.ERROR)
+                                            loginCard.code.text =
+                                                if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
+                                                else otp!!.replace("....".toRegex(), "$0 ")
+                                            otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
+                                        }
                                     }
 
-                                    loginCard.code.text =
-                                        if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ") else otp!!.replace("....".toRegex(), "$0 ")
+                                    60 -> when(timerElapsed) {
+                                        60 -> {
+                                            try { loginCard.code.startAnimation(blinkAnimation) } catch (_: Exception) { }
+                                            if (beepEnabled) utilities.beep()
+                                            if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticGenerator.ERROR)
+                                            loginCard.code.text =
+                                                if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
+                                                else otp!!.replace("....".toRegex(), "$0 ")
+                                            otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
+                                        }
+                                    }
+                                }
 
-                                    otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config)
-                                        .generate()
+                                Log.d("TIMERELAPSED", timerElapsed.toString())
+                                Log.d("LOGINS", utilities.getLogins().toString())
 
-                                } catch (_: Exception) { }
+
+
                             }
                         }, 0, 1000) // 1000 milliseconds = 1 second
-                    } catch (_: IllegalStateException) { }
+                    } catch (_: Exception) { }
                 }
 
                 utilities.MFA_COUNTER_MODE -> {
