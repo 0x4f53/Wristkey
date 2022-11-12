@@ -29,7 +29,7 @@ import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.properties.Delegates
 
-public const val CODE_AUTHENTICATION_VERIFICATION = 241
+const val CODE_AUTHENTICATION_VERIFICATION = 241
 
 class MainActivity : AppCompatActivity() {
 
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         mfaCodesTimer = Timer()
 
         vault = utilities.getVault()
-        keys = utilities.vault.all.keys.toList() as List<String>
+        keys = utilities.vault.all.keys.toList()
 
         initializeUI()
         setShape()
@@ -456,13 +456,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             loginCard.loginCard.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
-                override fun onClick() {
-                    super.onClick()
-                }
-
-                override fun onSwipeRight() {
-                    super.onSwipeRight()
-                }
 
                 override fun onLongClick() {
                     val intent = Intent(applicationContext, ManualEntryActivity::class.java)
