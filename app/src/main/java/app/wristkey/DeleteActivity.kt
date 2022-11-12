@@ -4,9 +4,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.wearable.activity.WearableActivity
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.cardview.widget.CardView
 import wristkey.R
 
 class DeleteActivity : WearableActivity() {
@@ -14,9 +14,9 @@ class DeleteActivity : WearableActivity() {
     lateinit var utilities: Utilities
 
     private lateinit var deleteLabel: TextView
-    private lateinit var deleteButton: CardView
+    private lateinit var deleteButton: ImageButton
 
-    private lateinit var backButton: CardView
+    private lateinit var backButton: ImageButton
 
     private lateinit var uuid: String
 
@@ -72,7 +72,7 @@ class DeleteActivity : WearableActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initializeForWipe () {
 
-        deleteLabel.text = "Wipe Wristkey vault?\nThis cannot be undone."
+        deleteLabel.text = "Wipe ${utilities.getLogins().size} items and ${utilities.vault.all.size - utilities.getLogins().size} saved settings?\nThis cannot be undone."
 
         deleteButton.setOnClickListener {
             utilities.vault.edit().clear().apply()
