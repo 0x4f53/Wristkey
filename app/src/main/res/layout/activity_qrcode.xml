@@ -8,7 +8,7 @@
     android:background="@color/white"
     android:foregroundTintMode="add"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".AboutActivity"
+    tools:context="app.wristkey.AboutActivity"
     tools:deviceIds="wear">
 
     <ImageView
