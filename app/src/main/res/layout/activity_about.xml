@@ -136,7 +136,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/owais_bitcoin" />
+                android:background="@drawable/owais_bitcoin_wear" />
 
             <TextView
                 android:layout_width="wrap_content"
