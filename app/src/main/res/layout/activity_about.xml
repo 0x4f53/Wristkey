@@ -146,6 +146,7 @@
                 android:layout_marginHorizontal="20dp"
                 android:fontFamily="@font/sfmono"
                 android:gravity="center"
+                android:textIsSelectable="true"
                 android:text="19xgj8XoDMcHSENUDrkW3GtjQjfnbnmWTS"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
