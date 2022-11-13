@@ -1,43 +1,161 @@
 package app.wristkey
 
+import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Bitmap
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
-import android.graphics.Color
+import android.media.audiofx.HapticGenerator
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment.getExternalStorageDirectory
-import android.os.Vibrator
 import android.provider.Settings
-import android.widget.*
-import androidx.wear.widget.BoxInsetLayout
-import app.wristkey.AddActivity
-import com.chaquo.python.Python
-import com.chaquo.python.android.AndroidPlatform
-import com.google.gson.Gson
-import com.google.zxing.*
-import com.google.zxing.Reader
-import com.google.zxing.common.HybridBinarizer
-import org.json.JSONObject
+import android.util.Log
+import android.view.HapticFeedbackConstants
+import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import wristkey.R
-import wristkey.databinding.ActivityAuthenticatorQrimportBinding
-import java.io.*
-import java.text.SimpleDateFormat
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
 import java.util.*
 
 class AuthenticatorQRImport : Activity() {
 
-    private lateinit var binding: ActivityAuthenticatorQrimportBinding
+    lateinit var utilities: Utilities
+
+    lateinit var backButton: ImageButton
+    lateinit var doneButton: ImageButton
+    lateinit var importLabel: TextView
+    lateinit var description: TextView
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_authenticator_qrimport)
+
+        utilities = Utilities (applicationContext)
+
+        initializeUI()
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun initializeUI () {
+        backButton = findViewById (R.id.backButton)
+        doneButton = findViewById (R.id.doneButton)
+        importLabel = findViewById (R.id.aegisLabel)
+        description = findViewById (R.id.aegisDescription)
+
+        description.text = getString (R.string.authenticator_import_blurb) + " " + applicationContext.filesDir.toString() + "\n\n" + getString (
+            R.string.use_adb_blurb)
+
+        backButton.setOnClickListener {
+            backButton.performHapticFeedback(HapticGenerator.SUCCESS)
+            finish()
+        }
+
+        doneButton.setOnClickListener {
+            doneButton.performHapticFeedback(HapticGenerator.SUCCESS)
+            checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, utilities.FILES_REQUEST_CODE)
+        }
+
+    }
+
+    // Function to check and request permission.
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun checkPermission(permission: String, requestCode: Int) {
+        if (ContextCompat.checkSelfPermission(this@AuthenticatorQRImport, permission) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this@AuthenticatorQRImport, arrayOf(permission), requestCode)
+        } else {
+            initializeScanUI()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == utilities.FILES_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                initializeScanUI()
+            } else {
+                Toast.makeText(this@AuthenticatorQRImport, "Please grant Wristkey storage permissions in settings", Toast.LENGTH_LONG).show()
+                val intent = Intent (Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = Uri.parse("package:$packageName")
+                startActivity(intent)
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun initializeScanUI () {
+        setContentView(R.layout.import_loading_screen)
+        val importingDescription = findViewById<TextView>(R.id.ImportingDescription)
+
+        var logins = mutableListOf<Utilities.MfaCode>()
+
+        try {
+            val directory = File (applicationContext.filesDir.toString())
+            Log.d ("Wristkey", "Looking for files in: " + applicationContext.filesDir.toString())
+            importingDescription.text = "Looking for files in: \n${directory}"
+
+            for (file in directory.listFiles()!!) {
+
+                if (
+                    file.name.endsWith(".png", ignoreCase = true)
+                    || file.name.endsWith(".jpg", ignoreCase = true)
+                    || file.name.endsWith(".jpeg", ignoreCase = true)
+                ) {
+
+                    val reader: InputStream = BufferedInputStream(FileInputStream(file.path))
+                    val imageBitmap = BitmapFactory.decodeStream(reader)
+                    val decodedQRCodeData: String = utilities.scanQRImage(imageBitmap)
+
+                    importingDescription.text = "Found file: \n${file.name}"
+
+                    logins = utilities.authenticatorToWristkey (decodedQRCodeData)
+
+                    Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                    importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
+                    file.delete()
+                }
+
+            }
+
+            if (logins.isEmpty()) {
+                Toast.makeText(this, "No files found.", Toast.LENGTH_LONG).show()
+                finish()
+
+            } else {
+                for (login in logins) {
+                    utilities.writeToVault(login, UUID.randomUUID().toString())
+                }
+                finishAffinity()
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+            }
+
+        } catch (noDirectory: NullPointerException) {
+            setContentView(R.layout.activity_authenticator_qrimport)
+            Toast.makeText(this, "Couldn't access storage. Please raise an issue on Wristkey's GitHub repo.", Toast.LENGTH_LONG).show()
+            noDirectory.printStackTrace()
+
+        } catch (_: java.io.FileNotFoundException) { }
+
+    }
+
+    /*private lateinit var binding: ActivityAuthenticatorQrimportBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAuthenticatorQrimportBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val backButton = findViewById<ImageButton>(R.id.AuthenticatorBackButton)
-        val confirmButton = findViewById<ImageButton>(R.id.AuthenticatorConfirmButton)
+        val backButton = findViewById<ImageButton>(R.id.backButton)
+        val confirmButton = findViewById<ImageButton>(R.id.doneButton)
         val importLabel = findViewById<TextView>(R.id.AuthenticatorImportLabel)
         val description = findViewById<TextView>(R.id.AuthenticatorDescription)
         val importUsernames = findViewById<CheckBox>(R.id.AuthenticatorImportUsernames)
@@ -103,8 +221,8 @@ class AuthenticatorQRImport : Activity() {
                             val logExtractedString = log.toString()
                                 .substringAfter(timeStamp)  // get most recent occurence of data
                                 .substringAfter("python.stdout")
-                                .substringAfter("<\$beginwristkeygoogleauthenticatorimport\$>")
-                                .substringBefore("<\$endwristkeygoogleauthenticatorimport\$>")
+                                .substringAfter("<\$wristkey\$>")
+                                .substringBefore("<\$\\wristkey\$>")
 
                             // convert json data and store in sharedprefs
                             val items = JSONObject(logExtractedString)
@@ -133,8 +251,7 @@ class AuthenticatorQRImport : Activity() {
                                 Toast.LENGTH_SHORT
                             ).show()
 
-                            val vibratorService =
-                                getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                             vibratorService.vibrate(50)
 
                             val intent = Intent(applicationContext, MainActivity::class.java)
@@ -183,22 +300,7 @@ class AuthenticatorQRImport : Activity() {
             }
             // stop import
         }
-    }
+    }*/
 
-    fun scanQRImage(bMap: Bitmap): String {
-        var contents: String
-        val intArray = IntArray(bMap.width * bMap.height)
-        //copy pixel data from the Bitmap into the 'intArray' array
-        bMap.getPixels(intArray, 0, bMap.width, 0, 0, bMap.width, bMap.height)
-        val source: LuminanceSource = RGBLuminanceSource(bMap.width, bMap.height, intArray)
-        val bitmap = BinaryBitmap(HybridBinarizer(source))
-        val reader: Reader = MultiFormatReader()
-        try {
-            val result = reader.decode(bitmap)
-            contents = result.text
-        } catch (e: Exception) {
-            contents = "No data found"
-        }
-        return contents
-    }
+
 }

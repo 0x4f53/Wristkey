@@ -2,13 +2,14 @@ package app.wristkey
 import android.content.Intent
 import android.media.audiofx.HapticGenerator
 import android.os.Bundle
-import android.support.wearable.activity.WearableActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import wristkey.R
 
-class AddActivity : WearableActivity() {
+class AddActivity : AppCompatActivity() {
     private lateinit var manualEntry: CardView
     private lateinit var aegisImportButton: CardView
+    private lateinit var googleAuthenticatorImport: CardView
 
     private lateinit var backButton: CardView
 
@@ -30,22 +31,6 @@ class AddActivity : WearableActivity() {
         val scanQRCode = findViewById<LinearLayout>(R.id.ScanQRCode)
 
         val backButton = findViewById<ImageView>(R.id.BackButton)
-
-        manualEntry.setOnClickListener {
-            val intent = Intent(applicationContext, ManualEntryActivity::class.java)
-            startActivity(intent)
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-            finish()
-        }
-
-        scanQRCode.setOnClickListener {
-            val intent = Intent(applicationContext, OtpAuthImport::class.java)
-            startActivity(intent)
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-            finish()
-        }
 
         importBitwarden.setOnClickListener {
             val intent = Intent(applicationContext, BitwardenJSONImport::class.java)
@@ -89,9 +74,10 @@ class AddActivity : WearableActivity() {
 
     }
 
-    fun initializeUI () {
+    private fun initializeUI () {
         manualEntry = findViewById (R.id.manualEntry)
         aegisImportButton = findViewById (R.id.aegisImportButton)
+        googleAuthenticatorImport = findViewById (R.id.googleAuthenticatorImport)
 
         backButton = findViewById (R.id.backButton)
 
@@ -101,8 +87,12 @@ class AddActivity : WearableActivity() {
         }
 
         aegisImportButton.setOnClickListener {
-            val intent = Intent(applicationContext, AegisJSONImport::class.java)
-            startActivity(intent)
+            startActivity(Intent(applicationContext, AegisJSONImport::class.java))
+            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        }
+
+        googleAuthenticatorImport.setOnClickListener {
+            startActivity(Intent(applicationContext, AuthenticatorQRImport::class.java))
             aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
         }
 

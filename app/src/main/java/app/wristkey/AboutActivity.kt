@@ -3,21 +3,19 @@ package app.wristkey
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.media.audiofx.HapticGenerator
 import android.net.Uri
 import android.os.Bundle
-import android.support.wearable.activity.WearableActivity
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.android.wearable.intent.RemoteIntent
 import wristkey.BuildConfig
 import wristkey.R
 
-
-class AboutActivity : WearableActivity() {
+class AboutActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,8 +35,7 @@ class AboutActivity : WearableActivity() {
         urlLink.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW).addCategory(Intent.CATEGORY_BROWSABLE).setData(Uri.parse(uri))
             RemoteIntent.startRemoteActivity(this, intent, null)
-            val toast = Toast.makeText(this, "URL opened\non phone", Toast.LENGTH_SHORT)
-            toast.show()
+            Toast.makeText(this, "URL opened\non phone", Toast.LENGTH_SHORT).show()
             try {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
                 startActivity(browserIntent)
@@ -48,7 +45,6 @@ class AboutActivity : WearableActivity() {
         }
 
         backButton.setOnClickListener {
-            backButton.performHapticFeedback(HapticGenerator.SUCCESS)
             finish()
         }
     }
