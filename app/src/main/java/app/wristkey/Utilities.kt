@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.media.AudioManager
 import android.media.ToneGenerator
 import android.os.Build
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -30,8 +31,13 @@ import java.util.*
 class Utilities (context: Context) {
 
     val FILES_REQUEST_CODE = 69
+    val CAMERA_REQUEST_CODE = 420
+    val EXPORT_RESPONSE_CODE = 69420
 
     val context = context
+
+    val QR_TIMER_DURATION = 5
+
     val DEFAULT_TYPE = "otpauth"
     val INTENT_UUID = "INTENT_UUID"
     val INTENT_WIPE = "INTENT_WIPE"
@@ -147,7 +153,7 @@ class Utilities (context: Context) {
                 Python.start(AndroidPlatform(context))
             }
 
-            Python
+            val pythonRuntime = Python
                 .getInstance()
                 .getModule("extract_otp_secret_keys")
                 .callAttr("decode", decodedQRCodeData)
@@ -171,6 +177,8 @@ class Utilities (context: Context) {
                 e.printStackTrace()
             }
 
+            // pythonRuntime.close()
+
             return log.toString()
                 .substringAfter(timeStamp)  // get most recent occurrence of data
                 .substringAfter("python.stdout")
@@ -187,6 +195,14 @@ class Utilities (context: Context) {
 
         return logins
 
+    }
+
+    fun wfsToHashmap(jsonObject: JSONObject): Map<String, Any> {
+        val map: MutableMap<String, String> = HashMap()
+        for (key in jsonObject.keys()) {
+            map[key] = jsonObject[key] as String
+        }
+        return map
     }
 
     fun aegisToWristkey (unencryptedAegisJsonString: String): MutableList<Utilities.MfaCode> {
@@ -259,11 +275,11 @@ class Utilities (context: Context) {
             val issuer: String = url.substringAfterLast("otp/").substringBefore(":")
             val account: String = url.substringAfterLast(":").substringBefore("?")
             val secret: String? = if (url.contains("secret")) url.substringAfter("secret=").substringBefore("&") else null
-            val algorithm: String? = if (url.contains("algorithm")) url.substringAfter("algorithm=").substringBefore("&") else null
-            val digits: Int? = if (url.contains("digits")) url.substringAfter("digits=").substringBefore("&").toInt() else null
-            val period: Int? = if (url.contains("period")) url.substringAfter("period=").substringBefore("&").toInt() else null
-            val lock: Boolean? = if (url.contains("lock")) url.substringAfter("lock=").substringBefore("&").toBoolean() else null
-            val counter: Long? = if (url.contains("counter")) url.substringAfter("counter=").substringBefore("&").toLong() else null
+            val algorithm: String? = if (url.contains("algorithm")) url.substringAfter("algorithm=").substringBefore("&") else ALGO_SHA1
+            val digits: Int? = if (url.contains("digits")) url.substringAfter("digits=").substringBefore("&").toInt() else 6
+            val period: Int? = if (url.contains("period")) url.substringAfter("period=").substringBefore("&").toInt() else 30
+            val lock: Boolean? = if (url.contains("lock")) url.substringAfter("lock=").substringBefore("&").toBoolean() else false
+            val counter: Long? = if (url.contains("counter")) url.substringAfter("counter=").substringBefore("&").toLong() else 0
             val label: String? = if (url.contains("label")) url.substringAfter("label=").substringBefore("&") else account
 
             return MfaCode (
@@ -349,7 +365,7 @@ class Utilities (context: Context) {
 
         for (item in items) {
             key = item.key
-            if (item.value == login) {
+            if (item.value == encodeOTPAuthURL(login)) {
                 try {
                     val uuid = UUID.fromString(item.key as String)
                     return key
