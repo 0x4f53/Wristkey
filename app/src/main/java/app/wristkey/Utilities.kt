@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.media.AudioManager
 import android.media.ToneGenerator
 import android.os.Build
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -412,6 +411,18 @@ class Utilities (context: Context) {
         var vault = vault.all.values.toList()
         if (vault.isEmpty()) vault = mutableListOf<MfaCode>()
         return vault as MutableList<MfaCode>
+    }
+
+    fun getVaultLoginsOnly (): Map<String, String> {
+        val vault = vault.all
+        val finalVault = mutableMapOf<String, String>()
+        for ((key, value) in vault) {
+            try {
+                UUID.fromString(key)
+                finalVault[key] = value.toString()
+            } catch (_: IllegalArgumentException) { }
+        }
+        return finalVault
     }
 
     fun getLogins (): List<MfaCode> {
