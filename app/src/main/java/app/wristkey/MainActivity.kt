@@ -8,6 +8,7 @@ import android.content.Intent
 import android.media.audiofx.HapticGenerator
 import android.os.Build
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,19 +52,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         utilities = Utilities (applicationContext)
         mfaCodesTimer = Timer()
 
-        vault = utilities.getVault()
-        keys = utilities.vault.all.keys.toList()
-
-        initializeUI()
-        setShape()
         lockScreen()
-        startClock()
-        start2faTimer()
     }
 
     override fun onStop() {
@@ -100,6 +93,11 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initializeUI () {
+        setContentView(R.layout.activity_main)
+
+        vault = utilities.getVault()
+        keys = utilities.vault.all.keys.toList()
+
         clock = findViewById(R.id.clock)
 
         loginsRecycler = findViewById(R.id.loginsRecycler)
@@ -111,7 +109,10 @@ class MainActivity : AppCompatActivity() {
         settingsButton = findViewById(R.id.SettingsButton)
         aboutButton = findViewById(R.id.AboutButton)
 
-        val adapter = LoginsAdapter(utilities.getLogins().toMutableList())
+        val logins = utilities.getLogins().toMutableList()
+
+        val adapter = LoginsAdapter(logins)
+
         loginsRecycler.layoutManager = LinearLayoutManager(this@MainActivity)
         loginsRecycler.adapter = adapter
         loginsRecycler.invalidate()
@@ -160,7 +161,7 @@ class MainActivity : AppCompatActivity() {
                         val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
                         var halfMinuteElapsed = abs((60-currentSecond))
                         if (halfMinuteElapsed >= 30) halfMinuteElapsed -= 30
-                        try { roundTimeLeft.progress = halfMinuteElapsed } catch (_: Exception) { }
+                        try { squareTimeLeft.progress = halfMinuteElapsed } catch (_: Exception) { }
                     }
                 }, 0, 1000) // 1000 milliseconds = 1 second
 
@@ -209,14 +210,25 @@ class MainActivity : AppCompatActivity() {
                 val i = lockscreen.createConfirmDeviceCredentialIntent ("Wristkey", "App locked")
                 startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
             }
+        } else {
+            initializeUI()
+            setShape()
+            startClock()
+            start2faTimer()
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (!(resultCode == RESULT_OK && requestCode == CODE_AUTHENTICATION_VERIFICATION)) {
             finish()
+        } else {
+            initializeUI()
+            setShape()
+            startClock()
+            start2faTimer()
         }
     }
 
@@ -278,12 +290,13 @@ class MainActivity : AppCompatActivity() {
                     )
 
                     otp = TimeBasedOneTimePasswordGenerator(login.secret!!.toByteArray(), config).generate()
+                    if (login.algorithm == utilities.ALGO_SHA1 && login.period == 30 && login.digits == 6)
+                        otp = GoogleAuthenticator(login.secret.toByteArray()).generate()
 
                     loginCard.code.text =
                         if (otp.length == 6) otp.replace("...".toRegex(), "$0 ") else otp.replace("....".toRegex(), "$0 ")
 
-                    var timerElapsed = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-
+                    var timerElapsed: Int
                     try {
                         mfaCodesTimer.scheduleAtFixedRate (object : TimerTask() {
                             override fun run() {
@@ -295,7 +308,8 @@ class MainActivity : AppCompatActivity() {
                                         15, 30, 45, 60 -> {
                                             try { loginCard.code.startAnimation(blinkAnimation) } catch (_: Exception) { }
                                             if (beepEnabled) utilities.beep()
-                                            if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticGenerator.ERROR)
+                                            if (hapticsEnabled) loginCard.name.performHapticFeedback(
+                                                HapticFeedbackConstants.REJECT)
                                             runOnUiThread {
                                                 loginCard.code.text =
                                                     if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
@@ -308,7 +322,7 @@ class MainActivity : AppCompatActivity() {
                                         30, 60 -> {
                                             try { loginCard.code.startAnimation(blinkAnimation) } catch (_: Exception) { }
                                             if (beepEnabled) utilities.beep()
-                                            if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticGenerator.ERROR)
+                                            if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticFeedbackConstants.REJECT)
                                             runOnUiThread {
                                                 loginCard.code.text =
                                                     if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
@@ -321,7 +335,7 @@ class MainActivity : AppCompatActivity() {
                                         60 -> {
                                             try { loginCard.code.startAnimation(blinkAnimation) } catch (_: Exception) { }
                                             if (beepEnabled) utilities.beep()
-                                            if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticGenerator.ERROR)
+                                            if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticFeedbackConstants.REJECT)
                                             runOnUiThread {
                                                 loginCard.code.text =
                                                     if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
@@ -331,7 +345,9 @@ class MainActivity : AppCompatActivity() {
                                     }
                                 }
 
-                                otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
+                                otp = TimeBasedOneTimePasswordGenerator(login.secret!!.toByteArray(), config).generate()
+                                if (login.algorithm == utilities.ALGO_SHA1 && login.period == 30 && login.digits == 6)
+                                    otp = GoogleAuthenticator(login.secret.toByteArray()).generate()
                             }
                         }, 0, 1000) // 1000 milliseconds = 1 second
                     } catch (_: Exception) { }
@@ -370,7 +386,7 @@ class MainActivity : AppCompatActivity() {
 
                             loginCard.incrementCounter.performHapticFeedback(HapticGenerator.ALREADY_EXISTS)
                             if (beepEnabled) utilities.beep()
-                            if (hapticsEnabled) loginCard.incrementCounter.performHapticFeedback(HapticGenerator.ERROR)
+                            if (hapticsEnabled) loginCard.incrementCounter.performHapticFeedback(HapticFeedbackConstants.REJECT)
 
                             if (currentCount+1 == 69L) Toast.makeText(applicationContext, "Nice ;)", Toast.LENGTH_SHORT).show()
 
@@ -411,7 +427,7 @@ class MainActivity : AppCompatActivity() {
 
                             loginCard.decrementCounter.performHapticFeedback(HapticGenerator.ALREADY_EXISTS)
                             if (beepEnabled) utilities.beep()
-                            if (hapticsEnabled) loginCard.incrementCounter.performHapticFeedback(HapticGenerator.ERROR)
+                            if (hapticsEnabled) loginCard.incrementCounter.performHapticFeedback(HapticFeedbackConstants.REJECT)
 
                             if (currentCount-1 == 69L) Toast.makeText(applicationContext, "Nice ;)", Toast.LENGTH_SHORT).show()
 
@@ -462,6 +478,14 @@ class MainActivity : AppCompatActivity() {
                     super.onSwipeRight()
                 }
 
+                override fun onSwipeLeft() {
+                    val intent = Intent(applicationContext, QRCodeActivity::class.java)
+                    intent.putExtra(utilities.INTENT_UUID, utilities.getUuid(login))
+                    startActivity(intent)
+                    loginCard.loginCard.performHapticFeedback(HapticGenerator.SUCCESS)
+                    super.onSwipeRight()
+                }
+
             })
 
         }
@@ -497,7 +521,7 @@ class MainActivity : AppCompatActivity() {
                 singleBlinkAnimation.startOffset = 20
                 singleBlinkAnimation.repeatCount = 0
 
-                beepEnabled = utilities.vault.getBoolean(utilities.SETTINGS_BEEP_ENABLED, true)
+                beepEnabled = utilities.vault.getBoolean(utilities.SETTINGS_BEEP_ENABLED, false)
                 hapticsEnabled = utilities.vault.getBoolean(utilities.SETTINGS_HAPTICS_ENABLED, true)
 
             }
