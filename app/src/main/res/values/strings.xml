@@ -6,10 +6,11 @@
     -->
     <string name="about_app">A sexy, secure, open-source, standalone two-factor authentication client for watches.</string>
     <string name="bitwarden_import_blurb">To import secrets from Bitwarden, make sure you have an unencrypted Bitwarden JSON file placed in the main directory of your watch (/sdcard/).\n\nAfter your accounts are imported, delete the JSON file.</string>
-    <string name="authenticator_import_blurb">To import secrets from Google Authenticator, export your accounts, take a picture of the QR code using your webcam, make sure it is a JPG/PNG image and place the image in the following directory: </string>
+    <string name="authenticator_import_blurb">To import secrets from Google Authenticator, export your accounts, take a picture of the QR code using your webcam, make sure it is a JPG/PNG image and place it in the following directory: </string>
+    <string name="otpauth_import_blurb">Take a picture of a QR code, make sure it is a JPG/PNG image and place it in the following directory: </string>
     <string name="aegis_import_blurb">To import secrets from Aegis Authenticator, export an unencrypted Aegis JSON file and place it in the following directory: </string>
     <string name="andotp_import_blurb">To import secrets from andOTP, make sure you have an unencrypted andOTP JSON file placed in the main directory of your watch (/sdcard/).\n\nAfter your accounts are imported, delete the JSON file.</string>
-    <string name="wristkey_import_blurb">To import secrets from a Wristkey backup, make sure you have a Wristkey backup file placed in the main directory of your watch (/sdcard/).\n\nAfter your accounts are imported, delete the backup file.</string>
+    <string name="wristkey_import_blurb">To import secrets from an old backup, place your WFS file in the following directory: </string>
     <string name="about_url">https://github.com/4f77616973/Wristkey</string>
     <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_add">AddActivity</string>
@@ -23,10 +24,10 @@
     <string name="bitwarden_import">Import from\nBitwarden</string>
     <string name="aegis_import">Aegis\nAuthenticator</string>
     <string name="andotp_import">Import from\nandOTP</string>
-    <string name="wristkey_import">Import from\nWristkey\nbackup</string>
+    <string name="wristkey_import">Wristkey</string>
     <string name="import_description">Opening file</string>
     <string name="authenticator_import">Google\nAuthenticator</string>
-    <string name="otpauth_import">Scan a\nQR Code</string>
+    <string name="otpauth_import">QR Code</string>
     <string name="title_activity_bitwarden_jsonimport">BitwardenJSONImport</string>
     <string name="title_activity_wristkey_import">WristkeyImport</string>
     <string name="title_activity_otpauth_import">OtpAuthImport</string>

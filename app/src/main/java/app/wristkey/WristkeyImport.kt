@@ -1,129 +1,144 @@
 package app.wristkey
 
-import android.app.Activity
-import android.content.Context
+import android.Manifest
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
+import android.content.pm.PackageManager
+import android.media.audiofx.HapticGenerator
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment.getExternalStorageDirectory
-import android.os.Vibrator
-import android.provider.Settings
+import android.util.Log
+import android.view.HapticFeedbackConstants
 import android.widget.ImageButton
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.wear.widget.BoxInsetLayout
-import app.wristkey.AddActivity
-import com.google.gson.Gson
-import org.json.JSONArray
-import org.json.JSONException
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import org.json.JSONObject
 import wristkey.R
-import wristkey.databinding.ActivityWristkeyImportBinding
 import java.io.File
 import java.io.FileReader
-import java.util.*
 
-class WristkeyImport : Activity() {
 
-    private lateinit var binding: ActivityWristkeyImportBinding
+class WristkeyImport : AppCompatActivity() {
 
+    lateinit var utilities: Utilities
+
+    lateinit var backButton: ImageButton
+    lateinit var doneButton: ImageButton
+    lateinit var importLabel: TextView
+    lateinit var description: TextView
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityWristkeyImportBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val backButton = findViewById<ImageButton>(R.id.BackButton)
-        val confirmButton = findViewById<ImageButton>(R.id.ConfirmButton)
-        val importLabel = findViewById<TextView>(R.id.ImportLabel)
-        val description = findViewById<TextView>(R.id.Description)
+        setContentView(R.layout.activity_wristkey_import)
+
+        utilities = Utilities (applicationContext)
+
+        initializeUI()
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun initializeUI () {
+        backButton = findViewById (R.id.backButton)
+        doneButton = findViewById (R.id.doneButton)
+        importLabel = findViewById (R.id.label)
+        description = findViewById (R.id.description)
+
+        description.text = getString (R.string.wristkey_import_blurb) + " " + applicationContext.filesDir.toString() + "\n\n" + getString (R.string.use_adb_blurb)
 
         backButton.setOnClickListener {
-            val intent = Intent(applicationContext, AddActivity::class.java)
-            startActivity(intent)
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
+            backButton.performHapticFeedback(HapticGenerator.SUCCESS)
             finish()
         }
 
-        confirmButton.setOnClickListener {
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-
-            val files: Array<File> = getExternalStorageDirectory().listFiles()
-            // start import
-            try {
-                for (file in files) {
-                    if (file.name.endsWith(".backup")) {
-                        val reader = FileReader(file.path)
-                        val jsonData = reader.readText()
-                        val itemsArray = JSONArray(jsonData)
-
-                        setContentView(R.layout.import_loading_screen)
-                        val loadingLayout = findViewById<BoxInsetLayout>(R.id.LoadingLayout)
-                        val loadingIcon = findViewById<ProgressBar>(R.id.LoadingIcon)
-                        val importingLabel = findViewById<TextView>(R.id.ImportingLabel)
-                        val importingDescription = findViewById<TextView>(R.id.ImportingDescription)
-
-
-                        //found x number of items
-
-                        importingDescription.text = "Found ${itemsArray.length()} items"
-
-                        for (itemIndex in 0 until itemsArray.length()) {
-                            try {
-                                val item = itemsArray[itemIndex].toString()
-                                val name = JSONArray(item)[0].toString()
-                                val totpSecret = JSONArray(item)[1].toString()
-                                val mode = JSONArray(item)[2].toString()
-                                val digits = JSONArray(item)[3].toString()
-                                val algorithm = JSONArray(item)[4].toString()
-                                val counter = JSONArray(item)[5].toString()
-
-                                if (totpSecret.isNotEmpty()) { // begin storing data
-                                    importingDescription.text = "Adding $name"
-                                    val accountData = ArrayList<String>()
-                                    accountData.add(name)
-                                    accountData.add(totpSecret)
-                                    accountData.add(mode)
-                                    accountData.add(digits)
-                                    accountData.add(algorithm)
-                                    accountData.add(counter)
-                                    val json = Gson().toJson(accountData)
-                                    val id = UUID.randomUUID().toString()
-                                } else {
-                                    importingDescription.text = "No TOTP secret for $name"
-                                }
-                            } catch (noData: JSONException) {  }
-                        }
-                        importingDescription.text = "Saving data"
-                        val toast = Toast.makeText(this, "Imported accounts successfully!", Toast.LENGTH_SHORT)
-                        toast.show()
-
-                        val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                        vibratorService.vibrate(100)
-                        val intent = Intent(applicationContext, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    }
-                }
-
-            } catch (noFileFound: IllegalStateException) {
-                val toast = Toast.makeText(this, "Couldn't find file. Check if the file exists and if Wristkey is granted storage permission.", Toast.LENGTH_LONG)
-                toast.show()
-
-                val settingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                val uri: Uri = Uri.fromParts("package", packageName, null)
-                settingsIntent.data = uri
-                startActivity(settingsIntent)
-
-                val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                vibratorService.vibrate(50)
-                finish()
-            }
-            // stop import
+        doneButton.setOnClickListener {
+            doneButton.performHapticFeedback(HapticGenerator.SUCCESS)
+            checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, utilities.FILES_REQUEST_CODE)
         }
 
     }
+
+    // Function to check and request permission.
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun checkPermission(permission: String, requestCode: Int) {
+        if (ContextCompat.checkSelfPermission(this@WristkeyImport, permission) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this@WristkeyImport, arrayOf(permission), requestCode)
+        } else {
+            initializeScanUI()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == utilities.FILES_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                initializeScanUI()
+            } else {
+                Toast.makeText(this@WristkeyImport, "Please grant Wristkey storage permissions in settings", Toast.LENGTH_LONG).show()
+                val intent = Intent (android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = Uri.parse("package:$packageName")
+                startActivity(intent)
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun initializeScanUI () {
+        setContentView(R.layout.import_loading_screen)
+        val importingDescription = findViewById<TextView>(R.id.ImportingDescription)
+
+        var logins = HashMap<String, String>()
+
+        try {
+            val directory = File (applicationContext.filesDir.toString())
+            Log.d ("Wristkey", "Looking for files in: " + applicationContext.filesDir.toString())
+            importingDescription.text = "Looking for files in: \n${directory}"
+
+            for (file in directory.listFiles()!!) {
+                val fileData = FileReader(file.path).readText()
+
+                if (file.name.endsWith(".wfs")) {
+                    logins = utilities.wfsToHashmap (JSONObject(fileData)) as HashMap<String, String>
+                }
+
+                importingDescription.text = "Found file: \n${file.name}"
+
+                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
+                file.delete()
+
+                for (login in logins) {
+                    importingDescription.text = "${utilities.decodeOTPAuthURL(login.value)?.issuer}"
+                    utilities.writeToVault(utilities.decodeOTPAuthURL(login.value)!!, login.key)
+                }
+            }
+
+            if (logins.isEmpty()) {
+                Toast.makeText(this, "No files found.", Toast.LENGTH_LONG).show()
+                finish()
+            } else {
+                finishAffinity()
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+            }
+
+        } catch (noDirectory: NullPointerException) {
+            finish()
+            Toast.makeText(this, "Couldn't access storage. Please raise an issue on Wristkey's GitHub repo.", Toast.LENGTH_LONG).show()
+            noDirectory.printStackTrace()
+
+        } catch (invalidJson: NullPointerException) {
+            finish()
+            Toast.makeText(this, "The file you provided is invalid.", Toast.LENGTH_LONG).show()
+            invalidJson.printStackTrace()
+
+        }
+
+    }
+
 }

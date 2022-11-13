@@ -1,99 +1,92 @@
 package app.wristkey
-import android.app.KeyguardManager
-import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.net.Uri
+import android.media.audiofx.HapticGenerator
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.os.Vibrator
-import android.provider.Settings
-import android.support.wearable.activity.WearableActivity
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.view.HapticFeedbackConstants
 import android.widget.Toast
-import androidx.wear.widget.BoxInsetLayout
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import wristkey.R
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 
+class ExportActivity : AppCompatActivity() {
 
-class ExportActivity : WearableActivity() {
+    lateinit var utilities: Utilities
+
+    private lateinit var qrExportButton: CardView
+    private lateinit var fileExportButton: CardView
+
+    private lateinit var backButton: CardView
+
+    private lateinit var logins: List<Utilities.MfaCode>
+    var loginNumber = 0
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_export)
-        val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val jsonFileExportLabel = findViewById<TextView>(R.id.BitwardenImportLabel)
-        val jsonFileExportButton = findViewById<ImageView>(R.id.BitwardenImportButton)
-        val fileExport = findViewById<LinearLayout>(R.id.BitwardenImport)
-        val jsonQrCodeExportLabel = findViewById<TextView>(R.id.AuthenticatorImportLabel)
-        val qrCodeExport = findViewById<LinearLayout>(R.id.AuthenticatorImport)
-        val jsonQrCodeExportButton = findViewById<ImageView>(R.id.AuthenticatorImportButton)
-        val backButton = findViewById<ImageView>(R.id.BackButton)
 
-        fileExport.setOnClickListener {
+        utilities = Utilities (applicationContext)
 
-            val sdf = SimpleDateFormat("yyyy-MM-dd'@'HH:mm:ss")
-            val currentDateandTime: String = sdf.format(Date())
-            val fileName = "$currentDateandTime.backup"
+        initializeUI()
 
-            try {
-                val root = File(Environment.getExternalStorageDirectory(), "wristkey")
-                if (!root.exists()) {
-                    root.mkdirs()
-                }
-                val file = File(root, fileName)
-                val writer = FileWriter(file)
-                writer.flush()
-                writer.close()
-                Toast.makeText(this, "Exported successfully. Make sure to delete after use.", Toast.LENGTH_SHORT).show()
-            } catch (e: IOException) {
-                e.printStackTrace()
-                val toast = Toast.makeText(this, "Couldn't write to file. Disable and re-enable storage permission.", Toast.LENGTH_LONG)
-                toast.show()
+    }
 
-                val settingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                val uri: Uri = Uri.fromParts("package", packageName, null)
-                settingsIntent.data = uri
-                startActivity(settingsIntent)
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun initializeUI () {
+        qrExportButton = findViewById (R.id.qrExportButton)
+        fileExportButton = findViewById (R.id.fileExportButton)
 
-                val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                vibratorService.vibrate(50)
-                finish()
-            }
+        backButton = findViewById (R.id.backButton)
 
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-            finish()
+        qrExportButton.setOnClickListener {
+            exportViaQrCodes()
         }
 
-        qrCodeExport.setOnClickListener {
-            val intent = Intent(applicationContext, QRCodeActivity::class.java)
-            startActivity(intent)
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-            finish()
+        fileExportButton.setOnClickListener {
+            startActivity(Intent(applicationContext, WristkeyImport::class.java))
+            fileExportButton.performHapticFeedback(HapticGenerator.SUCCESS)
         }
 
         backButton.setOnClickListener {
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
             finish()
         }
+    }
+
+    private fun exportViaFile () {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun exportViaQrCodes() {
+        logins = utilities.getLogins()
+
+        val intent = Intent (applicationContext, QRCodeActivity::class.java)
+        intent.putExtra (utilities.INTENT_UUID, utilities.getUuid(logins[loginNumber]))
+        loginNumber += 1
+        startActivityForResult (intent, utilities.EXPORT_RESPONSE_CODE)
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (!(resultCode == RESULT_OK && requestCode == CODE_AUTHENTICATION_VERIFICATION)) {
-            finish()
+        when (requestCode) {
+            utilities.EXPORT_RESPONSE_CODE -> {
+                if (logins.size > 2) {
+                    if (loginNumber < logins.size) {
+                        val intent = Intent (applicationContext, QRCodeActivity::class.java)
+                        intent.putExtra (utilities.INTENT_UUID, utilities.getUuid(logins[loginNumber]))
+                        loginNumber += 1
+                        startActivityForResult (intent, utilities.EXPORT_RESPONSE_CODE)
+                    } else {
+                        Toast.makeText(applicationContext, "Done!", Toast.LENGTH_SHORT).show()
+                        qrExportButton.performHapticFeedback(HapticFeedbackConstants.REJECT)
+                    }
+                }
+            }
         }
     }
+
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/qrCodeRoot"
@@ -10,7 +10,7 @@
     tools:context="app.wristkey.AegisJSONImport"
     tools:deviceIds="wear">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -20,16 +20,16 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:orientation="vertical"
-            android:paddingTop="55dp"
+            android:paddingTop="30dp"
             android:paddingBottom="75dp">
 
             <ImageView
                 android:id="@+id/qrCode"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/ic_twotone_qr_code_24"
+                android:background="@drawable/ic_outline_qr_code_2_24"
+                android:backgroundTint="@color/white"
                 android:tintMode="multiply" />
 
             <TextView
@@ -37,7 +37,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="15dp"
                 android:fontFamily="@font/productsans"
                 android:gravity="center_horizontal"
                 android:text="Site"
@@ -48,11 +47,11 @@
                 android:id="@+id/qrCodeAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="15dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="10dp"
                 android:fontFamily="@font/productsans"
-                android:layout_gravity="center"
                 android:text="site.com"
                 android:textColor="@color/primary_text_dark"
                 android:textStyle="normal" />
@@ -69,6 +68,43 @@
                     android:tint="@color/darkTheme" />
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-</androidx.wear.widget.BoxInsetLayout>
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/SquareTimeLeftTop"
+        style="@style/Widget.Material3.LinearProgressIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:foregroundGravity="top"
+        android:max="5"
+        android:progress="3"
+        app:indicatorColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:trackColor="@android:color/transparent"
+        app:trackCornerRadius="50dp"
+        app:trackThickness="5.25dp" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/RoundTimeLeft"
+        style="@style/Widget.Material3.CircularProgressIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center|top"
+        android:foregroundGravity="center"
+        android:max="5"
+        android:progress="3"
+        android:scaleX="1.215"
+        android:scaleY="1.215"
+        app:indicatorColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:trackColor="@android:color/transparent"
+        app:trackCornerRadius="50dp"
+        app:trackThickness="1.5dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

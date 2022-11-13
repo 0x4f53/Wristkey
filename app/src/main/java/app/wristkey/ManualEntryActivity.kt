@@ -36,6 +36,7 @@ class ManualEntryActivity : AppCompatActivity() {
     private lateinit var hashSeekbar: SeekBar
     private lateinit var lengthSeekbar: SeekBar
 
+    private lateinit var showQrCodeButton: CardView
     private lateinit var doneButton: CardView
     private lateinit var deleteButton: CardView
     private lateinit var backButton: CardView
@@ -84,6 +85,7 @@ class ManualEntryActivity : AppCompatActivity() {
         lengthLabel = findViewById (R.id.lengthLabel)
         periodLabel = findViewById (R.id.periodLabel)
 
+        showQrCodeButton = findViewById (R.id.showQrCodeButton)
         doneButton = findViewById (R.id.doneButton)
         deleteButton = findViewById (R.id.deleteButton)
         backButton = findViewById (R.id.backButton)
@@ -188,6 +190,7 @@ class ManualEntryActivity : AppCompatActivity() {
 
         }
 
+        showQrCodeButton.visibility = View.GONE
         deleteButton.visibility = View.GONE
 
         backButton.setOnClickListener {
@@ -223,6 +226,15 @@ class ManualEntryActivity : AppCompatActivity() {
             15 -> periodSeekbar.progress = 0
             30 -> periodSeekbar.progress = 1
             60 -> periodSeekbar.progress = 2
+        }
+
+        showQrCodeButton.visibility = View.VISIBLE
+
+        showQrCodeButton.setOnClickListener {
+            val intent = Intent(applicationContext, QRCodeActivity::class.java)
+            intent.putExtra(utilities.INTENT_UUID, uuid)
+            startActivity(intent)
+            deleteButton.performHapticFeedback(HapticFeedbackConstants.REJECT)
         }
 
         deleteButton.visibility = View.VISIBLE
