@@ -101,11 +101,17 @@ class AegisJSONImport : Activity() {
             importingDescription.text = "Looking for files in: \n${directory}"
 
             for (file in directory.listFiles()!!) {
-                val reader = FileReader(file.path)
-                val jsonData = reader.readText()
 
-                if (file.name.contains("aegis") && file.name.endsWith(".json")) {
-                    logins = utilities.aegisToWristkey (jsonData)
+                try {
+                    val reader = FileReader(file.path)
+                    val jsonData = reader.readText()
+
+                    if (file.name.contains("aegis") && file.name.endsWith(".json")) {
+                        logins = utilities.aegisToWristkey (jsonData)
+                    }
+
+                } catch (_: Exception) {
+                    Log.d ("Wristkey", "${file.name} is invalid")
                 }
 
                 importingDescription.text = "Found file: \n${file.name}"
