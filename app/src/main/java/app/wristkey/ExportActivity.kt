@@ -73,6 +73,8 @@ class ExportActivity : AppCompatActivity() {
 
         backButton = findViewById (R.id.backButton)
 
+        logins = utilities.getLogins()
+
         qrExportButton.setOnClickListener {
             exportViaQrCodes()
         }
@@ -88,6 +90,13 @@ class ExportActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun exportViaFile () {
+
+        if (logins.isEmpty()) {
+            Toast.makeText(this, "Your vault is empty!", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
+
         val directory = File (applicationContext.filesDir.toString())
 
         val rfc3339Timestamp = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(Date())
@@ -108,7 +117,12 @@ class ExportActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun exportViaQrCodes() {
-        logins = utilities.getLogins()
+
+        if (logins.isEmpty()) {
+            Toast.makeText(this, "Your vault is empty!", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
 
         val intent = Intent (applicationContext, QRCodeActivity::class.java)
         intent.putExtra (utilities.INTENT_UUID, utilities.getUuid(logins[loginNumber]))
