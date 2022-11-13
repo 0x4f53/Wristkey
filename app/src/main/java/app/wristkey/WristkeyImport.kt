@@ -101,10 +101,14 @@ class WristkeyImport : AppCompatActivity() {
             importingDescription.text = "Looking for files in: \n${directory}"
 
             for (file in directory.listFiles()!!) {
-                val fileData = FileReader(file.path).readText()
+                try {
+                    val fileData = FileReader(file.path).readText()
 
-                if (file.name.endsWith(".wfs")) {
-                    logins = utilities.wfsToHashmap (JSONObject(fileData)) as HashMap<String, String>
+                    if (file.name.endsWith(".wfs")) {
+                        logins = utilities.wfsToHashmap (JSONObject(fileData)) as HashMap<String, String>
+                    }
+                } catch (_: Exception) {
+                    Log.d ("Wristkey", "${file.name} is invalid")
                 }
 
                 importingDescription.text = "Found file: \n${file.name}"
