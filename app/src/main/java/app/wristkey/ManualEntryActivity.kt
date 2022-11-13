@@ -1,15 +1,16 @@
 package app.wristkey
 import android.content.Intent
-import android.media.audiofx.HapticGenerator
 import android.os.Build
 import android.os.Bundle
-import android.support.wearable.activity.WearableActivity
 import android.text.method.PasswordTransformationMethod
+import android.view.HapticFeedbackConstants
 import android.view.View
+import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.android.material.textfield.TextInputEditText
 import wristkey.R
@@ -17,7 +18,7 @@ import java.util.*
 import kotlin.properties.Delegates
 
 
-class ManualEntryActivity : WearableActivity() {
+class ManualEntryActivity : AppCompatActivity() {
 
     lateinit var utilities: Utilities
 
@@ -52,6 +53,8 @@ class ManualEntryActivity : WearableActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manual_entry)
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 
         utilities = Utilities(applicationContext)
         uuid = UUID.randomUUID().toString()
@@ -228,7 +231,7 @@ class ManualEntryActivity : WearableActivity() {
             val intent = Intent(applicationContext, DeleteActivity::class.java)
             intent.putExtra(utilities.INTENT_UUID, uuid)
             startActivity(intent)
-            deleteButton.performHapticFeedback(HapticGenerator.ERROR)
+            deleteButton.performHapticFeedback(HapticFeedbackConstants.REJECT)
         }
 
     }

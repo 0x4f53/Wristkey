@@ -2,6 +2,7 @@ package app.wristkey
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Bitmap
 import android.media.AudioManager
 import android.media.ToneGenerator
 import android.os.Build
@@ -11,10 +12,17 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
+import com.google.zxing.*
+import com.google.zxing.common.HybridBinarizer
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.net.URLDecoder
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -75,7 +83,113 @@ class Utilities (context: Context) {
         val label: String?,
     )
 
-    fun aegisToWristkey (unencryptedAegisJsonString: String): MutableList<MfaCode> {
+    fun scanQRImage(bMap: Bitmap): String {
+        var contents: String
+        val intArray = IntArray(bMap.width * bMap.height)
+        //copy pixel data from the Bitmap into the 'intArray' array
+        bMap.getPixels(intArray, 0, bMap.width, 0, 0, bMap.width, bMap.height)
+        val source: LuminanceSource = RGBLuminanceSource(bMap.width, bMap.height, intArray)
+        val bitmap = BinaryBitmap(HybridBinarizer(source))
+        val reader: Reader = MultiFormatReader()
+
+        contents = try {
+            val result = reader.decode(bitmap)
+            result.text
+        } catch (e: Exception) {
+            "No data found"
+        }
+
+        return contents
+    }
+
+    fun authenticatorToWristkey (decodedQRCodeData: String): MutableList<MfaCode> {
+
+        fun decodeAuthenticatorData (authenticatorJsonString: String): MutableList<MfaCode> {
+            val logins = mutableListOf<MfaCode>()
+
+            val items = JSONObject(authenticatorJsonString)
+            for (key in items.keys()) {
+                val itemData = JSONObject(items[key].toString())
+
+                var mode: String = if (itemData["type"].toString() == "1") "hotp" else "totp"
+
+                var issuer: String = key
+
+                var account: String = if (itemData["username"].toString().isNotEmpty()
+                    && itemData["username"].toString() != issuer)
+                    itemData["username"].toString()
+                else ""
+
+                var secret: String = itemData["secret"].toString()
+
+                logins.add(
+                    MfaCode (
+                        type = "otpauth",
+                        mode = mode,
+                        issuer = issuer,
+                        account = account,
+                        secret = secret,
+                        algorithm = ALGO_SHA1,
+                        digits = 6,
+                        period = 30,
+                        lock = false,
+                        counter = 0,
+                        label = ""
+                    )
+                )
+            }
+
+            return logins
+        }
+
+        fun scanAndDecodeQrCode(decodedQRCodeData: String): String {
+            if (!Python.isStarted()) {
+                Python.start(AndroidPlatform(context))
+            }
+
+            Python
+                .getInstance()
+                .getModule("extract_otp_secret_keys")
+                .callAttr("decode", decodedQRCodeData)
+
+            val timeStamp: String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
+
+            val logcat: Process
+            val log = StringBuilder()
+            try {
+                logcat = Runtime.getRuntime().exec(arrayOf("logcat", "-d"))
+                val br =
+                    BufferedReader(InputStreamReader(logcat.inputStream), 4 * 1024)
+                var line: String?
+                val separator = System.getProperty("line.separator")
+                while (br.readLine().also { line = it } != null) {
+                    log.append(line)
+                    log.append(separator)
+                }
+                Runtime.getRuntime().exec("clear")
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+
+            return log.toString()
+                .substringAfter(timeStamp)  // get most recent occurrence of data
+                .substringAfter("python.stdout")
+                .substringAfter("<wristkey>")
+                .substringBefore("<\\wristkey>")
+        }
+
+        // put data in Python script and extract Authenticator data
+        var logins: MutableList<MfaCode> = mutableListOf()
+        if (decodedQRCodeData.contains("otpauth-migration://")) {
+            val logExtractedString = scanAndDecodeQrCode(decodedQRCodeData)
+            logins = decodeAuthenticatorData(logExtractedString)
+        }
+
+        return logins
+
+    }
+
+    fun aegisToWristkey (unencryptedAegisJsonString: String): MutableList<Utilities.MfaCode> {
 
         val logins = mutableListOf<MfaCode>()
 
@@ -236,7 +350,10 @@ class Utilities (context: Context) {
         for (item in items) {
             key = item.key
             if (item.value == login) {
-                return key
+                try {
+                    val uuid = UUID.fromString(item.key as String)
+                    return key
+                } catch (_: IllegalArgumentException) { }
             }
         }
 
@@ -250,9 +367,7 @@ class Utilities (context: Context) {
         for (item in items) {
             try {
                 value = decodeOTPAuthURL(item.value as String) as MfaCode
-                if (item.key == uuid) {
-                    return value
-                }
+                if (item.key == uuid) return value
             } catch (_: Exception) { }
         }
 

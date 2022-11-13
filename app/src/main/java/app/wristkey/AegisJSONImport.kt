@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.HapticFeedbackConstants
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -100,26 +101,27 @@ class AegisJSONImport : Activity() {
             importingDescription.text = "Looking for files in: \n${directory}"
 
             for (file in directory.listFiles()!!) {
+                val reader = FileReader(file.path)
+                val jsonData = reader.readText()
+
                 if (file.name.contains("aegis") && file.name.endsWith(".json")) {
-                    importingDescription.text = "Found file: \n${file.name}"
-
-                    val reader = FileReader(file.path)
-                    val jsonData = reader.readText()
                     logins = utilities.aegisToWristkey (jsonData)
+                }
 
-                    Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
-                    importingDescription.performHapticFeedback(HapticGenerator.ERROR)
-                    file.delete()
+                importingDescription.text = "Found file: \n${file.name}"
 
-                    for (login in logins) {
-                        importingDescription.text = "${login.issuer}"
-                        utilities.writeToVault(login, UUID.randomUUID().toString())
-                    }
+                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
+                file.delete()
+
+                for (login in logins) {
+                    importingDescription.text = "${login.issuer}"
+                    utilities.writeToVault(login, UUID.randomUUID().toString())
                 }
             }
 
             if (logins.isEmpty()) {
-                Toast.makeText(applicationContext, "Couldn't find any files. Please try again.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "No files found.", Toast.LENGTH_LONG).show()
                 finish()
             } else {
                 finishAffinity()

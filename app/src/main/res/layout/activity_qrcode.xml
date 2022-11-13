@@ -2,20 +2,73 @@
 <androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/BoxInsetLayout"
+    android:id="@+id/qrCodeRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:foregroundTintMode="add"
+    android:background="@color/black"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context="app.wristkey.AboutActivity"
+    tools:context="app.wristkey.AegisJSONImport"
     tools:deviceIds="wear">
 
-    <ImageView
-        android:id="@+id/qrCode"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="20dp"
-        android:tintMode="src_atop"
-        app:srcCompat="@drawable/ic_twotone_qr_code_24" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:orientation="vertical"
+            android:paddingTop="55dp"
+            android:paddingBottom="75dp">
+
+            <ImageView
+                android:id="@+id/qrCode"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/ic_twotone_qr_code_24"
+                android:tintMode="multiply" />
+
+            <TextView
+                android:id="@+id/qrCodeIssuer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/productsans"
+                android:gravity="center_horizontal"
+                android:text="Site"
+                android:textColor="@color/primary_text_dark"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/qrCodeAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/productsans"
+                android:layout_gravity="center"
+                android:text="site.com"
+                android:textColor="@color/primary_text_dark"
+                android:textStyle="normal" />
+
+                <ImageButton
+                    android:id="@+id/doneButton"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/preference_wrapped_icon"
+                    android:backgroundTint="@color/colorAccent"
+                    android:foregroundGravity="center"
+                    android:src="@drawable/ic_done"
+                    android:tint="@color/darkTheme" />
+
+        </LinearLayout>
+    </ScrollView>
+
 </androidx.wear.widget.BoxInsetLayout>

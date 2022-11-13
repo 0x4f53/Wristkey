@@ -5,18 +5,19 @@ import android.content.Intent
 import android.media.audiofx.HapticGenerator
 import android.os.Build
 import android.os.Bundle
-import android.support.wearable.activity.WearableActivity
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import wristkey.R
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SettingsActivity : WearableActivity() {
+class SettingsActivity : AppCompatActivity() {
 
     lateinit var mfaCodesTimer: Timer
     lateinit var utilities: Utilities
@@ -120,6 +121,7 @@ class SettingsActivity : WearableActivity() {
             settingsChanged = true
             utilities.vault.edit().remove(utilities.SETTINGS_HAPTICS_ENABLED).apply()
             utilities.vault.edit().putBoolean(utilities.SETTINGS_HAPTICS_ENABLED, isChecked).apply()
+            if (isChecked) deleteButton.performHapticFeedback(HapticFeedbackConstants.REJECT)
         }
 
         val beepButton: SwitchMaterial = findViewById(R.id.beepButton)
@@ -164,7 +166,7 @@ class SettingsActivity : WearableActivity() {
             val intent = Intent(applicationContext, DeleteActivity::class.java)
             intent.putExtra(utilities.INTENT_DELETE_MODE, utilities.INTENT_WIPE)
             startActivity(intent)
-            deleteButton.performHapticFeedback(HapticGenerator.ERROR)
+            deleteButton.performHapticFeedback(HapticFeedbackConstants.REJECT)
         }
 
     }
