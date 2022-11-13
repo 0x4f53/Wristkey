@@ -19,10 +19,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import wristkey.R
-import java.io.BufferedInputStream
-import java.io.File
-import java.io.FileInputStream
-import java.io.InputStream
+import java.io.*
 import java.util.*
 
 class OtpAuthImport : Activity() {
@@ -106,29 +103,36 @@ class OtpAuthImport : Activity() {
 
             for (file in directory.listFiles()!!) {
 
-                if (
-                    file.name.endsWith(".png", ignoreCase = true)
-                    || file.name.endsWith(".jpg", ignoreCase = true)
-                    || file.name.endsWith(".jpeg", ignoreCase = true)
-                ) {
+                try {
+                    val fileData = FileReader(file.path).readText()
 
-                    val reader: InputStream = BufferedInputStream(FileInputStream(file.path))
-                    val imageBitmap = BitmapFactory.decodeStream(reader)
-                    val decodedQRCodeData: String = utilities.scanQRImage(imageBitmap)
+                    if (
+                        file.name.endsWith(".png", ignoreCase = true)
+                        || file.name.endsWith(".jpg", ignoreCase = true)
+                        || file.name.endsWith(".jpeg", ignoreCase = true)
+                    ) {
 
-                    importingDescription.text = "Found file: \n${file.name}"
+                        val reader: InputStream = BufferedInputStream(FileInputStream(file.path))
+                        val imageBitmap = BitmapFactory.decodeStream(reader)
+                        val decodedQRCodeData: String = utilities.scanQRImage(imageBitmap)
 
-                    if (decodedQRCodeData.contains("otpauth://") && !decodedQRCodeData.contains("otpauth-migration://"))
-                        logins. add(utilities.decodeOTPAuthURL (decodedQRCodeData)!!)
-                    else if (decodedQRCodeData.contains("otpauth-migration://")) {
-                        Toast.makeText(this, "This appears to be a Google Authenticator export. Please choose that option instead to proceed.", Toast.LENGTH_LONG).show()
-                        break
+                        if (decodedQRCodeData.contains("otpauth://") && !decodedQRCodeData.contains("otpauth-migration://"))
+                            logins. add(utilities.decodeOTPAuthURL (decodedQRCodeData)!!)
+                        else if (decodedQRCodeData.contains("otpauth-migration://")) {
+                            Toast.makeText(this, "This appears to be a Google Authenticator export. Please choose that option instead to proceed.", Toast.LENGTH_LONG).show()
+                            break
+                        }
+
                     }
 
-                    Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
-                    importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
-                    file.delete()
+                } catch (_: Exception) {
+                    Log.d ("Wristkey", "${file.name} is invalid")
                 }
+
+                importingDescription.text = "Found file: \n${file.name}"
+                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
+                file.delete()
 
             }
 
