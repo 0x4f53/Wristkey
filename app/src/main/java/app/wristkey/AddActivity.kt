@@ -10,6 +10,8 @@ class AddActivity : AppCompatActivity() {
     private lateinit var manualEntry: CardView
     private lateinit var aegisImportButton: CardView
     private lateinit var googleAuthenticatorImport: CardView
+    private lateinit var backupFileButton: CardView
+    private lateinit var scanQRCode: CardView
 
     private lateinit var backButton: CardView
 
@@ -23,25 +25,8 @@ class AddActivity : AppCompatActivity() {
         val importBitwardenButton = findViewById<ImageView>(R.id.BitwardenImportButton)
         val importBitwarden = findViewById<LinearLayout>(R.id.BitwardenImport)
 
-        val manualEntry = findViewById<LinearLayout>(R.id.ManualEntry)
-
-        val importAuthenticatorButtonText = findViewById<TextView>(R.id.AuthenticatorImportLabel)
-        val importAuthenticator = findViewById<LinearLayout>(R.id.AuthenticatorImport)
-        val importAuthenticatorButton = findViewById<ImageView>(R.id.AuthenticatorImportButton)
-        val scanQRCode = findViewById<LinearLayout>(R.id.ScanQRCode)
-
-        val backButton = findViewById<ImageView>(R.id.BackButton)
-
         importBitwarden.setOnClickListener {
             val intent = Intent(applicationContext, BitwardenJSONImport::class.java)
-            startActivity(intent)
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-            finish()
-        }
-
-        importAuthenticator.setOnClickListener {
-            val intent = Intent(applicationContext, AuthenticatorQRImport::class.java)
             startActivity(intent)
             val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibratorService.vibrate(50)
@@ -55,22 +40,7 @@ class AddActivity : AppCompatActivity() {
             vibratorService.vibrate(50)
             finish()
         }
-
-        wristkeyImport.setOnClickListener {
-            val intent = Intent(applicationContext, WristkeyImport::class.java)
-            startActivity(intent)
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-            finish()
-        }*/
-/*
-        backButton.setOnClickListener {
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }*/
+*/
 
     }
 
@@ -78,12 +48,24 @@ class AddActivity : AppCompatActivity() {
         manualEntry = findViewById (R.id.manualEntry)
         aegisImportButton = findViewById (R.id.aegisImportButton)
         googleAuthenticatorImport = findViewById (R.id.googleAuthenticatorImport)
+        backupFileButton = findViewById (R.id.backupFileButton)
+        scanQRCode = findViewById (R.id.scanQRCode)
 
         backButton = findViewById (R.id.backButton)
 
         manualEntry.setOnClickListener {
             startActivity(Intent(applicationContext, ManualEntryActivity::class.java))
             manualEntry.performHapticFeedback(HapticGenerator.SUCCESS)
+        }
+
+        backupFileButton.setOnClickListener {
+            startActivity(Intent(applicationContext, WristkeyImport::class.java))
+            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        }
+
+        scanQRCode.setOnClickListener {
+            startActivity(Intent(applicationContext, OtpAuthImport::class.java))
+            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
         }
 
         aegisImportButton.setOnClickListener {
