@@ -38,8 +38,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var clock: TextView
     private lateinit var roundTimeLeft: ProgressBar
-    private lateinit var loginsRecycler: RecyclerView
     private lateinit var squareTimeLeft: ProgressBar
+    private lateinit var loginsRecycler: RecyclerView
     private lateinit var addAccountButton: CardView
     private lateinit var settingsButton: CardView
     private lateinit var aboutButton: CardView
@@ -72,6 +72,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        mfaCodesTimer = Timer()
+    }
+
+    override fun onResume() {
+        super.onResume()
         mfaCodesTimer = Timer()
     }
 
@@ -145,23 +150,15 @@ class MainActivity : AppCompatActivity() {
         try {
             thread {
 
-                // round timer
                 mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                     override fun run() {
                         val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
                         var halfMinuteElapsed = abs((60-currentSecond))
                         if (halfMinuteElapsed >= 30) halfMinuteElapsed -= 30
-                        try { roundTimeLeft.progress = halfMinuteElapsed } catch (_: Exception) { }
-                    }
-                }, 0, 1000) // 1000 milliseconds = 1 second
-
-                // square timer
-                mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
-                    override fun run() {
-                        val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-                        var halfMinuteElapsed = abs((60-currentSecond))
-                        if (halfMinuteElapsed >= 30) halfMinuteElapsed -= 30
-                        try { squareTimeLeft.progress = halfMinuteElapsed } catch (_: Exception) { }
+                        try {
+                            roundTimeLeft.progress = halfMinuteElapsed
+                            squareTimeLeft.progress = halfMinuteElapsed
+                        } catch (_: Exception) { }
                     }
                 }, 0, 1000) // 1000 milliseconds = 1 second
 
@@ -472,14 +469,6 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onLongClick() {
                     val intent = Intent(applicationContext, ManualEntryActivity::class.java)
-                    intent.putExtra(utilities.INTENT_UUID, utilities.getUuid(login))
-                    startActivity(intent)
-                    loginCard.loginCard.performHapticFeedback(HapticGenerator.SUCCESS)
-                    super.onSwipeRight()
-                }
-
-                override fun onSwipeLeft() {
-                    val intent = Intent(applicationContext, QRCodeActivity::class.java)
                     intent.putExtra(utilities.INTENT_UUID, utilities.getUuid(login))
                     startActivity(intent)
                     loginCard.loginCard.performHapticFeedback(HapticGenerator.SUCCESS)

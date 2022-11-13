@@ -46,10 +46,10 @@ class AegisJSONImport : Activity() {
     private fun initializeUI () {
         backButton = findViewById (R.id.backButton)
         doneButton = findViewById (R.id.doneButton)
-        importLabel = findViewById (R.id.aegisLabel)
-        description = findViewById (R.id.aegisDescription)
+        importLabel = findViewById (R.id.label)
+        description = findViewById (R.id.description)
 
-        description.text = getString (R.string.aegis_import_blurb) + " " + applicationContext.filesDir.toString() + "\n\n" + getString (R.string.use_adb_blurb)
+        description.text = getString (R.string.wristkey_import_blurb) + " " + applicationContext.filesDir.toString() + "\n\n" + getString (R.string.use_adb_blurb)
 
         backButton.setOnClickListener {
             backButton.performHapticFeedback(HapticGenerator.SUCCESS)

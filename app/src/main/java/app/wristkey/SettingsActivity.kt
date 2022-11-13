@@ -158,6 +158,11 @@ class SettingsActivity : AppCompatActivity() {
             utilities.vault.edit().putBoolean(utilities.CONFIG_SCREEN_ROUND, isChecked).apply()
         }
 
+        exportButton.setOnClickListener {
+            startActivity(Intent(applicationContext, ExportActivity::class.java))
+            exportButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        }
+
         backButton.setOnClickListener {
             finish()
         }
