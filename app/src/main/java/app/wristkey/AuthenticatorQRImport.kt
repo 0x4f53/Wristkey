@@ -106,25 +106,29 @@ class AuthenticatorQRImport : Activity() {
 
             for (file in directory.listFiles()!!) {
 
-                if (
-                    file.name.endsWith(".png", ignoreCase = true)
-                    || file.name.endsWith(".jpg", ignoreCase = true)
-                    || file.name.endsWith(".jpeg", ignoreCase = true)
-                ) {
+                try {
+                    if (
+                        file.name.endsWith(".png", ignoreCase = true)
+                        || file.name.endsWith(".jpg", ignoreCase = true)
+                        || file.name.endsWith(".jpeg", ignoreCase = true)
+                    ) {
 
-                    val reader: InputStream = BufferedInputStream(FileInputStream(file.path))
-                    val imageBitmap = BitmapFactory.decodeStream(reader)
-                    val decodedQRCodeData: String = utilities.scanQRImage(imageBitmap)
+                        val reader: InputStream = BufferedInputStream(FileInputStream(file.path))
+                        val imageBitmap = BitmapFactory.decodeStream(reader)
+                        val decodedQRCodeData: String = utilities.scanQRImage(imageBitmap)
 
-                    importingDescription.text = "Found file: \n${file.name}"
+                        logins = utilities.authenticatorToWristkey (decodedQRCodeData)
 
-                    logins = utilities.authenticatorToWristkey (decodedQRCodeData)
-
-                    Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
-                    importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
-                    file.delete()
+                    }
+                } catch (_: Exception) {
+                    Log.d ("Wristkey", "${file.name} is invalid")
                 }
 
+                importingDescription.text = "Found file: \n${file.name}"
+
+                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
+                file.delete()
             }
 
             if (logins.isEmpty()) {
