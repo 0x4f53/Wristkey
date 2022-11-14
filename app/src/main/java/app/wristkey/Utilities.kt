@@ -33,6 +33,11 @@ class Utilities (context: Context) {
     val CAMERA_REQUEST_CODE = 420
     val EXPORT_RESPONSE_CODE = 69420
 
+
+    val OTPAUTH_SCAN_CODE = "OTPAUTH_SCAN_CODE"
+    val AUTHENTICATOR_EXPORT_SCAN_CODE = "AUTHENTICATOR_EXPORT_SCAN_CODE"
+    val QR_CODE_SCAN_REQUEST = "QR_CODE_SCAN_REQUEST"
+
     val context = context
 
     val QR_TIMER_DURATION = 5
@@ -359,29 +364,18 @@ class Utilities (context: Context) {
     }
 
     fun getUuid (login: MfaCode): String? {
-        val items  = vault.all
-        var key: String? = null
-
-        for (item in items) {
-            key = item.key
-            if (item.value == encodeOTPAuthURL(login)) {
-                try {
-                    val uuid = UUID.fromString(item.key as String)
-                    return key
-                } catch (_: IllegalArgumentException) { }
-            }
-        }
-
-        return key
+        val items  = getVaultLoginsOnly()
+        for ((key, value) in items) if (value.contains(login.secret.toString())) return key
+        return null
     }
 
-    fun getLogin (uuid: String): MfaCode? {
+    fun getLogin (uuid: String): Utilities.MfaCode? {
         val items  = vault.all
-        var value: MfaCode? = null
+        var value: Utilities.MfaCode? = null
 
         for (item in items) {
             try {
-                value = decodeOTPAuthURL(item.value as String) as MfaCode
+                value = decodeOTPAuthURL(item.value as String) as Utilities.MfaCode
                 if (item.key == uuid) return value
             } catch (_: Exception) { }
         }
@@ -389,7 +383,7 @@ class Utilities (context: Context) {
         return value
     }
 
-    fun overwriteLogin (oldLogin: MfaCode, newLogin: MfaCode): Boolean {
+    fun overwriteLogin (oldLogin: Utilities.MfaCode, newLogin: MfaCode): Boolean {
 
         val items  = vault.all
         var key: String? = null
