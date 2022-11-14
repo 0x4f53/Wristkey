@@ -1,175 +1,147 @@
 package app.wristkey
 
+import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
+import android.content.pm.PackageManager
+import android.media.audiofx.HapticGenerator
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment.getExternalStorageDirectory
-import android.os.Vibrator
-import android.provider.Settings
-import android.widget.*
-import androidx.wear.widget.BoxInsetLayout
-import app.wristkey.AddActivity
-import com.google.gson.Gson
-import org.json.JSONArray
-import org.json.JSONException
+import android.util.Log
+import android.view.HapticFeedbackConstants
+import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import org.json.JSONObject
 import wristkey.R
-import wristkey.databinding.ActivityBitwardenJsonimportBinding
 import java.io.File
 import java.io.FileReader
 import java.util.*
 
+
 class BitwardenJSONImport : Activity() {
 
-    private lateinit var binding: ActivityBitwardenJsonimportBinding
+    lateinit var utilities: Utilities
 
+    lateinit var backButton: ImageButton
+    lateinit var doneButton: ImageButton
+    lateinit var importLabel: TextView
+    lateinit var description: TextView
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityBitwardenJsonimportBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        val boxinsetlayout = findViewById<BoxInsetLayout>(R.id.BoxInsetLayout)
-        val backButton = findViewById<ImageButton>(R.id.AuthenticatorBackButton)
-        val confirmButton = findViewById<ImageButton>(R.id.AuthenticatorConfirmButton)
-        val importLabel = findViewById<TextView>(R.id.AuthenticatorImportLabel)
-        val description = findViewById<TextView>(R.id.AuthenticatorDescription)
-        val importUsernames = findViewById<CheckBox>(R.id.AuthenticatorImportUsernames)
+        setContentView(R.layout.activity_bitwarden_jsonimport)
+
+        utilities = Utilities (applicationContext)
+
+        initializeUI()
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun initializeUI () {
+        setContentView(R.layout.activity_bitwarden_jsonimport)
+        backButton = findViewById (R.id.backButton)
+        doneButton = findViewById (R.id.doneButton)
+        importLabel = findViewById (R.id.label)
+        description = findViewById (R.id.description)
+
+        description.text = getString (R.string.wristkey_import_blurb) + " " + applicationContext.filesDir.toString() + "\n\n" + getString (R.string.use_adb_blurb)
 
         backButton.setOnClickListener {
-            val intent = Intent(applicationContext, AddActivity::class.java)
-            startActivity(intent)
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
+            backButton.performHapticFeedback(HapticGenerator.SUCCESS)
             finish()
         }
 
-        confirmButton.setOnClickListener {
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-
-            val files: Array<File> = getExternalStorageDirectory().listFiles()
-            // start import
-            try {
-                for (file in files) {
-                    if (file.name.startsWith("bitwarden") && file.name.endsWith(".json")) {
-                        val reader = FileReader(file.path)
-                        val jsonData = reader.readText()
-                        val items = JSONObject(jsonData)["items"].toString()
-                        val itemsArray = JSONArray(items)
-
-                        setContentView(R.layout.import_loading_screen)
-                        val loadingLayout = findViewById<BoxInsetLayout>(R.id.LoadingLayout)
-                        val loadingIcon = findViewById<ProgressBar>(R.id.LoadingIcon)
-                        val importingLabel = findViewById<TextView>(R.id.ImportingLabel)
-                        val importingDescription = findViewById<TextView>(R.id.ImportingDescription)
-
-                        //found x number of items
-
-                        importingDescription.text = "Found ${itemsArray.length()} items"
-
-                        for (itemIndex in 0 until itemsArray.length()) {
-                            val itemData = JSONObject(itemsArray[itemIndex].toString())
-
-                            try {
-                                val accountData = JSONObject(itemData["login"].toString())
-                                val totpSecret = accountData["totp"]
-                                val username = accountData["username"]
-                                val sitename = itemData["name"]
-                                val uuid = itemData["id"].toString()
-
-                                val accountName: String = if (username.toString() == "null") {
-                                    sitename.toString()
-                                } else {
-                                    if (importUsernames.isChecked)
-                                        "$sitename ($username)"
-                                    else
-                                        sitename.toString()
-                                }
-
-                                var totp = ""
-                                if (totpSecret.toString() != "null") {
-                                    totp = totpSecret.toString()
-                                }
-
-                                if (totp.isNotEmpty()) { // begin storing data
-                                    importingDescription.text = "Adding $sitename account"
-                                    if (totp.startsWith("otpauth://")) {
-                                        var type = totp.substringAfter("otpauth://").substringBefore("/")
-                                        var secret = totp.substringAfter("secret=").substringBefore("&")
-                                        var algorithm = totp.substringAfter("algorithm=").substringBefore("&")
-                                        var digits = totp.substringAfter("digits=").substringBefore("&")
-                                        var label = totp.substringAfterLast("/").substringBefore("?")
-                                        var issuer = totp.substringAfterLast("issuer=").substringBefore("&")
-
-                                        type = if (type.equals("totp")) "Time" else "Counter"
-
-                                        if (algorithm == "SHA1") {
-                                            algorithm = "HmacAlgorithm.SHA1"
-                                        } else if (algorithm == "SHA256") {
-                                            algorithm = "HmacAlgorithm.SHA256"
-                                        } else if (algorithm == "SHA512") {
-                                            algorithm = "HmacAlgorithm.SHA512"
-                                        }
-
-                                        val accountData = ArrayList<String>()
-
-                                        accountData.add(accountName)
-                                        accountData.add(secret)
-
-                                        accountData.add(type)
-                                        accountData.add(digits)
-                                        accountData.add(algorithm)
-                                        accountData.add("0")  // If counter mode is selected, initial value must be 0.
-                                        val json = Gson().toJson(accountData)
-
-                                    } else { // Google Authenticator
-
-                                        val accountData = ArrayList<String>()
-
-                                        accountData.add(accountName)
-                                        accountData.add(totp)
-
-                                        accountData.add("Time")
-                                        accountData.add("6")
-                                        accountData.add("HmacAlgorithm.SHA1")
-                                        accountData.add("0")  // If counter mode is selected, initial value must be 0.
-                                        val json = Gson().toJson(accountData)
-                                    }
-                                } else {
-                                    importingDescription.text = "No TOTP secret for $sitename account"
-                                }
-                            } catch (noData: JSONException) {  }
-                        }
-                        importingDescription.text = "Saving data"
-                        val toast = Toast.makeText(this, "Imported accounts successfully!", Toast.LENGTH_SHORT)
-                        toast.show()
-
-                        val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                        vibratorService.vibrate(100)
-                        val intent = Intent(applicationContext, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    }
-                }
-
-            } catch (noFileFound: IllegalStateException) {
-                val toast = Toast.makeText(this, "Couldn't find file. Check if the file exists and if Wristkey is granted storage permission.", Toast.LENGTH_LONG)
-                toast.show()
-
-                val settingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                val uri: Uri = Uri.fromParts("package", packageName, null)
-                settingsIntent.data = uri
-                startActivity(settingsIntent)
-
-                val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                vibratorService.vibrate(50)
-                finish()
-            }
-            // stop import
+        doneButton.setOnClickListener {
+            doneButton.performHapticFeedback(HapticGenerator.SUCCESS)
+            checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, utilities.FILES_REQUEST_CODE)
         }
 
     }
+
+    // Function to check and request permission.
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun checkPermission(permission: String, requestCode: Int) {
+        if (ContextCompat.checkSelfPermission(this@BitwardenJSONImport, permission) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this@BitwardenJSONImport, arrayOf(permission), requestCode)
+        } else {
+            initializeScanUI()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == utilities.FILES_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                initializeScanUI()
+            } else {
+                Toast.makeText(this@BitwardenJSONImport, "Please grant Wristkey storage permissions in settings", Toast.LENGTH_LONG).show()
+                val intent = Intent (android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = Uri.parse("package:$packageName")
+                startActivity(intent)
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun initializeScanUI () {
+        setContentView(R.layout.import_loading_screen)
+        val importingDescription = findViewById<TextView>(R.id.ImportingDescription)
+
+        var logins = mutableListOf<Utilities.MfaCode>()
+
+        try {
+            val directory = File (applicationContext.filesDir.toString())
+            Log.d ("Wristkey", "Looking for files in: " + applicationContext.filesDir.toString())
+            importingDescription.text = "Looking for files in: \n${directory}"
+
+            for (file in directory.listFiles()!!) {
+
+                try {
+                    val reader = FileReader(file.path)
+                    val jsonData = reader.readText()
+
+                    if (file.name.contains("bitwarden") && file.name.endsWith(".json")) {
+                        logins = utilities.bitwardenToWristkey (JSONObject(jsonData))
+                    }
+
+                } catch (_: Exception) {
+                    Log.d ("Wristkey", "${file.name} is invalid")
+                }
+
+                importingDescription.text = "Found file: \n${file.name}"
+
+                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
+                file.delete()
+
+                for (login in logins) {
+                    importingDescription.text = "${login.issuer}"
+                    utilities.writeToVault(login, UUID.randomUUID().toString())
+                }
+            }
+
+            if (logins.isEmpty()) {
+                Toast.makeText(this, "No files found.", Toast.LENGTH_LONG).show()
+                finish()
+            } else {
+                finishAffinity()
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+            }
+
+        } catch (noDirectory: NullPointerException) {
+            initializeUI()
+            Toast.makeText(this, "Couldn't access storage. Please raise an issue on Wristkey's GitHub repo.", Toast.LENGTH_LONG).show()
+            noDirectory.printStackTrace()
+        }
+
+    }
+
 }

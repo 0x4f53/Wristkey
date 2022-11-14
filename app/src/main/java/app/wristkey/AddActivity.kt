@@ -1,53 +1,104 @@
 package app.wristkey
 import android.content.Intent
 import android.media.audiofx.HapticGenerator
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import wristkey.R
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AddActivity : AppCompatActivity() {
+
+    lateinit var mfaCodesTimer: Timer
+    lateinit var utilities: Utilities
+
+    private lateinit var clock: TextView
+
     private lateinit var manualEntry: CardView
     private lateinit var aegisImportButton: CardView
     private lateinit var googleAuthenticatorImport: CardView
+    private lateinit var bitwardenImport: CardView
+    private lateinit var andOtpImport: CardView
     private lateinit var backupFileButton: CardView
     private lateinit var scanQRCode: CardView
 
     private lateinit var backButton: CardView
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
 
+        utilities = Utilities(applicationContext)
+        mfaCodesTimer = Timer()
         initializeUI()
-
-        /*val importBitwardenButtonText = findViewById<TextView>(R.id.BitwardenImportLabel)
-        val importBitwardenButton = findViewById<ImageView>(R.id.BitwardenImportButton)
-        val importBitwarden = findViewById<LinearLayout>(R.id.BitwardenImport)
-
-        importBitwarden.setOnClickListener {
-            val intent = Intent(applicationContext, BitwardenJSONImport::class.java)
-            startActivity(intent)
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-            finish()
-        }
-
-        andOTPImport.setOnClickListener {
-            val intent = Intent(applicationContext, AndOtpJSONImport::class.java)
-            startActivity(intent)
-            val vibratorService = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibratorService.vibrate(50)
-            finish()
-        }
-*/
+        startClock()
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun startClock () {
+
+        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) {
+            findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
+        }
+
+        try {
+            mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    val currentHour24 = SimpleDateFormat("HH", Locale.getDefault()).format(Date())
+                    val currentHour = SimpleDateFormat("hh", Locale.getDefault()).format(Date())
+                    val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
+                    val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
+                    val currentAmPm = SimpleDateFormat("a", Locale.getDefault()).format(Date())
+                    runOnUiThread {
+                        try {
+
+                            if (utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, false)) {
+                                clock.text = "$currentHour24:$currentMinute"
+                                if ((currentSecond % 2) == 0) clock.text = "$currentHour24 $currentMinute"
+                            } else {
+                                clock.text = "$currentHour:$currentMinute"
+                                if ((currentSecond % 2) == 0) clock.text = "$currentHour $currentMinute"
+                            }
+
+                        } catch (_: Exception) { }
+                    }
+                }
+            }, 0, 1000) // 1000 milliseconds = 1 second
+        } catch (_: IllegalStateException) { }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mfaCodesTimer.cancel()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mfaCodesTimer.cancel()
+        finish()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mfaCodesTimer = Timer()
+    }
+
     private fun initializeUI () {
+
+        clock = findViewById(R.id.clock)
+
         manualEntry = findViewById (R.id.manualEntry)
         aegisImportButton = findViewById (R.id.aegisImportButton)
         googleAuthenticatorImport = findViewById (R.id.googleAuthenticatorImport)
+        andOtpImport = findViewById (R.id.andOtpImportButton)
+        bitwardenImport = findViewById (R.id.bitwardenImport)
         backupFileButton = findViewById (R.id.backupFileButton)
         scanQRCode = findViewById (R.id.scanQRCode)
 
@@ -75,6 +126,16 @@ class AddActivity : AppCompatActivity() {
 
         googleAuthenticatorImport.setOnClickListener {
             startActivity(Intent(applicationContext, AuthenticatorQRImport::class.java))
+            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        }
+
+        bitwardenImport.setOnClickListener {
+            startActivity(Intent(applicationContext, BitwardenJSONImport::class.java))
+            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        }
+
+        andOtpImport.setOnClickListener {
+            startActivity(Intent(applicationContext, AndOtpJSONImport::class.java))
             aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
         }
 

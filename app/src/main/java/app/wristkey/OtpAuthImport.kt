@@ -47,6 +47,7 @@ class OtpAuthImport : Activity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initializeUI () {
+        setContentView(R.layout.activity_otpauth_import)
         importLabel = findViewById (R.id.label)
         description = findViewById (R.id.description)
 
@@ -188,7 +189,7 @@ class OtpAuthImport : Activity() {
             }
 
         } catch (noDirectory: NullPointerException) {
-            setContentView(R.layout.activity_authenticator_qrimport)
+            initializeUI()
             Toast.makeText(this, "Couldn't access storage. Please raise an issue on Wristkey's GitHub repo.", Toast.LENGTH_LONG).show()
             noDirectory.printStackTrace()
 
