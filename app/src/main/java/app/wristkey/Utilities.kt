@@ -209,9 +209,123 @@ class Utilities (context: Context) {
         return map
     }
 
-    fun aegisToWristkey (unencryptedAegisJsonString: String): MutableList<Utilities.MfaCode> {
+    fun bitwardenToWristkey (jsonObject: JSONObject): MutableList<MfaCode> {
 
         val logins = mutableListOf<MfaCode>()
+
+        val items = jsonObject["items"].toString()
+        val itemsArray = JSONArray(items)
+
+        for (itemIndex in 0 until itemsArray.length()) {
+            val itemData = JSONObject(itemsArray[itemIndex].toString())
+            try {
+                val accountData = JSONObject(itemData["login"].toString())
+                val totpSecret = accountData["totp"]
+                val username = accountData["username"]
+                val sitename = itemData["name"]
+                val uuid = itemData["id"].toString()
+                val accountName: String = if (username.toString() == "null" || username.toString().isBlank()) sitename.toString()
+                else username.toString()
+
+                var totp = ""
+                if (totpSecret.toString() != "null" || username.toString().isNotBlank()) totp = totpSecret.toString()
+
+                if (totp.startsWith("otpauth://")) {
+                    val type: String = if (totp.substringAfter("://").substringBefore("/").contains("totp")) "totp" else "hotp"
+                    val issuer: String = totp.substringAfterLast("otp/").substringBefore(":")
+                    val account: String = totp.substringAfterLast(":").substringBefore("?")
+                    val secret: String? = if (totp.contains("secret")) totp.substringAfter("secret=").substringBefore("&") else null
+                    val algorithm: String = if (totp.contains("algorithm")) totp.substringAfter("algorithm=").substringBefore("&") else ALGO_SHA1
+                    val digits: Int = if (totp.contains("digits")) totp.substringAfter("digits=").substringBefore("&").toInt() else 6
+                    val period: Int = if (totp.contains("period")) totp.substringAfter("period=").substringBefore("&").toInt() else 30
+                    val lock: Boolean = if (totp.contains("lock")) totp.substringAfter("lock=").substringBefore("&").toBoolean() else false
+                    val counter: Long = if (totp.contains("counter")) totp.substringAfter("counter=").substringBefore("&").toLong() else 0
+                    val label: String = if (totp.contains("label")) totp.substringAfter("label=").substringBefore("&") else account
+
+                    logins.add (
+                        MfaCode(
+                            type = "otpauth",
+                            mode = type,
+                            issuer = issuer,
+                            account = account,
+                            secret = secret,
+                            algorithm = algorithm,
+                            digits = digits,
+                            period = period,
+                            lock = false,
+                            counter = counter,
+                            label = label
+                        )
+                    )
+
+                } else if (totp.isNotEmpty() && !totp.startsWith("otpauth://")) { // Google Authenticator
+
+                    logins.add (
+                        MfaCode(
+                            type = "otpauth",
+                            mode = "totp",
+                            issuer = (accountData["username"] ?: itemData["name"]) as String?,
+                            account = (accountData["username"] ?: itemData["name"]) as String?,
+                            secret = totp,
+                            algorithm = ALGO_SHA1,
+                            digits = 6,
+                            period = 30,
+                            lock = false,
+                            counter = 0,
+                            label = ""
+                        )
+                    )
+
+                }
+            } catch (_: JSONException) { }
+        }
+
+        return logins
+
+    }
+
+    fun andOtpToWristkey (jsonArray: JSONArray): MutableList<MfaCode> {
+
+        val logins = mutableListOf<MfaCode>()
+
+        for (itemIndex in 0 until jsonArray.length()) {
+
+            val account = jsonArray[itemIndex].toString()
+            val secret = JSONObject(account)["secret"].toString().replace("=", "")
+            val issuer = JSONObject(account)["issuer"].toString()
+            val counter = JSONObject(account)["counter"].toString().toLong()
+            val algorithm = JSONObject(account)["algorithm"].toString()
+            val digits = JSONObject(account)["digits"].toString().toInt()
+            val period = JSONObject(account)["period"].toString().toInt()
+            var type = JSONObject(account)["type"].toString().lowercase()
+            if (type == "STEAM") type = "totp"
+            val label = (JSONObject(account)["label"] ?: account) as String
+
+            logins.add (
+                MfaCode(
+                    type = "otpauth",
+                    mode = type,
+                    issuer = issuer,
+                    account = account,
+                    secret = secret,
+                    algorithm = algorithm,
+                    digits = digits,
+                    period = period,
+                    lock = false,
+                    counter = counter,
+                    label = label
+                )
+            )
+
+        }
+
+        return logins
+
+    }
+
+    fun aegisToWristkey (unencryptedAegisJsonString: String): MutableList<Utilities.MfaCode> {
+
+        val logins = mutableListOf<Utilities.MfaCode>()
 
         val db = JSONObject(unencryptedAegisJsonString)["db"].toString()
         val entries = JSONObject(db)["entries"].toString()
@@ -241,7 +355,7 @@ class Utilities (context: Context) {
 
                 if (totpSecret.isNotEmpty() && totpSecret != "null") {
                     logins.add (
-                        MfaCode (
+                        MfaCode(
                             type = "otpauth",
                             mode = type,
                             issuer = issuer,
@@ -268,7 +382,7 @@ class Utilities (context: Context) {
 
     fun decodeOTPAuthURL (OTPAuthURL: String): MfaCode? {
         val url = URLDecoder.decode(OTPAuthURL, "UTF-8")
-        if (url.contains("otpauth") && url.contains("://")) {
+        if (url.contains("otpauth://")) {
             val type: String =
                 if (url.substringBefore("://").contains("migration")) "Google Authenticator Backup"
                 else "OTP"
@@ -286,7 +400,7 @@ class Utilities (context: Context) {
             val counter: Long? = if (url.contains("counter")) url.substringAfter("counter=").substringBefore("&").toLong() else 0
             val label: String? = if (url.contains("label")) url.substringAfter("label=").substringBefore("&") else account
 
-            return MfaCode (
+            return MfaCode(
                 type = type,
                 mode = mode,
                 issuer = issuer,
@@ -369,13 +483,13 @@ class Utilities (context: Context) {
         return null
     }
 
-    fun getLogin (uuid: String): Utilities.MfaCode? {
+    fun getLogin (uuid: String): MfaCode? {
         val items  = vault.all
-        var value: Utilities.MfaCode? = null
+        var value: MfaCode? = null
 
         for (item in items) {
             try {
-                value = decodeOTPAuthURL(item.value as String) as Utilities.MfaCode
+                value = decodeOTPAuthURL(item.value as String) as MfaCode
                 if (item.key == uuid) return value
             } catch (_: Exception) { }
         }
@@ -383,7 +497,7 @@ class Utilities (context: Context) {
         return value
     }
 
-    fun overwriteLogin (oldLogin: Utilities.MfaCode, newLogin: MfaCode): Boolean {
+    fun overwriteLogin (oldLogin: MfaCode, newLogin: MfaCode): Boolean {
 
         val items  = vault.all
         var key: String? = null
