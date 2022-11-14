@@ -6,7 +6,7 @@
     -->
     <string name="about_app">A sexy, secure, open-source, standalone two-factor authentication client for watches.</string>
     <string name="bitwarden_import_blurb">To import secrets from Bitwarden, make sure you have an unencrypted Bitwarden JSON file placed in the main directory of your watch (/sdcard/).\n\nAfter your accounts are imported, delete the JSON file.</string>
-    <string name="authenticator_import_blurb">To import secrets from Google Authenticator, export your accounts, take a picture of the QR code using your webcam, make sure it is a JPG/PNG image and place it in the following directory: </string>
+    <string name="authenticator_import_blurb">Export your accounts and take a picture of the QR code. Make sure it is a JPG/PNG image and place it in the following directory: </string>
     <string name="otpauth_import_blurb">Take a picture of a QR code, make sure it is a JPG/PNG image and place it in the following directory: </string>
     <string name="aegis_import_blurb">To import secrets from Aegis Authenticator, export an unencrypted Aegis JSON file and place it in the following directory: </string>
     <string name="andotp_import_blurb">To import secrets from andOTP, make sure you have an unencrypted andOTP JSON file placed in the main directory of your watch (/sdcard/).\n\nAfter your accounts are imported, delete the JSON file.</string>

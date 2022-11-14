@@ -3,18 +3,18 @@ package app.wristkey
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.wearable.activity.WearableActivity
 import android.view.View
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import wristkey.R
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class ColorPickerActivity : WearableActivity() {
+class ColorPickerActivity : AppCompatActivity() {
 
     lateinit var mfaCodesTimer: Timer
     lateinit var utilities: Utilities

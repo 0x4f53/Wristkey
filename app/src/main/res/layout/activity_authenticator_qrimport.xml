@@ -17,17 +17,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:orientation="vertical"
             android:paddingTop="55dp"
             android:paddingBottom="75dp">
 
             <ImageView
-                android:id="@+id/aegisLogo"
+                android:id="@+id/logo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:tint="@color/white"
                 android:src="@drawable/google_authenticator" />
 
             <TextView
@@ -54,6 +55,44 @@
                 android:text="@string/authenticator_import_blurb"
                 android:textColor="@color/primary_text_dark"
                 android:textStyle="normal" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/scanViaCameraButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                app:cardCornerRadius="25dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gradient_background"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="25dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_outline_photo_camera_24"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="Scan via camera"
+                        android:textSize="16dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="wrap_content"
