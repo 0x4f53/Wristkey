@@ -10,20 +10,20 @@ import android.graphics.drawable.BitmapDrawable
 import android.media.audiofx.HapticGenerator
 import android.os.Build
 import android.os.Bundle
-import android.support.wearable.activity.WearableActivity
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.zxing.WriterException
 import wristkey.R
 import java.util.*
 import kotlin.concurrent.thread
 
-class QRCodeActivity : WearableActivity() {
+class QRCodeActivity : AppCompatActivity() {
 
     lateinit var mfaCodesTimer: Timer
 
@@ -48,7 +48,7 @@ class QRCodeActivity : WearableActivity() {
 
         utilities = Utilities(applicationContext)
         mfaCodesTimer = Timer()
-
+        
         mfaCode = utilities.getLogin (
             intent.getStringExtra(utilities.INTENT_UUID)!!
         )!!
@@ -114,7 +114,12 @@ class QRCodeActivity : WearableActivity() {
                         try {
                             roundTimeLeft.progress = timerDuration
                             squareTimeLeft.progress = timerDuration
-                        } catch (_: Exception) { }
+                        } catch (_: Exception) {
+                            runOnUiThread {
+                                roundTimeLeft.progress = timerDuration
+                                squareTimeLeft.progress = timerDuration
+                            }
+                        }
                     }
                 }, 0, 1000) // 1000 milliseconds = 1 second
 

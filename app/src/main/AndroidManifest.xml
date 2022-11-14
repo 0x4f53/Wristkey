@@ -3,8 +3,12 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <uses-feature android:name="android.hardware.type.watch" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false"/>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -20,6 +24,10 @@
 
         <activity
             android:name="app.wristkey.BitwardenJSONImport"
+            android:label="@string/title_activity_bitwarden_jsonimport" />
+
+        <activity
+            android:name="app.wristkey.QRScannerActivity"
             android:label="@string/title_activity_bitwarden_jsonimport" />
 
         <activity
