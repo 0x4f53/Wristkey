@@ -158,7 +158,12 @@ class MainActivity : AppCompatActivity() {
                         try {
                             roundTimeLeft.progress = halfMinuteElapsed
                             squareTimeLeft.progress = halfMinuteElapsed
-                        } catch (_: Exception) { }
+                        } catch (_: Exception) {
+                            runOnUiThread {
+                                roundTimeLeft.progress = halfMinuteElapsed
+                                squareTimeLeft.progress = halfMinuteElapsed
+                            }
+                        }
                     }
                 }, 0, 1000) // 1000 milliseconds = 1 second
 
