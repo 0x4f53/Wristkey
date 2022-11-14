@@ -44,6 +44,7 @@ class AegisJSONImport : Activity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initializeUI () {
+        setContentView(R.layout.activity_aegis_jsonimport)
         backButton = findViewById (R.id.backButton)
         doneButton = findViewById (R.id.doneButton)
         importLabel = findViewById (R.id.label)
@@ -135,7 +136,7 @@ class AegisJSONImport : Activity() {
             }
 
         } catch (noDirectory: NullPointerException) {
-            setContentView(R.layout.activity_aegis_jsonimport)
+            initializeUI()
             Toast.makeText(this, "Couldn't access storage. Please raise an issue on Wristkey's GitHub repo.", Toast.LENGTH_LONG).show()
             noDirectory.printStackTrace()
         }
