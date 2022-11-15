@@ -76,9 +76,7 @@
         <activity
             android:name="app.wristkey.SettingsActivity"
             android:label="Settings" />
-        <activity
-            android:name="app.wristkey.ColorPickerActivity"
-            android:label="Color picker" />
+
         <activity
             android:name="app.wristkey.DeleteActivity"
             android:label="Delete account" />
