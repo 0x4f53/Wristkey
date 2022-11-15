@@ -29,6 +29,7 @@ import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.properties.Delegates
 
+
 const val CODE_AUTHENTICATION_VERIFICATION = 241
 
 class MainActivity : AppCompatActivity() {
@@ -73,11 +74,13 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         mfaCodesTimer = Timer()
+        start2faTimer ()
     }
 
     override fun onResume() {
         super.onResume()
         mfaCodesTimer = Timer()
+        start2faTimer ()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -147,28 +150,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun start2faTimer () {
-        try {
-            thread {
 
-                mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
-                    override fun run() {
-                        val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-                        var halfMinuteElapsed = abs((60-currentSecond))
-                        if (halfMinuteElapsed >= 30) halfMinuteElapsed -= 30
+        thread {
+
+            mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
+                    var halfMinuteElapsed = abs((60-currentSecond))
+                    if (halfMinuteElapsed >= 30) halfMinuteElapsed -= 30
                         try {
                             roundTimeLeft.progress = halfMinuteElapsed
                             squareTimeLeft.progress = halfMinuteElapsed
                         } catch (_: Exception) {
-                            runOnUiThread {
-                                roundTimeLeft.progress = halfMinuteElapsed
-                                squareTimeLeft.progress = halfMinuteElapsed
-                            }
+                            //runOnUiThread {
+                            //    roundTimeLeft.progress = halfMinuteElapsed
+                            //    squareTimeLeft.progress = halfMinuteElapsed
+                            //}
                         }
                     }
-                }, 0, 1000) // 1000 milliseconds = 1 second
-
-            }
-        } catch (_: IllegalStateException) {}
+            }, 0, 1000) // 1000 milliseconds = 1 second
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -310,8 +311,7 @@ class MainActivity : AppCompatActivity() {
                                         15, 30, 45, 60 -> {
                                             try { loginCard.code.startAnimation(blinkAnimation) } catch (_: Exception) { }
                                             if (beepEnabled) utilities.beep()
-                                            if (hapticsEnabled) loginCard.name.performHapticFeedback(
-                                                HapticFeedbackConstants.REJECT)
+                                            if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticFeedbackConstants.REJECT)
                                             runOnUiThread {
                                                 loginCard.code.text =
                                                     if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")

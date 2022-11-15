@@ -113,7 +113,6 @@ class WristkeyImport : AppCompatActivity() {
 
                 importingDescription.text = "Found file: \n${file.name}"
 
-                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
                 importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
                 file.delete()
 
@@ -127,6 +126,7 @@ class WristkeyImport : AppCompatActivity() {
                 Toast.makeText(this, "No files found.", Toast.LENGTH_LONG).show()
                 finish()
             } else {
+                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
                 finishAffinity()
                 startActivity(Intent(applicationContext, MainActivity::class.java))
             }

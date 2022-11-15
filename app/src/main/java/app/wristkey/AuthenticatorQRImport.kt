@@ -165,7 +165,6 @@ class AuthenticatorQRImport : Activity() {
 
                 importingDescription.text = "Found file: \n${file.name}"
 
-                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
                 importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
                 file.delete()
             }
@@ -178,6 +177,7 @@ class AuthenticatorQRImport : Activity() {
                 for (login in logins) {
                     utilities.writeToVault(login, UUID.randomUUID().toString())
                 }
+                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
                 finishAffinity()
                 startActivity(Intent(applicationContext, MainActivity::class.java))
             }
