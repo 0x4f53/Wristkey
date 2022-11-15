@@ -216,7 +216,6 @@ class Utilities (context: Context) {
         val items = jsonObject["items"].toString()
         val itemsArray = JSONArray(items)
 
-
         val accounts = JSONArray(itemsArray.toString())
 
         val accountList = mutableListOf<JSONObject>()
@@ -227,46 +226,24 @@ class Utilities (context: Context) {
 
         for (account in accountList) {
 
-            val totpMatches = Regex("""\"totp\":(.*?)\}\,""").findAll(account.toString())
+            try {
+                val issuer = account["name"].toString().trim()
+                val totp = JSONObject(account["login"].toString())["totp"].toString().trim()
+                val username = JSONObject(account["login"].toString())["username"].toString().trim()
 
-            val accountNameMatches = Regex("""\"name\":(.*?)""").findAll(account.toString())
+                if (!totp.contains("null") && !totp.isNullOrBlank()) {
 
-            for (totp in totpMatches) {
-
-                val issuerString = account.toString().substringAfter("\"name\":").substringBefore("\",")
-                    .replace("\"name\":\"", "")
-                    .replace(",", "")
-                    .replace("\"", "")
-                    .replace("/", "")
-                    .trim()
-
-                val accountString = account.toString().substringAfter("\"username\":").substringBefore("\",")
-                    .replace("\"username\":\"", "")
-                    .replace(",", "")
-                    .replace("\"", "")
-                    .replace("/", "")
-                    .trim()
-
-                val totpString = totp.value
-                    .replace("\"totp\":\"", "")
-                    .replace("},", "")
-                    .replace("\"", "")
-                    .replace("/", "")
-                    .trim()
-
-                if (!totpString.contains("null") && totpString.isNotEmpty()) {
-
-                    if (totpString.startsWith("otpauth://")) {
-                        val type: String = if (totpString.substringAfter("://").substringBefore("/").contains("totp")) "totp" else "hotp"
-                        val issuer: String = totpString.substringAfterLast("otp/").substringBefore(":")
-                        val account: String = totpString.substringAfterLast(":").substringBefore("?")
-                        val secret: String? = if (totpString.contains("secret")) totpString.substringAfter("secret=").substringBefore("&") else null
-                        val algorithm: String = if (totpString.contains("algorithm")) totpString.substringAfter("algorithm=").substringBefore("&") else ALGO_SHA1
-                        val digits: Int = if (totpString.contains("digits")) totpString.substringAfter("digits=").substringBefore("&").toInt() else 6
-                        val period: Int = if (totpString.contains("period")) totpString.substringAfter("period=").substringBefore("&").toInt() else 30
-                        val lock: Boolean = if (totpString.contains("lock")) totpString.substringAfter("lock=").substringBefore("&").toBoolean() else false
-                        val counter: Long = if (totpString.contains("counter")) totpString.substringAfter("counter=").substringBefore("&").toLong() else 0
-                        val label: String = if (totpString.contains("label")) totpString.substringAfter("label=").substringBefore("&") else account
+                    if (totp.startsWith("otpauth://")) {
+                        val type: String = if (totp.substringAfter("://").substringBefore("/").contains("totp")) "totp" else "hotp"
+                        val issuer: String = totp.substringAfterLast("otp/").substringBefore(":")
+                        val account: String = totp.substringAfterLast(":").substringBefore("?")
+                        val secret: String? = if (totp.contains("secret")) totp.substringAfter("secret=").substringBefore("&") else null
+                        val algorithm: String = if (totp.contains("algorithm")) totp.substringAfter("algorithm=").substringBefore("&") else ALGO_SHA1
+                        val digits: Int = if (totp.contains("digits")) totp.substringAfter("digits=").substringBefore("&").toInt() else 6
+                        val period: Int = if (totp.contains("period")) totp.substringAfter("period=").substringBefore("&").toInt() else 30
+                        val lock: Boolean = if (totp.contains("lock")) totp.substringAfter("lock=").substringBefore("&").toBoolean() else false
+                        val counter: Long = if (totp.contains("counter")) totp.substringAfter("counter=").substringBefore("&").toLong() else 0
+                        val label: String = if (totp.contains("label")) totp.substringAfter("label=").substringBefore("&") else account
                         logins.add (
                             MfaCode(
                                 type = "otpauth",
@@ -283,14 +260,14 @@ class Utilities (context: Context) {
                             )
                         )
 
-                    } else if (!totpString.startsWith("otpauth://")) { // Google Authenticator
+                    } else if (!totp.startsWith("otpauth://")) { // Google Authenticator
                         logins.add (
                             MfaCode(
                                 type = "otpauth",
                                 mode = "totp",
-                                issuer = issuerString.ifBlank { "Unknown issuer" },
-                                account = accountString.ifBlank { "" },
-                                secret = totpString,
+                                issuer = issuer.ifBlank { "Unknown issuer" },
+                                account = username.ifBlank { "" },
+                                secret = totp,
                                 algorithm = ALGO_SHA1,
                                 digits = 6,
                                 period = 30,
@@ -301,7 +278,8 @@ class Utilities (context: Context) {
                         )
                     }
                 }
-            }
+
+            } catch (_: JSONException) { }
 
         }
 
