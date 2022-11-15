@@ -32,7 +32,6 @@ class SettingsActivity : AppCompatActivity() {
     lateinit var roundButton: SwitchMaterial
     lateinit var deleteButton: CardView
     lateinit var exportButton: CardView
-    lateinit var themeButton: CardView
     lateinit var backButton: CardView
 
     var settingsChanged = false
@@ -77,7 +76,6 @@ class SettingsActivity : AppCompatActivity() {
 
         clock = findViewById(R.id.clock)
 
-        themeButton = findViewById (R.id.themeButton)
         beepButton = findViewById (R.id.beepButton)
         vibrateButton = findViewById (R.id.vibrateButton)
         lockButton = findViewById (R.id.lockButton)
@@ -87,12 +85,6 @@ class SettingsActivity : AppCompatActivity() {
         deleteButton = findViewById (R.id.deleteButton)
         exportButton = findViewById (R.id.exportButton)
         backButton = findViewById (R.id.backButton)
-
-        themeButton.setOnClickListener {
-            val intent = Intent(applicationContext, ColorPickerActivity::class.java)
-            startActivity(intent)
-            themeButton.performHapticFeedback(HapticGenerator.SUCCESS)
-        }
 
         val clockButton: SwitchMaterial = findViewById(R.id.clockButton)
         clockButton.isChecked = utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)
