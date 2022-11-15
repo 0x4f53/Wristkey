@@ -4,7 +4,7 @@
     tools:ignore="MissingDefaultResource">
     <gradient
         android:startColor="#BF000000"
-        android:endColor="@color/colorAccent"
+        android:endColor="#8000617F"
         android:angle="0" />
     <corners android:radius="5dp"/>
 </shape>
