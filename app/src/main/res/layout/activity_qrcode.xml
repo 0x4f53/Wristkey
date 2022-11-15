@@ -1,21 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/BoxInsetLayout"
+    android:id="@+id/qrCodeRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:foregroundTintMode="add"
+    android:background="@color/black"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".AboutActivity"
+    tools:context="app.wristkey.AegisJSONImport"
     tools:deviceIds="wear">
 
-    <ImageView
-        android:id="@+id/qrCode"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:orientation="vertical"
+            android:paddingTop="30dp"
+            android:paddingBottom="75dp">
+
+            <ImageView
+                android:id="@+id/qrCode"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/ic_outline_qr_code_2_24"
+                android:backgroundTint="@color/white"
+                android:tintMode="multiply" />
+
+            <TextView
+                android:id="@+id/qrCodeIssuer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/productsans"
+                android:gravity="center_horizontal"
+                android:text="Site"
+                android:textColor="@color/primary_text_dark"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/qrCodeAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/productsans"
+                android:text="site.com"
+                android:textColor="@color/primary_text_dark"
+                android:textStyle="normal" />
+
+                <ImageButton
+                    android:id="@+id/doneButton"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/preference_wrapped_icon"
+                    android:backgroundTint="@color/colorAccent"
+                    android:foregroundGravity="center"
+                    android:src="@drawable/ic_done"
+                    android:tint="@color/darkTheme" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/SquareTimeLeftTop"
+        style="@style/Widget.Material3.LinearProgressIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:foregroundGravity="top"
+        android:max="5"
+        android:progress="3"
+        app:indicatorColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:trackColor="@android:color/transparent"
+        app:trackCornerRadius="50dp"
+        app:trackThickness="5.25dp" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/RoundTimeLeft"
+        style="@style/Widget.Material3.CircularProgressIndicator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="20dp"
-        android:tintMode="src_atop"
-        app:srcCompat="@drawable/ic_twotone_qr_code_24" />
-</androidx.wear.widget.BoxInsetLayout>
+        android:layout_gravity="center|top"
+        android:foregroundGravity="center"
+        android:max="5"
+        android:progress="3"
+        android:scaleX="1.215"
+        android:scaleY="1.215"
+        app:indicatorColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:trackColor="@android:color/transparent"
+        app:trackCornerRadius="50dp"
+        app:trackThickness="1.5dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

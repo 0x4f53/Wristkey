@@ -74,7 +74,7 @@ def decode(url):
     i += 1
     # pylint: disable=no-member
     json = ""
-    json+= "<$beginwristkeygoogleauthenticatorimport$>"
+    json+= "<wristkey>"
     json+=("{")
 
     for otp in payload.otp_parameters:
@@ -96,5 +96,5 @@ def decode(url):
         json+=("},")
     json=json[:-1]
     json+=("}")
-    json+= "<$endwristkeygoogleauthenticatorimport$>"
+    json+= "<\wristkey>"
     print(json)

@@ -1,89 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wristkey">
-
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <uses-feature android:name="android.hardware.type.watch" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <uses-feature android:name="android.hardware.type.watch" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false"/>
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 
     <application
-        android:allowBackup="false"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:requestLegacyExternalStorage="true"
-        android:theme="@android:style/Theme.DeviceDefault">
-        <activity android:name=".AuthenticatorQRImport"></activity>
-
-        <uses-library
-            android:name="com.google.android.wearable"
-            android:required="true" />
-        <!--
-               Set to true if your app is Standalone, that is, it does not require the handheld
-               app to run.
-        -->
-        <meta-data
-            android:name="com.google.android.wearable.standalone"
-            android:value="true" />
+        android:theme="@style/Theme.AppCompat.NoActionBar">
+        <activity android:name="app.wristkey.AuthenticatorQRImport"></activity>
 
         <activity
-            android:name=".BitwardenJSONImport"
+            android:name="app.wristkey.BitwardenJSONImport"
             android:label="@string/title_activity_bitwarden_jsonimport" />
 
         <activity
-            android:name=".AegisJSONImport"
+            android:name="app.wristkey.QRScannerActivity"
+            android:label="@string/title_activity_bitwarden_jsonimport" />
+
+        <activity
+            android:name="app.wristkey.AegisJSONImport"
             android:label="@string/title_activity_aegis_jsonimport" />
 
         <activity
-            android:name=".AndOtpJSONImport"
+            android:name="app.wristkey.AndOtpJSONImport"
             android:label="@string/title_activity_andotp_import" />
 
         <activity
-            android:name=".OtpAuthImport"
+            android:name="app.wristkey.OtpAuthImport"
             android:label="@string/title_activity_otpauth_import" />
 
         <activity
-            android:name=".WristkeyImport"
+            android:name="app.wristkey.WristkeyImport"
             android:label="@string/title_activity_wristkey_import" />
 
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:name="app.wristkey.MainActivity"
+            android:label="@string/app_name"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".QRCodeActivity"
-            android:label="QR Code" />
+            android:name="app.wristkey.QRCodeActivity"
+            android:label="QR code" />
         <activity
-            android:name=".AddActivity"
+            android:name="app.wristkey.AddActivity"
             android:label="Add account" />
 
         <activity
-            android:name=".ManualEntryActivity"
+            android:name="app.wristkey.ManualEntryActivity"
             android:label="Add account" />
 
         <activity
-            android:name=".ExportActivity"
+            android:name="app.wristkey.ExportActivity"
             android:label="Add account" />
 
         <activity
-            android:name=".AboutActivity"
+            android:name="app.wristkey.AboutActivity"
             android:label="About" />
         <activity
-            android:name=".SettingsActivity"
+            android:name="app.wristkey.SettingsActivity"
             android:label="Settings" />
+
         <activity
-            android:name=".DeleteActivity"
+            android:name="app.wristkey.DeleteActivity"
             android:label="Delete account" />
     </application>
 
