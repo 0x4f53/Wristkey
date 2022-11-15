@@ -74,13 +74,11 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         mfaCodesTimer = Timer()
-        start2faTimer ()
     }
 
     override fun onResume() {
         super.onResume()
         mfaCodesTimer = Timer()
-        start2faTimer ()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -158,15 +156,15 @@ class MainActivity : AppCompatActivity() {
                     val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
                     var halfMinuteElapsed = abs((60-currentSecond))
                     if (halfMinuteElapsed >= 30) halfMinuteElapsed -= 30
-                        try {
+                    try {
+                        roundTimeLeft.progress = halfMinuteElapsed
+                        squareTimeLeft.progress = halfMinuteElapsed
+                    } catch (_: Exception) {
+                        runOnUiThread {
                             roundTimeLeft.progress = halfMinuteElapsed
                             squareTimeLeft.progress = halfMinuteElapsed
-                        } catch (_: Exception) {
-                            //runOnUiThread {
-                            //    roundTimeLeft.progress = halfMinuteElapsed
-                            //    squareTimeLeft.progress = halfMinuteElapsed
-                            //}
                         }
+                    }
                     }
             }, 0, 1000) // 1000 milliseconds = 1 second
         }
