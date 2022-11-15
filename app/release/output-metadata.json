@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.wristkey",
+  "applicationId": "app.wristkey",
   "variantName": "release",
   "elements": [
     {

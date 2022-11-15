@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/BoxInsetLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".OtpAuthImport"
+    tools:context="app.wristkey.AuthenticatorQRImport"
     tools:deviceIds="wear">
 
     <ScrollView
@@ -16,107 +17,117 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:orientation="vertical">
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical"
+            android:paddingTop="55dp"
+            android:paddingBottom="75dp">
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="24dp" />
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:tint="@color/white"
+                android:src="@drawable/ic_outline_qr_code_2_24" />
 
             <TextView
-                android:id="@+id/AuthenticatorImportLabel"
-                android:layout_width="match_parent"
+                android:id="@+id/label"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/productsans"
+                android:gravity="center_horizontal"
                 android:text="@string/otpauth_import"
-                android:textAlignment="center"
                 android:textColor="@color/primary_text_dark"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/productsans"
+                android:gravity="center"
+                android:text="@string/otpauth_import_blurb"
+                android:textColor="@color/primary_text_dark"
+                android:textStyle="normal" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/scanViaCameraButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                app:cardCornerRadius="25dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gradient_background"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="25dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:src="@drawable/ic_outline_photo_camera_24"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:padding="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="Scan via camera"
+                        android:textSize="16dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
-                android:id="@+id/QRCodesLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/Previous"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_baseline_arrow_back_24" />
-
-                <ImageView
-                    android:id="@+id/QRPreview"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_twotone_qr_code_24" />
-
-                <ImageView
-                    android:id="@+id/Next"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_baseline_arrow_forward_24" />
-
-            </LinearLayout>
-
-            <EditText
-                android:id="@+id/OtpAuth"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="otpauth://..."
-                android:inputType="textShortMessage|textLongMessage|textMultiLine|textImeMultiLine"
-                android:singleLine="false" />
-
-            <View
-                android:id="@+id/divider7"
-                android:layout_width="match_parent"
-                android:layout_height="0.25dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp"
-                android:background="@color/darkAccents" />
-
-            <LinearLayout
-                android:id="@+id/ConfirmOrCancel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginStart="7dp"
                 android:layout_marginLeft="7dp"
-                android:layout_marginTop="24dp"
                 android:layout_marginEnd="7dp"
                 android:layout_marginRight="7dp"
-                android:layout_marginBottom="48dp"
-                android:foregroundGravity="center"
-                android:gravity="center"
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/AuthenticatorBackButton"
+                    android:id="@+id/backButton"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="5dp"
                     android:background="@drawable/preference_wrapped_icon"
                     android:backgroundTint="@color/darkAccents"
                     android:foregroundGravity="center"
-                    android:src="@drawable/ic_back" />
+                    android:src="@drawable/ic_cancel" />
 
                 <ImageButton
-                    android:id="@+id/AuthenticatorConfirmButton"
+                    android:id="@+id/doneButton"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginLeft="5dp"
                     android:background="@drawable/preference_wrapped_icon"
                     android:backgroundTint="@color/colorAccent"
                     android:foregroundGravity="center"
-                    android:src="@drawable/ic_done" />
+                    android:src="@drawable/ic_done"
+                    android:tint="@color/darkTheme" />
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

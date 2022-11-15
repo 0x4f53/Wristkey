@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/BoxInsetLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".AegisJSONImport"
+    tools:context="app.wristkey.AegisJSONImport"
     tools:deviceIds="wear">
 
 <ScrollView
@@ -18,103 +19,76 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="55dp"
+        android:paddingBottom="75dp">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="24dp" />
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/aegis_authenticator" />
 
         <TextView
-            android:id="@+id/AuthenticatorImportLabel"
-            android:layout_width="match_parent"
+            android:id="@+id/label"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="15dp"
+            android:fontFamily="@font/productsans"
+            android:gravity="center_horizontal"
             android:text="@string/aegis_import"
-            android:textAlignment="center"
             android:textColor="@color/primary_text_dark"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <View
-            android:id="@+id/divider7"
-            android:layout_width="match_parent"
-            android:layout_height="0.25dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:background="@color/darkAccents" />
+            android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/AuthenticatorDescription"
-            android:layout_width="match_parent"
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:fontFamily="@font/productsans"
             android:gravity="center"
             android:text="@string/aegis_import_blurb"
             android:textColor="@color/primary_text_dark"
-            android:textStyle="italic" />
-
-        <View
-            android:id="@+id/divider12"
-            android:layout_width="match_parent"
-            android:layout_height="0.25dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:background="@color/darkAccents" />
-
-        <CheckBox
-            android:id="@+id/AuthenticatorImportUsernames"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:checked="false"
-            android:text="Import usernames"
-            android:buttonTint="@color/blueAccents" />
-
-        <View
-            android:id="@+id/divider6"
-            android:layout_width="match_parent"
-            android:layout_height="0.25dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:background="@color/darkAccents" />
+            android:textStyle="normal" />
 
         <LinearLayout
-            android:id="@+id/ConfirmOrCancel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
             android:layout_marginStart="7dp"
             android:layout_marginLeft="7dp"
-            android:layout_marginTop="24dp"
             android:layout_marginEnd="7dp"
             android:layout_marginRight="7dp"
-            android:layout_marginBottom="48dp"
-            android:foregroundGravity="center"
-            android:gravity="center"
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/AuthenticatorBackButton"
+                android:id="@+id/backButton"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginRight="5dp"
                 android:background="@drawable/preference_wrapped_icon"
                 android:backgroundTint="@color/darkAccents"
                 android:foregroundGravity="center"
-                android:src="@drawable/ic_back" />
+                android:src="@drawable/ic_cancel" />
 
             <ImageButton
-                android:id="@+id/AuthenticatorConfirmButton"
+                android:id="@+id/doneButton"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginLeft="5dp"
                 android:background="@drawable/preference_wrapped_icon"
                 android:backgroundTint="@color/colorAccent"
                 android:foregroundGravity="center"
-                android:src="@drawable/ic_next" />
+                android:src="@drawable/ic_done"
+                android:tint="@color/darkTheme" />
         </LinearLayout>
+
     </LinearLayout>
 </ScrollView>
 
