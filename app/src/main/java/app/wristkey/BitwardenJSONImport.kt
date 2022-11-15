@@ -112,7 +112,7 @@ class BitwardenJSONImport : Activity() {
                         logins = utilities.bitwardenToWristkey (JSONObject(jsonData))
                     }
 
-                } catch (_: Exception) {
+                } catch (_: java.io.FileNotFoundException) {
                     Log.d ("Wristkey", "${file.name} is invalid")
                 }
 

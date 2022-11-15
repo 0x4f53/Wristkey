@@ -112,7 +112,7 @@ class AndOtpJSONImport : Activity() {
                         logins = utilities.andOtpToWristkey (JSONArray(jsonData))
                     }
 
-                } catch (_: Exception) {
+                } catch (_: java.io.FileNotFoundException) {
                     Log.d ("Wristkey", "${file.name} is invalid")
                 }
 
