@@ -315,23 +315,23 @@ class Utilities (context: Context) {
 
         for (itemIndex in 0 until jsonArray.length()) {
 
-            val account = jsonArray[itemIndex].toString()
-            val secret = JSONObject(account)["secret"].toString().replace("=", "")
-            val issuer = JSONObject(account)["issuer"].toString()
-            val counter = JSONObject(account)["counter"].toString().toLong()
-            val algorithm = JSONObject(account)["algorithm"].toString()
-            val digits = JSONObject(account)["digits"].toString().toInt()
-            val period = JSONObject(account)["period"].toString().toInt()
-            var type = JSONObject(account)["type"].toString().lowercase()
+            val login = jsonArray[itemIndex].toString()
+            val secret = JSONObject(login)["secret"].toString().replace("=", "")
+            val issuer = JSONObject(login)["issuer"].toString()
+            val counter = try { JSONObject(login)["used_frequency"].toString().toLong() } catch (_: JSONException) { 0 }
+            val algorithm = JSONObject(login)["algorithm"].toString()
+            val digits = JSONObject(login)["digits"].toString().toInt()
+            val period = JSONObject(login)["period"].toString().toInt()
+            var type = JSONObject(login)["type"].toString().lowercase()
             if (type == "STEAM") type = "totp"
-            val label = (JSONObject(account)["label"] ?: account) as String
+            val label = try { JSONObject(login)["label"].toString() } catch (_: JSONException) { "" }
 
             logins.add (
                 Utilities.MfaCode(
                     type = "otpauth",
                     mode = type,
                     issuer = issuer,
-                    account = account,
+                    account = label,
                     secret = secret,
                     algorithm = algorithm,
                     digits = digits,
