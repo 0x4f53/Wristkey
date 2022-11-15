@@ -12,9 +12,11 @@
 
 Have an old smartwatch lying around that you'd like to use for 2FA? Or do you just need a minimal and open-source 2FA app you can trust? Wristkey is an open-source 2FA client for Wear OS watches, but it works on any Android-based smartwatch! [Get the APK here.](app/release/app-release.apk)
 
+Now with a fresh new look for Wear OS 3.0!
+
 You can now run Wristkey on your phone too! Just download the APK and install it on your phone.
 
-<img src = screenshots/2.0-main-round.png alt="mockup">
+<img src = screenshots/g-watch-preview.png alt="mockup"><img src = screenshots/pixel-watch-preview.png alt="mockup">
 
 ## FEATURES
 
