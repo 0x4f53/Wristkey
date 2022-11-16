@@ -1,8 +1,5 @@
 [![Wear OS](https://img.shields.io/badge/Made%20for-Wear%20OS-4285f4.svg?style=flat-square&logo=wear%20os)](https://wearos.google.com)
-[![Kotlin](https://img.shields.io/badge/Made%20with-Kotlin-7f52ff.svg?style=flat-square&logo=kotlin)](https://kotlinlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-purple?style=flat-square&logo=libreoffice)](LICENSE)
-[![Open Source?](https://img.shields.io/badge/Open%20Source-Yes-darkgreen?style=flat-square&logo=github)](https://opensource.org/)
-[![Security Policy](https://img.shields.io/badge/Security-Click%20Here-orange.svg?style=flat-square&logo=bitwarden)](https://github.com/4f77616973/Wristkey/security/policy)
 [![Latest Version](https://img.shields.io/github/v/tag/4f77616973/Wristkey?label=Version&style=flat-square&logo=semver)](https://github.com/4f77616973/Wristkey/tags)
 [![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here-blue?style=flat-square&logo=dropbox)](app/release/app-release.apk)
 
@@ -135,15 +132,7 @@ To edit or delete an item, tap and hold on its name. To delete an item, scroll a
 
 <img src = screenshots/2.0-export-square.png alt="export"><img src = screenshots/2.0-qrcode-square.png alt="qrcode">
 
-Since watches are tiny devices that can be misplaced, backing up and exporting your secrets and storing them in a safe place is always a a good idea.
-
-#### Single account
-
-To transfer a code from your watch to an Authenticator app on your phone, just press and hold the 2FA code number on your watch. You can then scan the QR code that is displayed on your watch screen in any 2FA application.
-
-#### All accounts
-
-To backup all content, open Wristkey, tap the settings icon '⚙️', then scroll down and tap *Backup all data*.
+Since watches are tiny devices that can be misplaced, backing up and exporting your secrets and storing them in a safe place is always a safe bet.
 
 ##### Via QR code
 
@@ -214,6 +203,8 @@ Wristkey can be set to unlock after entering your watch's password / PIN / patte
 A detailed changelog is available on the [releases](https://github.com/4f77616973/Wristkey/releases) page. The latest release is [![Release](https://img.shields.io/github/v/tag/4f77616973/Wristkey?style=plastic&label=)](https://github.com/4f77616973/Wristkey/releases).
 
 ## CONTRIBUTION
+
+_Further reading: [Contributing](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md)_
 
 ### Contributing
 
