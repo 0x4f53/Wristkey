@@ -252,6 +252,6 @@ Multimedia licensed under [![License: CC BY-NC-SA 4.0](https://licensebuttons.ne
 
 If you'd like to donate to me, send me lots of Bitcoin here:
 
-<img src = https://raw.githubusercontent.com/4f77616973/4f77616973/main/owais-bitcoin.png width ="100" "alt="19xgj8XoDMcHSENUDrkW3GtjQjfnbnmWTS">
+<img src="https://raw.githubusercontent.com/4f77616973/4f77616973/main/owais-bitcoin.png" width="100" alt="19xgj8XoDMcHSENUDrkW3GtjQjfnbnmWTS">
 
 `19xgj8XoDMcHSENUDrkW3GtjQjfnbnmWTS`
