@@ -103,7 +103,7 @@ If your device has a camera, you can just use that to scan for QR codes.
 
 1. Export your data in an unencrypted JSON format. Make sure you don't rename the file. 
 
-2. Open a terminal on your computer and place this JSON file on the main directory of your watch (/sdcard/). If using a Wristkey backup file, do **not** place it in the /Wristkey folder. Do this via the following command
+2. Open a terminal on your computer and place this JSON file on your device. Do this via the following commands
 
     ```
     adb push <file>.json /data/local/tmp
@@ -182,9 +182,9 @@ Make sure you set your secret key, digit length and algorithm correctly. If the 
 Make sure that
 
 1. Wristkey has storage permissions in your watch's Settings app. 
-2. If importing from JSON, make sure the file you export is an **Unencrypted** file in **JSON** format and that you don't rename it.
-3. If importing from Google Authenticator or a QR code, make sure the screenshot or picture is in **PNG or JPG** format and is clear. 
-4. If using a Wristkey backup file, make sure it has the _.wfs_ extension.
+2. When importing from JSON, make sure the file you export is an **Unencrypted** file in **JSON** format and that you don't rename it.
+3. When importing from Google Authenticator or a QR code, make sure the screenshot or picture is in **PNG or JPG** format and is clear. 
+4. When using a Wristkey backup file, make sure it has the _.wfs_ extension.
 
 #### File export not working
 
@@ -229,6 +229,8 @@ Please star and support these developers for their hard work. All libraries, dep
 [Marcel Kliemannel - Kotlin Onetimepassword (to generate OTPs)](https://github.com/marcelkliemannel/kotlin-onetimepassword)
 
 [Androidmads - QR Generator library (to generate QR Codes)](https://github.com/androidmads/QRGenerator)
+
+[Yuriy Budiyev - Code scanner](https://github.com/yuriy-budiyev/code-scanner)
 
 [Zxing (to scan QR codes for Google Authenticator imports)](https://github.com/zxing/zxing)
 
