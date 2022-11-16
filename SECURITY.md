@@ -6,7 +6,11 @@ Wristkey uses file encryption to secure your data, rather than storing it unencr
 
 SharedPreferences (and all its variants) stores data in a key-value pair. Your account data is stored against a randomly-generated [UUID4](https://docs.oracle.com/javase/8/docs/api/java/util/UUID.html) string as the key, with the value being a [JSONObject](https://developer.android.com/reference/org/json/JSONObject) of your account data, including usernames, secrets and parameters. Using UUID4 as the key helps anonymize your account data and prevents attackers from guessing or deciphering a specific value from the key.
 
+<<<<<<< HEAD
 Both the key and value stored in EncryptedSharedPreferences are symmetrically encrypted using the [Advanced Encryption Standard (AES)](https://web.archive.org/web/20210622171351/https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf). A 256-bit private key is generated using AES-GCM from the [MasterKey](https://developer.android.com/reference/androidx/security/crypto/MasterKey) class. The key is stored in the [Android Keystore](https://developer.android.com/training/articles/keystore), and the encrypted data is stored in the `/data/user/0/` directory. Both the key and the ciphertext are stored locally and do not leave your watch, be it through WiFi, Bluetooth, USB or NFC (_unless you specifically choose to do so via an unencrypted export_).
+=======
+Both the key and value stored in EncryptedSharedPreferences are symmetrically encrypted using the [Advanced Encryption Standard (AES)](https://web.archive.org/web/20210622171351/https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf). A 256-bit private key is generated using AES-GCM from the [MasterKey](https://developer.android.com/reference/androidx/security/crypto/MasterKey) class. The key is stored in the [Android Keystore](https://developer.android.com/training/articles/keystore), and the encrypted data is stored in the `/sdcard/Android/data/` directory. Both the key and the ciphertext are stored locally and do not leave your watch, be it through WiFi, Bluetooth, USB or NFC (_unless you specifically choose to do so via an unencrypted export_).
+>>>>>>> master
 
 ### Recommended Security Practices
 
