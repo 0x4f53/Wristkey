@@ -34,6 +34,11 @@ You can now run Wristkey on your phone too! Just download the APK and install it
 
 - Supports round and square devices.
 
+## INSTALLATION
+
+There are several guides available online on how to sideload apps via ADB. If you use a device that supports data transfer via USB, you can follow any ADB via USB debugging guide, such
+as [this one](https://forum.xda-developers.com/t/guide-adb-logcat-shell-etc.2143228/). If you're using a watch with Bluetooth only, you can use [this guide](https://www.guidingtech.com/how-to-install-apks-on-wear-os-smartwatches/).
+
 ## USAGE
 
 ### Adding items
