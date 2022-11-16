@@ -138,7 +138,6 @@ To transfer a code from your watch to an Authenticator app on your phone, just p
 <<<<<<< HEAD
 =======
 
-<<<<<<< HEAD
 ***Tip:** Tap the QR Code to dim it for better scanning.*
 
 #### All accounts
@@ -146,8 +145,6 @@ To transfer a code from your watch to an Authenticator app on your phone, just p
 To backup all content, open Wristkey, tap the settings icon '⚙️', then scroll down and tap *Backup all data*.
 >>>>>>> master
 
-=======
->>>>>>> master
 ##### Via QR code
 
 To export a single account via a QR code, press and hold it, then scroll down and select the 'Show QR code' option.
