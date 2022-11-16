@@ -23,7 +23,7 @@ Below are supported Wristkey versions with active support from the developer.
 | Version  | Supported          |
 | -------  | ------------------ |
 | v2.0     | :white_check_mark: |
-| < v2.0   | :white_check_mark: |
+| < v2.0   | ❌ |
 
 ### Reporting a Vulnerability
 
