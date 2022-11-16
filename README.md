@@ -135,19 +135,13 @@ Since watches are tiny devices that can be misplaced, backing up and exporting y
 #### Single account
 
 To transfer a code from your watch to an Authenticator app on your phone, just press and hold the 2FA code number on your watch. You can then scan the QR code that is displayed on your watch screen in any 2FA application.
-<<<<<<< HEAD
-=======
 
-<<<<<<< HEAD
 ***Tip:** Tap the QR Code to dim it for better scanning.*
 
 #### All accounts
 
 To backup all content, open Wristkey, tap the settings icon '⚙️', then scroll down and tap *Backup all data*.
->>>>>>> master
 
-=======
->>>>>>> master
 ##### Via QR code
 
 To export a single account via a QR code, press and hold it, then scroll down and select the 'Show QR code' option.
@@ -250,4 +244,4 @@ Please star and support these developers for their hard work. All libraries, dep
 
 Multimedia licensed under [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/) 
 
-[Copyright © 2021 Owais Shaikh](LICENSE)
+[Copyright © 2022 Owais Shaikh](LICENSE)
