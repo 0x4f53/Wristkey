@@ -198,7 +198,7 @@ _Further reading: [Security Policy](https://github.com/4f77616973/Wristkey/secur
 
 To prevent data extraction, make sure you delete the JSON, PNG or JPG files from your watch's storage once you're done importing them. Check for any lingering files via ADB by running the ```adb shell ls /sdcard/``` command.
 
-### In-app storage
+### Storage
 
 All sensitive data within Wristkey (including secrets to generate OTPs) is stored encrypted [using 256-bit AES-GCM encryption](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences), with the decryption key [stored locally](https://developer.android.com/training/articles/keystore) on your watch. No backdoor on my end. ;)
 
@@ -247,3 +247,11 @@ Please star and support these developers for their hard work. All libraries, dep
 Multimedia licensed under [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/) 
 
 [Copyright © 2022 Owais Shaikh](LICENSE)
+
+## DONATE
+
+If you'd like to donate to me, send me lots of Bitcoin here:
+
+<img src = https://raw.githubusercontent.com/4f77616973/4f77616973/main/owais-bitcoin.png alt="19xgj8XoDMcHSENUDrkW3GtjQjfnbnmWTS">
+
+`19xgj8XoDMcHSENUDrkW3GtjQjfnbnmWTS`
