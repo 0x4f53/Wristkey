@@ -109,7 +109,7 @@ If your device has a camera, you can just use that to scan for QR codes.
 
     ```
     adb push <file>.json /data/local/tmp
-    adb shell run-as app.wristkey cp /data/local/tmp/<file>.json files/
+    adb shell run-as app.wristkey cp /data/local/tmp/<file>.jpg files/
     ```
 
 3. On your watch, open Wristkey, scroll down and tap the add icon '+', then select your import option.
