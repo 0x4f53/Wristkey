@@ -33,6 +33,9 @@ class Utilities (context: Context) {
     val CAMERA_REQUEST_CODE = 420
     val EXPORT_RESPONSE_CODE = 69420
 
+    val JSON_MIME_TYPE = "application/json"
+    val JPG_MIME_TYPE = "image/jpeg"
+    val PNG_MIME_TYPE = "image/png"
 
     val OTPAUTH_SCAN_CODE = "OTPAUTH_SCAN_CODE"
     val AUTHENTICATOR_EXPORT_SCAN_CODE = "AUTHENTICATOR_EXPORT_SCAN_CODE"
