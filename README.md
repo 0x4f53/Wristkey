@@ -155,7 +155,7 @@ To export all your accounts via QR codes, tap the settings icon '⚙️', then s
     adb pull /sdcard/<filename>.wfs /file/location/on/computer/
     ```
 
-3. To delete the directory, type 
+3. To delete the file, type 
 
     ```
     adb shell rm /sdcard/<filename>.wfs
@@ -188,7 +188,7 @@ _Further reading: [Security Policy](https://github.com/4f77616973/Wristkey/secur
 
 ### Importing files
 
-To prevent data extraction, make sure you delete the JSON, PNG or JPG files from your watch's storage once you're done importing them. Check for any lingering files via ADB by running the ```adb shell ls /sdcard/``` command.
+To prevent data extraction, make sure you delete the JSON, PNG or JPG files from both your watch's storage and your computer once you're done importing them. Check for any lingering files via ADB by running the ```adb shell ls /sdcard/``` command.
 
 ### Storage
 
