@@ -1,13 +1,13 @@
 [![Wear OS](https://img.shields.io/badge/Made%20for-Wear%20OS-4285f4.svg?style=flat-square&logo=wear%20os)](https://wearos.google.com)
 [![License](https://img.shields.io/badge/License-MIT-purple?style=flat-square&logo=libreoffice)](LICENSE)
 [![Latest Version](https://img.shields.io/github/v/tag/4f77616973/Wristkey?label=Version&style=flat-square&logo=semver)](https://github.com/4f77616973/Wristkey/tags)
-[![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here-blue?style=flat-square&logo=dropbox)](app/release/app-release.apk)
+[![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here-blue?style=flat-square&logo=dropbox)](app/release)
 
 # Wristkey
 
 <img src = "app/src/debug/res/mipmap-hdpi/ic_launcher_round.png" alt = "Wristkey logo" width = "75dp">
 
-Have an old smartwatch lying around that you'd like to use for 2FA? Or do you just need a minimal and open-source 2FA app you can trust? Wristkey is an open-source 2FA client for Wear OS watches, but it works on any Android-based smartwatch! [Get the APK here.](app/release/app-release.apk)
+Have an old smartwatch lying around that you'd like to use for 2FA? Or do you just need a minimal and open-source 2FA app you can trust? Wristkey is an open-source 2FA client for Wear OS watches, but it works on any Android-based smartwatch! [Get the APK here.](app/release)
 
 Now with a fresh new look for Wear OS 3.0!
 
