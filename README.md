@@ -96,7 +96,7 @@ If your device has a camera, you can just use that to scan for QR codes.
 
     ```
     adb push <file>.png /data/local/tmp
-    adb shell run-as app.wristkey cp /data/local/tmp/<file>.json files
+    adb shell run-as app.wristkey cp /data/local/tmp/<file>.json files/
     ```
 
 3. On your watch, open Wristkey, scroll down and tap the add icon '+', then select your import option.
@@ -109,7 +109,7 @@ If your device has a camera, you can just use that to scan for QR codes.
 
     ```
     adb push <file>.json /data/local/tmp
-    adb shell run-as app.wristkey cp /data/local/tmp/<file>.json files
+    adb shell run-as app.wristkey cp /data/local/tmp/<file>.json files/
     ```
 
 3. On your watch, open Wristkey, scroll down and tap the add icon '+', then select your import option.
@@ -174,9 +174,15 @@ Make sure you set your secret key, digit length and algorithm correctly. If the 
 Make sure that
 
 1. Wristkey has storage permissions in your watch's Settings app. 
-2. When importing from JSON, make sure the file you export is an **Unencrypted** file in **JSON** format and that you don't rename it.
-3. When importing from Google Authenticator or a QR code, make sure the screenshot or picture is in **PNG or JPG** format and is clear. 
-4. When using a Wristkey backup file, make sure it has the _.wfs_ extension.
+2. That the filename format is appropriate:
+    - When importing from JSON, make sure the file you export is an **Unencrypted** file in **JSON** format and that you don't rename it.
+    - When importing from Google Authenticator or a QR code, make sure the screenshot or picture is in **PNG or JPG** format and is clear. 
+    - When using a Wristkey backup file, make sure it has the _.wfs_ extension.
+3. The `files/` directory exists in the destination. If this doesn't exist, Wristkey might accidentally paste your code into a file called "files". If it doesn't exist, just type: 
+   ```
+   adb shell run-as app.wristkey mkdir files/
+   ```
+   then run the import commands.
 
 #### File export not working
 
