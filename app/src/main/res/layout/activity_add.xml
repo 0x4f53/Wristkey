@@ -134,7 +134,7 @@
                         android:paddingStart="20dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:src="@drawable/wristkey"
+                        android:src="@drawable/ic_baseline_settings_backup_restore_24"
                         android:tint="@color/white" />
 
                     <TextView
@@ -146,7 +146,7 @@
                         android:gravity="center_vertical"
                         android:padding="15dp"
                         android:paddingEnd="15dp"
-                        android:text="Wristkey file"
+                        android:text="Wristkey backup"
                         android:textSize="16dp" />
 
                 </LinearLayout>

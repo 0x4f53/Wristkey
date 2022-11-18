@@ -15,7 +15,7 @@
     <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_add">AddActivity</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="use_adb_blurb">You can use ADB or a file transfer app for this.</string>
+    <string name="use_adb_blurb">You can use the file picker, ADB or a file transfer app for this.</string>
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
@@ -24,7 +24,7 @@
     <string name="bitwarden_import">Bitwarden</string>
     <string name="aegis_import">Aegis\nAuthenticator</string>
     <string name="andotp_import">andOTP</string>
-    <string name="wristkey_import">Wristkey</string>
+    <string name="wristkey_import">Wristkey\nbackup</string>
     <string name="import_description">Opening file</string>
     <string name="authenticator_import">Google\nAuthenticator</string>
     <string name="otpauth_import">QR Code</string>

@@ -138,7 +138,7 @@ class WristkeyImport : AppCompatActivity() {
 
         } catch (invalidJson: NullPointerException) {
             finish()
-            Toast.makeText(this, "The file you provided is invalid.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Couldn't access file.", Toast.LENGTH_LONG).show()
             invalidJson.printStackTrace()
 
         }

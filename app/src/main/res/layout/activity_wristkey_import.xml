@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:tint="@color/white"
-                android:src="@drawable/wristkey" />
+                android:src="@drawable/ic_baseline_settings_backup_restore_24" />
 
             <TextView
                 android:id="@+id/label"
