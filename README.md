@@ -34,6 +34,14 @@ You can now run Wristkey on your phone too! Just download the APK and install it
 There are several guides available online on how to sideload apps via ADB. If you use a device that supports data transfer via USB, you can follow any ADB via USB debugging guide, such
 as [this one](https://forum.xda-developers.com/t/guide-adb-logcat-shell-etc.2143228/). If you're using a watch that supports wireless ADB only, you can use [this guide](https://www.guidingtech.com/how-to-install-apks-on-wear-os-smartwatches/).
 
+1. Connect your watch to your computer and enable Developer Options by on your watch by going to Settings → System → About and tapping 'Build Number' 7 times.
+
+2. Download the latest Wristkey APK and install it on your watch by typing:
+
+   ```
+   adb install -r app-debug.apk
+   ```
+
 ## USAGE
 
 ### Adding items
