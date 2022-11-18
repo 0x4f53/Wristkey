@@ -111,7 +111,7 @@ class AndOtpJSONImport : Activity() {
 
         try {
 
-            if (fileName!!.toString().isNotBlank()) {
+            if (fileName != null) {
                 val file = contentResolver.openInputStream(fileName)
 
                 Log.d ("Wristkey", "Reading: $fileName")

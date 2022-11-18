@@ -39,7 +39,6 @@ class WristkeyImport : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_wristkey_import)
 
         utilities = Utilities (applicationContext)
         storageHelper = SimpleStorageHelper(this, utilities.FILES_REQUEST_CODE, savedInstanceState)
@@ -50,6 +49,7 @@ class WristkeyImport : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initializeUI () {
+        setContentView(R.layout.activity_wristkey_import)
         backButton = findViewById (R.id.backButton)
         pickFileButton = findViewById (R.id.pickFileButton)
         doneButton = findViewById (R.id.doneButton)
@@ -129,8 +129,8 @@ class WristkeyImport : AppCompatActivity() {
 
         try {
 
-            if (fileName!!.toString().isNotBlank()) {
-                val file = contentResolver.openInputStream(fileName)
+            if (fileName != null) {
+                val file = contentResolver.openInputStream(fileName!!)
 
                 Log.d ("Wristkey", "Reading: $fileName")
                 importingDescription.text = "Reading \n$fileName"
