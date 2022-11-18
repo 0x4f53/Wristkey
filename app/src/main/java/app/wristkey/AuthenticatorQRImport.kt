@@ -184,7 +184,7 @@ class AuthenticatorQRImport : Activity() {
 
         } catch (noDirectory: NullPointerException) {
             initializeUI()
-            Toast.makeText(this, "Couldn't access storage. Please raise an issue on Wristkey's GitHub repo.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Couldn't access file.", Toast.LENGTH_LONG).show()
             noDirectory.printStackTrace()
 
         } catch (_: java.io.FileNotFoundException) { }

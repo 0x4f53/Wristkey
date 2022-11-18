@@ -14,9 +14,12 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.anggrayudi.storage.SimpleStorageHelper
 import org.json.JSONArray
+import org.json.JSONException
 import wristkey.R
 import java.io.File
 import java.io.FileReader
@@ -26,8 +29,10 @@ import java.util.*
 class AndOtpJSONImport : Activity() {
 
     lateinit var utilities: Utilities
+    lateinit var storageHelper: SimpleStorageHelper
 
     lateinit var backButton: ImageButton
+    lateinit var pickFileButton: CardView
     lateinit var doneButton: ImageButton
     lateinit var importLabel: TextView
     lateinit var description: TextView
@@ -38,6 +43,7 @@ class AndOtpJSONImport : Activity() {
         setContentView(R.layout.activity_andotp_jsonimport)
 
         utilities = Utilities (applicationContext)
+        storageHelper = SimpleStorageHelper(this, utilities.FILES_REQUEST_CODE, savedInstanceState)
 
         initializeUI()
 
@@ -46,6 +52,7 @@ class AndOtpJSONImport : Activity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initializeUI () {
         setContentView(R.layout.activity_andotp_jsonimport)
+        pickFileButton = findViewById (R.id.pickFileButton)
         backButton = findViewById (R.id.backButton)
         doneButton = findViewById (R.id.doneButton)
         importLabel = findViewById (R.id.label)
@@ -63,7 +70,34 @@ class AndOtpJSONImport : Activity() {
             checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, utilities.FILES_REQUEST_CODE)
         }
 
+        pickFileButton.setOnClickListener {
+            storageHelper.openFilePicker (
+                allowMultiple = false,
+                filterMimeTypes = arrayOf (utilities.JSON_MIME_TYPE)
+            )
+        }
+
+        storageHelper.onFileSelected = { requestCode, files ->
+            initializeScanUI(files[0].uri)
+        }
+
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        storageHelper.onSaveInstanceState(outState)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        storageHelper.onRestoreInstanceState(savedInstanceState)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        storageHelper.storage.onActivityResult(requestCode, resultCode, data)
+    }
+
 
     // Function to check and request permission.
     @RequiresApi(Build.VERSION_CODES.M)
@@ -71,7 +105,7 @@ class AndOtpJSONImport : Activity() {
         if (ContextCompat.checkSelfPermission(this@AndOtpJSONImport, permission) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this@AndOtpJSONImport, arrayOf(permission), requestCode)
         } else {
-            initializeScanUI()
+            initializeScanUI(null)
         }
     }
 
@@ -80,7 +114,7 @@ class AndOtpJSONImport : Activity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == utilities.FILES_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                initializeScanUI()
+                initializeScanUI(null)
             } else {
                 Toast.makeText(this@AndOtpJSONImport, "Please grant Wristkey storage permissions in settings", Toast.LENGTH_LONG).show()
                 val intent = Intent (android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
@@ -91,55 +125,95 @@ class AndOtpJSONImport : Activity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun initializeScanUI () {
+    private fun initializeScanUI (fileName: Uri?) {
         setContentView(R.layout.import_loading_screen)
         val importingDescription = findViewById<TextView>(R.id.ImportingDescription)
 
         var logins = mutableListOf<Utilities.MfaCode>()
 
         try {
-            val directory = File (applicationContext.filesDir.toString())
-            Log.d ("Wristkey", "Looking for files in: " + applicationContext.filesDir.toString())
-            importingDescription.text = "Looking for files in: \n${directory}"
 
-            for (file in directory.listFiles()!!) {
+            if (fileName!!.toString().isNotBlank()) {
+                val file = contentResolver.openInputStream(fileName)
 
-                try {
-                    val reader = FileReader(file.path)
-                    val jsonData = reader.readText()
+                Log.d ("Wristkey", "Reading: $fileName")
+                importingDescription.text = "Reading \n$fileName"
 
-                    if (file.name.contains("otp_accounts") && file.name.endsWith(".json")) {
-                        logins = utilities.andOtpToWristkey (JSONArray(jsonData))
-                    }
+                val fileData = String(file?.readBytes()!!)
 
-                } catch (_: java.io.FileNotFoundException) {
-                    Log.d ("Wristkey", "${file.name} is invalid")
-                }
-
-                importingDescription.text = "Found file: \n${file.name}"
-
-                importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
-                file.delete()
+                logins = utilities.andOtpToWristkey (JSONArray(fileData))
 
                 for (login in logins) {
                     importingDescription.text = "${login.issuer}"
                     utilities.writeToVault(login, UUID.randomUUID().toString())
                 }
+
+                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
+
+                file.close()
+
+            } else {
+                val directory = File (applicationContext.filesDir.toString())
+                Log.d ("Wristkey", "Looking for files in: " + applicationContext.filesDir.toString())
+                importingDescription.text = "Looking for files in: \n${directory}"
+
+                for (file in directory.listFiles()!!) {
+
+                    try {
+                        val reader = FileReader(file.path)
+                        val jsonData = reader.readText()
+
+                        if (file.name.contains("aegis") && file.name.endsWith(".json")) {
+                            logins = utilities.aegisToWristkey (jsonData)
+                        }
+
+                        importingDescription.text = "Found file: \n${file.name}"
+
+                        Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                        importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
+                        file.delete()
+
+                        for (login in logins) {
+                            importingDescription.text = "${login.issuer}"
+                            utilities.writeToVault(login, UUID.randomUUID().toString())
+                        }
+
+                    } catch (_: Exception) {
+                        Log.d ("Wristkey", "${file.name} is invalid")
+                    }
+
+                    importingDescription.text = "Found file: \n${file.name}"
+
+                    Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                    importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
+                    file.delete()
+
+                    for (login in logins) {
+                        importingDescription.text = "${login.issuer}"
+                        utilities.writeToVault(login, UUID.randomUUID().toString())
+                    }
+                }
+
             }
 
             if (logins.isEmpty()) {
                 Toast.makeText(this, "No files found.", Toast.LENGTH_LONG).show()
                 finish()
             } else {
-                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
                 finishAffinity()
                 startActivity(Intent(applicationContext, MainActivity::class.java))
             }
 
         } catch (noDirectory: NullPointerException) {
             initializeUI()
-            Toast.makeText(this, "Couldn't access storage. Please raise an issue on Wristkey's GitHub repo.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Couldn't access file.", Toast.LENGTH_LONG).show()
             noDirectory.printStackTrace()
+
+        } catch (invalidFile: JSONException) {
+            initializeUI()
+            Toast.makeText(this, "Invalid file. Please follow the instructions.", Toast.LENGTH_LONG).show()
+            invalidFile.printStackTrace()
         }
 
     }

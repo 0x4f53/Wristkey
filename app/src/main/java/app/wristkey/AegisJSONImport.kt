@@ -18,11 +18,11 @@ import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.anggrayudi.storage.SimpleStorageHelper
+import org.json.JSONException
 import wristkey.R
 import java.io.File
 import java.io.FileReader
 import java.util.*
-
 
 class AegisJSONImport : Activity() {
 
@@ -76,8 +76,7 @@ class AegisJSONImport : Activity() {
         }
 
         storageHelper.onFileSelected = { requestCode, files ->
-            FileReader(files[0].uri.toString()).readText()
-            Log.d("asdasda", files[0].uri.toString())
+            initializeScanUI(files[0].uri)
         }
 
     }
@@ -123,7 +122,7 @@ class AegisJSONImport : Activity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun initializeScanUI (fileName: String?) {
+    private fun initializeScanUI (fileName: Uri?) {
         setContentView(R.layout.import_loading_screen)
         val importingDescription = findViewById<TextView>(R.id.ImportingDescription)
 
@@ -131,14 +130,25 @@ class AegisJSONImport : Activity() {
 
         try {
 
-            if (fileName!!.isNotBlank()) {
+            if (fileName!!.toString().isNotBlank()) {
+                val file = contentResolver.openInputStream(fileName)
 
-                val reader = FileReader(fileName)
-                val jsonData = reader.readText()
+                Log.d ("Wristkey", "Reading: $fileName")
+                importingDescription.text = "Reading \n$fileName"
 
-                if (fileName.contains("aegis") && fileName.endsWith(".json")) {
-                    logins = utilities.aegisToWristkey (jsonData)
+                val fileData = String(file?.readBytes()!!)
+
+                logins = utilities.aegisToWristkey (fileData)
+
+                for (login in logins) {
+                    importingDescription.text = "${login.issuer}"
+                    utilities.writeToVault(login, UUID.randomUUID().toString())
                 }
+
+                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
+
+                file.close()
 
             } else {
                 val directory = File (applicationContext.filesDir.toString())
@@ -182,19 +192,25 @@ class AegisJSONImport : Activity() {
                     }
                 }
 
-                if (logins.isEmpty()) {
-                    Toast.makeText(this, "No files found.", Toast.LENGTH_LONG).show()
-                    finish()
-                } else {
-                    finishAffinity()
-                    startActivity(Intent(applicationContext, MainActivity::class.java))
-                }
+            }
+
+            if (logins.isEmpty()) {
+                Toast.makeText(this, "No files found.", Toast.LENGTH_LONG).show()
+                finish()
+            } else {
+                finishAffinity()
+                startActivity(Intent(applicationContext, MainActivity::class.java))
             }
 
         } catch (noDirectory: NullPointerException) {
             initializeUI()
-            Toast.makeText(this, "Couldn't access storage. Please raise an issue on Wristkey's GitHub repo.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Couldn't access file.", Toast.LENGTH_LONG).show()
             noDirectory.printStackTrace()
+
+        } catch (invalidFile: JSONException) {
+            initializeUI()
+            Toast.makeText(this, "Invalid file. Please follow the instructions.", Toast.LENGTH_LONG).show()
+            invalidFile.printStackTrace()
         }
 
     }
