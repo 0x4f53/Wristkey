@@ -50,6 +50,12 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 
 If your device has a camera, you can just use that to scan for QR codes.
 
+##### Via file picker
+
+If you're using Wristkey on a non-Wear OS Android device (such as an Android phone or an unknown Android smartwatch), you can browse for files on your device locally using the file picker.
+
+For Wear OS devices, there are two main ways of transferring files.
+
 ##### Via ADB
 
 1. Enable ADB Debugging on your watch by going to Settings → System → About and tapping 'Build Number' 7 times.
@@ -144,21 +150,16 @@ To export all your accounts via QR codes, tap the settings icon '⚙️', then s
 
 1. Tap the settings icon '⚙️', then scroll down and select *Export vault*. Then select the file option. An export file will be generated on your device.
 
-2. Open a terminal on your computer and extract this file via the following command
+2. Find the name of the backup file by typing
+   
+   ```
+   adb shell run-as app.wristkey ls files/
+   ```
+
+4. Extract this file via the following command, replacing `<filename>` with the name of the wfs file
 
     ```
-    adb shell
-    run-as app.wristkey
-    cat files/<filename>.wfs > /sdcard/<filename>.wfs
-    exit
-    exit
-    adb pull /sdcard/<filename>.wfs /file/location/on/computer/
-    ```
-
-3. To delete the file, type 
-
-    ```
-    adb shell rm /sdcard/<filename>.wfs
+    adb shell run-as "app.wristkey" cat "<filename>.wfs" > backup.wfs   
     ```
 
 ***Note:** Exported text files are unencrypted and must be handled with care. Delete them when not in use.*
