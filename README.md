@@ -118,6 +118,12 @@ For Wear OS devices, there are two main ways of transferring files.
     ```
     cp: files/<file>.<extension>: No such file or directory
     ```
+    
+    or
+    
+    ```
+    cp: files/: Is a directory
+    ```
    
     simply create the directory by typing
 
