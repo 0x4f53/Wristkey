@@ -24,7 +24,6 @@
             android:paddingTop="55dp"
             android:paddingBottom="75dp">
 
-
             <TextView
                 android:id="@+id/addLabel"
                 android:layout_width="wrap_content"

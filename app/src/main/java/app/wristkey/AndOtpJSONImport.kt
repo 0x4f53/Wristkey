@@ -43,7 +43,6 @@ class AndOtpJSONImport : Activity() {
         setContentView(R.layout.activity_andotp_jsonimport)
 
         utilities = Utilities (applicationContext)
-        storageHelper = SimpleStorageHelper(this, utilities.FILES_REQUEST_CODE, savedInstanceState)
 
         initializeUI()
 
@@ -52,7 +51,6 @@ class AndOtpJSONImport : Activity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initializeUI () {
         setContentView(R.layout.activity_andotp_jsonimport)
-        pickFileButton = findViewById (R.id.pickFileButton)
         backButton = findViewById (R.id.backButton)
         doneButton = findViewById (R.id.doneButton)
         importLabel = findViewById (R.id.label)
@@ -77,27 +75,7 @@ class AndOtpJSONImport : Activity() {
             )
         }
 
-        storageHelper.onFileSelected = { requestCode, files ->
-            initializeScanUI(files[0].uri)
-        }
-
     }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        storageHelper.onSaveInstanceState(outState)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        storageHelper.onRestoreInstanceState(savedInstanceState)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        storageHelper.storage.onActivityResult(requestCode, resultCode, data)
-    }
-
 
     // Function to check and request permission.
     @RequiresApi(Build.VERSION_CODES.M)
@@ -148,7 +126,7 @@ class AndOtpJSONImport : Activity() {
                     utilities.writeToVault(login, UUID.randomUUID().toString())
                 }
 
-                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
                 importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
 
                 file.close()
@@ -164,13 +142,13 @@ class AndOtpJSONImport : Activity() {
                         val reader = FileReader(file.path)
                         val jsonData = reader.readText()
 
-                        if (file.name.contains("aegis") && file.name.endsWith(".json")) {
-                            logins = utilities.aegisToWristkey (jsonData)
+                        if (file.name.contains("bitwarden") && file.name.endsWith(".json")) {
+                            logins = utilities.andOtpToWristkey (JSONArray(jsonData))
                         }
 
                         importingDescription.text = "Found file: \n${file.name}"
 
-                        Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
                         importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
                         file.delete()
 
@@ -185,7 +163,7 @@ class AndOtpJSONImport : Activity() {
 
                     importingDescription.text = "Found file: \n${file.name}"
 
-                    Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
                     importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
                     file.delete()
 
