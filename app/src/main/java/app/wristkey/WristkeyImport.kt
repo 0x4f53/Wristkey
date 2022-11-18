@@ -14,8 +14,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.anggrayudi.storage.SimpleStorageHelper
+import org.json.JSONException
 import org.json.JSONObject
 import wristkey.R
 import java.io.File
@@ -25,8 +28,10 @@ import java.io.FileReader
 class WristkeyImport : AppCompatActivity() {
 
     lateinit var utilities: Utilities
+    lateinit var storageHelper: SimpleStorageHelper
 
     lateinit var backButton: ImageButton
+    lateinit var pickFileButton: CardView
     lateinit var doneButton: ImageButton
     lateinit var importLabel: TextView
     lateinit var description: TextView
@@ -37,6 +42,7 @@ class WristkeyImport : AppCompatActivity() {
         setContentView(R.layout.activity_wristkey_import)
 
         utilities = Utilities (applicationContext)
+        storageHelper = SimpleStorageHelper(this, utilities.FILES_REQUEST_CODE, savedInstanceState)
 
         initializeUI()
 
@@ -45,6 +51,7 @@ class WristkeyImport : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initializeUI () {
         backButton = findViewById (R.id.backButton)
+        pickFileButton = findViewById (R.id.pickFileButton)
         doneButton = findViewById (R.id.doneButton)
         importLabel = findViewById (R.id.label)
         description = findViewById (R.id.description)
@@ -61,6 +68,16 @@ class WristkeyImport : AppCompatActivity() {
             checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, utilities.FILES_REQUEST_CODE)
         }
 
+        pickFileButton.setOnClickListener {
+            storageHelper.openFilePicker (
+                allowMultiple = false
+            )
+        }
+
+        storageHelper.onFileSelected = { requestCode, files ->
+            initializeScanUI(files[0].uri)
+        }
+
     }
 
     // Function to check and request permission.
@@ -69,7 +86,7 @@ class WristkeyImport : AppCompatActivity() {
         if (ContextCompat.checkSelfPermission(this@WristkeyImport, permission) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this@WristkeyImport, arrayOf(permission), requestCode)
         } else {
-            initializeScanUI()
+            initializeScanUI(null)
         }
     }
 
@@ -78,7 +95,7 @@ class WristkeyImport : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == utilities.FILES_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                initializeScanUI()
+                initializeScanUI(null)
             } else {
                 Toast.makeText(this@WristkeyImport, "Please grant Wristkey storage permissions in settings", Toast.LENGTH_LONG).show()
                 val intent = Intent (android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
@@ -88,59 +105,100 @@ class WristkeyImport : AppCompatActivity() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        storageHelper.onSaveInstanceState(outState)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        storageHelper.onRestoreInstanceState(savedInstanceState)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        storageHelper.storage.onActivityResult(requestCode, resultCode, data)
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun initializeScanUI () {
+    private fun initializeScanUI (fileName: Uri?) {
         setContentView(R.layout.import_loading_screen)
         val importingDescription = findViewById<TextView>(R.id.ImportingDescription)
 
         var logins = HashMap<String, String>()
 
         try {
-            val directory = File (applicationContext.filesDir.toString())
-            Log.d ("Wristkey", "Looking for files in: " + applicationContext.filesDir.toString())
-            importingDescription.text = "Looking for files in: \n${directory}"
 
-            for (file in directory.listFiles()!!) {
-                try {
-                    val fileData = FileReader(file.path).readText()
+            if (fileName!!.toString().isNotBlank()) {
+                val file = contentResolver.openInputStream(fileName)
 
-                    if (file.name.endsWith(".wfs")) {
-                        logins = utilities.wfsToHashmap (JSONObject(fileData)) as HashMap<String, String>
-                    }
-                } catch (_: Exception) {
-                    Log.d ("Wristkey", "${file.name} is invalid")
-                }
+                Log.d ("Wristkey", "Reading: $fileName")
+                importingDescription.text = "Reading \n$fileName"
 
-                importingDescription.text = "Found file: \n${file.name}"
+                val fileData = String(file?.readBytes()!!)
 
-                importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
-                file.delete()
+                logins = utilities.wfsToHashmap (JSONObject(fileData)) as HashMap<String, String>
 
                 for (login in logins) {
                     importingDescription.text = "${utilities.decodeOTPAuthURL(login.value)?.issuer}"
                     utilities.writeToVault(utilities.decodeOTPAuthURL(login.value)!!, login.key)
                 }
+
+                Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
+                importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
+
+                file.close()
+
+            } else {
+                val directory = File (applicationContext.filesDir.toString())
+                Log.d ("Wristkey", "Looking for files in: " + applicationContext.filesDir.toString())
+                importingDescription.text = "Looking for files in: \n${directory}"
+
+                for (file in directory.listFiles()!!) {
+
+                    try {
+                        val reader = FileReader(file.path)
+                        val jsonData = reader.readText()
+
+                        if (file.name.endsWith(".wfs")) {
+                            logins = utilities.wfsToHashmap (JSONObject(jsonData)) as HashMap<String, String>
+                        }
+
+                        importingDescription.text = "Found file: \n${file.name}"
+
+                        Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
+                        importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
+
+                        for (login in logins) {
+                            importingDescription.text = "${utilities.decodeOTPAuthURL(login.value)?.issuer}"
+                            utilities.writeToVault(utilities.decodeOTPAuthURL(login.value)!!, login.key)
+                        }
+
+                    } catch (_: Exception) {
+                        Log.d ("Wristkey", "${file.name} is invalid")
+                    }
+
+                }
+
             }
 
             if (logins.isEmpty()) {
                 Toast.makeText(this, "No files found.", Toast.LENGTH_LONG).show()
                 finish()
             } else {
-                Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
                 finishAffinity()
                 startActivity(Intent(applicationContext, MainActivity::class.java))
             }
 
         } catch (noDirectory: NullPointerException) {
-            finish()
-            Toast.makeText(this, "Couldn't access storage. Please raise an issue on Wristkey's GitHub repo.", Toast.LENGTH_LONG).show()
+            initializeUI()
+            Toast.makeText(this, "Couldn't access file.", Toast.LENGTH_LONG).show()
             noDirectory.printStackTrace()
 
-        } catch (invalidJson: NullPointerException) {
-            finish()
-            Toast.makeText(this, "Couldn't access file.", Toast.LENGTH_LONG).show()
-            invalidJson.printStackTrace()
-
+        } catch (invalidFile: JSONException) {
+            initializeUI()
+            Toast.makeText(this, "Invalid file. Please follow the instructions.", Toast.LENGTH_LONG).show()
+            invalidFile.printStackTrace()
         }
 
     }
