@@ -126,7 +126,7 @@ class WristkeyImport : AppCompatActivity() {
                 Toast.makeText(this, "No files found.", Toast.LENGTH_LONG).show()
                 finish()
             } else {
-                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
                 finishAffinity()
                 startActivity(Intent(applicationContext, MainActivity::class.java))
             }

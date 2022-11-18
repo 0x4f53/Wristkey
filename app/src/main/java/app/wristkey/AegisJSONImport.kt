@@ -145,7 +145,7 @@ class AegisJSONImport : Activity() {
                     utilities.writeToVault(login, UUID.randomUUID().toString())
                 }
 
-                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
                 importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
 
                 file.close()
@@ -167,7 +167,7 @@ class AegisJSONImport : Activity() {
 
                         importingDescription.text = "Found file: \n${file.name}"
 
-                        Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
                         importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
                         file.delete()
 
@@ -182,7 +182,7 @@ class AegisJSONImport : Activity() {
 
                     importingDescription.text = "Found file: \n${file.name}"
 
-                    Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
                     importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
                     file.delete()
 
