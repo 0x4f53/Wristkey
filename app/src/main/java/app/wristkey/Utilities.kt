@@ -398,13 +398,13 @@ class Utilities (context: Context) {
                 else "hotp"
             val issuer: String = url.substringAfterLast("otp/").substringBefore(":")
             val account: String = url.substringAfterLast(":").substringBefore("?")
-            val secret: String? = if (url.contains("secret")) url.substringAfter("secret=").substringBefore("&") else null
-            val algorithm: String? = if (url.contains("algorithm")) url.substringAfter("algorithm=").substringBefore("&") else ALGO_SHA1
-            val digits: Int? = if (url.contains("digits")) url.substringAfter("digits=").substringBefore("&").toInt() else 6
-            val period: Int? = if (url.contains("period")) url.substringAfter("period=").substringBefore("&").toInt() else 30
-            val lock: Boolean? = if (url.contains("lock")) url.substringAfter("lock=").substringBefore("&").toBoolean() else false
-            val counter: Long? = if (url.contains("counter")) url.substringAfter("counter=").substringBefore("&").toLong() else 0
-            val label: String? = if (url.contains("label")) url.substringAfter("label=").substringBefore("&") else account
+            val secret: String? = if (url.contains("secret=")) url.substringAfter("secret=").substringBefore("&") else null
+            val algorithm: String? = if (url.contains("algorithm=")) url.substringAfter("algorithm=").substringBefore("&") else ALGO_SHA1
+            val digits: Int? = if (url.contains("digits=")) url.substringAfter("digits=").substringBefore("&").toInt() else 6
+            val period: Int? = if (url.contains("period=")) url.substringAfter("period=").substring(0, 2).toInt() else 30
+            val lock: Boolean? = if (url.contains("lock=")) url.substringAfter("lock=").substringBefore("&").toBoolean() else false
+            val counter: Long? = if (url.contains("counter=")) url.substringAfter("counter=").substringBefore("&").toLong() else 0
+            val label: String? = if (url.contains("label=")) url.substringAfter("label=").substringBefore("&") else account
 
             return MfaCode(
                 type = type,

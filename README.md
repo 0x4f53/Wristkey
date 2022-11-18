@@ -1,15 +1,13 @@
-[![Wear OS](https://img.shields.io/badge/Made%20for-Wear%20OS-4285f4.svg?style=flat-square&logo=wear%20os)](https://wearos.google.com)
+[![Wear OS](https://img.shields.io/badge/Made%20for-Wear%20OS%203.0-4285f4.svg?style=flat-square&logo=wear%20os)](https://wearos.google.com)
 [![License](https://img.shields.io/badge/License-MIT-purple?style=flat-square&logo=libreoffice)](LICENSE)
 [![Latest Version](https://img.shields.io/github/v/tag/4f77616973/Wristkey?label=Version&style=flat-square&logo=semver)](https://github.com/4f77616973/Wristkey/tags)
-[![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here-blue?style=flat-square&logo=dropbox)](app/release)
+[![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here-blue?style=flat-square&logo=dropbox)](app/build/outputs/apk/debug/)
 
 # Wristkey
 
 <img src = "app/src/debug/res/mipmap-hdpi/ic_launcher_round.png" alt = "Wristkey logo" width = "75dp">
 
-Have an old smartwatch lying around that you'd like to use for 2FA? Or do you just need a minimal and open-source 2FA app you can trust? Wristkey is an open-source 2FA client for Wear OS watches, but it works on any Android-based smartwatch! [Get the APK here.](app/release)
-
-Now with a fresh new look for Wear OS 3.0!
+Have an old smartwatch lying around that you'd like to use for 2FA? Or do you just need a minimal and open-source 2FA app you can trust? Wristkey is an open-source 2FA client for Wear OS watches, but it works on any Android-based smartwatch! [Get the APK here.](app/build/outputs/apk/debug/)
 
 You can now run Wristkey on your phone too! Just download the APK and install it on your phone.
 
@@ -50,6 +48,12 @@ If your watch is paired to an Android phone, you can use a third-party Wear OS f
 
 If your device has a camera, you can just use that to scan for QR codes.
 
+##### Via file picker
+
+If you're using Wristkey on a non-Wear OS Android device (such as an Android phone or an unknown Android smartwatch), you can browse for files on your device locally using the file picker.
+
+For Wear OS devices, there are two main ways of transferring files.
+
 ##### Via ADB
 
 1. Enable ADB Debugging on your watch by going to Settings → System → About and tapping 'Build Number' 7 times.
@@ -88,39 +92,38 @@ If your device has a camera, you can just use that to scan for QR codes.
     Target: connected
     ```
 
-#### Google Authenticator and normal QR Code imports
+#### Google Authenticator, QR codes, Aegis Authenticator, andOTP, Bitwarden and Wristkey
 
 1. If using a QR Code from a website, save it as a screenshot and make sure it is clearly visible with no pixelation. If importing from Google Authenticator, tap the three dots on the top right corner, then tap on 'Export accounts'. Then select the accounts you\'d like to export and tap the export button 'Export'. Take a picture or screenshot of the QR code that is displayed, **make sure it is a PNG or JPG file** and that it is clear with no blurring, glare or pixelation.
+
+   If using a JSON file, make sure it was exported in an unencrypted JSON format. Make sure you don't rename the file.
 
 2. Open a terminal on your computer and place this PNG or JPG file on the main directory of your watch (/sdcard/) via the following command
 
     ```
-    adb push <file>.png /data/local/tmp
-    adb shell run-as app.wristkey cp /data/local/tmp/<file>.json files/
+    adb push <file>.<extension> /data/local/tmp
+    adb shell run-as app.wristkey cp /data/local/tmp/<file>.<extension> files/
+    ```
+   
+    If you get an error such as the one below:
+    
+    ```
+    cp: files/<file>.<extension>: No such file or directory
+    ```
+   
+    simply create the directory by typing
+
+    ```
+    adb shell run-as app.wristkey mkdir files
     ```
 
-3. On your watch, open Wristkey, scroll down and tap the add icon '+', then select your import option.
-
-#### Aegis Authenticator, andOTP, Bitwarden and Wristkey backup imports
-
-1. Export your data in an unencrypted JSON format. Make sure you don't rename the file. 
-
-2. Open a terminal on your computer and place this JSON file on your device. Do this via the following commands
-
-    ```
-    adb push <file>.json /data/local/tmp
-    adb shell run-as app.wristkey cp /data/local/tmp/<file>.jpg files/
-    ```
-
-3. On your watch, open Wristkey, scroll down and tap the add icon '+', then select your import option.
+4. On your watch, open Wristkey, scroll down and tap the add icon '+', then select your import option.
 
 #### Manual entry
 
-1.  On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Manual Entry*. The default settings are for Google Authenticator codes (SHA1, 6 digits, time-based). 
+On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Manual Entry*. The default settings are for Google Authenticator codes (SHA1, 6 digits, time-based). Scroll down and tap the done button '✓' at the at the bottom when done. 
 
 ***Note:** Steam codes aren't supported yet.*
-
-2. Scroll down and tap the done button '✓' at the at the bottom when done.
 
 <img src = screenshots/2.0-edit-square.png alt="add">
 
@@ -144,21 +147,16 @@ To export all your accounts via QR codes, tap the settings icon '⚙️', then s
 
 1. Tap the settings icon '⚙️', then scroll down and select *Export vault*. Then select the file option. An export file will be generated on your device.
 
-2. Open a terminal on your computer and extract this file via the following command
+2. Find the name of the backup file by typing
+   
+   ```
+   adb shell run-as app.wristkey ls files/
+   ```
+
+4. Extract this file via the following command, replacing `<filename>` with the name of the wfs file
 
     ```
-    adb shell
-    run-as app.wristkey
-    cat files/<filename>.wfs > /sdcard/<filename>.wfs
-    exit
-    exit
-    adb pull /sdcard/<filename>.wfs /file/location/on/computer/
-    ```
-
-3. To delete the file, type 
-
-    ```
-    adb shell rm /sdcard/<filename>.wfs
+    adb shell run-as "app.wristkey" cat "<filename>.wfs" > backup.wfs   
     ```
 
 ***Note:** Exported text files are unencrypted and must be handled with care. Delete them when not in use.*
@@ -174,14 +172,20 @@ Make sure you set your secret key, digit length and algorithm correctly. If the 
 Make sure that
 
 1. Wristkey has storage permissions in your watch's Settings app. 
+
 2. That the filename format is appropriate:
     - When importing from JSON, make sure the file you export is an **Unencrypted** file in **JSON** format and that you don't rename it.
     - When importing from Google Authenticator or a QR code, make sure the screenshot or picture is in **PNG or JPG** format and is clear. 
     - When using a Wristkey backup file, make sure it has the _.wfs_ extension.
-3. The `files/` directory exists in the destination. If this doesn't exist, Wristkey might accidentally paste your code into a file called "files". If it doesn't exist, just type: 
+
+3. If you're using an image of a QR code, make sure it is in focus and clearly visible.
+
+4. The `files/` directory exists in the destination. If this doesn't exist, Wristkey might accidentally paste your code into a file called "files". This can be solved by typing: 
+
    ```
    adb shell run-as app.wristkey mkdir files/
    ```
+   
    then run the import commands.
 
 #### File export not working

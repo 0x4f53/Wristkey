@@ -20,16 +20,23 @@ import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.anggrayudi.storage.SimpleStorageHelper
+import org.json.JSONException
 import wristkey.R
-import java.io.*
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
 import java.util.*
 
 class OtpAuthImport : Activity() {
 
     lateinit var utilities: Utilities
+    lateinit var storageHelper: SimpleStorageHelper
 
     lateinit var backButton: ImageButton
     lateinit var doneButton: ImageButton
+    lateinit var pickFileButton: CardView
     lateinit var scanViaCameraButton: CardView
     lateinit var importLabel: TextView
     lateinit var description: TextView
@@ -40,6 +47,7 @@ class OtpAuthImport : Activity() {
         setContentView(R.layout.activity_otpauth_import)
 
         utilities = Utilities (applicationContext)
+        storageHelper = SimpleStorageHelper(this, utilities.FILES_REQUEST_CODE, savedInstanceState)
 
         initializeUI()
 
@@ -52,6 +60,7 @@ class OtpAuthImport : Activity() {
         description = findViewById (R.id.description)
 
         scanViaCameraButton = findViewById (R.id.scanViaCameraButton)
+        pickFileButton = findViewById (R.id.pickFileButton)
         backButton = findViewById (R.id.backButton)
         doneButton = findViewById (R.id.doneButton)
 
@@ -66,6 +75,17 @@ class OtpAuthImport : Activity() {
         doneButton.setOnClickListener {
             doneButton.performHapticFeedback(HapticGenerator.SUCCESS)
             checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, utilities.FILES_REQUEST_CODE)
+        }
+
+        pickFileButton.setOnClickListener {
+            storageHelper.openFilePicker (
+                allowMultiple = false,
+                filterMimeTypes = arrayOf (utilities.JPG_MIME_TYPE, utilities.PNG_MIME_TYPE)
+            )
+        }
+
+        storageHelper.onFileSelected = { requestCode, files ->
+            initializeScanUI(files[0].uri)
         }
 
         scanViaCameraButton.setOnClickListener {
@@ -87,7 +107,7 @@ class OtpAuthImport : Activity() {
         } else {
             when (requestCode) {
                 utilities.FILES_REQUEST_CODE -> {
-                    initializeScanUI()
+                    initializeScanUI(null)
                 }
 
                 utilities.CAMERA_REQUEST_CODE -> {
@@ -103,7 +123,7 @@ class OtpAuthImport : Activity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == utilities.FILES_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                initializeScanUI()
+                initializeScanUI(null)
             } else {
                 Toast.makeText(this@OtpAuthImport, "Please grant Wristkey storage permissions in settings", Toast.LENGTH_LONG).show()
                 val intent = Intent (Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
@@ -122,6 +142,21 @@ class OtpAuthImport : Activity() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        storageHelper.onSaveInstanceState(outState)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        storageHelper.onRestoreInstanceState(savedInstanceState)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        storageHelper.storage.onActivityResult(requestCode, resultCode, data)
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
     private fun startScannerUI () {
         val intent = Intent (applicationContext, QRScannerActivity::class.java)
@@ -130,71 +165,104 @@ class OtpAuthImport : Activity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun initializeScanUI () {
+    private fun initializeScanUI (fileName: Uri?) {
         setContentView(R.layout.import_loading_screen)
         val importingDescription = findViewById<TextView>(R.id.ImportingDescription)
 
-        val logins = mutableListOf<Utilities.MfaCode>()
+        var logins = mutableListOf<Utilities.MfaCode>()
 
         try {
-            val directory = File (applicationContext.filesDir.toString())
-            Log.d ("Wristkey", "Looking for files in: " + applicationContext.filesDir.toString())
-            importingDescription.text = "Looking for files in: \n${directory}"
 
-            for (file in directory.listFiles()!!) {
+            if (fileName!!.toString().isNotBlank()) {
+                val file = contentResolver.openInputStream(fileName)
 
-                try {
-                    val fileData = FileReader(file.path).readText()
+                Log.d ("Wristkey", "Reading: $fileName")
+                importingDescription.text = "Reading \n$fileName"
 
-                    if (
-                        file.name.endsWith(".png", ignoreCase = true)
-                        || file.name.endsWith(".jpg", ignoreCase = true)
-                        || file.name.endsWith(".jpeg", ignoreCase = true)
-                    ) {
+                val imageBitmap = BitmapFactory.decodeStream(file)
+                val decodedQRCodeData: String = utilities.scanQRImage(imageBitmap)
 
-                        val reader: InputStream = BufferedInputStream(FileInputStream(file.path))
-                        val imageBitmap = BitmapFactory.decodeStream(reader)
-                        val decodedQRCodeData: String = utilities.scanQRImage(imageBitmap)
-
-                        if (decodedQRCodeData.contains("otpauth://") && !decodedQRCodeData.contains("otpauth-migration://"))
-                            logins. add(utilities.decodeOTPAuthURL (decodedQRCodeData)!!)
-                        else if (decodedQRCodeData.contains("otpauth-migration://")) {
-                            Toast.makeText(this, "This appears to be a Google Authenticator export. Please choose that option instead to proceed.", Toast.LENGTH_LONG).show()
-                            break
-                        }
-
-                    }
-
-                } catch (_: Exception) {
-                    Log.d ("Wristkey", "${file.name} is invalid")
+                if (decodedQRCodeData.contains("otpauth://") && !decodedQRCodeData.contains("otpauth-migration://")) {
+                    logins.add(utilities.decodeOTPAuthURL(decodedQRCodeData)!!)
+                } else if (decodedQRCodeData.contains("otpauth-migration://")) {
+                    Toast.makeText(this, "This appears to be a Google Authenticator export. Please choose that option instead.", Toast.LENGTH_LONG).show()
                 }
 
-                importingDescription.text = "Found file: \n${file.name}"
+                importingDescription.text = "${logins.size}"
+                for (login in logins) {
+                    utilities.writeToVault(login, UUID.randomUUID().toString())
+                }
+
+                Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
                 importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
-                file.delete()
+
+                file?.close()
+
+            } else {
+                val directory = File (applicationContext.filesDir.toString())
+                Log.d ("Wristkey", "Looking for files in: " + applicationContext.filesDir.toString())
+                importingDescription.text = "Looking for files in: \n${directory}"
+
+                for (file in directory.listFiles()!!) {
+
+                    try {
+
+                        if (
+                            file.name.endsWith(".png", ignoreCase = true)
+                            || file.name.endsWith(".jpg", ignoreCase = true)
+                            || file.name.endsWith(".jpeg", ignoreCase = true)
+                        ) {
+
+                            val reader: InputStream = BufferedInputStream(FileInputStream(file.path))
+                            val imageBitmap = BitmapFactory.decodeStream(reader)
+                            val decodedQRCodeData: String = utilities.scanQRImage(imageBitmap)
+
+                            if (decodedQRCodeData.contains("otpauth://") && !decodedQRCodeData.contains("otpauth-migration://"))
+                                logins. add(utilities.decodeOTPAuthURL (decodedQRCodeData)!!)
+                            else if (decodedQRCodeData.contains("otpauth-migration://")) {
+                                Toast.makeText(this, "This appears to be a Google Authenticator export. Please choose that option instead.", Toast.LENGTH_LONG).show()
+                                break
+                            }
+
+                        }
+
+                    } catch (_: Exception) {
+                        Log.d ("Wristkey", "${file.name} is invalid")
+                    }
+
+                    importingDescription.text = "Found file: \n${file.name}"
+
+                    Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
+                    importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
+                    file.delete()
+
+                    for (login in logins) {
+                        importingDescription.text = "${login.issuer}"
+                        utilities.writeToVault(login, UUID.randomUUID().toString())
+                    }
+                }
 
             }
 
             if (logins.isEmpty()) {
                 Toast.makeText(this, "No files found.", Toast.LENGTH_LONG).show()
                 finish()
-
             } else {
-                for (login in logins) {
-                    utilities.writeToVault(login, UUID.randomUUID().toString())
-                }
-                Toast.makeText(applicationContext, "Imported ${logins.size} accounts", Toast.LENGTH_SHORT).show()
                 finishAffinity()
                 startActivity(Intent(applicationContext, MainActivity::class.java))
             }
 
         } catch (noDirectory: NullPointerException) {
             initializeUI()
-            Toast.makeText(this, "Couldn't access storage. Please raise an issue on Wristkey's GitHub repo.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Couldn't access file.", Toast.LENGTH_LONG).show()
             noDirectory.printStackTrace()
 
-        } catch (_: java.io.FileNotFoundException) { }
+        } catch (invalidFile: JSONException) {
+            initializeUI()
+            Toast.makeText(this, "Invalid file. Please follow the instructions.", Toast.LENGTH_LONG).show()
+            invalidFile.printStackTrace()
+
+        }
 
     }
-
 }
