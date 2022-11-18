@@ -122,11 +122,9 @@ For Wear OS devices, there are two main ways of transferring files.
 
 #### Manual entry
 
-1.  On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Manual Entry*. The default settings are for Google Authenticator codes (SHA1, 6 digits, time-based). 
+On your watch, open Wristkey, scroll down and tap the add icon '+', then tap *Manual Entry*. The default settings are for Google Authenticator codes (SHA1, 6 digits, time-based). Scroll down and tap the done button '✓' at the at the bottom when done. 
 
 ***Note:** Steam codes aren't supported yet.*
-
-2. Scroll down and tap the done button '✓' at the at the bottom when done.
 
 <img src = screenshots/2.0-edit-square.png alt="add">
 
@@ -175,14 +173,18 @@ Make sure you set your secret key, digit length and algorithm correctly. If the 
 Make sure that
 
 1. Wristkey has storage permissions in your watch's Settings app. 
+
 2. That the filename format is appropriate:
     - When importing from JSON, make sure the file you export is an **Unencrypted** file in **JSON** format and that you don't rename it.
     - When importing from Google Authenticator or a QR code, make sure the screenshot or picture is in **PNG or JPG** format and is clear. 
     - When using a Wristkey backup file, make sure it has the _.wfs_ extension.
-3. The `files/` directory exists in the destination. If this doesn't exist, Wristkey might accidentally paste your code into a file called "files". If it doesn't exist, just type: 
+
+3. The `files/` directory exists in the destination. If this doesn't exist, Wristkey might accidentally paste your code into a file called "files". This can be solved by typing: 
+
    ```
    adb shell run-as app.wristkey mkdir files/
    ```
+   
    then run the import commands.
 
 #### File export not working
