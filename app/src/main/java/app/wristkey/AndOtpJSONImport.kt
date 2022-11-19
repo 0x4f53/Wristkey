@@ -43,6 +43,7 @@ class AndOtpJSONImport : Activity() {
         setContentView(R.layout.activity_andotp_jsonimport)
 
         utilities = Utilities (applicationContext)
+        storageHelper = SimpleStorageHelper(this, utilities.FILES_REQUEST_CODE, savedInstanceState)
 
         initializeUI()
 
@@ -52,6 +53,7 @@ class AndOtpJSONImport : Activity() {
     private fun initializeUI () {
         setContentView(R.layout.activity_andotp_jsonimport)
         backButton = findViewById (R.id.backButton)
+        pickFileButton = findViewById (R.id.pickFileButton)
         doneButton = findViewById (R.id.doneButton)
         importLabel = findViewById (R.id.label)
         description = findViewById (R.id.description)

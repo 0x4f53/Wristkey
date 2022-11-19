@@ -15,6 +15,6 @@
     <color name="grayTheme">#192835</color>
     <color name="lightTheme">#FFFFFF</color>
 
-    <color name="colorAccent">#485B6C</color>
+    <color name="colorAccent">@color/blueAccents</color>
     <color name="colorTheme">@color/darkTheme</color>
 </resources>
