@@ -90,8 +90,9 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun searchBox() {
         if (!activated) {
-            searchButton.setImageDrawable(applicationContext.getDrawable(R.drawable.ic_cancel))
             searchBox.visibility = View.VISIBLE
+
+            searchButton.setImageDrawable(applicationContext.getDrawable(R.drawable.ic_cancel))
             searchBox.requestFocus()
 
             (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
@@ -129,6 +130,7 @@ class MainActivity : AppCompatActivity() {
             searchBox.text.clear()
             searchBox.clearFocus()
             searchBox.visibility = View.GONE
+
             activated = false
         }
     }
@@ -401,7 +403,7 @@ class MainActivity : AppCompatActivity() {
                                     }
                                 }
 
-                                otp = TimeBasedOneTimePasswordGenerator(login.secret!!.toByteArray(), config).generate()
+                                otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
                                 if (login.algorithm == utilities.ALGO_SHA1 && login.period == 30 && login.digits == 6)
                                     otp = GoogleAuthenticator(login.secret.toByteArray()).generate()
                             }
