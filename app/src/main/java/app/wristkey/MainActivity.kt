@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.media.audiofx.HapticGenerator
 import android.os.Build
@@ -11,13 +12,15 @@ import android.os.Bundle
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
-import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dev.turingcomplete.kotlinonetimepassword.*
@@ -38,6 +41,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var utilities: Utilities
 
     private lateinit var clock: TextView
+    private lateinit var searchButton: ImageButton
+    private lateinit var searchBox: EditText
     private lateinit var roundTimeLeft: ProgressBar
     private lateinit var squareTimeLeft: ProgressBar
     private lateinit var loginsRecycler: RecyclerView
@@ -81,6 +86,53 @@ class MainActivity : AppCompatActivity() {
         mfaCodesTimer = Timer()
     }
 
+    var activated = false
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun searchBox() {
+        if (!activated) {
+            searchButton.setImageDrawable(applicationContext.getDrawable(R.drawable.ic_cancel))
+            searchBox.visibility = View.VISIBLE
+            searchBox.requestFocus()
+
+            (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+
+            searchBox.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
+                if (!hasFocus) {
+                    (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(v.windowToken, 0)
+                    if (searchBox.text.isEmpty()) {
+                        searchBox.visibility = View.GONE
+                        searchButton.setImageDrawable(applicationContext.getDrawable(R.drawable.ic_baseline_search_24))
+                    }
+                }
+            }
+
+            searchBox.performClick()
+
+            searchBox.doOnTextChanged { text, start, before, count ->
+
+                val logins = utilities.searchLogins(text.toString(), utilities.getLogins().toMutableList())
+
+                val adapter = LoginsAdapter(logins)
+
+                loginsRecycler.layoutManager = LinearLayoutManager(this@MainActivity)
+                loginsRecycler.adapter = adapter
+                loginsRecycler.invalidate()
+                loginsRecycler.refreshDrawableState()
+                loginsRecycler.scheduleLayoutAnimation()
+                loginsRecycler.setItemViewCacheSize(vault.size)
+
+            }
+
+            activated = true
+        } else {
+            searchButton.setImageDrawable(applicationContext.getDrawable(R.drawable.ic_baseline_search_24))
+            searchBox.text.clear()
+            searchBox.clearFocus()
+            searchBox.visibility = View.GONE
+            activated = false
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setShape () {
         if (
@@ -105,6 +157,9 @@ class MainActivity : AppCompatActivity() {
         keys = utilities.vault.all.keys.toList()
 
         clock = findViewById(R.id.clock)
+        searchButton = findViewById(R.id.searchButton)
+        searchBox = findViewById(R.id.searchBox)
+        searchBox.visibility = View.GONE
 
         loginsRecycler = findViewById(R.id.loginsRecycler)
 
@@ -126,9 +181,10 @@ class MainActivity : AppCompatActivity() {
         loginsRecycler.scheduleLayoutAnimation()
         loginsRecycler.setItemViewCacheSize(vault.size)
 
-        addAccountButton.animation = AnimationUtils.loadAnimation(applicationContext, R.anim.slide_right)
-        settingsButton.animation = AnimationUtils.loadAnimation(applicationContext, R.anim.slide_right)
-        aboutButton.animation = AnimationUtils.loadAnimation(applicationContext, R.anim.slide_right)
+        searchButton.setOnClickListener {
+            searchBox()
+            searchButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        }
 
         addAccountButton.setOnClickListener {
             startActivity(Intent(applicationContext, AddActivity::class.java))

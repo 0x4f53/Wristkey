@@ -22,9 +22,9 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="2.5dp"
             android:layout_marginTop="55dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="2.5dp"
             android:orientation="vertical"
             android:paddingBottom="150dp">
 

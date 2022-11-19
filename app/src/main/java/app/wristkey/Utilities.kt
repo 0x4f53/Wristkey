@@ -290,9 +290,9 @@ class Utilities (context: Context) {
 
     }
 
-    fun andOtpToWristkey (jsonArray: JSONArray): MutableList<Utilities.MfaCode> {
+    fun andOtpToWristkey (jsonArray: JSONArray): MutableList<MfaCode> {
 
-        val logins = mutableListOf<Utilities.MfaCode>()
+        val logins = mutableListOf<MfaCode>()
 
         for (itemIndex in 0 until jsonArray.length()) {
 
@@ -308,7 +308,7 @@ class Utilities (context: Context) {
             val label = try { JSONObject(login)["label"].toString() } catch (_: JSONException) { "" }
 
             logins.add (
-                Utilities.MfaCode(
+                MfaCode(
                     type = "otpauth",
                     mode = type,
                     issuer = issuer,
@@ -329,9 +329,15 @@ class Utilities (context: Context) {
 
     }
 
-    fun aegisToWristkey (unencryptedAegisJsonString: String): MutableList<Utilities.MfaCode> {
+    fun searchLogins (searchTerms: String, logins: MutableList<MfaCode>): MutableList<MfaCode> {
+        val results = mutableListOf<MfaCode>()
+        for (_login in logins) if (_login.toString().lowercase().replace(Regex("""[^a-zA-Z\\d]"""), "").contains(searchTerms)) results.add(_login)
+        return results
+    }
 
-        val logins = mutableListOf<Utilities.MfaCode>()
+    fun aegisToWristkey (unencryptedAegisJsonString: String): MutableList<MfaCode> {
+
+        val logins = mutableListOf<MfaCode>()
 
         val db = JSONObject(unencryptedAegisJsonString)["db"].toString()
         val entries = JSONObject(db)["entries"].toString()
@@ -393,8 +399,7 @@ class Utilities (context: Context) {
                 if (url.substringBefore("://").contains("migration")) "Google Authenticator Backup"
                 else "OTP"
             val mode: String =
-                if (url.substringAfter("://").substringBefore("/").contains("totp"))
-                    "totp"
+                if (url.substringAfter("://").substringBefore("/").contains("totp")) "totp"
                 else "hotp"
             val issuer: String = url.substringAfterLast("otp/").substringBefore(":")
             val account: String = url.substringAfterLast(":").substringBefore("?")

@@ -59,6 +59,7 @@
                     android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
                     android:fontFamily="@font/productsans"
                     android:imeOptions="actionDone"
+                    android:backgroundTint="@color/blueAccents"
                     android:inputType="textPhonetic"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -79,6 +80,7 @@
                     android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
                     android:fontFamily="@font/productsans"
                     android:imeOptions="actionDone"
+                    android:backgroundTint="@color/blueAccents"
                     android:inputType="textUri"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -99,6 +101,7 @@
                     android:capitalize="none"
                     android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
                     android:fontFamily="@font/productsans"
+                    android:backgroundTint="@color/blueAccents"
                     android:imeOptions="actionDone"
                     android:inputType="textUri|textEmailAddress|textWebEmailAddress"
                     android:maxLines="1"
