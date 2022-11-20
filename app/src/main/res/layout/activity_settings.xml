@@ -45,74 +45,47 @@
                 android:textStyle="normal" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/themeButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:visibility="gone"
                 app:cardCornerRadius="25dp">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_outline_palette_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Theme"
-                        android:textSize="16dp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
+                        android:layout_width="15dp"
                         android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="0.05"
+                        android:padding="6dp"
                         android:src="@drawable/ic_outline_access_time_24"
                         android:tint="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
+                        android:layout_marginStart="7.5dp"
+                        android:layout_weight="0.25"
                         android:fontFamily="@font/productsans"
                         android:foregroundGravity="center_vertical"
                         android:gravity="center_vertical"
-                        android:padding="15dp"
+                        android:paddingTop="5dp"
                         android:paddingEnd="15dp"
+                        android:paddingBottom="5dp"
                         android:text="Show clock"
                         android:textSize="16dp" />
 
@@ -138,14 +111,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
+                        android:layout_width="15dp"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
                         android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
                         android:src="@drawable/ic_baseline_more_time_24"
                         android:tint="@color/white" />
 
@@ -183,14 +157,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
+                        android:layout_width="15dp"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
                         android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
                         android:src="@drawable/ic_baseline_vibration_24"
                         android:tint="@color/white" />
 
@@ -228,14 +203,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
+                        android:layout_width="15dp"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
                         android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
                         android:src="@drawable/ic_outline_volume_up_24"
                         android:tint="@color/white" />
 
@@ -273,14 +249,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
+                        android:layout_width="15dp"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
                         android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
                         android:src="@drawable/ic_outline_lock_24"
                         android:tint="@color/white" />
 
@@ -318,14 +295,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
+                        android:layout_width="15dp"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
                         android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
                         android:src="@drawable/ic_baseline_watch_24"
                         android:tint="@color/white" />
 
@@ -365,14 +343,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
+                        android:layout_width="15dp"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
                         android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
                         android:src="@drawable/ic_outline_send_24"
                         android:tint="@color/white" />
 
@@ -403,14 +382,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
+                        android:layout_width="15dp"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
                         android:paddingStart="25dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
                         android:src="@drawable/ic_baseline_arrow_back_ios_24"
                         android:tint="@color/white" />
 
@@ -445,14 +425,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
+                        android:layout_width="15dp"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
                         android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
                         android:src="@drawable/ic_outline_delete_24"
                         android:tint="@color/white" />
 

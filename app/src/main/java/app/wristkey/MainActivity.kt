@@ -60,6 +60,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         utilities = Utilities (applicationContext)
+
+        vault = utilities.getVault()
+        keys = utilities.vault.all.keys.toList()
+
         mfaCodesTimer = Timer()
 
         lockScreen()
@@ -154,9 +158,6 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initializeUI () {
         setContentView(R.layout.activity_main)
-
-        vault = utilities.getVault()
-        keys = utilities.vault.all.keys.toList()
 
         clock = findViewById(R.id.clock)
         searchButton = findViewById(R.id.searchButton)
