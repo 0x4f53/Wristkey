@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="50dp"
                 android:orientation="horizontal">
 
                 <ImageButton
@@ -50,15 +50,15 @@
 
                 <EditText
                     android:id="@+id/searchBox"
-                    android:layout_width="wrap_content"
+                    android:layout_width="125dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
                     android:layout_weight="1"
+                    android:backgroundTint="@color/blueAccents"
                     android:ems="10"
                     android:fontFamily="@font/productsans"
-                    android:inputType="textPersonName"
                     android:hint="Search"
-                    android:layout_marginHorizontal="5dp"
-                    android:backgroundTint="@color/blueAccents"
+                    android:inputType="textPersonName"
                     android:textSize="16sp"
                     android:visibility="visible" />
 
