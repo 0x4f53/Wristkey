@@ -25,7 +25,6 @@ import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 @RequiresApi(Build.VERSION_CODES.M)
 class Utilities (context: Context) {
 
@@ -54,6 +53,7 @@ class Utilities (context: Context) {
     val SETTINGS_BACKGROUND_COLOR = "SETTINGS_BACKGROUND_COLOR"
     val SETTINGS_ACCENT_COLOR = "SETTINGS_ACCENT_COLOR"
 
+    val SETTINGS_SEARCH_ENABLED = "SETTINGS_SEARCH_ENABLED"
     val SETTINGS_CLOCK_ENABLED = "SETTINGS_CLOCK_ENABLED"
     val SETTINGS_24H_CLOCK_ENABLED = "SETTINGS_24H_CLOCK_ENABLED"
     val SETTINGS_HAPTICS_ENABLED = "SETTINGS_HAPTICS_ENABLED"
@@ -331,7 +331,23 @@ class Utilities (context: Context) {
 
     fun searchLogins (searchTerms: String, logins: MutableList<MfaCode>): MutableList<MfaCode> {
         val results = mutableListOf<MfaCode>()
-        for (_login in logins) if (_login.toString().lowercase().replace(Regex("""[^a-zA-Z\\d]"""), "").contains(searchTerms)) results.add(_login)
+        for (_login in logins)
+            if (_login
+                    .toString()
+                    .lowercase()
+                    .replace("mfacode", "")
+                    .replace("issuer", "")
+                    .replace("secret", "")
+                    .replace("lock", "")
+                    .replace("counter", "")
+                    .replace("period", "")
+                    .replace("digits", "")
+                    .replace("mode", "")
+                    .replace("algorithm", "")
+                    .replace("label", "")
+                    .replace(Regex("""[^a-zA-Z\\d]"""), "")
+                    .contains(searchTerms.lowercase())
+            ) results.add(_login)
         return results
     }
 

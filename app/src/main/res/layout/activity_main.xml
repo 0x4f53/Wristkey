@@ -11,17 +11,20 @@
     tools:deviceIds="wear">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/RoundTimeLeft"
-        app:layout_constraintStart_toStartOf="parent"
+        android:fadeScrollbars="false"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:scrollbars="vertical"
-        android:fadeScrollbars="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/RoundTimeLeft"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <requestFocus/>
+
+        <requestFocus />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="35dp"
                 android:orientation="horizontal">
 
                 <ImageButton
@@ -55,12 +58,16 @@
                     android:layout_marginHorizontal="5dp"
                     android:layout_weight="1"
                     android:backgroundTint="@color/blueAccents"
+                    android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
                     android:ems="10"
                     android:fontFamily="@font/productsans"
                     android:hint="Search"
+                    android:maxLines="1"
+                    android:singleLine="true"
                     android:inputType="textPersonName"
                     android:textSize="16sp"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    android:textCursorDrawable="@null"/>
 
             </LinearLayout>
 
@@ -71,7 +78,7 @@
                 android:animateLayoutChanges="false"
                 android:layoutAnimation="@anim/slide_right_controller"
                 android:nestedScrollingEnabled="false"
-                android:paddingTop="10dp"
+                android:paddingTop="50dp"
                 tools:itemCount="5"
                 tools:listitem="@layout/login_card">
 

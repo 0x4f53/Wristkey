@@ -20,6 +20,7 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.widget.NestedScrollView
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var mfaCodesTimer: Timer
     lateinit var utilities: Utilities
 
+    private lateinit var scrollView: NestedScrollView
     private lateinit var clock: TextView
     private lateinit var searchButton: ImageButton
     private lateinit var searchBox: EditText
@@ -159,10 +161,18 @@ class MainActivity : AppCompatActivity() {
     private fun initializeUI () {
         setContentView(R.layout.activity_main)
 
-        clock = findViewById(R.id.clock)
-        searchButton = findViewById(R.id.searchButton)
         searchBox = findViewById(R.id.searchBox)
         searchBox.visibility = View.GONE
+
+        searchButton = findViewById(R.id.searchButton)
+
+        if (utilities.vault.getBoolean (utilities.SETTINGS_SEARCH_ENABLED, true)) {
+            scrollView = findViewById(R.id.scrollView)
+            scrollView.post { scrollView.smoothScrollTo (0, 121) }
+            searchButton.visibility = View.VISIBLE
+        } else searchButton.visibility = View.GONE
+
+        clock = findViewById(R.id.clock)
 
         loginsRecycler = findViewById(R.id.loginsRecycler)
 
