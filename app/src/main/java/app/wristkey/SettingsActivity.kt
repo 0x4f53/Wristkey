@@ -25,6 +25,7 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var clock: TextView
 
     lateinit var beepButton: SwitchMaterial
+    lateinit var searchButton: SwitchMaterial
     lateinit var vibrateButton: SwitchMaterial
     lateinit var lockButton: SwitchMaterial
     lateinit var clockButton: SwitchMaterial
@@ -76,6 +77,7 @@ class SettingsActivity : AppCompatActivity() {
 
         clock = findViewById(R.id.clock)
 
+        searchButton = findViewById (R.id.searchButton)
         beepButton = findViewById (R.id.beepButton)
         vibrateButton = findViewById (R.id.vibrateButton)
         lockButton = findViewById (R.id.lockButton)
@@ -86,20 +88,22 @@ class SettingsActivity : AppCompatActivity() {
         exportButton = findViewById (R.id.exportButton)
         backButton = findViewById (R.id.backButton)
 
-        val clockButton: SwitchMaterial = findViewById(R.id.clockButton)
+        searchButton.isChecked = utilities.vault.getBoolean(utilities.SETTINGS_SEARCH_ENABLED, true)
+        searchButton.setOnCheckedChangeListener { _, isChecked ->
+            settingsChanged = true
+            utilities.vault.edit().remove(utilities.SETTINGS_SEARCH_ENABLED).apply()
+            utilities.vault.edit().putBoolean(utilities.SETTINGS_SEARCH_ENABLED, isChecked).apply()
+        }
+
         clockButton.isChecked = utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)
         clockButton.setOnCheckedChangeListener { _, isChecked ->
             settingsChanged = true
             utilities.vault.edit().remove(utilities.SETTINGS_CLOCK_ENABLED).apply()
             utilities.vault.edit().putBoolean(utilities.SETTINGS_CLOCK_ENABLED, isChecked).apply()
-            if (!isChecked)
-                findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
-            else
-                findViewById<CardView>(R.id.clockBackground).visibility = View.VISIBLE
+            if (!isChecked) findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
+            else findViewById<CardView>(R.id.clockBackground).visibility = View.VISIBLE
         }
 
-
-        val twentyFourHourClockButton: SwitchMaterial = findViewById(R.id.twentyFourHourClockButton)
         twentyFourHourClockButton.isChecked = utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, true)
         twentyFourHourClockButton.setOnCheckedChangeListener { _, isChecked ->
             settingsChanged = true
@@ -107,7 +111,6 @@ class SettingsActivity : AppCompatActivity() {
             utilities.vault.edit().putBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, isChecked).apply()
         }
 
-        val vibrateButton: SwitchMaterial = findViewById(R.id.vibrateButton)
         vibrateButton.isChecked = utilities.vault.getBoolean(utilities.SETTINGS_HAPTICS_ENABLED, true)
         vibrateButton.setOnCheckedChangeListener { _, isChecked ->
             settingsChanged = true
@@ -116,7 +119,6 @@ class SettingsActivity : AppCompatActivity() {
             if (isChecked) deleteButton.performHapticFeedback(HapticFeedbackConstants.REJECT)
         }
 
-        val beepButton: SwitchMaterial = findViewById(R.id.beepButton)
         beepButton.isChecked = utilities.vault.getBoolean(utilities.SETTINGS_BEEP_ENABLED, false)
         beepButton.setOnCheckedChangeListener { _, isChecked ->
             settingsChanged = true
@@ -127,7 +129,6 @@ class SettingsActivity : AppCompatActivity() {
 
         val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
         if (!lockscreen.isKeyguardSecure) utilities.vault.edit().putBoolean(utilities.SETTINGS_LOCK_ENABLED, false).apply()
-        val lockButton: SwitchMaterial = findViewById(R.id.lockButton)
         lockButton.isChecked = utilities.vault.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)
         lockButton.setOnCheckedChangeListener { _, isChecked ->
             if (!lockscreen.isKeyguardSecure) {
@@ -142,7 +143,6 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        val roundButton: SwitchMaterial = findViewById(R.id.roundButton)
         roundButton.isChecked = utilities.vault.getBoolean(utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)
         roundButton.setOnCheckedChangeListener { _, isChecked ->
             settingsChanged = true

@@ -14,12 +14,13 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fadeScrollbars="false"
         android:fillViewport="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:scrollbars="vertical"
-        android:fadeScrollbars="false">
-        <requestFocus/>
+        android:scrollbars="vertical">
+
+        <requestFocus />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,7 +29,7 @@
             android:layout_marginRight="10dp"
             android:orientation="vertical"
             android:paddingTop="55dp"
-            android:paddingBottom="75dp" >
+            android:paddingBottom="75dp">
 
             <TextView
                 android:id="@+id/manualEntryLabel"
@@ -45,11 +46,15 @@
                 android:textStyle="normal" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/name"
+                android:id="@+id/issuer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:boxBackgroundMode="filled"
+                app:boxBackgroundColor="@color/colorAccent"
+                app:hintTextColor="@color/colorAccent"
+                android:backgroundTint="@color/colorAccent"
                 android:hint="Issuer"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/issuerInput"
@@ -59,18 +64,23 @@
                     android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
                     android:fontFamily="@font/productsans"
                     android:imeOptions="actionDone"
-                    android:backgroundTint="@color/blueAccents"
                     android:inputType="textPhonetic"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textCursorDrawable="@null"
+                    android:backgroundTint="@color/colorAccent" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/secret"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Secret"
-                app:endIconMode="password_toggle">
+                app:boxBackgroundMode="filled"
+                app:boxBackgroundColor="@color/colorAccent"
+                app:hintTextColor="@color/colorAccent"
+                android:backgroundTint="@color/colorAccent"
+                android:hint="Issuer"
+                app:endIconMode="clear_text" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/secretInput"
@@ -80,10 +90,11 @@
                     android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
                     android:fontFamily="@font/productsans"
                     android:imeOptions="actionDone"
-                    android:backgroundTint="@color/blueAccents"
-                    android:inputType="textUri"
+                    android:inputType="textPhonetic"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textCursorDrawable="@null"
+                    android:backgroundTint="@color/colorAccent" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -91,7 +102,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Label"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:boxBackgroundColor="@color/colorAccent"
+                app:hintTextColor="@color/colorAccent"
+                android:backgroundTint="@color/colorAccent" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/labelInput"
@@ -101,11 +115,11 @@
                     android:capitalize="none"
                     android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
                     android:fontFamily="@font/productsans"
-                    android:backgroundTint="@color/blueAccents"
                     android:imeOptions="actionDone"
                     android:inputType="textUri|textEmailAddress|textWebEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:backgroundTint="@color/colorAccent" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
@@ -137,8 +151,6 @@
                     android:foregroundTintMode="src_atop"
                     android:indeterminateTint="@color/colorAccent"
                     android:indeterminateTintMode="src_atop"
-                    android:max="1"
-                    android:progress="0"
                     android:progressBackgroundTint="@color/colorAccent"
                     android:progressBackgroundTintMode="src_atop"
                     android:progressTint="@color/colorAccent"
@@ -147,7 +159,9 @@
                     android:secondaryProgressTintMode="src_atop"
                     android:thumbTint="@color/colorAccent"
                     android:thumbTintMode="src_atop"
-                    android:tickMarkTint="@color/colorAccent" />
+                    android:tickMarkTint="@color/colorAccent"
+                    android:max="1"
+                    android:progress="0" />
 
             </LinearLayout>
 
@@ -181,8 +195,6 @@
                     android:foregroundTintMode="src_atop"
                     android:indeterminateTint="@color/colorAccent"
                     android:indeterminateTintMode="src_atop"
-                    android:max="2"
-                    android:progress="0"
                     android:progressBackgroundTint="@color/colorAccent"
                     android:progressBackgroundTintMode="src_atop"
                     android:progressTint="@color/colorAccent"
@@ -191,7 +203,9 @@
                     android:secondaryProgressTintMode="src_atop"
                     android:thumbTint="@color/colorAccent"
                     android:thumbTintMode="src_atop"
-                    android:tickMarkTint="@color/colorAccent" />
+                    android:tickMarkTint="@color/colorAccent"
+                    android:max="2"
+                    android:progress="0" />
 
             </LinearLayout>
 
@@ -225,8 +239,6 @@
                     android:foregroundTintMode="src_atop"
                     android:indeterminateTint="@color/colorAccent"
                     android:indeterminateTintMode="src_atop"
-                    android:max="1"
-                    android:progress="0"
                     android:progressBackgroundTint="@color/colorAccent"
                     android:progressBackgroundTintMode="src_atop"
                     android:progressTint="@color/colorAccent"
@@ -235,7 +247,9 @@
                     android:secondaryProgressTintMode="src_atop"
                     android:thumbTint="@color/colorAccent"
                     android:thumbTintMode="src_atop"
-                    android:tickMarkTint="@color/colorAccent" />
+                    android:tickMarkTint="@color/colorAccent"
+                    android:max="1"
+                    android:progress="0" />
             </LinearLayout>
 
             <LinearLayout
@@ -267,8 +281,6 @@
                     android:foregroundTintMode="src_atop"
                     android:indeterminateTint="@color/colorAccent"
                     android:indeterminateTintMode="src_atop"
-                    android:max="2"
-                    android:progress="1"
                     android:progressBackgroundTint="@color/colorAccent"
                     android:progressBackgroundTintMode="src_atop"
                     android:progressTint="@color/colorAccent"
@@ -277,7 +289,9 @@
                     android:secondaryProgressTintMode="src_atop"
                     android:thumbTint="@color/colorAccent"
                     android:thumbTintMode="src_atop"
-                    android:tickMarkTint="@color/colorAccent" />
+                    android:tickMarkTint="@color/colorAccent"
+                    android:max="2"
+                    android:progress="1" />
 
             </LinearLayout>
 

@@ -31,6 +31,7 @@ class AboutActivity : AppCompatActivity() {
     private lateinit var appNameText: TextView
     private lateinit var heart: TextView
     private lateinit var versionText: TextView
+    private lateinit var thanksText: TextView
     private lateinit var bitcoinDonateQrCode: ImageView
     private lateinit var urlLink: TextView
 
@@ -104,6 +105,9 @@ class AboutActivity : AppCompatActivity() {
         appNameText = findViewById<TextView>(R.id.AppName)
         heart = findViewById<TextView>(R.id.heart)
         versionText = findViewById<TextView>(R.id.Version)
+        thanksText = findViewById<TextView>(R.id.thanksText)
+
+        thanksText.isSelected = true
         bitcoinDonateQrCode = findViewById<ImageView>(R.id.bitcoinDonateQrCode)
         urlLink = findViewById<TextView>(R.id.SourceCode)
 
