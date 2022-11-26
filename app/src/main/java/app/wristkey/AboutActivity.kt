@@ -2,6 +2,8 @@ package app.wristkey
 
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -34,6 +36,7 @@ class AboutActivity : AppCompatActivity() {
     private lateinit var thanksText: TextView
     private lateinit var bitcoinDonateQrCode: ImageView
     private lateinit var urlLink: TextView
+    private lateinit var bitcoinWalletAddress: TextView
 
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("SetTextI18n")
@@ -106,6 +109,7 @@ class AboutActivity : AppCompatActivity() {
         heart = findViewById<TextView>(R.id.heart)
         versionText = findViewById<TextView>(R.id.Version)
         thanksText = findViewById<TextView>(R.id.thanksText)
+        bitcoinWalletAddress = findViewById<TextView>(R.id.bitcoinWalletAddress)
 
         thanksText.isSelected = true
         bitcoinDonateQrCode = findViewById<ImageView>(R.id.bitcoinDonateQrCode)
@@ -126,6 +130,13 @@ class AboutActivity : AppCompatActivity() {
                 val toast2 = Toast.makeText(this, "URL opened\nin browser", Toast.LENGTH_SHORT)
                 toast2.show()
             } catch (ex: Exception) { }
+        }
+
+        bitcoinWalletAddress.setOnClickListener {
+            val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("Wristkey", getString(R.string.bitcoin_wallet_address))
+            clipboard.setPrimaryClip(clip)
+            Toast.makeText(applicationContext, "Wallet address copied!", Toast.LENGTH_LONG).show()
         }
 
         backButton.setOnClickListener {

@@ -24,6 +24,8 @@ import androidx.core.widget.NestedScrollView
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import dev.turingcomplete.kotlinonetimepassword.*
 import wristkey.R
 import java.text.SimpleDateFormat
@@ -44,7 +46,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var scrollView: NestedScrollView
     private lateinit var clock: TextView
     private lateinit var searchButton: ImageButton
-    private lateinit var searchBox: EditText
+    private lateinit var searchBox: TextInputLayout
+    private lateinit var searchBoxInput: TextInputEditText
     private lateinit var roundTimeLeft: ProgressBar
     private lateinit var squareTimeLeft: ProgressBar
     private lateinit var loginsRecycler: RecyclerView
@@ -52,8 +55,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var settingsButton: CardView
     private lateinit var aboutButton: CardView
 
-    private lateinit var vault: kotlin.collections.List<Utilities.MfaCode>
-    private lateinit var keys: kotlin.collections.List<String>
+    private lateinit var vault: List<Utilities.MfaCode>
+    private lateinit var keys: List<String>
 
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("WrongConstant")
@@ -106,7 +109,7 @@ class MainActivity : AppCompatActivity() {
             searchBox.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
                 if (!hasFocus) {
                     (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(v.windowToken, 0)
-                    if (searchBox.text.isEmpty()) {
+                    if (searchBoxInput.text?.isEmpty() == true) {
                         searchBox.visibility = View.GONE
                         searchButton.setImageDrawable(applicationContext.getDrawable(R.drawable.ic_baseline_search_24))
                     }
@@ -115,7 +118,7 @@ class MainActivity : AppCompatActivity() {
 
             searchBox.performClick()
 
-            searchBox.doOnTextChanged { text, start, before, count ->
+            searchBoxInput.doOnTextChanged { text, start, before, count ->
 
                 val logins = utilities.searchLogins(text.toString(), utilities.getLogins().toMutableList())
 
@@ -133,7 +136,7 @@ class MainActivity : AppCompatActivity() {
             activated = true
         } else {
             searchButton.setImageDrawable(applicationContext.getDrawable(R.drawable.ic_baseline_search_24))
-            searchBox.text.clear()
+            searchBoxInput.text?.clear()
             searchBox.clearFocus()
             searchBox.visibility = View.GONE
 
@@ -162,6 +165,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         searchBox = findViewById(R.id.searchBox)
+        searchBoxInput = findViewById(R.id.searchBoxInput)
         searchBox.visibility = View.GONE
 
         searchButton = findViewById(R.id.searchButton)
@@ -217,9 +221,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun start2faTimer () {
-
         thread {
-
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
                     val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()

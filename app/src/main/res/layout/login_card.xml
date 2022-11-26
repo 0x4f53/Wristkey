@@ -40,7 +40,7 @@
                     android:letterSpacing="0.025"
                     android:text="123 456"
                     android:textColor="#FFFFFF"
-                    android:textSize="32sp" />
+                    android:textSize="34sp" />
 
                 <TextView
                     android:id="@+id/name"

@@ -114,7 +114,7 @@
                     android:gravity="center"
                     android:text="❤️"
                     android:textColor="#FFFFFF"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -173,6 +173,7 @@
                 android:background="@drawable/owais_bitcoin_wear" />
 
             <TextView
+                android:id="@+id/bitcoinWalletAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -180,14 +181,12 @@
                 android:layout_marginHorizontal="20dp"
                 android:fontFamily="@font/sfmono"
                 android:gravity="center"
-                android:textIsSelectable="true"
-                android:text="19xgj8XoDMcHSENUDrkW3GtjQjfnbnmWTS"
+                android:text="@string/bitcoin_wallet_address"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:textStyle="normal" />
 
             <TextView
-                android:id="@+id/authenticatorDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
