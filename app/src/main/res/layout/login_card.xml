@@ -27,8 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:paddingStart="5dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/code"
@@ -38,7 +37,7 @@
                     android:autoSizeMinTextSize="12sp"
                     android:autoSizeStepGranularity="2sp"
                     android:fontFamily="@font/productsans"
-                    android:letterSpacing="0.05"
+                    android:letterSpacing="0.025"
                     android:text="123 456"
                     android:textColor="#FFFFFF"
                     android:textSize="38sp" />

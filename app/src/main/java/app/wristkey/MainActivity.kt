@@ -172,7 +172,7 @@ class MainActivity : AppCompatActivity() {
 
         if (utilities.vault.getBoolean (utilities.SETTINGS_SEARCH_ENABLED, true)) {
             scrollView = findViewById(R.id.scrollView)
-            scrollView.post { scrollView.smoothScrollTo (0, 121) }
+            scrollView.post { scrollView.smoothScrollTo (0, 148) }
             searchButton.visibility = View.VISIBLE
         } else searchButton.visibility = View.GONE
 
