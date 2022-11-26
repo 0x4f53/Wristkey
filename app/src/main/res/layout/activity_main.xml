@@ -86,7 +86,7 @@
                 android:animateLayoutChanges="false"
                 android:layoutAnimation="@anim/slide_right_controller"
                 android:nestedScrollingEnabled="false"
-                android:paddingTop="50dp"
+                android:paddingTop="75dp"
                 tools:itemCount="5"
                 tools:listitem="@layout/login_card">
 
