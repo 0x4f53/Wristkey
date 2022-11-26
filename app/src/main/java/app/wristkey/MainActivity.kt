@@ -154,6 +154,9 @@ class MainActivity : AppCompatActivity() {
         ) {
             roundTimeLeft.visibility = View.VISIBLE
             squareTimeLeft.visibility = View.GONE
+
+            loginsRecycler.setPaddingRelative (10, loginsRecycler.paddingTop, 10, loginsRecycler.paddingBottom)
+
         } else {
             roundTimeLeft.visibility = View.GONE
             squareTimeLeft.visibility = View.VISIBLE
@@ -172,7 +175,7 @@ class MainActivity : AppCompatActivity() {
 
         if (utilities.vault.getBoolean (utilities.SETTINGS_SEARCH_ENABLED, true)) {
             scrollView = findViewById(R.id.scrollView)
-            scrollView.post { scrollView.smoothScrollTo (0, 148) }
+            scrollView.post { scrollView.smoothScrollTo (0, 200) }
             searchButton.visibility = View.VISIBLE
         } else searchButton.visibility = View.GONE
 
