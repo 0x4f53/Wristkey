@@ -51,23 +51,31 @@
                     android:src="@drawable/ic_baseline_search_24"
                     android:tint="@color/lightTheme" />
 
-                <EditText
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/searchBox"
                     android:layout_width="125dp"
                     android:layout_height="wrap_content"
+                    app:boxBackgroundMode="filled"
+                    app:boxBackgroundColor="@color/colorAccent"
                     android:layout_marginHorizontal="5dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/blueAccents"
-                    android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
-                    android:ems="10"
-                    android:fontFamily="@font/productsans"
-                    android:hint="Search"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:inputType="textPersonName"
-                    android:textSize="16sp"
-                    android:visibility="visible"
-                    android:textCursorDrawable="@null"/>
+                    app:hintTextColor="@color/colorAccent"
+                    android:backgroundTint="@color/colorAccent"
+                    android:hint="@null"
+                    app:endIconMode="none" >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/searchBoxInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
+                        android:fontFamily="@font/productsans"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPhonetic"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textCursorDrawable="@null"
+                        android:backgroundTint="@color/colorAccent" />
+                </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
 
