@@ -240,6 +240,12 @@ Make sure to adhere to the [code of conduct](CODE_OF_CONDUCT.md) when interactin
 
 ## ACKNOWLEDGEMENTS
 
+#### Contributors
+
+[Trương Huỳnh Đức](https://github.com/huynhduc0)
+
+#### Libraries, apps and projects
+
 The [Aegis Authenticator](https://getaegis.app/), [andOTP](https://github.com/andOTP/andOTP), [Google Authenticator](https://github.com/google/google-authenticator) and [Bitwarden](https://bitwarden.com/) names, data export formats, logos and trademarks belong to their respective owners.
 
 Please star and support these developers for their hard work. All libraries, dependencies and tools used belong to their respective owners.

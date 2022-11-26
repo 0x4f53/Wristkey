@@ -3,7 +3,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/BoxInsetLayout"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
@@ -11,36 +11,83 @@
     tools:deviceIds="wear">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/RoundTimeLeft"
-        app:layout_constraintStart_toStartOf="parent"
+        android:fadeScrollbars="false"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:scrollbars="vertical"
-        android:fadeScrollbars="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/RoundTimeLeft"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <requestFocus/>
+
+        <requestFocus />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:fitsSystemWindows="true"
             android:focusableInTouchMode="true"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="35dp"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/searchButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/preference_wrapped_icon"
+                    android:backgroundTint="@color/colorAccent"
+                    android:src="@drawable/ic_baseline_search_24"
+                    android:tint="@color/lightTheme" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/searchBox"
+                    android:layout_width="125dp"
+                    android:layout_height="wrap_content"
+                    app:boxBackgroundMode="filled"
+                    app:boxBackgroundColor="@color/colorAccent"
+                    android:layout_marginHorizontal="5dp"
+                    app:hintTextColor="@color/colorAccent"
+                    android:backgroundTint="@color/colorAccent"
+                    android:hint="@null"
+                    app:endIconMode="none" >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/searchBoxInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
+                        android:fontFamily="@font/productsans"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPhonetic"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textCursorDrawable="@null"
+                        android:backgroundTint="@color/colorAccent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
             <androidx.recyclerview.widget.RecyclerView
-                android:paddingTop="60dp"
                 android:id="@+id/loginsRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="false"
-                android:nestedScrollingEnabled="false"
-                tools:itemCount="5"
                 android:layoutAnimation="@anim/slide_right_controller"
+                android:nestedScrollingEnabled="false"
+                android:paddingTop="75dp"
+                tools:itemCount="5"
                 tools:listitem="@layout/login_card">
 
             </androidx.recyclerview.widget.RecyclerView>
@@ -62,14 +109,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/gradient_background"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp">
 
                         <ImageView
-                            android:layout_width="40dp"
+                            android:layout_width="15dp"
                             android:layout_height="match_parent"
-                            android:paddingStart="20dp"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp"
+                            android:layout_marginStart="10dp"
                             android:src="@drawable/ic_add_white_24dp"
                             android:tint="@color/white" />
 
@@ -77,13 +124,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
+                            android:layout_marginStart="7.5dp"
                             android:fontFamily="@font/productsans"
                             android:foregroundGravity="center_vertical"
                             android:gravity="center_vertical"
-                            android:padding="15dp"
-                            android:paddingEnd="15dp"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
                             android:text="Add login"
-                            android:textSize="16dp" />
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
@@ -100,14 +148,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/gradient_background"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp">
 
                         <ImageView
-                            android:layout_width="40dp"
+                            android:layout_width="15dp"
                             android:layout_height="match_parent"
-                            android:paddingStart="20dp"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp"
+                            android:layout_marginStart="10dp"
                             android:src="@drawable/ic_outline_settings_24"
                             android:tint="@color/white" />
 
@@ -115,13 +163,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
+                            android:layout_marginStart="7.5dp"
                             android:fontFamily="@font/productsans"
                             android:foregroundGravity="center_vertical"
                             android:gravity="center_vertical"
-                            android:padding="15dp"
-                            android:paddingEnd="15dp"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
                             android:text="Settings"
-                            android:textSize="16dp" />
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
@@ -138,14 +187,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/gradient_background"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp">
 
                         <ImageView
-                            android:layout_width="40dp"
+                            android:layout_width="15dp"
                             android:layout_height="match_parent"
-                            android:paddingStart="20dp"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp"
+                            android:layout_marginStart="10dp"
                             android:src="@drawable/ic_outline_info_24"
                             android:tint="@color/white" />
 
@@ -153,13 +202,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
+                            android:layout_marginStart="7.5dp"
                             android:fontFamily="@font/productsans"
                             android:foregroundGravity="center_vertical"
                             android:gravity="center_vertical"
-                            android:padding="15dp"
-                            android:paddingEnd="15dp"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
                             android:text="About"
-                            android:textSize="16sp" />
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
@@ -211,7 +261,7 @@
         android:id="@+id/clockBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="11dp"
         android:backgroundTint="@color/black"
         app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -232,10 +282,10 @@
                 android:fontFamily="@font/productsans"
                 android:foregroundGravity="center"
                 android:gravity="center"
-                android:letterSpacing="0.085"
-                android:paddingHorizontal="5dp"
+                android:letterSpacing="0.05"
+                android:paddingHorizontal="2.5dp"
                 android:text="12:00"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
         </LinearLayout>
 

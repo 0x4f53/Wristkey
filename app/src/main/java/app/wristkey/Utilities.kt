@@ -25,7 +25,6 @@ import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 @RequiresApi(Build.VERSION_CODES.M)
 class Utilities (context: Context) {
 
@@ -54,6 +53,7 @@ class Utilities (context: Context) {
     val SETTINGS_BACKGROUND_COLOR = "SETTINGS_BACKGROUND_COLOR"
     val SETTINGS_ACCENT_COLOR = "SETTINGS_ACCENT_COLOR"
 
+    val SETTINGS_SEARCH_ENABLED = "SETTINGS_SEARCH_ENABLED"
     val SETTINGS_CLOCK_ENABLED = "SETTINGS_CLOCK_ENABLED"
     val SETTINGS_24H_CLOCK_ENABLED = "SETTINGS_24H_CLOCK_ENABLED"
     val SETTINGS_HAPTICS_ENABLED = "SETTINGS_HAPTICS_ENABLED"
@@ -290,9 +290,9 @@ class Utilities (context: Context) {
 
     }
 
-    fun andOtpToWristkey (jsonArray: JSONArray): MutableList<Utilities.MfaCode> {
+    fun andOtpToWristkey (jsonArray: JSONArray): MutableList<MfaCode> {
 
-        val logins = mutableListOf<Utilities.MfaCode>()
+        val logins = mutableListOf<MfaCode>()
 
         for (itemIndex in 0 until jsonArray.length()) {
 
@@ -308,7 +308,7 @@ class Utilities (context: Context) {
             val label = try { JSONObject(login)["label"].toString() } catch (_: JSONException) { "" }
 
             logins.add (
-                Utilities.MfaCode(
+                MfaCode(
                     type = "otpauth",
                     mode = type,
                     issuer = issuer,
@@ -329,9 +329,31 @@ class Utilities (context: Context) {
 
     }
 
-    fun aegisToWristkey (unencryptedAegisJsonString: String): MutableList<Utilities.MfaCode> {
+    fun searchLogins (searchTerms: String, logins: MutableList<MfaCode>): MutableList<MfaCode> {
+        val results = mutableListOf<MfaCode>()
+        for (_login in logins)
+            if (_login
+                    .toString()
+                    .lowercase()
+                    .replace("mfacode", "")
+                    .replace("issuer", "")
+                    .replace("secret", "")
+                    .replace("lock", "")
+                    .replace("counter", "")
+                    .replace("period", "")
+                    .replace("digits", "")
+                    .replace("mode", "")
+                    .replace("algorithm", "")
+                    .replace("label", "")
+                    .replace(Regex("""[^a-zA-Z\\d]"""), "")
+                    .contains(searchTerms.lowercase())
+            ) results.add(_login)
+        return results
+    }
 
-        val logins = mutableListOf<Utilities.MfaCode>()
+    fun aegisToWristkey (unencryptedAegisJsonString: String): MutableList<MfaCode> {
+
+        val logins = mutableListOf<MfaCode>()
 
         val db = JSONObject(unencryptedAegisJsonString)["db"].toString()
         val entries = JSONObject(db)["entries"].toString()
@@ -393,8 +415,7 @@ class Utilities (context: Context) {
                 if (url.substringBefore("://").contains("migration")) "Google Authenticator Backup"
                 else "OTP"
             val mode: String =
-                if (url.substringAfter("://").substringBefore("/").contains("totp"))
-                    "totp"
+                if (url.substringAfter("://").substringBefore("/").contains("totp")) "totp"
                 else "hotp"
             val issuer: String = url.substringAfterLast("otp/").substringBefore(":")
             val account: String = url.substringAfterLast(":").substringBefore("?")

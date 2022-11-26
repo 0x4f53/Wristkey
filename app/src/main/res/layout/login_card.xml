@@ -17,9 +17,9 @@
             android:layout_height="wrap_content"
             android:background="@drawable/gradient_background"
             android:orientation="horizontal"
-            android:paddingStart="15dp"
-            android:paddingTop="5dp"
-            android:paddingEnd="5dp"
+            android:paddingStart="7.5dp"
+            android:paddingTop="2.5dp"
+            android:paddingEnd="2.5dp"
             android:paddingBottom="5dp">
 
             <LinearLayout
@@ -28,32 +28,6 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="marquee"
-                    android:fontFamily="@font/productsans"
-                    android:maxLines="3"
-                    android:singleLine="true"
-                    android:text="Account / Service"
-                    android:textAlignment="textStart"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="marquee"
-                    android:fontFamily="@font/productsans"
-                    android:maxLines="3"
-                    android:singleLine="true"
-                    android:text="Label"
-                    android:textAlignment="textStart"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/code"
@@ -66,7 +40,37 @@
                     android:letterSpacing="0.025"
                     android:text="123 456"
                     android:textColor="#FFFFFF"
-                    android:textSize="32sp" />
+                    android:textSize="38sp" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-5dp"
+                    android:ellipsize="marquee"
+                    android:fontFamily="@font/productsans"
+                    android:maxLines="3"
+                    android:paddingEnd="5dp"
+                    android:singleLine="true"
+                    android:text="Account / Service"
+                    android:textAlignment="textStart"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:fontFamily="@font/productsans"
+                    android:maxLines="3"
+                    android:paddingEnd="5dp"
+                    android:singleLine="true"
+                    android:text="Label"
+                    android:textAlignment="textStart"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
+
             </LinearLayout>
 
             <LinearLayout

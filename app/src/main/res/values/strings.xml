@@ -33,6 +33,8 @@
     <string name="title_activity_otpauth_import">OtpAuthImport</string>
     <string name="title_activity_aegis_jsonimport">AegisJSONImport</string>
     <string name="title_activity_andotp_import">AndOtpImport</string>
+    <string name="contributors">Trương Huỳnh Đức (huynhduc0)</string>
+    <string name="bitcoin_wallet_address">19xgj8XoDMcHSENUDrkW3GtjQjfnbnmWTS</string>
 
     <string name="message_keyguard">Unlock app</string>
 

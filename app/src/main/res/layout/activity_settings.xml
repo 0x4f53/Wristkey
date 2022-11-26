@@ -24,8 +24,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:orientation="vertical"
             android:paddingTop="55dp"
             android:paddingBottom="75dp">
@@ -45,39 +45,57 @@
                 android:textStyle="normal" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/themeButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:visibility="gone"
                 app:cardCornerRadius="25dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_outline_palette_24"
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0.0075"
+                        android:padding="5dp"
+                        android:src="@drawable/ic_baseline_search_24"
                         android:tint="@color/white" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Theme"
-                        android:textSize="16dp" />
+                        android:paddingStart="5dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="7.5dp"
+                        android:paddingBottom="10dp"
+                        android:text="Show search button"
+                        android:textSize="14dp" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/searchButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="0.0075" />
 
                 </LinearLayout>
 
@@ -89,40 +107,52 @@
                 android:layout_marginBottom="5dp"
                 app:cardCornerRadius="25dp">
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0.0075"
+                        android:padding="5dp"
                         android:src="@drawable/ic_outline_access_time_24"
                         android:tint="@color/white" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="7.5dp"
+                        android:paddingBottom="10dp"
                         android:text="Show clock"
-                        android:textSize="16dp" />
+                        android:textSize="14dp" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/clockButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="0.025" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="0.0075" />
 
                 </LinearLayout>
 
@@ -134,40 +164,52 @@
                 android:layout_marginBottom="5dp"
                 app:cardCornerRadius="25dp">
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0.0075"
+                        android:padding="5dp"
                         android:src="@drawable/ic_baseline_more_time_24"
                         android:tint="@color/white" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="24 hour clock"
-                        android:textSize="16dp" />
+                        android:paddingStart="5dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="7.5dp"
+                        android:paddingBottom="10dp"
+                        android:text="24-hour clock"
+                        android:textSize="14dp" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/twentyFourHourClockButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="0.025" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="0.0075" />
 
                 </LinearLayout>
 
@@ -179,40 +221,52 @@
                 android:layout_marginBottom="5dp"
                 app:cardCornerRadius="25dp">
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0.0075"
+                        android:padding="5dp"
                         android:src="@drawable/ic_baseline_vibration_24"
                         android:tint="@color/white" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="7.5dp"
+                        android:paddingBottom="10dp"
                         android:text="Haptics"
-                        android:textSize="16dp" />
+                        android:textSize="14dp" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/vibrateButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="0.025" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="0.0075" />
 
                 </LinearLayout>
 
@@ -224,40 +278,52 @@
                 android:layout_marginBottom="5dp"
                 app:cardCornerRadius="25dp">
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0.0075"
+                        android:padding="5dp"
                         android:src="@drawable/ic_outline_volume_up_24"
                         android:tint="@color/white" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="7.5dp"
+                        android:paddingBottom="10dp"
                         android:text="Beep"
-                        android:textSize="16dp" />
+                        android:textSize="14dp" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/beepButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="0.025" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="0.0075" />
 
                 </LinearLayout>
 
@@ -269,40 +335,52 @@
                 android:layout_marginBottom="5dp"
                 app:cardCornerRadius="25dp">
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0.0075"
+                        android:padding="5dp"
                         android:src="@drawable/ic_outline_lock_24"
                         android:tint="@color/white" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="7.5dp"
+                        android:paddingBottom="10dp"
                         android:text="Lock screen"
-                        android:textSize="16dp" />
+                        android:textSize="14dp" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/lockButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="0.025" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="0.0075" />
 
                 </LinearLayout>
 
@@ -313,118 +391,153 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 app:cardCornerRadius="25dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0.0075"
+                        android:padding="5dp"
                         android:src="@drawable/ic_baseline_watch_24"
                         android:tint="@color/white" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="7.5dp"
+                        android:paddingBottom="10dp"
                         android:text="Round screen"
-                        android:textSize="16dp" />
+                        android:textSize="14dp" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/roundButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="0.025" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="0.0075" />
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
-
             <androidx.cardview.widget.CardView
-                android:id="@+id/exportButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
+                android:id="@+id/exportButton"
                 app:cardCornerRadius="25dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0.075"
+                        android:padding="5dp"
                         android:src="@drawable/ic_outline_send_24"
                         android:tint="@color/white" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Export vault"
-                        android:textSize="16dp" />
+                        android:paddingStart="5dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="7.5dp"
+                        android:paddingBottom="10dp"
+                        android:text="Export data"
+                        android:textSize="14dp" />
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/backButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
+                android:id="@+id/backButton"
                 app:cardCornerRadius="25dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="25dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="7.5dp"
+                        android:layout_weight="0.075"
+                        android:padding="5dp"
                         android:src="@drawable/ic_baseline_arrow_back_ios_24"
                         android:tint="@color/white" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="7.5dp"
+                        android:paddingBottom="10dp"
                         android:text="Back"
-                        android:textSize="16dp" />
+                        android:textSize="14dp" />
 
                 </LinearLayout>
 
@@ -435,38 +548,50 @@
                 android:layout_height="75dp" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/deleteButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
+                android:id="@+id/deleteButton"
                 app:cardCornerRadius="25dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_outline_delete_24"
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0.075"
+                        android:padding="5dp"
+                        android:src="@drawable/ic_outline_delete_forever_24"
                         android:tint="@color/white" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="7.5dp"
+                        android:paddingBottom="10dp"
                         android:text="Delete everything"
-                        android:textSize="16dp" />
+                        android:textSize="14dp" />
 
                 </LinearLayout>
 
