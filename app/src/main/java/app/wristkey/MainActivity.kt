@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.media.audiofx.HapticGenerator
 import android.os.Build
@@ -11,15 +12,20 @@ import android.os.Bundle
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
-import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.widget.NestedScrollView
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import dev.turingcomplete.kotlinonetimepassword.*
 import wristkey.R
 import java.text.SimpleDateFormat
@@ -37,7 +43,11 @@ class MainActivity : AppCompatActivity() {
     lateinit var mfaCodesTimer: Timer
     lateinit var utilities: Utilities
 
+    private lateinit var scrollView: NestedScrollView
     private lateinit var clock: TextView
+    private lateinit var searchButton: ImageButton
+    private lateinit var searchBox: TextInputLayout
+    private lateinit var searchBoxInput: TextInputEditText
     private lateinit var roundTimeLeft: ProgressBar
     private lateinit var squareTimeLeft: ProgressBar
     private lateinit var loginsRecycler: RecyclerView
@@ -45,8 +55,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var settingsButton: CardView
     private lateinit var aboutButton: CardView
 
-    private lateinit var vault: kotlin.collections.List<Utilities.MfaCode>
-    private lateinit var keys: kotlin.collections.List<String>
+    private lateinit var vault: List<Utilities.MfaCode>
+    private lateinit var keys: List<String>
 
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("WrongConstant")
@@ -55,6 +65,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         utilities = Utilities (applicationContext)
+
+        vault = utilities.getVault()
+        keys = utilities.vault.all.keys.toList()
+
         mfaCodesTimer = Timer()
 
         lockScreen()
@@ -81,6 +95,55 @@ class MainActivity : AppCompatActivity() {
         mfaCodesTimer = Timer()
     }
 
+    var activated = false
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun searchBox() {
+        if (!activated) {
+            searchBox.visibility = View.VISIBLE
+
+            searchButton.setImageDrawable(applicationContext.getDrawable(R.drawable.ic_cancel))
+            searchBox.requestFocus()
+
+            (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+
+            searchBox.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
+                if (!hasFocus) {
+                    (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(v.windowToken, 0)
+                    if (searchBoxInput.text?.isEmpty() == true) {
+                        searchBox.visibility = View.GONE
+                        searchButton.setImageDrawable(applicationContext.getDrawable(R.drawable.ic_baseline_search_24))
+                    }
+                }
+            }
+
+            searchBox.performClick()
+
+            searchBoxInput.doOnTextChanged { text, start, before, count ->
+
+                val logins = utilities.searchLogins(text.toString(), utilities.getLogins().toMutableList())
+
+                val adapter = LoginsAdapter(logins)
+
+                loginsRecycler.layoutManager = LinearLayoutManager(this@MainActivity)
+                loginsRecycler.adapter = adapter
+                loginsRecycler.invalidate()
+                loginsRecycler.refreshDrawableState()
+                loginsRecycler.scheduleLayoutAnimation()
+                loginsRecycler.setItemViewCacheSize(vault.size)
+
+            }
+
+            activated = true
+        } else {
+            searchButton.setImageDrawable(applicationContext.getDrawable(R.drawable.ic_baseline_search_24))
+            searchBoxInput.text?.clear()
+            searchBox.clearFocus()
+            searchBox.visibility = View.GONE
+
+            activated = false
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setShape () {
         if (
@@ -91,6 +154,9 @@ class MainActivity : AppCompatActivity() {
         ) {
             roundTimeLeft.visibility = View.VISIBLE
             squareTimeLeft.visibility = View.GONE
+
+            loginsRecycler.setPaddingRelative (10, loginsRecycler.paddingTop, 10, loginsRecycler.paddingBottom)
+
         } else {
             roundTimeLeft.visibility = View.GONE
             squareTimeLeft.visibility = View.VISIBLE
@@ -101,8 +167,17 @@ class MainActivity : AppCompatActivity() {
     private fun initializeUI () {
         setContentView(R.layout.activity_main)
 
-        vault = utilities.getVault()
-        keys = utilities.vault.all.keys.toList()
+        searchBox = findViewById(R.id.searchBox)
+        searchBoxInput = findViewById(R.id.searchBoxInput)
+        searchBox.visibility = View.GONE
+
+        searchButton = findViewById(R.id.searchButton)
+
+        if (utilities.vault.getBoolean (utilities.SETTINGS_SEARCH_ENABLED, true)) {
+            scrollView = findViewById(R.id.scrollView)
+            scrollView.post { scrollView.smoothScrollTo (0, 200) }
+            searchButton.visibility = View.VISIBLE
+        } else searchButton.visibility = View.GONE
 
         clock = findViewById(R.id.clock)
 
@@ -126,9 +201,10 @@ class MainActivity : AppCompatActivity() {
         loginsRecycler.scheduleLayoutAnimation()
         loginsRecycler.setItemViewCacheSize(vault.size)
 
-        addAccountButton.animation = AnimationUtils.loadAnimation(applicationContext, R.anim.slide_right)
-        settingsButton.animation = AnimationUtils.loadAnimation(applicationContext, R.anim.slide_right)
-        aboutButton.animation = AnimationUtils.loadAnimation(applicationContext, R.anim.slide_right)
+        searchButton.setOnClickListener {
+            searchBox()
+            searchButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        }
 
         addAccountButton.setOnClickListener {
             startActivity(Intent(applicationContext, AddActivity::class.java))
@@ -148,9 +224,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun start2faTimer () {
-
         thread {
-
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
                     val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
@@ -345,7 +419,7 @@ class MainActivity : AppCompatActivity() {
                                     }
                                 }
 
-                                otp = TimeBasedOneTimePasswordGenerator(login.secret!!.toByteArray(), config).generate()
+                                otp = TimeBasedOneTimePasswordGenerator(login.secret.toByteArray(), config).generate()
                                 if (login.algorithm == utilities.ALGO_SHA1 && login.period == 30 && login.digits == 6)
                                     otp = GoogleAuthenticator(login.secret.toByteArray()).generate()
                             }
