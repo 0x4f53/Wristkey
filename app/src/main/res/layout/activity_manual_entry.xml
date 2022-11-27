@@ -79,7 +79,7 @@
                 app:boxBackgroundColor="@color/colorAccent"
                 app:hintTextColor="@color/colorAccent"
                 android:backgroundTint="@color/colorAccent"
-                android:hint="Issuer"
+                android:hint="Secret"
                 app:endIconMode="clear_text" >
 
                 <com.google.android.material.textfield.TextInputEditText
