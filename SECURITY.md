@@ -29,8 +29,8 @@ Below are supported Wristkey versions with active support from the developer.
 
 ### Reporting a Vulnerability
 
-We take all security bugs in Wristkey seriously.
-Thank you for improving the security of Wristkey. We appreciate your efforts and
+Security bugs are no laughing matter.
+Thank you for improving the security of Wristkey. I appreciate your efforts and
 responsible disclosure and will make every effort to acknowledge your
 contributions.
 
