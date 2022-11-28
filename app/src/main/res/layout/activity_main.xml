@@ -88,6 +88,7 @@
                 android:nestedScrollingEnabled="false"
                 android:paddingTop="75dp"
                 tools:itemCount="5"
+                android:orientation="vertical"
                 tools:listitem="@layout/login_card">
 
             </androidx.recyclerview.widget.RecyclerView>
@@ -285,7 +286,7 @@
                 android:letterSpacing="0.05"
                 android:paddingHorizontal="2.5dp"
                 android:text="12:00"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
 
         </LinearLayout>
 
