@@ -24,6 +24,8 @@ import java.io.InputStreamReader
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
+
 
 @RequiresApi(Build.VERSION_CODES.M)
 class Utilities (context: Context) {
@@ -622,40 +624,29 @@ open class OnSwipeTouchListener(c: Context?) : View.OnTouchListener {
             try {
                 val diffY = e2.y - e1.y
                 val diffX = e2.x - e1.x
-                if (Math.abs(diffX) > Math.abs(diffY)) {
-                    if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                        if (diffX > 0) {
-                            onSwipeRight()
-                        } else {
-                            onSwipeLeft()
-                        }
+                if (abs(diffX) > abs(diffY)) {
+                    if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (diffX > 0) onSwipeRight() else onSwipeLeft()
                     }
                 } else {
-                    if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                        if (diffY > 0) {
-                            onSwipeDown()
-                        } else {
-                            onSwipeUp()
-                        }
+                    if (abs(diffY) > SWIPE_THRESHOLD && abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (diffY > 0) onSwipeDown() else onSwipeUp()
                     }
                 }
-            } catch (exception: java.lang.Exception) {
-                exception.printStackTrace()
-            }
+            } catch (exception: java.lang.Exception) { exception.printStackTrace() }
             return result
         }
 
     }
 
-    open fun onSwipeRight() {}
-    open fun onSwipeLeft() {}
-    open fun onSwipeUp() {}
-    open fun onSwipeDown() {}
-    open fun onClick() {}
-    fun onDoubleClick() {}
-    open fun onLongClick() {}
+    open fun onSwipeRight() { }
+    open fun onSwipeLeft() { }
+    open fun onSwipeUp() { }
+    open fun onSwipeDown() { }
+    open fun onClick() { }
+    fun onDoubleClick() { }
+    open fun onLongClick() { }
 
-    init {
-        gestureDetector = GestureDetector(c, GestureListener())
-    }
+    init { gestureDetector = GestureDetector(c, GestureListener()) }
+
 }

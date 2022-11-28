@@ -9,11 +9,8 @@ import android.content.Intent
 import android.media.audiofx.HapticGenerator
 import android.os.Build
 import android.os.Bundle
-import android.view.HapticFeedbackConstants
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.View.OnFocusChangeListener
-import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -23,7 +20,9 @@ import androidx.cardview.widget.CardView
 import androidx.core.widget.NestedScrollView
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import dev.turingcomplete.kotlinonetimepassword.*
@@ -146,16 +145,9 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setShape () {
-        if (
-            utilities.vault.getBoolean (
-                utilities.CONFIG_SCREEN_ROUND,
-                resources.configuration.isScreenRound
-            )
-        ) {
+        if (utilities.vault.getBoolean (utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)) {
             roundTimeLeft.visibility = View.VISIBLE
             squareTimeLeft.visibility = View.GONE
-
-            loginsRecycler.setPaddingRelative (10, loginsRecycler.paddingTop, 10, loginsRecycler.paddingBottom)
 
         } else {
             roundTimeLeft.visibility = View.GONE
@@ -175,7 +167,7 @@ class MainActivity : AppCompatActivity() {
 
         if (utilities.vault.getBoolean (utilities.SETTINGS_SEARCH_ENABLED, true)) {
             scrollView = findViewById(R.id.scrollView)
-            scrollView.post { scrollView.smoothScrollTo (0, 200) }
+            scrollView.post { scrollView.smoothScrollTo (0, 175) }
             searchButton.visibility = View.VISIBLE
         } else searchButton.visibility = View.GONE
 
@@ -194,7 +186,11 @@ class MainActivity : AppCompatActivity() {
 
         val adapter = LoginsAdapter(logins)
 
-        loginsRecycler.layoutManager = LinearLayoutManager(this@MainActivity)
+        val layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+        val snapHelper: SnapHelper = PagerSnapHelper()
+        loginsRecycler.layoutManager = layoutManager
+        snapHelper.attachToRecyclerView(loginsRecycler)
+
         loginsRecycler.adapter = adapter
         loginsRecycler.invalidate()
         loginsRecycler.refreshDrawableState()
@@ -321,6 +317,7 @@ class MainActivity : AppCompatActivity() {
             return ViewHolder(loginCard)
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         @RequiresApi(Build.VERSION_CODES.M)
         override fun onBindViewHolder(loginCard: ViewHolder, position: Int) {  // binds the list items to a view
 
@@ -543,7 +540,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             loginCard.loginCard.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
-
                 override fun onLongClick() {
                     val intent = Intent(applicationContext, ManualEntryActivity::class.java)
                     intent.putExtra(utilities.INTENT_UUID, utilities.getUuid(login))
@@ -551,7 +547,6 @@ class MainActivity : AppCompatActivity() {
                     loginCard.loginCard.performHapticFeedback(HapticGenerator.SUCCESS)
                     super.onSwipeRight()
                 }
-
             })
 
         }
@@ -574,6 +569,22 @@ class MainActivity : AppCompatActivity() {
             val decrementCounter: ImageView = itemView.findViewById(R.id.decrement_counter)
 
             init {
+
+                if (utilities.vault.getBoolean (utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)) {
+                    val centeringParameters = LinearLayout.LayoutParams (
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        weight = 1.0f
+                        gravity = Gravity.CENTER_HORIZONTAL
+                    }
+
+                    code.layoutParams = centeringParameters
+                    name.layoutParams = centeringParameters
+                    label.layoutParams = centeringParameters
+
+                }
+
                 name.isSelected = true
                 label.isSelected = true
 
