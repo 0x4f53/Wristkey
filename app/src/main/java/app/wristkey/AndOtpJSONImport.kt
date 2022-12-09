@@ -58,7 +58,7 @@ class AndOtpJSONImport : Activity() {
         importLabel = findViewById (R.id.label)
         description = findViewById (R.id.description)
 
-        description.text = getString (R.string.wristkey_import_blurb) + " " + applicationContext.filesDir.toString() + "\n\n" + getString (R.string.use_adb_blurb)
+        description.text = getString (R.string.andotp_import_blurb) + " " + applicationContext.filesDir.toString() + "\n\n" + getString (R.string.use_adb_blurb)
 
         backButton.setOnClickListener {
             backButton.performHapticFeedback(HapticGenerator.SUCCESS)
