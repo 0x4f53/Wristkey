@@ -15,8 +15,8 @@ android {
         applicationId 'app.wristkey'
         minSdk 23  // Wear OS 2.0 / Android 7.1.1
         targetSdkVersion 34  // Play Store requires API29+
-        versionCode 2
-        versionName "2.2"
+        versionCode 3
+        versionName "3.0"
 
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
