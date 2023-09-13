@@ -29,17 +29,17 @@ class QRCodeActivity : AppCompatActivity() {
 
     lateinit var utilities: Utilities
 
-    lateinit var mfaCode: Utilities.MfaCode
+    lateinit var data: String
+    lateinit var metadata: String
 
     private lateinit var roundTimeLeft: ProgressBar
     private lateinit var squareTimeLeft: ProgressBar
 
     lateinit var qrCodeRoot: ConstraintLayout
     lateinit var qrCode: ImageView
-    lateinit var qrCodeIssuer: TextView
-    lateinit var qrCodeAccount: TextView
+    lateinit var qrCodeSubtitle: TextView
 
-    lateinit var doneButton: ImageButton
+    lateinit var backButton: Button
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,14 +48,13 @@ class QRCodeActivity : AppCompatActivity() {
 
         utilities = Utilities(applicationContext)
         mfaCodesTimer = Timer()
-        
-        mfaCode = utilities.getLogin (
-            intent.getStringExtra(utilities.INTENT_UUID)!!
-        )!!
+
+        data = intent.getStringExtra(utilities.INTENT_QR_DATA)!!
+        metadata = intent.getStringExtra(utilities.INTENT_QR_METADATA)!!
 
         initializeUI()
         setShape()
-        start2faTimer()
+        startTimer()
 
     }
 
@@ -97,29 +96,34 @@ class QRCodeActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun start2faTimer () {
+    private fun startTimer () {
         try {
             thread {
 
                 // round timer
                 var timerDuration = utilities.QR_TIMER_DURATION
+                roundTimeLeft.max = timerDuration
+                squareTimeLeft.max = timerDuration
                 mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                     override fun run() {
+                        try {
+                            roundTimeLeft.progress = timerDuration
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) roundTimeLeft.setProgress(timerDuration, true)
+                            squareTimeLeft.progress = timerDuration
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) squareTimeLeft.setProgress(timerDuration, true)
+                        } catch (_: Exception) {
+                            runOnUiThread {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) roundTimeLeft.setProgress(timerDuration, true)
+                                squareTimeLeft.progress = timerDuration
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) squareTimeLeft.setProgress(timerDuration, true)
+                            }
+                        }
                         if (timerDuration == 0) {
                             val resultIntent = Intent()
                             setResult(Activity.RESULT_OK, resultIntent)
                             finish()
                         }
                         else timerDuration -= 1
-                        try {
-                            roundTimeLeft.progress = timerDuration
-                            squareTimeLeft.progress = timerDuration
-                        } catch (_: Exception) {
-                            runOnUiThread {
-                                roundTimeLeft.progress = timerDuration
-                                squareTimeLeft.progress = timerDuration
-                            }
-                        }
                     }
                 }, 0, 1000) // 1000 milliseconds = 1 second
 
@@ -131,22 +135,15 @@ class QRCodeActivity : AppCompatActivity() {
     private fun initializeUI () {
         qrCodeRoot = findViewById(R.id.qrCodeRoot)
         qrCode = findViewById(R.id.qrCode)
-        qrCodeIssuer = findViewById(R.id.qrCodeIssuer)
-        qrCodeAccount = findViewById(R.id.qrCodeAccount)
+        qrCodeSubtitle = findViewById(R.id.qrCodeSubtitle)
 
         roundTimeLeft = findViewById(R.id.RoundTimeLeft)
         squareTimeLeft = findViewById(R.id.SquareTimeLeftTop)
 
-        doneButton = findViewById(R.id.doneButton)
+        backButton = findViewById(R.id.backButton)
 
-        qrCodeIssuer.text = mfaCode.issuer
-        qrCodeAccount.text = mfaCode.account
-
-        val qrData = utilities.encodeOTPAuthURL(mfaCode)
-
-        try {
-            qrCode.setImageDrawable(BitmapDrawable(generateQrCode(qrData!!)))
-        } catch (_: WriterException) { }
+        qrCodeSubtitle.text = metadata
+        try { qrCode.setImageDrawable(BitmapDrawable(generateQrCode(data))) } catch (_: WriterException) { }
 
         var state = 0
         qrCode.setOnClickListener {
@@ -161,15 +158,14 @@ class QRCodeActivity : AppCompatActivity() {
                 1 -> {
                     state = 0
                     qrCode.imageTintList = ColorStateList.valueOf(Color.WHITE)
-                    Toast.makeText(this, "Normal", Toast.LENGTH_SHORT).show()
                 }
 
             }
 
         }
 
-        doneButton.setOnClickListener {
-            doneButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        backButton.setOnClickListener {
+            backButton.performHapticFeedback(HapticGenerator.SUCCESS)
             finish()
         }
 

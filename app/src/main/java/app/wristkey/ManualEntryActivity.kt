@@ -1,4 +1,5 @@
 package app.wristkey
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -62,8 +63,8 @@ class ManualEntryActivity : AppCompatActivity() {
 
         initializeUI()
 
-        if (intent.hasExtra(utilities.INTENT_UUID)) {
-            uuid = intent.getStringExtra(utilities.INTENT_UUID)!!
+        if (intent.hasExtra(utilities.INTENT_QR_DATA)) {
+            uuid = intent.getStringExtra(utilities.INTENT_QR_DATA)!!
             loadLogin ()
         }
 
@@ -232,7 +233,7 @@ class ManualEntryActivity : AppCompatActivity() {
 
         showQrCodeButton.setOnClickListener {
             val intent = Intent(applicationContext, QRCodeActivity::class.java)
-            intent.putExtra(utilities.INTENT_UUID, uuid)
+            intent.putExtra(utilities.INTENT_QR_DATA, uuid)
             startActivity(intent)
             deleteButton.performHapticFeedback(HapticFeedbackConstants.REJECT)
         }
@@ -240,10 +241,13 @@ class ManualEntryActivity : AppCompatActivity() {
         deleteButton.visibility = View.VISIBLE
 
         deleteButton.setOnClickListener {
-            val intent = Intent(applicationContext, DeleteActivity::class.java)
-            intent.putExtra(utilities.INTENT_UUID, uuid)
-            startActivity(intent)
-            deleteButton.performHapticFeedback(HapticFeedbackConstants.REJECT)
+            AlertDialog.Builder(this@ManualEntryActivity)
+                .setTitle("Delete")
+                .setMessage("Would you like to delete this item?")
+                .setPositiveButton("Yes, delete", null)
+                .setPositiveButton("Back", null)
+                .setCancelable(false)
+                .create().show()
         }
 
     }

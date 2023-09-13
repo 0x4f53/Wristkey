@@ -4,6 +4,7 @@ import android.media.audiofx.HapticGenerator
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -19,15 +20,15 @@ class AddActivity : AppCompatActivity() {
 
     private lateinit var clock: TextView
 
-    private lateinit var manualEntry: CardView
+    private lateinit var manualEntry: Button
     private lateinit var aegisImportButton: CardView
     private lateinit var googleAuthenticatorImport: CardView
     private lateinit var bitwardenImport: CardView
     private lateinit var andOtpImport: CardView
     private lateinit var backupFileButton: CardView
-    private lateinit var scanQRCode: CardView
+    private lateinit var scanQRCode: Button
 
-    private lateinit var backButton: CardView
+    private lateinit var backButton: Button
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,32 +42,18 @@ class AddActivity : AppCompatActivity() {
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun startClock () {
-
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) {
-            findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
-        }
-
+        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
                     val currentHour24 = SimpleDateFormat("HH", Locale.getDefault()).format(Date())
                     val currentHour = SimpleDateFormat("hh", Locale.getDefault()).format(Date())
                     val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
-                    val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-                    val currentAmPm = SimpleDateFormat("a", Locale.getDefault()).format(Date())
                     runOnUiThread {
                         try {
-
-                            if (utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, false)) {
-                                clock.text = "$currentHour24:$currentMinute"
-                                if ((currentSecond % 2) == 0) clock.text = "$currentHour24 $currentMinute"
-                            } else {
-                                clock.text = "$currentHour:$currentMinute"
-                                if ((currentSecond % 2) == 0) clock.text = "$currentHour $currentMinute"
-                            }
-
+                            clock.text = "$currentHour:$currentMinute"
+                            if (utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, false)) clock.text = "$currentHour24:$currentMinute"
                         } catch (_: Exception) { }
                     }
                 }
@@ -100,7 +87,7 @@ class AddActivity : AppCompatActivity() {
         andOtpImport = findViewById (R.id.andOtpImportButton)
         bitwardenImport = findViewById (R.id.bitwardenImport)
         backupFileButton = findViewById (R.id.backupFileButton)
-        scanQRCode = findViewById (R.id.scanQRCode)
+        scanQRCode = findViewById (R.id.scanQrCode)
 
         backButton = findViewById (R.id.backButton)
 

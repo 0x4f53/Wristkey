@@ -47,7 +47,8 @@ class Utilities (context: Context) {
     val QR_TIMER_DURATION = 5
 
     val DEFAULT_TYPE = "otpauth"
-    val INTENT_UUID = "INTENT_UUID"
+    val INTENT_QR_DATA = "INTENT_QR_DATA"
+    val INTENT_QR_METADATA = "INTENT_QR_METADATA"
     val INTENT_WIPE = "INTENT_WIPE"
     val INTENT_DELETE = "INTENT_DELETE"
     val INTENT_DELETE_MODE = "INTENT_DELETE_MODE"
@@ -619,10 +620,15 @@ open class OnSwipeTouchListener(c: Context?) : View.OnTouchListener {
         }
 
         // Determines the fling velocity and then fires the appropriate swipe event accordingly
-        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+        override fun onFling(
+            e1: MotionEvent?,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
             val result = false
             try {
-                val diffY = e2.y - e1.y
+                val diffY = e2.y - e1!!.y
                 val diffX = e2.x - e1.x
                 if (abs(diffX) > abs(diffY)) {
                     if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {

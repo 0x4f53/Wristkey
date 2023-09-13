@@ -17,6 +17,7 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,15 +45,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var scrollView: NestedScrollView
     private lateinit var clock: TextView
-    private lateinit var searchButton: ImageButton
+    private lateinit var searchButton: CardView
     private lateinit var searchBox: TextInputLayout
     private lateinit var searchBoxInput: TextInputEditText
     private lateinit var roundTimeLeft: ProgressBar
-    private lateinit var squareTimeLeft: ProgressBar
     private lateinit var loginsRecycler: RecyclerView
-    private lateinit var addAccountButton: CardView
-    private lateinit var settingsButton: CardView
-    private lateinit var aboutButton: CardView
+    private lateinit var addAccountButton: Button
+    private lateinit var settingsButton: Button
 
     private lateinit var vault: List<Utilities.MfaCode>
     private lateinit var keys: List<String>
@@ -100,7 +99,6 @@ class MainActivity : AppCompatActivity() {
         if (!activated) {
             searchBox.visibility = View.VISIBLE
 
-            searchButton.setImageDrawable(applicationContext.getDrawable(R.drawable.ic_cancel))
             searchBox.requestFocus()
 
             (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
@@ -110,7 +108,6 @@ class MainActivity : AppCompatActivity() {
                     (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(v.windowToken, 0)
                     if (searchBoxInput.text?.isEmpty() == true) {
                         searchBox.visibility = View.GONE
-                        searchButton.setImageDrawable(applicationContext.getDrawable(R.drawable.ic_baseline_search_24))
                     }
                 }
             }
@@ -134,7 +131,6 @@ class MainActivity : AppCompatActivity() {
 
             activated = true
         } else {
-            searchButton.setImageDrawable(applicationContext.getDrawable(R.drawable.ic_baseline_search_24))
             searchBoxInput.text?.clear()
             searchBox.clearFocus()
             searchBox.visibility = View.GONE
@@ -147,11 +143,9 @@ class MainActivity : AppCompatActivity() {
     private fun setShape () {
         if (utilities.vault.getBoolean (utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)) {
             roundTimeLeft.visibility = View.VISIBLE
-            squareTimeLeft.visibility = View.GONE
 
         } else {
             roundTimeLeft.visibility = View.GONE
-            squareTimeLeft.visibility = View.VISIBLE
         }
     }
 
@@ -176,11 +170,9 @@ class MainActivity : AppCompatActivity() {
         loginsRecycler = findViewById(R.id.loginsRecycler)
 
         roundTimeLeft = findViewById(R.id.RoundTimeLeft)
-        squareTimeLeft = findViewById(R.id.SquareTimeLeftTop)
 
-        addAccountButton = findViewById(R.id.AddAccountButton)
-        settingsButton = findViewById(R.id.SettingsButton)
-        aboutButton = findViewById(R.id.AboutButton)
+        addAccountButton = findViewById(R.id.addAccount)
+        settingsButton = findViewById(R.id.settings)
 
         val logins = utilities.getLogins().toMutableList()
 
@@ -202,20 +194,8 @@ class MainActivity : AppCompatActivity() {
             searchButton.performHapticFeedback(HapticGenerator.SUCCESS)
         }
 
-        addAccountButton.setOnClickListener {
-            startActivity(Intent(applicationContext, AddActivity::class.java))
-            aboutButton.performHapticFeedback(HapticGenerator.SUCCESS)
-        }
-
-        aboutButton.setOnClickListener {
-            startActivity(Intent(applicationContext, AboutActivity::class.java))
-            aboutButton.performHapticFeedback(HapticGenerator.SUCCESS)
-        }
-
-        settingsButton.setOnClickListener {
-            startActivity(Intent(applicationContext, SettingsActivity::class.java))
-            aboutButton.performHapticFeedback(HapticGenerator.SUCCESS)
-        }
+        addAccountButton.setOnClickListener { startActivity(Intent(applicationContext, AddActivity::class.java)) }
+        settingsButton.setOnClickListener {startActivity(Intent(applicationContext, SettingsActivity::class.java)) }
 
     }
 
@@ -228,11 +208,9 @@ class MainActivity : AppCompatActivity() {
                     if (halfMinuteElapsed >= 30) halfMinuteElapsed -= 30
                     try {
                         roundTimeLeft.progress = halfMinuteElapsed
-                        squareTimeLeft.progress = halfMinuteElapsed
                     } catch (_: Exception) {
                         runOnUiThread {
                             roundTimeLeft.progress = halfMinuteElapsed
-                            squareTimeLeft.progress = halfMinuteElapsed
                         }
                     }
                     }
@@ -240,39 +218,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun startClock () {
-
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) {
-            findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
-        }
-
+        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
                     val currentHour24 = SimpleDateFormat("HH", Locale.getDefault()).format(Date())
                     val currentHour = SimpleDateFormat("hh", Locale.getDefault()).format(Date())
                     val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
-                    val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-                    val currentAmPm = SimpleDateFormat("a", Locale.getDefault()).format(Date())
                     runOnUiThread {
                         try {
-
-                            if (utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, false)) {
-                                clock.text = "$currentHour24:$currentMinute"
-                                if ((currentSecond % 2) == 0) clock.text = "$currentHour24 $currentMinute"
-                            } else {
-                                clock.text = "$currentHour:$currentMinute"
-                                if ((currentSecond % 2) == 0) clock.text = "$currentHour $currentMinute"
-                            }
-
+                            clock.text = "$currentHour:$currentMinute"
+                            if (utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, false)) clock.text = "$currentHour24:$currentMinute"
                         } catch (_: Exception) { }
                     }
                 }
             }, 0, 1000) // 1000 milliseconds = 1 second
         } catch (_: IllegalStateException) { }
     }
-
     @RequiresApi(Build.VERSION_CODES.M)
     private fun lockScreen () {
         if (utilities.vault.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)) {
@@ -312,7 +275,7 @@ class MainActivity : AppCompatActivity() {
 
         @RequiresApi(Build.VERSION_CODES.M)
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : ViewHolder {  // create new views
-            val loginCard: View = LayoutInflater.from(parent.context).inflate(R.layout.login_card, parent, false)
+            val loginCard: View = LayoutInflater.from(parent.context).inflate(R.layout.account_card, parent, false)
             loginCard.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
             return ViewHolder(loginCard)
         }
@@ -542,7 +505,7 @@ class MainActivity : AppCompatActivity() {
             loginCard.loginCard.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
                 override fun onLongClick() {
                     val intent = Intent(applicationContext, ManualEntryActivity::class.java)
-                    intent.putExtra(utilities.INTENT_UUID, utilities.getUuid(login))
+                    intent.putExtra(utilities.INTENT_QR_DATA, utilities.getUuid(login))
                     startActivity(intent)
                     loginCard.loginCard.performHapticFeedback(HapticGenerator.SUCCESS)
                     super.onSwipeRight()
@@ -557,16 +520,16 @@ class MainActivity : AppCompatActivity() {
 
         @RequiresApi(Build.VERSION_CODES.M)
         inner class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {  // Holds the views for adding it to image and text
-            val loginCard: CardView = itemView.findViewById(R.id.loginCard)
+            val loginCard: ConstraintLayout = itemView.findViewById(R.id.loginCard)
 
             val name: TextView = itemView.findViewById(R.id.name)
             val label: TextView = itemView.findViewById(R.id.label)
             val code: TextView = itemView.findViewById(R.id.code)
 
             val counterControls: LinearLayout = itemView.findViewById(R.id.counterControls)
-            val incrementCounter: ImageView = itemView.findViewById(R.id.increment_counter)
+            val incrementCounter: ImageView = itemView.findViewById(R.id.plus)
             val counter: TextView = itemView.findViewById(R.id.counter)
-            val decrementCounter: ImageView = itemView.findViewById(R.id.decrement_counter)
+            val decrementCounter: ImageView = itemView.findViewById(R.id.minus)
 
             init {
 

@@ -2,15 +2,14 @@ package app.wristkey
 
 
 import android.annotation.SuppressLint
-import android.content.ClipData
-import android.content.ClipboardManager
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -29,14 +28,14 @@ class AboutActivity : AppCompatActivity() {
 
     private lateinit var clock: TextView
 
-    private lateinit var backButton: CardView
+    private lateinit var backButton: Button
     private lateinit var appNameText: TextView
     private lateinit var heart: TextView
     private lateinit var versionText: TextView
-    private lateinit var thanksText: TextView
-    private lateinit var bitcoinDonateQrCode: ImageView
     private lateinit var urlLink: TextView
-    private lateinit var bitcoinWalletAddress: TextView
+
+    private lateinit var donateButton: Button
+    private lateinit var licenseButton: Button
 
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("SetTextI18n")
@@ -67,80 +66,63 @@ class AboutActivity : AppCompatActivity() {
         mfaCodesTimer = Timer()
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun startClock () {
-
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) {
-            findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
-        }
-
+        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
                     val currentHour24 = SimpleDateFormat("HH", Locale.getDefault()).format(Date())
                     val currentHour = SimpleDateFormat("hh", Locale.getDefault()).format(Date())
                     val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
-                    val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-                    val currentAmPm = SimpleDateFormat("a", Locale.getDefault()).format(Date())
                     runOnUiThread {
                         try {
-
-                            if (utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, false)) {
-                                clock.text = "$currentHour24:$currentMinute"
-                                if ((currentSecond % 2) == 0) clock.text = "$currentHour24 $currentMinute"
-                            } else {
-                                clock.text = "$currentHour:$currentMinute"
-                                if ((currentSecond % 2) == 0) clock.text = "$currentHour $currentMinute"
-                            }
-
+                            clock.text = "$currentHour:$currentMinute"
+                            if (utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, false)) clock.text = "$currentHour24:$currentMinute"
                         } catch (_: Exception) { }
                     }
                 }
             }, 0, 1000) // 1000 milliseconds = 1 second
         } catch (_: IllegalStateException) { }
     }
-
     fun initializeUI () {
-
         clock = findViewById(R.id.clock)
 
-        backButton = findViewById<CardView>(R.id.backButton)
-        appNameText = findViewById<TextView>(R.id.AppName)
-        heart = findViewById<TextView>(R.id.heart)
-        versionText = findViewById<TextView>(R.id.Version)
-        thanksText = findViewById<TextView>(R.id.thanksText)
-        bitcoinWalletAddress = findViewById<TextView>(R.id.bitcoinWalletAddress)
-
-        thanksText.isSelected = true
-        bitcoinDonateQrCode = findViewById<ImageView>(R.id.bitcoinDonateQrCode)
-        urlLink = findViewById<TextView>(R.id.SourceCode)
-
+        versionText = findViewById(R.id.Version)
         versionText.text = "v${BuildConfig.VERSION_NAME}"
-        val uri: String = getString(R.string.about_url)
 
+        heart = findViewById(R.id.heart)
         heart.startAnimation(AnimationUtils.loadAnimation(this, R.anim.heartbeat))
 
+        val uri: String = getString(R.string.about_url)
+        urlLink = findViewById(R.id.sourceCode)
         urlLink.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW).addCategory(Intent.CATEGORY_BROWSABLE).setData(Uri.parse(uri))
             RemoteIntent.startRemoteActivity(this, intent, null)
-            Toast.makeText(this, "URL opened\non phone", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Opening repository URL in browser", Toast.LENGTH_SHORT).show()
             try {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
                 startActivity(browserIntent)
-                val toast2 = Toast.makeText(this, "URL opened\nin browser", Toast.LENGTH_SHORT)
-                toast2.show()
             } catch (ex: Exception) { }
         }
 
-        bitcoinWalletAddress.setOnClickListener {
-            val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("Wristkey", getString(R.string.bitcoin_wallet_address))
-            clipboard.setPrimaryClip(clip)
-            Toast.makeText(applicationContext, "Wallet address copied!", Toast.LENGTH_LONG).show()
-        }
-
+        backButton = findViewById(R.id.backButton)
         backButton.setOnClickListener {
             finish()
+        }
+
+        donateButton = findViewById(R.id.donateButton)
+        donateButton.setOnClickListener {
+            startActivity(Intent(applicationContext, DonateActivity::class.java))
+        }
+
+        licenseButton = findViewById(R.id.licenseButton)
+        licenseButton.setOnClickListener {
+            AlertDialog.Builder(this@AboutActivity)
+                .setTitle("MIT License")
+                .setMessage(getString(R.string.copyright))
+                .setPositiveButton("Back", null)
+                .setCancelable(false)
+                .create().show()
         }
     }
 
