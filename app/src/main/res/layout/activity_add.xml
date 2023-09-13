@@ -11,22 +11,24 @@
     tools:deviceIds="wear">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fadeScrollbars="false"
         android:fillViewport="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:scrollbars="vertical"
-        android:fadeScrollbars="false">
-        <requestFocus/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
             android:orientation="vertical"
-            android:paddingTop="55dp"
+            android:paddingTop="25dp"
             android:paddingBottom="75dp">
 
             <TextView
@@ -34,90 +36,122 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="12dp"
+                android:layout_margin="10dp"
                 android:fontFamily="@font/productsans"
                 android:foregroundGravity="center"
                 android:gravity="center"
-                android:text="Add login"
-                android:textColor="@color/lightDemo"
-                android:textSize="16sp"
+                android:letterSpacing="0.05"
+                android:text="Add data"
+                android:textSize="16dp"
                 android:textStyle="normal" />
 
-            <androidx.cardview.widget.CardView
+            <Button
+                android:id="@+id/scanQrCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/pill_shape_border"
+                android:drawableStart="@drawable/ic_baseline_qr_code_scanner_24"
+                android:drawablePadding="15dp"
+                android:paddingHorizontal="25dp"
+                android:drawableTint="?android:attr/textColorPrimary"
+                android:fontFamily="@font/productsans"
+                android:gravity="start|center_vertical"
+                android:letterSpacing="0.05"
+                android:text="Scan code"
+                android:textAllCaps="false" />
+
+            <Button
                 android:id="@+id/manualEntry"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/pill_shape_border"
+                android:drawableStart="@drawable/ic_baseline_edit_24"
+                android:drawablePadding="15dp"
+                android:paddingHorizontal="25dp"
+                android:drawableTint="?android:attr/textColorPrimary"
+                android:fontFamily="@font/productsans"
+                android:gravity="start|center_vertical"
+                android:letterSpacing="0.05"
+                android:text="Manual entry"
+                android:textAllCaps="false" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_baseline_edit_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Enter manually"
-                        android:textSize="16dp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/scanQRCode"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/fileImport"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/pill_shape_border"
+                android:drawableStart="@drawable/ic_outline_insert_drive_file_24"
+                android:drawablePadding="15dp"
+                android:paddingHorizontal="25dp"
+                android:drawableTint="?android:attr/textColorPrimary"
+                android:fontFamily="@font/productsans"
+                android:gravity="start|center_vertical"
+                android:letterSpacing="0.05"
+                android:text="Import from file"
+                android:textAllCaps="false" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+            <Button
+                android:id="@+id/wirelessTransfer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/pill_shape_border"
+                android:drawableStart="@drawable/baseline_wifi_24"
+                android:drawablePadding="15dp"
+                android:paddingHorizontal="25dp"
+                android:drawableTint="?android:attr/textColorPrimary"
+                android:fontFamily="@font/productsans"
+                android:gravity="start|center_vertical"
+                android:letterSpacing="0.05"
+                android:text="WiFi transfer"
+                android:textAllCaps="false" />
 
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_outline_qr_code_2_24"
-                        android:tint="@color/white" />
+            <Button
+                android:id="@+id/usbTransfer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/pill_shape_border"
+                android:drawableStart="@drawable/baseline_usb_24"
+                android:drawablePadding="15dp"
+                android:paddingHorizontal="25dp"
+                android:drawableTint="?android:attr/textColorPrimary"
+                android:fontFamily="@font/productsans"
+                android:gravity="start|center_vertical"
+                android:letterSpacing="0.05"
+                android:text="ADB transfer"
+                android:textAllCaps="false" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="QR code"
-                        android:textSize="16dp" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center_horizontal" />
 
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
+            <Button
+                android:id="@+id/backButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/pill_shape_border"
+                android:drawableStart="@drawable/ic_prev"
+                android:drawablePadding="15dp"
+                android:paddingHorizontal="10dp"
+                android:drawableTint="?android:attr/textColorPrimary"
+                android:fontFamily="@font/productsans"
+                android:gravity="start|center_vertical"
+                android:letterSpacing="0.05"
+                android:paddingEnd="20dp"
+                android:text="Back"
+                android:textAllCaps="false" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/backupFileButton"
@@ -253,7 +287,7 @@
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
                         android:src="@drawable/bitwarden"
-                        android:tint="@color/white" />
+                        app:tint="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -309,79 +343,25 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/backButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="25dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_baseline_arrow_back_ios_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Back"
-                        android:textSize="16dp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/clockBackground"
+    <TextView
+        android:id="@+id/clock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="@color/black"
-        app:cardCornerRadius="10dp"
+        android:fontFamily="@font/productsans"
+        android:foregroundGravity="center"
+        android:gravity="center_horizontal"
+        android:letterSpacing="0.075"
+        android:orientation="horizontal"
+        android:background="@drawable/pill_shape_simple"
+        android:paddingHorizontal="5dp"
+        android:layout_marginTop="5dp"
+        android:text="04:20"
+        android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/clock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
-                android:fontFamily="@font/productsans"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                android:letterSpacing="0.085"
-                android:paddingHorizontal="5dp"
-                android:text="12:00"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

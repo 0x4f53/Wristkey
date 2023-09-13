@@ -65,6 +65,10 @@
             android:label="Add account" />
 
         <activity
+            android:name="app.wristkey.WirelessTransfer"
+            android:label="Wireless transfer" />
+
+        <activity
             android:name="app.wristkey.ManualEntryActivity"
             android:label="Add account" />
 
@@ -75,13 +79,15 @@
         <activity
             android:name="app.wristkey.AboutActivity"
             android:label="About" />
+
+        <activity
+            android:name="app.wristkey.DonateActivity"
+            android:label="About" />
+
         <activity
             android:name="app.wristkey.SettingsActivity"
             android:label="Settings" />
 
-        <activity
-            android:name="app.wristkey.DeleteActivity"
-            android:label="Delete account" />
     </application>
 
 </manifest>

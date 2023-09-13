@@ -127,7 +127,7 @@ class ExportActivity : AppCompatActivity() {
         }
 
         val intent = Intent (applicationContext, QRCodeActivity::class.java)
-        intent.putExtra (utilities.INTENT_UUID, utilities.getUuid(logins[loginNumber]))
+        intent.putExtra (utilities.INTENT_QR_DATA, utilities.getUuid(logins[loginNumber]))
         loginNumber += 1
         startActivityForResult (intent, utilities.EXPORT_RESPONSE_CODE)
 
@@ -141,7 +141,7 @@ class ExportActivity : AppCompatActivity() {
                 if (logins.size > 2) {
                     if (loginNumber < logins.size) {
                         val intent = Intent (applicationContext, QRCodeActivity::class.java)
-                        intent.putExtra (utilities.INTENT_UUID, utilities.getUuid(logins[loginNumber]))
+                        intent.putExtra (utilities.INTENT_QR_DATA, utilities.getUuid(logins[loginNumber]))
                         loginNumber += 1
                         startActivityForResult (intent, utilities.EXPORT_RESPONSE_CODE)
                     } else {

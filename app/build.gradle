@@ -2,18 +2,19 @@ plugins {
     id 'kotlin-android'
     id 'com.android.application'
     id 'com.chaquo.python'
+    id 'org.jetbrains.kotlin.android'
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.chaquo.python'
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId 'app.wristkey'
-        minSdk 21
-        targetSdkVersion 33  // Play Store requires API29+
+        minSdk 23  // Wear OS 2.0 / Android 7.1.1
+        targetSdkVersion 34  // Play Store requires API29+
         versionCode 2
         versionName "2.2"
 
@@ -57,29 +58,30 @@ android {
 
 dependencies {
     // implementation "androidx.wear:wear-input:1.0.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.7.20"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
     implementation 'com.google.code.gson:gson:2.10'
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'com.google.android.support:wearable:2.9.0'
-    implementation 'com.google.android.gms:play-services-wearable:18.0.0'
+    implementation 'com.google.android.gms:play-services-wearable:18.1.0'
     implementation 'androidx.percentlayout:percentlayout:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation 'androidx.wear:wear:1.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.1'
+    implementation 'androidx.wear:wear:1.3.0'
     implementation 'dev.turingcomplete:kotlin-onetimepassword:2.4.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.material:material:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.2'
     implementation 'com.github.androidmads:QRGenerator:1.0.1'
     implementation 'com.google.zxing:core:3.5.1'
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.core:core-ktx:1.12.0'
     compileOnly 'com.google.android.wearable:wearable:2.9.0'
-    implementation "androidx.security:security-crypto:1.1.0-alpha04"
+    implementation "androidx.security:security-crypto:1.1.0-alpha06"
     implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
     implementation 'androidx.biometric:biometric:1.2.0-alpha05'
-    implementation "com.anggrayudi:storage:1.5.1"
+    implementation "com.anggrayudi:storage:1.5.4"
 }

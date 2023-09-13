@@ -4,14 +4,15 @@
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
-    <string name="about_app">A sexy, secure, open-source, standalone two-factor authentication client for watches.</string>
+    <string name="about_app">A sexy, secure, cross-platform 2FA client.</string>
+    <string name="donation_message">I maintain this app in my free time and earn nothing from it. Your donations help me maintain my projects.\n\nTap on a button below opens it on your phone browser.</string>
     <string name="bitwarden_import_blurb">To import secrets from Bitwarden, export an unencrypted Bitwarden JSON file and place it in the following directory: </string>
     <string name="authenticator_import_blurb">Export your accounts and take a picture of the QR code. Make sure it is a JPG/PNG image and place it in the following directory: </string>
     <string name="otpauth_import_blurb">Take a picture of a QR code, make sure it is a JPG/PNG image and place it in the following directory: </string>
     <string name="aegis_import_blurb">To import secrets from Aegis Authenticator, export an unencrypted Aegis JSON file and place it in the following directory: </string>
     <string name="andotp_import_blurb">To import secrets from andOTP, export an unencrypted andOTP JSON file and place it in the following directory: </string>
     <string name="wristkey_import_blurb">To import secrets from an old backup, place your WFS file in the following directory: </string>
-    <string name="about_url">https://github.com/4f77616973/Wristkey</string>
+    <string name="about_url">https://github.com/0x4f53/Wristkey</string>
     <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_add">AddActivity</string>
     <!-- Strings used for fragments for navigation -->
@@ -33,15 +34,18 @@
     <string name="title_activity_otpauth_import">OtpAuthImport</string>
     <string name="title_activity_aegis_jsonimport">AegisJSONImport</string>
     <string name="title_activity_andotp_import">AndOtpImport</string>
-    <string name="contributors">Trương Huỳnh Đức (huynhduc0)</string>
     <string name="bitcoin_wallet_address">19xgj8XoDMcHSENUDrkW3GtjQjfnbnmWTS</string>
 
     <string name="message_keyguard">Unlock app</string>
 
-    <string name="copyright">MIT License
-\n\nCopyright © 2022 Owais Shaikh
+    <string name="paypal_uri">https://paypal.me/0x4f</string>
+    <string name="sponsors_uri">https://github.com/sponsors/0x4f53</string>
+
+    <string name="copyright">Copyright © 2022 Owais Shaikh\n(me@0x4f.in)
 \n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 \n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 \n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     </string>
+    <string name="settings_label">Settings</string>
+    <string name="donate_label">Donate</string>
 </resources>
