@@ -16,7 +16,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 import androidx.core.widget.doOnTextChanged
@@ -31,8 +30,6 @@ import wristkey.R
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.thread
-import kotlin.math.abs
 import kotlin.properties.Delegates
 
 
@@ -40,12 +37,13 @@ const val CODE_AUTHENTICATION_VERIFICATION = 241
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var mfaCodesTimer: Timer
+    lateinit var timer: Timer
+    var isTimerRunning: Boolean = false
     lateinit var utilities: Utilities
 
     private lateinit var scrollView: NestedScrollView
     private lateinit var clock: TextView
-    private lateinit var searchButton: CardView
+    private lateinit var searchButton: ImageView
     private lateinit var searchBox: TextInputLayout
     private lateinit var searchBoxInput: TextInputEditText
     private lateinit var roundTimeLeft: ProgressBar
@@ -67,30 +65,36 @@ class MainActivity : AppCompatActivity() {
         vault = utilities.getVault()
         keys = utilities.vault.all.keys.toList()
 
-        mfaCodesTimer = Timer()
+        timer = Timer()
 
         lockScreen()
     }
 
     override fun onStop() {
         super.onStop()
-        mfaCodesTimer.cancel()
+        timer.cancel()
+        isTimerRunning = false
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mfaCodesTimer.cancel()
-        finish()
+        timer.cancel()
+        isTimerRunning = false
+    }
+    override fun onPause() {
+        super.onPause()
+        timer.cancel()
+        isTimerRunning = false
     }
 
     override fun onStart() {
         super.onStart()
-        mfaCodesTimer = Timer()
+        if (!isTimerRunning) startTimer()
     }
 
     override fun onResume() {
         super.onResume()
-        mfaCodesTimer = Timer()
+        if (!isTimerRunning) startTimer()
     }
 
     var activated = false
@@ -195,47 +199,41 @@ class MainActivity : AppCompatActivity() {
         }
 
         addAccountButton.setOnClickListener { startActivity(Intent(applicationContext, AddActivity::class.java)) }
-        settingsButton.setOnClickListener {startActivity(Intent(applicationContext, SettingsActivity::class.java)) }
+        settingsButton.setOnClickListener { startActivity(Intent(applicationContext, SettingsActivity::class.java)) }
 
     }
 
-    private fun start2faTimer () {
-        thread {
-            mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
-                override fun run() {
-                    val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-                    var halfMinuteElapsed = abs((60-currentSecond))
-                    if (halfMinuteElapsed >= 30) halfMinuteElapsed -= 30
-                    try {
-                        roundTimeLeft.progress = halfMinuteElapsed
-                    } catch (_: Exception) {
-                        runOnUiThread {
-                            roundTimeLeft.progress = halfMinuteElapsed
-                        }
-                    }
-                    }
-            }, 0, 1000) // 1000 milliseconds = 1 second
-        }
+    private fun startTimer () {
+        if (!isTimerRunning) timer = Timer()
+        timer.scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                isTimerRunning = true
+                val second = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
+                var tickerValue = (60 - (second % 60)) % 30
+                try {
+                    roundTimeLeft.progress = tickerValue
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) roundTimeLeft.setProgress(tickerValue, true)
+                //squareTimeLeft.progress = halfMinuteElapsed
+                //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) squareTimeLeft.setProgress(halfMinuteElapsed, true)
+                } catch (_: Exception) { }
+            } }, 0, 1000) // 1000 milliseconds = 1 second
     }
 
     private fun startClock () {
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
+        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
+
         try {
-            mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
+            timer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
-                    val currentHour24 = SimpleDateFormat("HH", Locale.getDefault()).format(Date())
-                    val currentHour = SimpleDateFormat("hh", Locale.getDefault()).format(Date())
+                    val hourType = if (android.text.format.DateFormat.is24HourFormat(applicationContext)) "hh" else "HH"
+                    val currentHour = SimpleDateFormat(hourType, Locale.getDefault()).format(Date())
                     val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
-                    runOnUiThread {
-                        try {
-                            clock.text = "$currentHour:$currentMinute"
-                            if (utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, false)) clock.text = "$currentHour24:$currentMinute"
-                        } catch (_: Exception) { }
-                    }
+                    runOnUiThread { clock.text = "$currentHour:$currentMinute" }
                 }
-            }, 0, 1000) // 1000 milliseconds = 1 second
+            }, 0, 1000)
         } catch (_: IllegalStateException) { }
     }
+
     @RequiresApi(Build.VERSION_CODES.M)
     private fun lockScreen () {
         if (utilities.vault.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)) {
@@ -248,7 +246,7 @@ class MainActivity : AppCompatActivity() {
             initializeUI()
             setShape()
             startClock()
-            start2faTimer()
+            startTimer()
         }
     }
 
@@ -262,7 +260,7 @@ class MainActivity : AppCompatActivity() {
             initializeUI()
             setShape()
             startClock()
-            start2faTimer()
+            startTimer()
         }
     }
 
@@ -293,11 +291,13 @@ class MainActivity : AppCompatActivity() {
             else if (login.algorithm.contains(utilities.ALGO_SHA256)) algorithm = HmacAlgorithm.SHA256
             else if (login.algorithm.contains(utilities.ALGO_SHA512)) algorithm = HmacAlgorithm.SHA512
 
-            loginCard.name.text = login.issuer
+            var loginString = ""
+            if (!login.issuer.isNullOrBlank()) loginString = login.issuer
+            if (!login.label.isNullOrBlank()) loginString += "(${login.label})"
+            if (!login.account.isNullOrBlank()) loginString += "(${login.account})"
 
-            if (!login.account.isNullOrBlank()) loginCard.label.text = login.account
-            else if (!login.label.isNullOrBlank()) loginCard.label.text = login.label
-            else loginCard.label.visibility = View.GONE
+            if (loginString.isNullOrBlank()) loginCard.label.visibility = View.GONE
+            else loginCard.label.text = loginString
 
             var otp: String?
 
@@ -333,7 +333,7 @@ class MainActivity : AppCompatActivity() {
 
                     var timerElapsed: Int
                     try {
-                        mfaCodesTimer.scheduleAtFixedRate (object : TimerTask() {
+                        timer.scheduleAtFixedRate (object : TimerTask() {
                             override fun run() {
                                 timerElapsed = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
                                 timerElapsed = 60 - timerElapsed
@@ -343,7 +343,6 @@ class MainActivity : AppCompatActivity() {
                                         15, 30, 45, 60 -> {
                                             try { loginCard.code.startAnimation(blinkAnimation) } catch (_: Exception) { }
                                             if (beepEnabled) utilities.beep()
-                                            if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticFeedbackConstants.REJECT)
                                             runOnUiThread {
                                                 loginCard.code.text =
                                                     if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
@@ -356,7 +355,6 @@ class MainActivity : AppCompatActivity() {
                                         30, 60 -> {
                                             try { loginCard.code.startAnimation(blinkAnimation) } catch (_: Exception) { }
                                             if (beepEnabled) utilities.beep()
-                                            if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticFeedbackConstants.REJECT)
                                             runOnUiThread {
                                                 loginCard.code.text =
                                                     if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
@@ -369,7 +367,6 @@ class MainActivity : AppCompatActivity() {
                                         60 -> {
                                             try { loginCard.code.startAnimation(blinkAnimation) } catch (_: Exception) { }
                                             if (beepEnabled) utilities.beep()
-                                            if (hapticsEnabled) loginCard.name.performHapticFeedback(HapticFeedbackConstants.REJECT)
                                             runOnUiThread {
                                                 loginCard.code.text =
                                                     if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ")
@@ -492,6 +489,7 @@ class MainActivity : AppCompatActivity() {
                         if (otp!!.length == 6) otp!!.replace("...".toRegex(), "$0 ") else otp!!.replace("....".toRegex(), "$0 ")
 
                 }
+
             }
 
             // tap on totp / mfa / 2fa
@@ -522,7 +520,6 @@ class MainActivity : AppCompatActivity() {
         inner class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {  // Holds the views for adding it to image and text
             val loginCard: ConstraintLayout = itemView.findViewById(R.id.loginCard)
 
-            val name: TextView = itemView.findViewById(R.id.name)
             val label: TextView = itemView.findViewById(R.id.label)
             val code: TextView = itemView.findViewById(R.id.code)
 
@@ -543,12 +540,10 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     code.layoutParams = centeringParameters
-                    name.layoutParams = centeringParameters
                     label.layoutParams = centeringParameters
 
                 }
 
-                name.isSelected = true
                 label.isSelected = true
 
                 blinkAnimation = AlphaAnimation (0.25f, 1f)

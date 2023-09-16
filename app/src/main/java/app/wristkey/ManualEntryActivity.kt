@@ -1,5 +1,4 @@
 package app.wristkey
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -7,12 +6,13 @@ import android.text.method.PasswordTransformationMethod
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import wristkey.R
 import java.util.*
@@ -37,10 +37,10 @@ class ManualEntryActivity : AppCompatActivity() {
     private lateinit var hashSeekbar: SeekBar
     private lateinit var lengthSeekbar: SeekBar
 
-    private lateinit var showQrCodeButton: CardView
-    private lateinit var doneButton: CardView
-    private lateinit var deleteButton: CardView
-    private lateinit var backButton: CardView
+    private lateinit var showQrCodeButton: Button
+    private lateinit var doneButton: Button
+    private lateinit var deleteButton: Button
+    private lateinit var backButton: Button
 
     private lateinit var mode: String
     private lateinit var hashingAlgorithm: String
@@ -241,7 +241,7 @@ class ManualEntryActivity : AppCompatActivity() {
         deleteButton.visibility = View.VISIBLE
 
         deleteButton.setOnClickListener {
-            AlertDialog.Builder(this@ManualEntryActivity)
+            MaterialAlertDialogBuilder(this@ManualEntryActivity)
                 .setTitle("Delete")
                 .setMessage("Would you like to delete this item?")
                 .setPositiveButton("Yes, delete", null)

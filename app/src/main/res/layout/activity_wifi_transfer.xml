@@ -10,61 +10,67 @@
     tools:context="app.wristkey.AddActivity"
     tools:deviceIds="wear">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fadeScrollbars="false"
+        android:fillViewport="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:scrollbars="vertical"
-        android:fadeScrollbars="false">
-        <requestFocus/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:layout_marginHorizontal="7.5dp"
             android:paddingTop="25dp"
-            android:paddingBottom="75dp"
-            android:orientation="vertical">
+            android:paddingBottom="75dp">
 
             <TextView
-                android:layout_margin="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_margin="10dp"
                 android:fontFamily="@font/productsans"
+                android:foregroundGravity="center"
                 android:gravity="center"
-                android:text="@string/donate_label"
-                android:textSize="16sp"
+                android:letterSpacing="0.05"
+                android:text="WiFi Transfer"
+                android:textSize="16dp"
                 android:textStyle="normal" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
                 android:layout_gravity="center"
-                android:layout_margin="2.5dp"
                 android:fontFamily="@font/productsans"
                 android:gravity="center"
-                android:text="@string/donation_message"
+                android:text="@string/wifi_transfer_description"
                 android:textStyle="normal" />
 
-            <Button
-                android:id="@+id/paypal"
-                style="@style/Wristkey.Button"
-                app:icon="@drawable/paypal"
-                android:text="PayPal" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_horizontal" />
 
             <Button
-                android:id="@+id/github"
+                android:id="@+id/send"
+                app:icon="@drawable/baseline_file_upload_24"
                 style="@style/Wristkey.Button"
-                app:icon="@drawable/github"
-                android:text="GitHub Sponsors" />
+                android:text="Send"/>
 
             <Button
-                android:id="@+id/bitcoin"
+                android:id="@+id/receive"
                 style="@style/Wristkey.Button"
-                app:icon="@drawable/bitcoin"
-                android:text="Bitcoin" />
+                app:icon="@drawable/baseline_file_download_24"
+                android:text="Receive" />
 
             <View
                 android:layout_width="0dp"
@@ -78,7 +84,7 @@
                 android:text="Back" />
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <TextView
         android:id="@+id/clock"
@@ -90,9 +96,9 @@
         android:letterSpacing="0.075"
         android:orientation="horizontal"
         android:background="@drawable/pill_shape_black"
+        android:textColor="@color/white"
         android:paddingHorizontal="5dp"
         android:layout_marginTop="5dp"
-        android:textColor="@color/white"
         android:text="04:20"
         android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="parent"

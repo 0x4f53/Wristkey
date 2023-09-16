@@ -25,9 +25,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:orientation="vertical"
+            android:layout_marginHorizontal="7.5dp"
             android:paddingTop="25dp"
             android:paddingBottom="75dp">
 
@@ -47,85 +46,74 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/issuer"
+                android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:boxBackgroundMode="filled"
-                app:boxBackgroundColor="@color/colorAccent"
-                app:hintTextColor="@color/colorAccent"
-                android:backgroundTint="@color/colorAccent"
                 android:hint="Issuer"
-                app:endIconMode="clear_text" >
+                app:endIconMode="none" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/issuerInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
                     android:fontFamily="@font/productsans"
+                    android:layout_gravity="center_horizontal"
+                    android:foregroundGravity="center_horizontal"
+                    android:gravity="center_horizontal"
                     android:imeOptions="actionDone"
-                    android:inputType="textPhonetic"
+                    android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true"
-                    android:textCursorDrawable="@null"
-                    android:backgroundTint="@color/colorAccent" />
+                    android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/secret"
+                android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:boxBackgroundMode="filled"
-                app:boxBackgroundColor="@color/colorAccent"
-                app:hintTextColor="@color/colorAccent"
-                android:backgroundTint="@color/colorAccent"
                 android:hint="Secret"
-                app:endIconMode="clear_text" >
+                app:endIconMode="none" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/secretInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
                     android:fontFamily="@font/productsans"
+                    android:layout_gravity="center_horizontal"
+                    android:foregroundGravity="center_horizontal"
+                    android:gravity="center_horizontal"
                     android:imeOptions="actionDone"
-                    android:inputType="textPhonetic"
+                    android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true"
-                    android:textCursorDrawable="@null"
-                    android:backgroundTint="@color/colorAccent" />
+                    android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/label"
+                android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Label"
-                app:endIconMode="clear_text"
-                app:boxBackgroundColor="@color/colorAccent"
-                app:hintTextColor="@color/colorAccent"
-                android:backgroundTint="@color/colorAccent" >
+                app:endIconMode="none" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/labelInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:capitalize="none"
-                    android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
                     android:fontFamily="@font/productsans"
+                    android:layout_gravity="center_horizontal"
+                    android:foregroundGravity="center_horizontal"
+                    android:gravity="center_horizontal"
                     android:imeOptions="actionDone"
-                    android:inputType="textUri|textEmailAddress|textWebEmailAddress"
+                    android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true"
-                    android:backgroundTint="@color/colorAccent" />
+                    android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="15dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -137,7 +125,6 @@
                     android:foregroundGravity="center"
                     android:gravity="center"
                     android:text="Time"
-                    android:textColor="#FFFFFF"
                     android:textSize="18sp" />
 
                 <SeekBar
@@ -145,21 +132,7 @@
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorAccent"
-                    android:backgroundTintMode="src_atop"
-                    android:foregroundTint="@color/colorAccent"
-                    android:foregroundTintMode="src_atop"
-                    android:indeterminateTint="@color/colorAccent"
-                    android:indeterminateTintMode="src_atop"
-                    android:progressBackgroundTint="@color/colorAccent"
-                    android:progressBackgroundTintMode="src_atop"
-                    android:progressTint="@color/colorAccent"
-                    android:progressTintMode="src_atop"
-                    android:secondaryProgressTint="@color/colorAccent"
-                    android:secondaryProgressTintMode="src_atop"
-                    android:thumbTint="@color/colorAccent"
-                    android:thumbTintMode="src_atop"
-                    android:tickMarkTint="@color/colorAccent"
+                    android:layout_marginHorizontal="35dp"
                     android:max="1"
                     android:progress="0" />
 
@@ -169,7 +142,7 @@
                 android:id="@+id/Algorithm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="15dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -181,7 +154,6 @@
                     android:foregroundGravity="center"
                     android:gravity="center"
                     android:text="SHA1"
-                    android:textColor="#FFFFFF"
                     android:textSize="18sp" />
 
                 <SeekBar
@@ -189,21 +161,7 @@
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorAccent"
-                    android:backgroundTintMode="src_atop"
-                    android:foregroundTint="@color/colorAccent"
-                    android:foregroundTintMode="src_atop"
-                    android:indeterminateTint="@color/colorAccent"
-                    android:indeterminateTintMode="src_atop"
-                    android:progressBackgroundTint="@color/colorAccent"
-                    android:progressBackgroundTintMode="src_atop"
-                    android:progressTint="@color/colorAccent"
-                    android:progressTintMode="src_atop"
-                    android:secondaryProgressTint="@color/colorAccent"
-                    android:secondaryProgressTintMode="src_atop"
-                    android:thumbTint="@color/colorAccent"
-                    android:thumbTintMode="src_atop"
-                    android:tickMarkTint="@color/colorAccent"
+                    android:layout_marginHorizontal="35dp"
                     android:max="2"
                     android:progress="0" />
 
@@ -213,7 +171,7 @@
                 android:id="@+id/Digits"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="15dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -225,7 +183,6 @@
                     android:foregroundGravity="center"
                     android:gravity="center"
                     android:text="6 digits"
-                    android:textColor="#FFFFFF"
                     android:textSize="18sp" />
 
                 <SeekBar
@@ -233,29 +190,15 @@
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorAccent"
-                    android:backgroundTintMode="src_atop"
-                    android:foregroundTint="@color/colorAccent"
-                    android:foregroundTintMode="src_atop"
-                    android:indeterminateTint="@color/colorAccent"
-                    android:indeterminateTintMode="src_atop"
-                    android:progressBackgroundTint="@color/colorAccent"
-                    android:progressBackgroundTintMode="src_atop"
-                    android:progressTint="@color/colorAccent"
-                    android:progressTintMode="src_atop"
-                    android:secondaryProgressTint="@color/colorAccent"
-                    android:secondaryProgressTintMode="src_atop"
-                    android:thumbTint="@color/colorAccent"
-                    android:thumbTintMode="src_atop"
-                    android:tickMarkTint="@color/colorAccent"
                     android:max="1"
+                    android:layout_marginHorizontal="35dp"
                     android:progress="0" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="15dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -267,7 +210,6 @@
                     android:foregroundGravity="center"
                     android:gravity="center"
                     android:text="30 seconds"
-                    android:textColor="#FFFFFF"
                     android:textSize="18sp" />
 
                 <SeekBar
@@ -275,106 +217,40 @@
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorAccent"
-                    android:backgroundTintMode="src_atop"
-                    android:foregroundTint="@color/colorAccent"
-                    android:foregroundTintMode="src_atop"
-                    android:indeterminateTint="@color/colorAccent"
-                    android:indeterminateTintMode="src_atop"
-                    android:progressBackgroundTint="@color/colorAccent"
-                    android:progressBackgroundTintMode="src_atop"
-                    android:progressTint="@color/colorAccent"
-                    android:progressTintMode="src_atop"
-                    android:secondaryProgressTint="@color/colorAccent"
-                    android:secondaryProgressTintMode="src_atop"
-                    android:thumbTint="@color/colorAccent"
-                    android:thumbTintMode="src_atop"
-                    android:tickMarkTint="@color/colorAccent"
                     android:max="2"
+                    android:layout_marginHorizontal="35dp"
                     android:progress="1" />
 
             </LinearLayout>
 
             <Button
                 android:id="@+id/showQrCodeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/ic_outline_qr_code_2_24"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="10dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                app:tint="@color/white"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:paddingEnd="20dp"
-                android:fontFamily="@font/productsans"
-                android:text="Show QR Code"
-                android:textAllCaps="false" />
+                app:icon="@drawable/ic_outline_qr_code_2_24"
+                style="@style/Wristkey.Button"
+                android:text="Show QR Code" />
 
             <Button
                 android:id="@+id/deleteButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/ic_outline_delete_24"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="10dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                app:tint="@color/white"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:paddingEnd="20dp"
-                android:fontFamily="@font/productsans"
-                android:text="Delete"
-                android:textAllCaps="false" />
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_outline_delete_24"
+                android:text="Delete" />
 
             <Button
                 android:id="@+id/doneButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/ic_done"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="10dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                app:tint="@color/white"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:paddingEnd="20dp"
-                android:fontFamily="@font/productsans"
-                android:text="Done"
-                android:textAllCaps="false" />
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_done"
+                android:text="Done" />
 
             <View
                 android:layout_width="0dp"
-                android:layout_height="10dp"
+                android:layout_height="15dp"
                 android:layout_gravity="center_horizontal" />
 
             <Button
                 android:id="@+id/backButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/ic_prev"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="10dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                app:tint="@color/white"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:paddingEnd="20dp"
-                android:text="Back"
-                android:fontFamily="@font/productsans"
-                android:textAllCaps="false" />
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_prev"
+                android:text="Back" />
 
         </LinearLayout>
     </ScrollView>
@@ -388,7 +264,7 @@
         android:gravity="center_horizontal"
         android:letterSpacing="0.075"
         android:orientation="horizontal"
-        android:background="@drawable/pill_shape_simple"
+        android:background="@drawable/pill_shape_black"
         android:paddingHorizontal="5dp"
         android:layout_marginTop="5dp"
         android:text="04:20"

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="tealAccents">#009688</color>
-    <color name="blueAccents">#4285F4</color>
+    <color name="blueAccents">#7FAFFF</color>
     <color name="saffronAccents">#FF6D00</color>
-    <color name="redAccents">#FF4141</color>
+    <color name="redAccents">#FF7575</color>
     <color name="yellowAccents">#FFBB00</color>
     <color name="darkAccents">#434343</color>
 

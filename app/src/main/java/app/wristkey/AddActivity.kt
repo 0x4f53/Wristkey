@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import wristkey.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -21,6 +22,7 @@ class AddActivity : AppCompatActivity() {
     private lateinit var clock: TextView
 
     private lateinit var manualEntry: Button
+    private lateinit var wifiTransfer: Button
     private lateinit var aegisImportButton: CardView
     private lateinit var googleAuthenticatorImport: CardView
     private lateinit var bitwardenImport: CardView
@@ -43,21 +45,17 @@ class AddActivity : AppCompatActivity() {
     }
 
     private fun startClock () {
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
+        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
+
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
-                    val currentHour24 = SimpleDateFormat("HH", Locale.getDefault()).format(Date())
-                    val currentHour = SimpleDateFormat("hh", Locale.getDefault()).format(Date())
+                    val hourType = if (android.text.format.DateFormat.is24HourFormat(applicationContext)) "hh" else "HH"
+                    val currentHour = SimpleDateFormat(hourType, Locale.getDefault()).format(Date())
                     val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
-                    runOnUiThread {
-                        try {
-                            clock.text = "$currentHour:$currentMinute"
-                            if (utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, false)) clock.text = "$currentHour24:$currentMinute"
-                        } catch (_: Exception) { }
-                    }
+                    runOnUiThread { clock.text = "$currentHour:$currentMinute" }
                 }
-            }, 0, 1000) // 1000 milliseconds = 1 second
+            }, 0, 1000)
         } catch (_: IllegalStateException) { }
     }
 
@@ -82,6 +80,7 @@ class AddActivity : AppCompatActivity() {
         clock = findViewById(R.id.clock)
 
         manualEntry = findViewById (R.id.manualEntry)
+        wifiTransfer = findViewById (R.id.wifiTransfer)
         aegisImportButton = findViewById (R.id.aegisImportButton)
         googleAuthenticatorImport = findViewById (R.id.googleAuthenticatorImport)
         andOtpImport = findViewById (R.id.andOtpImportButton)
@@ -94,6 +93,21 @@ class AddActivity : AppCompatActivity() {
         manualEntry.setOnClickListener {
             startActivity(Intent(applicationContext, ManualEntryActivity::class.java))
             manualEntry.performHapticFeedback(HapticGenerator.SUCCESS)
+        }
+
+        wifiTransfer.setOnClickListener {
+            if (utilities.wiFiExists(applicationContext)) {
+                startActivity(Intent(applicationContext, WiFiTransferActivity::class.java))
+                wifiTransfer.performHapticFeedback(HapticGenerator.SUCCESS)
+            } else {
+                wifiTransfer.performHapticFeedback(HapticGenerator.ERROR)
+                MaterialAlertDialogBuilder(this@AddActivity)
+                    .setTitle("No Wi-Fi")
+                    .setMessage(getString(R.string.wifi_error))
+                    .setPositiveButton("Back", null)
+                    .setCancelable(false)
+                    .create().show()
+            }
         }
 
         backupFileButton.setOnClickListener {
