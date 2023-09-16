@@ -86,7 +86,7 @@ class ReceiveActivity : AppCompatActivity() {
 
         val server: NanoHTTPD = object : NanoHTTPD(ip, port) {
             override fun serve(session: IHTTPSession): Response {
-                val response = "Hello, Android HTTP Server!" // Your response message
+                val response = utilities.encrypt("test", "12345678")
                 Log.d("Wristkey-Server", "Serving page...")
                 return newFixedLengthResponse(response)
             }

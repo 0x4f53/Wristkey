@@ -11,6 +11,9 @@ import android.net.NetworkCapabilities
 import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.util.Base64
+import android.util.Base64.DEFAULT
+import android.util.Base64.encodeToString
 import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -32,8 +35,14 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.InetAddress
 import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.crypto.Cipher
+import javax.crypto.SecretKey
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
 import kotlin.math.abs
 
 
@@ -641,6 +650,51 @@ class Utilities (context: Context) {
             Log.e("IP Address", "Error getting IP address: ${e.message}")
         }
         return null
+    }
+
+    fun encrypt(data: String, passphrase: String): String? {
+        val digest: MessageDigest = MessageDigest.getInstance("SHA-256")
+        val sha256 = digest.digest(passphrase.toByteArray(StandardCharsets.UTF_8)) // base64-ing the payload first lets you encode things like emoji properly
+
+        val hashedPassphrase: ByteArray = sha256
+
+        val secretKey: SecretKey = SecretKeySpec(hashedPassphrase, "AES")
+
+        val iv = ByteArray(16)
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParameterSpec(iv))
+
+        val encryptedData = cipher.doFinal(encodeToString(data.toByteArray(charset("UTF-8")), DEFAULT).toByteArray(charset("UTF-8")))
+        return encodeToString(encryptedData, DEFAULT)
+    }
+
+    fun decrypt(encryptedData: String, passphrase: String): String? {
+        try {
+            val digest: MessageDigest = MessageDigest.getInstance("SHA-256")
+            val sha256 = digest.digest(passphrase.toByteArray(StandardCharsets.UTF_8))
+
+            val secretKey: SecretKey = SecretKeySpec(sha256, "AES")
+
+            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+            val iv = ByteArray(16)
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(iv))
+
+            val encryptedBytes = Base64.decode(encryptedData, DEFAULT)
+            val decryptedBytes = cipher.doFinal(encryptedBytes)
+
+            return String(
+                Base64.decode( // decoding again because we base64-ed the payload as we to let you encode things like emoji properly
+                    String(
+                        decryptedBytes,
+                        StandardCharsets.UTF_8
+                    ), DEFAULT
+                ),
+                StandardCharsets.UTF_8
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
     }
 
 }
