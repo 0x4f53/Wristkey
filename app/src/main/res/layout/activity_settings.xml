@@ -30,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_marginHorizontal="7.5dp"
             android:paddingTop="25dp"
             android:paddingBottom="75dp">
 
@@ -50,8 +51,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:background="@drawable/pill_shape_border"
-                android:layout_marginHorizontal="10dp"
+                android:layout_marginHorizontal="2.5dp"
                 android:layout_marginVertical="2.5dp"
                 android:orientation="horizontal">
 
@@ -69,17 +71,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginVertical="15dp"
                     android:layout_marginEnd="10dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
-                    android:textColor="@color/white"
-                    android:letterSpacing="0.025"
-                    android:layout_marginVertical="15dp"
+                    android:letterSpacing="0.05"
                     android:text="Search button"
-                    android:textSize="14dp" />
+                    android:textColor="@color/white" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/searchButton"
+                    android:id="@+id/searchButtonToggle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -90,7 +91,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/pill_shape_border"
-                android:layout_marginHorizontal="10dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="2.5dp"
                 android:layout_marginVertical="2.5dp"
                 android:orientation="horizontal">
 
@@ -108,14 +110,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginVertical="15dp"
                     android:layout_marginEnd="10dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
-                    android:letterSpacing="0.025"
-                    android:textColor="@color/white"
-                    android:layout_marginVertical="15dp"
+                    android:letterSpacing="0.05"
                     android:text="Show clock"
-                    android:textSize="14dp" />
+                    android:textColor="@color/white" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/clockButton"
@@ -129,8 +130,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:background="@drawable/pill_shape_border"
-                android:layout_marginHorizontal="10dp"
+                android:layout_marginHorizontal="2.5dp"
                 android:layout_marginVertical="2.5dp"
                 android:orientation="horizontal">
 
@@ -148,14 +150,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginVertical="15dp"
                     android:layout_marginEnd="10dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
-                    android:letterSpacing="0.025"
-                    android:layout_marginVertical="15dp"
-                    android:textColor="@color/white"
+                    android:letterSpacing="0.05"
                     android:text="App lock"
-                    android:textSize="14dp" />
+                    android:textColor="@color/white" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/lockButton"
@@ -170,7 +171,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/pill_shape_border"
-                android:layout_marginHorizontal="10dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="2.5dp"
                 android:layout_marginVertical="2.5dp"
                 android:orientation="horizontal">
 
@@ -188,14 +190,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginVertical="15dp"
                     android:layout_marginEnd="10dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
-                    android:letterSpacing="0.025"
-                    android:layout_marginVertical="15dp"
-                    android:textColor="@color/white"
+                    android:letterSpacing="0.05"
                     android:text="Round device"
-                    android:textSize="14dp" />
+                    android:textColor="@color/white" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/roundButton"
@@ -208,46 +209,20 @@
 
             <Button
                 android:id="@+id/aboutButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/ic_outline_info_24"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="10dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                app:tint="@color/white"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:paddingEnd="20dp"
-                android:fontFamily="@font/productsans"
+                style="@style/Wristkey.Button"
                 android:text="About Wristkey"
-                android:textAllCaps="false" />
+                app:icon="@drawable/ic_outline_info_24" />
 
             <View
                 android:layout_width="0dp"
-                android:layout_height="10dp"
+                android:layout_height="15dp"
                 android:layout_gravity="center_horizontal" />
 
             <Button
                 android:id="@+id/backButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/ic_prev"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="10dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                app:tint="@color/white"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:paddingEnd="20dp"
-                android:text="Back"
-                android:fontFamily="@font/productsans"
-                android:textAllCaps="false" />
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_prev"
+                android:text="Back" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -261,7 +236,8 @@
         android:gravity="center_horizontal"
         android:letterSpacing="0.075"
         android:orientation="horizontal"
-        android:background="@drawable/pill_shape_simple"
+        android:background="@drawable/pill_shape_black"
+        android:textColor="@color/white"
         android:paddingHorizontal="5dp"
         android:layout_marginTop="5dp"
         android:text="04:20"

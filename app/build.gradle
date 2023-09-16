@@ -84,4 +84,5 @@ dependencies {
     implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
     implementation 'androidx.biometric:biometric:1.2.0-alpha05'
     implementation "com.anggrayudi:storage:1.5.4"
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
 }

@@ -28,6 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_marginHorizontal="7.5dp"
             android:paddingTop="25dp"
             android:paddingBottom="75dp">
 
@@ -41,117 +42,48 @@
                 android:foregroundGravity="center"
                 android:gravity="center"
                 android:letterSpacing="0.05"
-                android:text="Add data"
-                android:textSize="16dp"
-                android:textStyle="normal" />
+                android:text="Add data" />
 
             <Button
                 android:id="@+id/scanQrCode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/ic_baseline_qr_code_scanner_24"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="25dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                android:fontFamily="@font/productsans"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:text="Scan code"
-                android:textAllCaps="false" />
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_baseline_qr_code_scanner_24"
+                android:text="Scan code" />
 
             <Button
                 android:id="@+id/manualEntry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/ic_baseline_edit_24"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="25dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                android:fontFamily="@font/productsans"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:text="Manual entry"
-                android:textAllCaps="false" />
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_baseline_edit_24"
+                android:text="Manual entry" />
 
             <Button
                 android:id="@+id/fileImport"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/ic_outline_insert_drive_file_24"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="25dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                android:fontFamily="@font/productsans"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:text="Import from file"
-                android:textAllCaps="false" />
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_outline_insert_drive_file_24"
+                android:text="Import from file" />
 
             <Button
-                android:id="@+id/wirelessTransfer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/baseline_wifi_24"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="25dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                android:fontFamily="@font/productsans"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:text="WiFi transfer"
-                android:textAllCaps="false" />
+                android:id="@+id/wifiTransfer"
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/baseline_wifi_24"
+                android:text="Wi-Fi transfer" />
 
             <Button
                 android:id="@+id/usbTransfer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/baseline_usb_24"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="25dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                android:fontFamily="@font/productsans"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:text="ADB transfer"
-                android:textAllCaps="false" />
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/baseline_usb_24"
+                android:text="ADB transfer" />
 
             <View
                 android:layout_width="0dp"
-                android:layout_height="10dp"
+                android:layout_height="15dp"
                 android:layout_gravity="center_horizontal" />
 
             <Button
                 android:id="@+id/backButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/ic_prev"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="10dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                android:fontFamily="@font/productsans"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:paddingEnd="20dp"
-                android:text="Back"
-                android:textAllCaps="false" />
+                app:icon="@drawable/ic_prev"
+                style="@style/Wristkey.Button"
+                android:text="Back" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/backupFileButton"
@@ -355,7 +287,8 @@
         android:gravity="center_horizontal"
         android:letterSpacing="0.075"
         android:orientation="horizontal"
-        android:background="@drawable/pill_shape_simple"
+        android:background="@drawable/pill_shape_black"
+        android:textColor="@color/white"
         android:paddingHorizontal="5dp"
         android:layout_marginTop="5dp"
         android:text="04:20"

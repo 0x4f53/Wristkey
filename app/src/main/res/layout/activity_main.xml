@@ -29,66 +29,57 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginHorizontal="7.5dp"
             android:fitsSystemWindows="true"
             android:focusableInTouchMode="true"
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="35dp"
+                android:layout_marginHorizontal="10dp"
                 android:orientation="vertical">
 
-                <androidx.cardview.widget.CardView
+                <ImageView
                     android:id="@+id/searchButton"
-                    android:layout_width="75dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center_horizontal"
-                    android:scaleX="0.75"
-                    android:scaleY="0.75"
-                    app:cardBackgroundColor="@color/blueAccents"
-                    app:cardCornerRadius="25dp">
-
-                    <ImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center"
-                        android:foregroundGravity="center"
-                        app:srcCompat="@drawable/ic_baseline_search_24" />
-                </androidx.cardview.widget.CardView>
+                    android:layout_width="65dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="20dp"
+                    android:foregroundGravity="center"
+                    app:srcCompat="@drawable/ic_baseline_search_24"
+                    android:background="@drawable/pill_shape_simple"
+                    app:tint="@color/white" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/searchBox"
-                    android:layout_width="150dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorAccent"
                     android:hint="Search"
-                    app:boxBackgroundColor="@color/colorAccent"
-                    app:boxBackgroundMode="filled"
-                    app:endIconMode="none"
-                    app:hintTextColor="@color/colorAccent">
+                    app:endIconMode="none" >
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/searchBoxInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:backgroundTint="@color/colorAccent"
-                        android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
                         android:fontFamily="@font/productsans"
+                        android:layout_gravity="center_horizontal"
                         android:foregroundGravity="center_horizontal"
                         android:gravity="center_horizontal"
                         android:imeOptions="actionDone"
-                        android:inputType="textPhonetic"
+                        android:inputType="textEmailAddress"
                         android:maxLines="1"
-                        android:singleLine="true"
-                        android:textCursorDrawable="@null" />
+                        android:singleLine="true" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_horizontal" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/loginsRecycler"
@@ -98,49 +89,25 @@
                 android:nestedScrollingEnabled="false"
                 tools:itemCount="1"
                 android:orientation="vertical"
-                tools:listitem="@layout/account_card">
+                tools:listitem="@layout/account_card"
+                android:layout_marginHorizontal="2.5dp" />
 
-            </androidx.recyclerview.widget.RecyclerView>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_horizontal" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                android:orientation="vertical">
+            <Button
+                android:id="@+id/addAccount"
+                app:icon="@drawable/ic_baseline_add_24"
+                style="@style/Wristkey.Button"
+                android:text="Add data" />
 
-                <Button
-                    android:id="@+id/addAccount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_margin="2.5dp"
-                    android:background="@drawable/pill_shape_border"
-                    android:drawableStart="@drawable/ic_baseline_add_24"
-                    android:drawablePadding="15dp"
-                    android:paddingHorizontal="25dp"
-                    android:drawableTint="?android:attr/textColorPrimary"
-                    android:fontFamily="@font/productsans"
-                    android:letterSpacing="0.05"
-                    android:text="Add data"
-                    android:textAllCaps="false" />
-
-                <Button
-                    android:id="@+id/settings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_margin="2.5dp"
-                    android:background="@drawable/pill_shape_border"
-                    android:drawableStart="@drawable/outline_settings_24"
-                    android:drawablePadding="15dp"
-                    android:paddingHorizontal="25dp"
-                    android:drawableTint="?android:attr/textColorPrimary"
-                    android:fontFamily="@font/productsans"
-                    android:letterSpacing="0.05"
-                    android:text="Settings"
-                    android:textAllCaps="false" />
-
-            </LinearLayout>
+            <Button
+                android:id="@+id/settings"
+                app:icon="@drawable/outline_settings_24"
+                style="@style/Wristkey.Button"
+                android:text="Settings" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -162,41 +129,26 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:trackColor="@android:color/transparent"
-        app:trackCornerRadius="50dp"
-        app:trackThickness="1.5dp" />
+        app:trackCornerRadius="100dp"
+        app:trackThickness="0.75dp" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/clockBackground"
+    <TextView
+        android:id="@+id/clock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
-        android:backgroundTint="@color/black"
-        app:cardCornerRadius="10dp"
+        android:fontFamily="@font/productsans"
+        android:foregroundGravity="center"
+        android:gravity="center_horizontal"
+        android:letterSpacing="0.075"
+        android:orientation="horizontal"
+        android:background="@drawable/pill_shape_black"
+        android:textColor="@color/white"
+        android:paddingHorizontal="5dp"
+        android:layout_marginTop="6.5dp"
+        android:text="04:20"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/clock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
-                android:fontFamily="@font/productsans"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                android:letterSpacing="0.05"
-                android:paddingHorizontal="2.5dp"
-                android:text="12:00"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

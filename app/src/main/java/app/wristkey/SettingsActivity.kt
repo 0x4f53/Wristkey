@@ -8,7 +8,6 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import wristkey.R
 import java.text.SimpleDateFormat
@@ -68,7 +67,7 @@ class SettingsActivity : AppCompatActivity() {
 
         clock = findViewById(R.id.clock)
 
-        searchButton = findViewById (R.id.searchButton)
+        searchButton = findViewById (R.id.searchButtonToggle)
         lockButton = findViewById (R.id.lockButton)
         clockButton = findViewById (R.id.clockButton)
         roundButton = findViewById (R.id.roundButton)
@@ -87,8 +86,7 @@ class SettingsActivity : AppCompatActivity() {
             settingsChanged = true
             utilities.vault.edit().remove(utilities.SETTINGS_CLOCK_ENABLED).apply()
             utilities.vault.edit().putBoolean(utilities.SETTINGS_CLOCK_ENABLED, isChecked).apply()
-            if (!isChecked) findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
-            else findViewById<CardView>(R.id.clockBackground).visibility = View.VISIBLE
+            if (!isChecked) clock.visibility = View.GONE else clock.visibility = View.VISIBLE
         }
 
         val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
@@ -125,21 +123,17 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun startClock () {
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
+        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
+
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
-                    val currentHour24 = SimpleDateFormat("HH", Locale.getDefault()).format(Date())
-                    val currentHour = SimpleDateFormat("hh", Locale.getDefault()).format(Date())
+                    val hourType = if (android.text.format.DateFormat.is24HourFormat(applicationContext)) "hh" else "HH"
+                    val currentHour = SimpleDateFormat(hourType, Locale.getDefault()).format(Date())
                     val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
-                    runOnUiThread {
-                        try {
-                            clock.text = "$currentHour:$currentMinute"
-                            if (utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, false)) clock.text = "$currentHour24:$currentMinute"
-                        } catch (_: Exception) { }
-                    }
+                    runOnUiThread { clock.text = "$currentHour:$currentMinute" }
                 }
-            }, 0, 1000) // 1000 milliseconds = 1 second
+            }, 0, 1000)
         } catch (_: IllegalStateException) { }
     }
 }

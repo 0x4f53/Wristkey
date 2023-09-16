@@ -3,25 +3,22 @@ package app.wristkey
 import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.Point
 import android.graphics.drawable.BitmapDrawable
 import android.media.audiofx.HapticGenerator
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
-import androidmads.library.qrgenearator.QRGContents
-import androidmads.library.qrgenearator.QRGEncoder
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.zxing.WriterException
 import wristkey.R
 import java.util.*
-import kotlin.concurrent.thread
 
 class QRCodeActivity : AppCompatActivity() {
 
@@ -77,6 +74,7 @@ class QRCodeActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         mfaCodesTimer.cancel()
+        finish()
     }
 
     override fun onDestroy() {
@@ -98,36 +96,15 @@ class QRCodeActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun startTimer () {
         try {
-            thread {
-
-                // round timer
-                var timerDuration = utilities.QR_TIMER_DURATION
-                roundTimeLeft.max = timerDuration
-                squareTimeLeft.max = timerDuration
-                mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
-                    override fun run() {
-                        try {
-                            roundTimeLeft.progress = timerDuration
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) roundTimeLeft.setProgress(timerDuration, true)
-                            squareTimeLeft.progress = timerDuration
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) squareTimeLeft.setProgress(timerDuration, true)
-                        } catch (_: Exception) {
-                            runOnUiThread {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) roundTimeLeft.setProgress(timerDuration, true)
-                                squareTimeLeft.progress = timerDuration
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) squareTimeLeft.setProgress(timerDuration, true)
-                            }
-                        }
-                        if (timerDuration == 0) {
-                            val resultIntent = Intent()
-                            setResult(Activity.RESULT_OK, resultIntent)
-                            finish()
-                        }
-                        else timerDuration -= 1
+            var timerDuration = utilities.QR_TIMER_DURATION
+            mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    if (timerDuration <= 0) {
+                        setResult(Activity.RESULT_OK, Intent())
+                        finish()
                     }
-                }, 0, 1000) // 1000 milliseconds = 1 second
-
-            }
+                    timerDuration -= 1
+                } }, 0, 1000)
         } catch (_: IllegalStateException) {}
     }
 
@@ -139,11 +116,15 @@ class QRCodeActivity : AppCompatActivity() {
 
         roundTimeLeft = findViewById(R.id.RoundTimeLeft)
         squareTimeLeft = findViewById(R.id.SquareTimeLeftTop)
+        startProgressBarAnimation(roundTimeLeft, utilities.QR_TIMER_DURATION)
+        startProgressBarAnimation(squareTimeLeft, utilities.QR_TIMER_DURATION)
 
         backButton = findViewById(R.id.backButton)
 
+        val wm = getSystemService(WINDOW_SERVICE) as WindowManager
+        try { qrCode.setImageDrawable(BitmapDrawable(utilities.generateQrCode(data, wm))) } catch (_: WriterException) { }
+
         qrCodeSubtitle.text = metadata
-        try { qrCode.setImageDrawable(BitmapDrawable(generateQrCode(data))) } catch (_: WriterException) { }
 
         var state = 0
         qrCode.setOnClickListener {
@@ -171,17 +152,23 @@ class QRCodeActivity : AppCompatActivity() {
 
     }
 
-    private fun generateQrCode (qrData: String): Bitmap? {
-        val manager = getSystemService(WINDOW_SERVICE) as WindowManager
-        val display = manager.defaultDisplay
-        val point = Point()
-        display.getSize(point)
-        val width: Int = point.x
-        val height: Int = point.y
-        val dimensions = if (width < height) width else height
-
-        val qrEncoder = QRGEncoder(qrData, null, QRGContents.Type.TEXT, dimensions)
-        return qrEncoder.bitmap
+    private fun startProgressBarAnimation(progressBar: ProgressBar, durationInSeconds: Int) {
+        val animationDuration = durationInSeconds*1000 // 5000 milliseconds (5 seconds)
+        val animationSteps = 100 // Number of animation steps
+        var progress = 100
+        val handler = Handler(Looper.getMainLooper())
+        val delay = animationDuration / animationSteps.toLong()
+        val runnable = object : Runnable {
+            override fun run() {
+                if (progress >= 0) {
+                    progressBar.progress = progress
+                    progressBar.animate()
+                    progress--
+                    handler.postDelayed(this, delay)
+                }
+            }
+        }
+        handler.postDelayed(runnable, delay)
     }
 
 }

@@ -155,34 +155,17 @@ class ExportActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun startClock () {
-
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) {
-            findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
-        }
+        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
 
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
-                    val currentHour24 = SimpleDateFormat("HH", Locale.getDefault()).format(Date())
-                    val currentHour = SimpleDateFormat("hh", Locale.getDefault()).format(Date())
+                    val hourType = if (android.text.format.DateFormat.is24HourFormat(applicationContext)) "hh" else "HH"
+                    val currentHour = SimpleDateFormat(hourType, Locale.getDefault()).format(Date())
                     val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
-                    val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-                    val currentAmPm = SimpleDateFormat("a", Locale.getDefault()).format(Date())
-                    runOnUiThread {
-                        try {
-
-                            if (utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, false)) {
-                                clock.text = "$currentHour24:$currentMinute"
-                                if ((currentSecond % 2) == 0) clock.text = "$currentHour24 $currentMinute"
-                            } else {
-                                clock.text = "$currentHour:$currentMinute"
-                                if ((currentSecond % 2) == 0) clock.text = "$currentHour $currentMinute"
-                            }
-
-                        } catch (_: Exception) { }
-                    }
+                    runOnUiThread { clock.text = "$currentHour:$currentMinute" }
                 }
-            }, 0, 1000) // 1000 milliseconds = 1 second
+            }, 0, 1000)
         } catch (_: IllegalStateException) { }
     }
 

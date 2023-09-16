@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -19,8 +22,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name="app.wristkey.AuthenticatorQRImport"></activity>
+        android:theme="@style/Wristkey">
+        <activity android:name="app.wristkey.AuthenticatorQRImport" />
 
         <activity
             android:name="app.wristkey.BitwardenJSONImport"
@@ -65,8 +68,16 @@
             android:label="Add account" />
 
         <activity
-            android:name="app.wristkey.WirelessTransfer"
-            android:label="Wireless transfer" />
+            android:name="app.wristkey.WiFiTransferActivity"
+            android:label="Wi-Fi transfer" />
+
+        <activity
+            android:name="app.wristkey.SendActivity"
+            android:label="Send" />
+
+        <activity
+            android:name="app.wristkey.ReceiveActivity"
+            android:label="Receive" />
 
         <activity
             android:name="app.wristkey.ManualEntryActivity"

@@ -23,7 +23,7 @@
             android:text="69"
             android:textAlignment="textStart"
             android:textColor="#FFFFFF"
-            android:textSize="8sp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/progressBar"
             app:layout_constraintEnd_toEndOf="@+id/progressBar"
             app:layout_constraintStart_toStartOf="@+id/progressBar"
@@ -31,7 +31,7 @@
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
+            style="@style/Widget.Material3.CircularProgressIndicator"
             android:layout_width="30dp"
             android:layout_marginStart="10dp"
             android:layout_height="wrap_content"
@@ -66,6 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="marquee"
+                android:layout_marginBottom="2.5dp"
                 android:fontFamily="@font/productsans"
                 android:maxLines="3"
                 android:singleLine="true"

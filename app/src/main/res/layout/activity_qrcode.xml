@@ -27,8 +27,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginHorizontal="7.5dp"
             android:orientation="vertical"
             android:paddingTop="15dp"
             android:paddingBottom="75dp">
@@ -58,26 +57,14 @@
 
             <View
                 android:layout_width="0dp"
-                android:layout_height="10dp"
+                android:layout_height="15dp"
                 android:layout_gravity="center_horizontal" />
 
             <Button
                 android:id="@+id/backButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/ic_prev"
-                android:drawablePadding="15dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                android:fontFamily="@font/productsans"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:paddingHorizontal="10dp"
-                android:paddingEnd="20dp"
-                android:text="Back"
-                android:textAllCaps="false" />
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_prev"
+                android:text="Back" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -89,15 +76,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:foregroundGravity="top"
-        android:max="5"
-        android:progress="3"
+        android:max="100"
+        android:progress="30"
         app:indicatorColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:trackColor="@android:color/transparent"
-        app:trackCornerRadius="50dp"
-        app:trackThickness="5.25dp" />
+        app:trackCornerRadius="100dp"
+        app:trackThickness="5dp" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/RoundTimeLeft"
@@ -106,7 +93,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="center|top"
         android:foregroundGravity="center"
-        android:progress="30"
+        android:max="100"
+        android:progress="15"
         android:scaleX="1.215"
         android:scaleY="1.215"
         app:indicatorColor="@color/white"
@@ -115,7 +103,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:trackColor="@android:color/transparent"
-        app:trackCornerRadius="50dp"
-        app:trackThickness="1.5dp" />
+        app:trackCornerRadius="100dp"
+        app:trackThickness="0.75dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

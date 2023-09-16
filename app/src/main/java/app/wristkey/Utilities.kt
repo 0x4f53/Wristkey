@@ -3,12 +3,21 @@ package app.wristkey
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.graphics.Point
 import android.media.AudioManager
 import android.media.ToneGenerator
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.wifi.WifiInfo
+import android.net.wifi.WifiManager
 import android.os.Build
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowManager
+import androidmads.library.qrgenearator.QRGContents
+import androidmads.library.qrgenearator.QRGEncoder
 import androidx.annotation.RequiresApi
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
@@ -21,6 +30,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.net.InetAddress
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -98,6 +108,30 @@ class Utilities (context: Context) {
         val counter: Long?,
         val label: String?,
     )
+
+    fun generateQrCode (qrData: String, windowManager: WindowManager): Bitmap? {
+        val display = windowManager.defaultDisplay
+        val point = Point()
+        display.getSize(point)
+        val width: Int = point.x
+        val height: Int = point.y
+        val dimensions = if (width < height) width else height
+
+        val qrEncoder = QRGEncoder(qrData, null, QRGContents.Type.TEXT, dimensions)
+        return qrEncoder.bitmap
+    }
+    @Suppress("DEPRECATION")
+    fun wiFiExists(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val networkCapabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true
+        } else {
+            val networkInfo = connectivityManager.activeNetworkInfo
+            networkInfo != null && networkInfo.type == ConnectivityManager.TYPE_WIFI
+        }
+    }
 
     fun scanQRImage(bMap: Bitmap): String {
         var contents: String
@@ -584,6 +618,29 @@ class Utilities (context: Context) {
             val toneGen1 = ToneGenerator(AudioManager.STREAM_MUSIC, 100)
             toneGen1.startTone(ToneGenerator.TONE_SUP_INTERCEPT, 150)
         } catch (_: Exception) { }
+    }
+
+    fun getLocalIpAddress(context: Context): String? {
+        try {
+            val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            val wifiInfo: WifiInfo? = wifiManager.connectionInfo
+
+            if (wifiInfo != null) {
+                val ipAddress = wifiInfo.ipAddress
+                val ipByteArray = byteArrayOf(
+                    (ipAddress and 0xFF).toByte(),
+                    (ipAddress shr 8 and 0xFF).toByte(),
+                    (ipAddress shr 16 and 0xFF).toByte(),
+                    (ipAddress shr 24 and 0xFF).toByte()
+                )
+
+                val inetAddress = InetAddress.getByAddress(ipByteArray)
+                return inetAddress.hostAddress
+            }
+        } catch (e: Exception) {
+            Log.e("IP Address", "Error getting IP address: ${e.message}")
+        }
+        return null
     }
 
 }

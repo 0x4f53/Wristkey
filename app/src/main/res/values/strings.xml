@@ -5,7 +5,7 @@
     values-round/strings.xml for round devices.
     -->
     <string name="about_app">A sexy, secure, cross-platform 2FA client.</string>
-    <string name="donation_message">I maintain this app in my free time and earn nothing from it. Your donations help me maintain my projects.\n\nTap on a button below opens it on your phone browser.</string>
+    <string name="donation_message">I maintain this app in my free time and earn nothing from it. Your donations help me maintain my projects.\n\nTap on a button below to open it on your phone browser.</string>
     <string name="bitwarden_import_blurb">To import secrets from Bitwarden, export an unencrypted Bitwarden JSON file and place it in the following directory: </string>
     <string name="authenticator_import_blurb">Export your accounts and take a picture of the QR code. Make sure it is a JPG/PNG image and place it in the following directory: </string>
     <string name="otpauth_import_blurb">Take a picture of a QR code, make sure it is a JPG/PNG image and place it in the following directory: </string>
@@ -47,5 +47,10 @@
 \n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     </string>
     <string name="settings_label">Settings</string>
+    <string name="wifi_error">Can\'t connect to Wi-Fi network. Go to your device settings and connect to one before continuing.\n\nIf your device doesn\'t support Wi-Fi, try using the ADB transfer method instead.</string>
     <string name="donate_label">Donate</string>
+    <string name="wifi_transfer_description">Use this option to transfer data between two devices, such as a phone and a smartwatch.</string>
+    <string name="send_description">Make sure both devices are on the same Wi-Fi network, then open Wristkey on the other device, select the \"Receive\" option and tap the button below to scan the QR code displayed.</string>
+    <string name="receive_description">Make sure both devices are on the same Wi-Fi network, then open Wristkey on the other device, select the \"Send\" option and scan this QR code or enter the IP shown below.</string>
+    <string name="ip_box_description">If your device doesn\'t have a camera, enter the other device\'s IP address and port in the box below.</string>
 </resources>

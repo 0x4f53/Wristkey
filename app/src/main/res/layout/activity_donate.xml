@@ -22,6 +22,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="7.5dp"
             android:paddingTop="25dp"
             android:paddingBottom="75dp"
             android:orientation="vertical">
@@ -34,7 +35,6 @@
                 android:fontFamily="@font/productsans"
                 android:gravity="center"
                 android:text="@string/donate_label"
-                android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="normal" />
 
@@ -46,82 +46,36 @@
                 android:fontFamily="@font/productsans"
                 android:gravity="center"
                 android:text="@string/donation_message"
-                android:textColor="@color/primary_text_dark"
                 android:textStyle="normal" />
 
             <Button
                 android:id="@+id/paypal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/paypal"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="25dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                android:fontFamily="@font/productsans"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:text="PayPal"
-                android:textAllCaps="false" />
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/paypal"
+                android:text="PayPal" />
 
             <Button
                 android:id="@+id/github"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/github"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="25dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                android:fontFamily="@font/productsans"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:text="GitHub Sponsors"
-                android:textAllCaps="false" />
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/github"
+                android:text="GitHub Sponsors" />
 
             <Button
                 android:id="@+id/bitcoin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/bitcoin"
-                android:drawablePadding="15dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                android:fontFamily="@font/productsans"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:paddingHorizontal="25dp"
-                android:text="Bitcoin"
-                android:textAllCaps="false" />
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/bitcoin"
+                android:text="Bitcoin" />
 
             <View
                 android:layout_width="0dp"
-                android:layout_height="10dp"
+                android:layout_height="15dp"
                 android:layout_gravity="center_horizontal" />
 
             <Button
                 android:id="@+id/backButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp"
-                android:background="@drawable/pill_shape_border"
-                android:drawableStart="@drawable/ic_prev"
-                android:drawablePadding="15dp"
-                android:paddingHorizontal="10dp"
-                android:drawableTint="?android:attr/textColorPrimary"
-                android:fontFamily="@font/productsans"
-                android:gravity="start|center_vertical"
-                android:letterSpacing="0.05"
-                android:paddingEnd="20dp"
-                android:text="Back"
-                android:textAllCaps="false" />
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_prev"
+                android:text="Back" />
 
         </LinearLayout>
     </ScrollView>
@@ -135,9 +89,10 @@
         android:gravity="center_horizontal"
         android:letterSpacing="0.075"
         android:orientation="horizontal"
-        android:background="@drawable/pill_shape_simple"
+        android:background="@drawable/pill_shape_black"
         android:paddingHorizontal="5dp"
         android:layout_marginTop="5dp"
+        android:textColor="@color/white"
         android:text="04:20"
         android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="parent"
