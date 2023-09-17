@@ -85,8 +85,19 @@ class ReceiveActivity : AppCompatActivity() {
 
         val server: NanoHTTPD = object : NanoHTTPD(ip, port) {
             override fun serve(session: IHTTPSession): Response {
-                val response = utilities.encrypt("test", "12345678")
-                return newFixedLengthResponse(response)
+                val headers = session.headers
+                val deviceName = headers["device-name"]
+
+                if (deviceName != null) {
+                    Log.d("Wristkey-server", deviceName)
+                    val response = utilities.encrypt("test", "12345678")
+                    Log.d("Wristkey-server", response.toString())
+                    return newFixedLengthResponse(response)
+                } else {
+                    stop()
+                }
+
+                return newFixedLengthResponse("This page only works with the Wristkey app.")
             }
         }
         server.start()

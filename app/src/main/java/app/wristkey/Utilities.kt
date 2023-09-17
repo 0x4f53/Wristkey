@@ -671,7 +671,7 @@ class Utilities (context: Context) {
     }
 
     fun encrypt(data: String, passphrase: String): String? {
-        val digest: MessageDigest = MessageDigest.getInstance("SHA-512")
+        val digest: MessageDigest = MessageDigest.getInstance("SHA-256")
         val sha256 = digest.digest(passphrase.toByteArray(StandardCharsets.UTF_8)) // base64-ing the payload first lets you encode things like emoji properly
 
         val hashedPassphrase: ByteArray = sha256
@@ -688,7 +688,7 @@ class Utilities (context: Context) {
 
     fun decrypt(encryptedData: String, passphrase: String): String? {
         try {
-            val digest: MessageDigest = MessageDigest.getInstance("SHA-512")
+            val digest: MessageDigest = MessageDigest.getInstance("SHA-256")
             val sha256 = digest.digest(passphrase.toByteArray(StandardCharsets.UTF_8))
 
             val secretKey: SecretKey = SecretKeySpec(sha256, "AES")
