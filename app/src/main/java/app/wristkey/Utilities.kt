@@ -11,6 +11,8 @@ import android.net.NetworkCapabilities
 import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import android.util.Base64
 import android.util.Base64.DEFAULT
 import android.util.Base64.encodeToString
@@ -23,7 +25,7 @@ import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.annotation.RequiresApi
 import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.google.zxing.*
@@ -90,15 +92,31 @@ class Utilities (context: Context) {
     val ALGO_SHA256 = "SHA256"
     val ALGO_SHA512 = "SHA512"
 
-    var masterKeyAlias: String = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+    var masterKey: MasterKey
     private val accountsFilename: String = "vault.wfs" // WristkeyFS
     var vault: SharedPreferences
 
     init {
+        masterKey = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+            .setKeyGenParameterSpec(
+                KeyGenParameterSpec.Builder (
+                    MasterKey.DEFAULT_MASTER_KEY_ALIAS,
+                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+                )
+                    .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                    .setKeySize(MasterKey.DEFAULT_AES_GCM_MASTER_KEY_SIZE)
+                    .setKeySize(256)
+                    .setDigests(KeyProperties.DIGEST_SHA512)
+                    .build()
+            )
+            .setRequestStrongBoxBacked(true)
+            .build()
+
         vault = EncryptedSharedPreferences.create (
-            accountsFilename,
-            masterKeyAlias,
             context,
+            accountsFilename,
+            masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
@@ -653,7 +671,7 @@ class Utilities (context: Context) {
     }
 
     fun encrypt(data: String, passphrase: String): String? {
-        val digest: MessageDigest = MessageDigest.getInstance("SHA-256")
+        val digest: MessageDigest = MessageDigest.getInstance("SHA-512")
         val sha256 = digest.digest(passphrase.toByteArray(StandardCharsets.UTF_8)) // base64-ing the payload first lets you encode things like emoji properly
 
         val hashedPassphrase: ByteArray = sha256
@@ -670,7 +688,7 @@ class Utilities (context: Context) {
 
     fun decrypt(encryptedData: String, passphrase: String): String? {
         try {
-            val digest: MessageDigest = MessageDigest.getInstance("SHA-256")
+            val digest: MessageDigest = MessageDigest.getInstance("SHA-512")
             val sha256 = digest.digest(passphrase.toByteArray(StandardCharsets.UTF_8))
 
             val secretKey: SecretKey = SecretKeySpec(sha256, "AES")

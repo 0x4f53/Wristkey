@@ -82,12 +82,10 @@ class ReceiveActivity : AppCompatActivity() {
         ipAndPort = findViewById(R.id.ipAndPort)
 
         ip = utilities.getLocalIpAddress(applicationContext).toString()
-        Log.d("Wristkey-Server", ip)
 
         val server: NanoHTTPD = object : NanoHTTPD(ip, port) {
             override fun serve(session: IHTTPSession): Response {
                 val response = utilities.encrypt("test", "12345678")
-                Log.d("Wristkey-Server", "Serving page...")
                 return newFixedLengthResponse(response)
             }
         }
