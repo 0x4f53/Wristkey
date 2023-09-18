@@ -16,17 +16,6 @@ Every time you switch to a major version of Wristkey, make sure to completely un
 
 Use a password / PIN / pattern screen lock to prevent unauthorized access to your codes. This can be either via a single watch screen lock, or a combined app + screen lock for an added a layer of security. Avoid using Wear OS's Ambient Mode to prevent bystanders from peeking at your 2FA codes.
 
-### Supported Versions
-
-Below are supported Wristkey versions with active support from the developer.
-
-| Version  | Supported          |
-| -------  | ------------------ |
-| v2.2     | :white_check_mark: |
-| v2.1     | :white_check_mark: |
-| v2.0     | :white_check_mark: |
-| < v2.0   | ❌ |
-
 ### Reporting a Vulnerability
 
 Security bugs are no laughing matter.
