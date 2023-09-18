@@ -3,6 +3,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        jcenter()
         maven { url "https://chaquo.com/maven" }
         maven { url 'https://jitpack.io' }
     }

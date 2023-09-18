@@ -40,188 +40,181 @@
                 android:foregroundGravity="center"
                 android:gravity="center"
                 android:text="Add Item"
-                android:textColor="@color/lightDemo"
+                android:textColor="@color/grayAccents"
                 android:textSize="16sp"
+                android:letterSpacing="0.05"
                 android:textStyle="normal" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/issuer"
-                android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Issuer"
-                app:endIconMode="none" >
+                android:hint="Issuer" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/issuerInput"
+                    style="@style/Wristkey.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/productsans"
-                    android:layout_gravity="center_horizontal"
-                    android:foregroundGravity="center_horizontal"
-                    android:gravity="center_horizontal"
-                    android:imeOptions="actionDone"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                    android:layout_height="wrap_content" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/secret"
-                android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Secret"
-                app:endIconMode="none" >
+                android:hint="Secret" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/secretInput"
+                    style="@style/Wristkey.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/productsans"
-                    android:layout_gravity="center_horizontal"
-                    android:foregroundGravity="center_horizontal"
-                    android:gravity="center_horizontal"
-                    android:imeOptions="actionDone"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                    android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/label"
-                android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Label"
-                app:endIconMode="none" >
+                android:hint="Label" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/labelInput"
+                    style="@style/Wristkey.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/productsans"
-                    android:layout_gravity="center_horizontal"
-                    android:foregroundGravity="center_horizontal"
-                    android:gravity="center_horizontal"
-                    android:imeOptions="actionDone"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                    android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
+                android:id="@+id/modeGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:orientation="vertical">
-
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
                 <TextView
-                    android:id="@+id/typeLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/productsans"
                     android:foregroundGravity="center"
                     android:gravity="center"
+                    android:text="Mode"
+                    android:layout_margin="5dp"
+                    android:letterSpacing="0.05" />
+                <CheckedTextView
+                    android:id="@+id/timerButton"
+                    style="@style/Wristkey.RadioButton"
+                    android:checked="true"
+                    android:drawableStart="@drawable/ic_outline_access_time_24"
                     android:text="Time"
-                    android:textSize="18sp" />
-
-                <SeekBar
-                    android:id="@+id/modeSeekbar"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="35dp"
-                    android:max="1"
-                    android:progress="0" />
-
+                    />
+                <CheckedTextView
+                    android:id="@+id/counterButton"
+                    style="@style/Wristkey.RadioButton"
+                    android:drawableStart="@drawable/baseline_exposure_plus_1_24"
+                    android:text="Counter"
+                    />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/Algorithm"
+                android:id="@+id/algorithmGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:orientation="vertical">
-
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
                 <TextView
-                    android:id="@+id/hashLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/productsans"
                     android:foregroundGravity="center"
                     android:gravity="center"
-                    android:text="SHA1"
-                    android:textSize="18sp" />
-
-                <SeekBar
-                    android:id="@+id/hashSeekbar"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="35dp"
-                    android:max="2"
-                    android:progress="0" />
-
+                    android:text="Algorithm"
+                    android:layout_margin="5dp"
+                    android:letterSpacing="0.05" />
+                <CheckedTextView
+                    android:id="@+id/sha1Button"
+                    style="@style/Wristkey.RadioButton"
+                    android:checked="true"
+                    android:drawableStart="@drawable/baseline_data_array_24"
+                    android:text="SHA-1"
+                    />
+                <CheckedTextView
+                    android:id="@+id/sha256Button"
+                    style="@style/Wristkey.RadioButton"
+                    android:drawableStart="@drawable/baseline_data_array_24"
+                    android:text="SHA-256"
+                    />
+                <CheckedTextView
+                    android:id="@+id/sha512Button"
+                    style="@style/Wristkey.RadioButton"
+                    android:drawableStart="@drawable/baseline_data_array_24"
+                    android:text="SHA-512"
+                    />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/Digits"
+                android:id="@+id/digitsGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:orientation="vertical">
-
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
                 <TextView
-                    android:id="@+id/lengthLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/productsans"
                     android:foregroundGravity="center"
                     android:gravity="center"
+                    android:text="Digits"
+                    android:layout_margin="5dp"
+                    android:letterSpacing="0.05" />
+                <CheckedTextView
+                    android:id="@+id/fourButton"
+                    style="@style/Wristkey.RadioButton"
+                    android:drawableStart="@drawable/baseline_dialpad_24"
+                    android:text="4 digits"
+                    />
+                <CheckedTextView
+                    android:id="@+id/sixButton"
+                    style="@style/Wristkey.RadioButton"
+                    android:checked="true"
+                    android:drawableStart="@drawable/baseline_dialpad_24"
                     android:text="6 digits"
-                    android:textSize="18sp" />
-
-                <SeekBar
-                    android:id="@+id/lengthSeekbar"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="1"
-                    android:layout_marginHorizontal="35dp"
-                    android:progress="0" />
+                    />
+                <CheckedTextView
+                    android:id="@+id/eightButton"
+                    style="@style/Wristkey.RadioButton"
+                    android:drawableStart="@drawable/baseline_dialpad_24"
+                    android:text="8 digits"
+                    />
             </LinearLayout>
 
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/productsans"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:text="Validity"
+                android:layout_margin="5dp"
+                android:letterSpacing="0.05" />
+
+            <com.google.android.material.slider.Slider
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/periodLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:fontFamily="@font/productsans"
-                    android:foregroundGravity="center"
-                    android:gravity="center"
-                    android:text="30 seconds"
-                    android:textSize="18sp" />
-
-                <SeekBar
-                    android:id="@+id/periodSeekbar"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="2"
-                    android:layout_marginHorizontal="35dp"
-                    android:progress="1" />
-
-            </LinearLayout>
+                android:layout_marginHorizontal="25dp"
+                android:stepSize="1.0"
+                android:value="30"
+                android:valueFrom="0"
+                android:valueTo="60" />
+        </LinearLayout>
 
             <Button
                 android:id="@+id/showQrCodeButton"
@@ -263,6 +256,7 @@
         android:foregroundGravity="center"
         android:gravity="center_horizontal"
         android:letterSpacing="0.075"
+        android:textColor="@color/white"
         android:orientation="horizontal"
         android:background="@drawable/pill_shape_black"
         android:paddingHorizontal="5dp"

@@ -6,10 +6,10 @@
     <color name="redAccents">#FF7575</color>
     <color name="yellowAccents">#FFBB00</color>
     <color name="darkAccents">#434343</color>
+    <color name="grayAccents">#BDBDBD</color>
 
     <color name="darkDemo">#433939</color>
     <color name="grayDemo">#5C5C5C</color>
-    <color name="lightDemo">#BDBDBD</color>
 
     <color name="darkTheme">#000000</color>
     <color name="grayTheme">#192835</color>

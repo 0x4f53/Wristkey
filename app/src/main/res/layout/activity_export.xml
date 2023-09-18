@@ -40,7 +40,7 @@
                 android:foregroundGravity="center"
                 android:gravity="center"
                 android:text="Export"
-                android:textColor="@color/lightDemo"
+                android:textColor="@color/grayAccents"
                 android:textSize="16dp"
                 android:textStyle="normal" />
 
