@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="5dp">
+
+    <LinearLayout
+        android:id="@+id/loginCard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/pill_shape_border"
+        android:orientation="horizontal">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progressBar"
+            style="@style/Widget.Material3.CircularProgressIndicator.Small"
+            app:indicatorColor="@color/white"
+            app:trackColor="@android:color/transparent"
+            app:trackCornerRadius="100dp"
+            android:max="30"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:progress="20" />
+
+        <LinearLayout
+            android:id="@+id/accountInfo"
+            android:layout_width="wrap_content"
+            android:layout_marginHorizontal="2.5dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.95"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/productsans"
+                android:letterSpacing="0.025"
+                android:singleLine="false"
+                android:text="123 456"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2.5dp"
+                android:ellipsize="marquee"
+                android:fontFamily="@font/productsans"
+                android:maxLines="3"
+                android:singleLine="true"
+                android:text="Label — email"
+                android:textAlignment="textStart"
+                android:textColor="#FFFFFF" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/counterControls"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.05"
+            android:gravity="end"
+            android:maxWidth="50dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/plus"
+                android:layout_width="wrap_content"
+
+                android:layout_height="32dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_baseline_add_24"
+                app:tint="?android:attr/textColorPrimary" />
+
+            <TextView
+                android:id="@+id/counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:fontFamily="@font/productsans"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:layout_weight="1"
+                android:text="69"
+                android:layout_gravity="center_horizontal"
+                android:textColor="#FFFFFF" />
+
+            <ImageView
+                android:id="@+id/minus"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_prev_selector"
+                android:layout_gravity="center_horizontal"
+                app:tint="?android:attr/textColorPrimary" />
+            </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

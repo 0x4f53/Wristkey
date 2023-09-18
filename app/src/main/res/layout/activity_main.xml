@@ -89,7 +89,7 @@
                 android:nestedScrollingEnabled="false"
                 tools:itemCount="1"
                 android:orientation="vertical"
-                tools:listitem="@layout/account_card"
+                tools:listitem="@layout/login_card"
                 android:layout_marginHorizontal="2.5dp" />
 
             <View

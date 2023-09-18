@@ -42,6 +42,8 @@
                 android:foregroundGravity="center"
                 android:gravity="center"
                 android:letterSpacing="0.05"
+                android:textColor="@color/grayAccents"
+                android:textSize="16sp"
                 android:text="Add data" />
 
             <Button

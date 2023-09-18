@@ -44,8 +44,8 @@
                 android:foregroundGravity="center"
                 android:gravity="center"
                 android:text="@string/settings_label"
-                android:textColor="@color/lightDemo"
-                android:textSize="16sp"
+                android:textColor="@color/grayAccents"
+                android:textSize="14sp"
                 android:textStyle="normal" />
 
             <LinearLayout
@@ -58,11 +58,12 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="30dp"
+                    android:layout_width="20dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.0075"
-                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginStart="22.5dp"
+                    android:layout_marginEnd="7.5dp"
                     android:layout_marginVertical="10dp"
                     android:src="@drawable/ic_baseline_search_24"
                     app:tint="@color/white" />
@@ -73,18 +74,19 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginVertical="15dp"
                     android:layout_marginEnd="10dp"
+                    android:textSize="14sp"
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
                     android:letterSpacing="0.05"
                     android:text="Search button"
                     android:textColor="@color/white" />
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
+                <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/searchButtonToggle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="15dp" />
+                    android:layout_marginEnd="10dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -97,11 +99,12 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="30dp"
+                    android:layout_width="20dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.0075"
-                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginStart="22.5dp"
+                    android:layout_marginEnd="7.5dp"
                     android:layout_marginVertical="10dp"
                     android:src="@drawable/ic_outline_access_time_24"
                     app:tint="@color/white" />
@@ -115,15 +118,16 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
                     android:letterSpacing="0.05"
+                    android:textSize="14sp"
                     android:text="Show clock"
                     android:textColor="@color/white" />
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
+                <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/clockButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="15dp" />
+                    android:layout_marginEnd="10dp" />
 
             </LinearLayout>
 
@@ -137,11 +141,12 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="30dp"
+                    android:layout_width="20dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.0075"
-                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginStart="22.5dp"
+                    android:layout_marginEnd="7.5dp"
                     android:layout_marginVertical="10dp"
                     android:src="@drawable/ic_outline_lock_24"
                     app:tint="@color/white" />
@@ -154,16 +159,17 @@
                     android:layout_marginEnd="10dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
+                    android:textSize="14sp"
                     android:letterSpacing="0.05"
                     android:text="App lock"
                     android:textColor="@color/white" />
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
+                <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/lockButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="15dp" />
+                    android:layout_marginEnd="10dp" />
 
             </LinearLayout>
 
@@ -177,11 +183,12 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="30dp"
+                    android:layout_width="20dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.0075"
-                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginStart="22.5dp"
+                    android:layout_marginEnd="7.5dp"
                     android:layout_marginVertical="10dp"
                     android:src="@drawable/ic_outline_access_time_24"
                     app:tint="@color/white" />
@@ -195,15 +202,16 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
                     android:letterSpacing="0.05"
+                    android:textSize="14sp"
                     android:text="Round device"
                     android:textColor="@color/white" />
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
+                <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/roundButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="15dp" />
+                    android:layout_marginEnd="10dp" />
 
             </LinearLayout>
 

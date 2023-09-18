@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.android.material.materialswitch.MaterialSwitch
 import wristkey.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -20,10 +20,10 @@ class SettingsActivity : AppCompatActivity() {
 
     private lateinit var clock: TextView
 
-    lateinit var searchButton: SwitchMaterial
-    lateinit var lockButton: SwitchMaterial
-    lateinit var clockButton: SwitchMaterial
-    lateinit var roundButton: SwitchMaterial
+    lateinit var searchButton: MaterialSwitch
+    lateinit var lockButton: MaterialSwitch
+    lateinit var clockButton: MaterialSwitch
+    lateinit var roundButton: MaterialSwitch
     lateinit var aboutButton: Button
     lateinit var backButton: Button
 

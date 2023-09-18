@@ -273,7 +273,7 @@ class MainActivity : AppCompatActivity() {
 
         @RequiresApi(Build.VERSION_CODES.M)
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : ViewHolder {  // create new views
-            val loginCard: View = LayoutInflater.from(parent.context).inflate(R.layout.account_card, parent, false)
+            val loginCard: View = LayoutInflater.from(parent.context).inflate(R.layout.login_card, parent, false)
             loginCard.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
             return ViewHolder(loginCard)
         }
@@ -293,8 +293,8 @@ class MainActivity : AppCompatActivity() {
 
             var loginString = ""
             if (!login.issuer.isNullOrBlank()) loginString = login.issuer
-            if (!login.label.isNullOrBlank()) loginString += "(${login.label})"
-            if (!login.account.isNullOrBlank()) loginString += "(${login.account})"
+            if (!login.label.isNullOrBlank()) loginString += " — ${login.label}"
+            if (!login.account.isNullOrBlank() && login.label != login.account) loginString += " (${login.account})"
 
             if (loginString.isNullOrBlank()) loginCard.label.visibility = View.GONE
             else loginCard.label.text = loginString
@@ -495,7 +495,7 @@ class MainActivity : AppCompatActivity() {
             // tap on totp / mfa / 2fa
             loginCard.code.setOnClickListener {
                 val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("Wristkey", loginCard.code.text.toString())
+                val clip = ClipData.newPlainText("Wristkey", loginCard.code.text.toString().replace(" ", ""))
                 clipboard.setPrimaryClip(clip)
                 Toast.makeText(applicationContext, "Code copied!", Toast.LENGTH_LONG).show()
             }
