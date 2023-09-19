@@ -422,7 +422,6 @@ class MainActivity : AppCompatActivity() {
                             if (currentCount+1 == 69L) Toast.makeText(applicationContext, "Nice ;)", Toast.LENGTH_SHORT).show()
 
                             val loginData = Utilities.MfaCode (
-                                type = utilities.DEFAULT_TYPE,
                                 mode = login.mode,
                                 issuer = login.issuer,
                                 account = login.account,
@@ -463,7 +462,6 @@ class MainActivity : AppCompatActivity() {
                             if (currentCount-1 == 69L) Toast.makeText(applicationContext, "Nice ;)", Toast.LENGTH_SHORT).show()
 
                             val loginData = Utilities.MfaCode (
-                                type = utilities.DEFAULT_TYPE,
                                 mode = login.mode,
                                 issuer = login.issuer,
                                 account = login.account,

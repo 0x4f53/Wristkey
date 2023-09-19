@@ -142,7 +142,7 @@ class AegisJSONImport : Activity() {
 
                 for (login in logins) {
                     importingDescription.text = "${login.issuer}"
-                    utilities.writeToVault(login, UUID.randomUUID().toString())
+                    // // utilities.writeToVault(login, UUID.randomUUID().toString())
                 }
 
                 Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
@@ -173,7 +173,7 @@ class AegisJSONImport : Activity() {
 
                         for (login in logins) {
                             importingDescription.text = "${login.issuer}"
-                            utilities.writeToVault(login, UUID.randomUUID().toString())
+                            // // utilities.writeToVault(login, UUID.randomUUID().toString())
                         }
 
                     } catch (_: Exception) {
@@ -188,7 +188,7 @@ class AegisJSONImport : Activity() {
 
                     for (login in logins) {
                         importingDescription.text = "${login.issuer}"
-                        utilities.writeToVault(login, UUID.randomUUID().toString())
+                        // utilities.writeToVault(login, UUID.randomUUID().toString())
                     }
                 }
 

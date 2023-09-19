@@ -140,8 +140,8 @@ class WristkeyImport : AppCompatActivity() {
                 logins = utilities.wfsToHashmap (JSONObject(fileData)) as HashMap<String, String>
 
                 for (login in logins) {
-                    importingDescription.text = "${utilities.decodeOTPAuthURL(login.value)?.issuer}"
-                    utilities.writeToVault(utilities.decodeOTPAuthURL(login.value)!!, login.key)
+                    importingDescription.text = "${utilities.decodeOtpAuthURL(login.value)?.issuer}"
+                    // // utilities.writeToVault(utilities.decodeOtpAuthURL(login.value)!!, login.key)
                 }
 
                 Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
@@ -170,8 +170,8 @@ class WristkeyImport : AppCompatActivity() {
                         importingDescription.performHapticFeedback(HapticFeedbackConstants.REJECT)
 
                         for (login in logins) {
-                            importingDescription.text = "${utilities.decodeOTPAuthURL(login.value)?.issuer}"
-                            utilities.writeToVault(utilities.decodeOTPAuthURL(login.value)!!, login.key)
+                            importingDescription.text = "${utilities.decodeOtpAuthURL(login.value)?.issuer}"
+                            // // utilities.writeToVault(utilities.decodeOtpAuthURL(login.value)!!, login.key)
                         }
 
                     } catch (_: Exception) {

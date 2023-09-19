@@ -182,14 +182,14 @@ class AuthenticatorQRImport : Activity() {
                 val decodedQRCodeData: String = utilities.scanQRImage(imageBitmap)
 
                 if (decodedQRCodeData.contains("otpauth-migration://") && !decodedQRCodeData.contains("otpauth://")) {
-                    logins.add(utilities.decodeOTPAuthURL(decodedQRCodeData)!!)
+                    logins.add(utilities.decodeOtpAuthURL(decodedQRCodeData)!!)
                 } else if (decodedQRCodeData.contains("otpauth://")) {
                     Toast.makeText(this, "This appears to be a regular 2FA code. Please choose that option instead.", Toast.LENGTH_LONG).show()
                 }
 
                 importingDescription.text = "${logins.size}"
                 for (login in logins) {
-                    utilities.writeToVault(login, UUID.randomUUID().toString())
+                    //// utilities.writeToVault(login, UUID.randomUUID().toString())
                 }
 
                 Toast.makeText(applicationContext, "Imported ${logins.size} account(s)", Toast.LENGTH_SHORT).show()
@@ -217,7 +217,7 @@ class AuthenticatorQRImport : Activity() {
                             val decodedQRCodeData: String = utilities.scanQRImage(imageBitmap)
 
                             if (decodedQRCodeData.contains("otpauth://") && !decodedQRCodeData.contains("otpauth-migration://"))
-                                logins. add(utilities.decodeOTPAuthURL (decodedQRCodeData)!!)
+                                logins. add(utilities.decodeOtpAuthURL (decodedQRCodeData)!!)
                             else if (decodedQRCodeData.contains("otpauth-migration://")) {
                                 Toast.makeText(this, "This appears to be a Google Authenticator export. Please choose that option instead.", Toast.LENGTH_LONG).show()
                                 break
@@ -237,7 +237,7 @@ class AuthenticatorQRImport : Activity() {
 
                     for (login in logins) {
                         importingDescription.text = "${login.issuer}"
-                        utilities.writeToVault(login, UUID.randomUUID().toString())
+                        // // utilities.writeToVault(login, UUID.randomUUID().toString())
                     }
                 }
 

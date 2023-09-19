@@ -25,11 +25,13 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:fontFamily">@font/productsans</item>
         <item name="android:letterSpacing">0.05</item>
-        <item name="android:drawablePadding">7dp</item>
+        <item name="android:drawablePadding">15dp</item>
         <item name="android:background">@drawable/pill_shape_border</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:drawableTint">@color/white</item>
         <item name="android:checkMark">?android:attr/listChoiceIndicatorSingle</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
         <item name="android:checkable">true</item>
         <item name="android:paddingStart">22.5dp</item>
         <item name="android:paddingEnd">15dp</item>
@@ -37,14 +39,22 @@
     </style>
     <style name="Wristkey.TextInputEditText">
         <item name="iconTint">@color/white</item>
+        <item name="textColor">@color/white</item>
         <item name="android:fontFamily">@font/productsans</item>
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:foregroundGravity">center_horizontal</item>
-        <item name="android:gravity">center_horizontal</item>
         <item name="android:imeOptions">actionDone</item>
         <item name="android:inputType">textEmailAddress</item>
         <item name="android:layout_width">match_parent</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:letterSpacing">0.05</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingStart">50.5dp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    <style name="Wristkey.TextInputLayout">
+        <item name="android:layout_marginStart">12.5dp</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginEnd">12.5dp</item>
+        <item name="startIconTint">@color/white</item>
     </style>
 </resources>
