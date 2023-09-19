@@ -506,7 +506,7 @@ class Utilities (context: Context) {
         val secret: String = mfaCodeObject.secret.replace(" ", "")
         val digits: String = mfaCodeObject.digits.toString()
         val period: String = mfaCodeObject.period.toString()
-        val algorithm: String = mfaCodeObject.secret.replace(" ", "").replace("-", "").uppercase()
+        val algorithm: String = mfaCodeObject.algorithm.replace(" ", "").replace("-", "").uppercase()
         val lock: String = mfaCodeObject.lock.toString()
         val counter: String = mfaCodeObject.counter.toString()
         val label: String = URLEncoder.encode(mfaCodeObject.label)
