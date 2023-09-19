@@ -37,6 +37,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.InetAddress
 import java.net.URLDecoder
+import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
@@ -67,7 +68,6 @@ class Utilities (context: Context) {
 
     val QR_TIMER_DURATION = 5
 
-    val DEFAULT_TYPE = "otpauth"
     val INTENT_QR_DATA = "INTENT_QR_DATA"
     val INTENT_QR_METADATA = "INTENT_QR_METADATA"
     val INTENT_WIPE = "INTENT_WIPE"
@@ -123,17 +123,16 @@ class Utilities (context: Context) {
     }
 
     data class MfaCode (
-        val type: String?,
-        val mode: String?,
-        val issuer: String?,
-        val account: String?,
-        val secret: String?,
-        val algorithm: String?,
-        val digits: Int?,
-        val period: Int?,
-        val lock: Boolean?,
-        val counter: Long?,
-        val label: String?,
+        val mode: String,
+        val issuer: String,
+        val account: String,
+        val secret: String,
+        val algorithm: String,
+        val digits: Int,
+        val period: Int,
+        val lock: Boolean,
+        val counter: Long,
+        val label: String,
     )
 
     fun generateQrCode (qrData: String, windowManager: WindowManager): Bitmap? {
@@ -201,7 +200,6 @@ class Utilities (context: Context) {
 
                 logins.add(
                     MfaCode (
-                        type = "otpauth",
                         mode = mode,
                         issuer = issuer,
                         account = account,
@@ -304,7 +302,7 @@ class Utilities (context: Context) {
                         val type: String = if (totp.substringAfter("://").substringBefore("/").contains("totp")) "totp" else "hotp"
                         val issuer: String = totp.substringAfterLast("otp/").substringBefore(":")
                         val account: String = totp.substringAfterLast(":").substringBefore("?")
-                        val secret: String? = if (totp.contains("secret")) totp.substringAfter("secret=").substringBefore("&") else null
+                        val secret: String = totp.substringAfter("secret=").substringBefore("&")
                         val algorithm: String = if (totp.contains("algorithm")) totp.substringAfter("algorithm=").substringBefore("&") else ALGO_SHA1
                         val digits: Int = if (totp.contains("digits")) totp.substringAfter("digits=").substringBefore("&").toInt() else 6
                         val period: Int = if (totp.contains("period")) totp.substringAfter("period=").substringBefore("&").toInt() else 30
@@ -313,7 +311,6 @@ class Utilities (context: Context) {
                         val label: String = if (totp.contains("label")) totp.substringAfter("label=").substringBefore("&") else account
                         logins.add (
                             MfaCode(
-                                type = "otpauth",
                                 mode = type,
                                 issuer = issuer,
                                 account = account,
@@ -330,7 +327,6 @@ class Utilities (context: Context) {
                     } else if (!totp.startsWith("otpauth://")) { // Google Authenticator
                         logins.add (
                             MfaCode(
-                                type = "otpauth",
                                 mode = "totp",
                                 issuer = issuer.ifBlank { "Unknown issuer" },
                                 account = username.ifBlank { "" },
@@ -373,7 +369,6 @@ class Utilities (context: Context) {
 
             logins.add (
                 MfaCode(
-                    type = "otpauth",
                     mode = type,
                     issuer = issuer,
                     account = label,
@@ -448,7 +443,6 @@ class Utilities (context: Context) {
                 if (totpSecret.isNotEmpty() && totpSecret != "null") {
                     logins.add (
                         MfaCode(
-                            type = "otpauth",
                             mode = type,
                             issuer = issuer,
                             account = username,
@@ -472,88 +466,53 @@ class Utilities (context: Context) {
 
     }
 
-    fun decodeOTPAuthURL (OTPAuthURL: String): MfaCode? {
-        val url = URLDecoder.decode(OTPAuthURL, "UTF-8")
-        if (url.contains("otpauth://")) {
-            val type: String =
-                if (url.substringBefore("://").contains("migration")) "Google Authenticator Backup"
-                else "OTP"
-            val mode: String =
-                if (url.substringAfter("://").substringBefore("/").contains("totp")) "totp"
-                else "hotp"
-            val issuer: String = url.substringAfterLast("otp/").substringBefore(":")
-            val account: String = url.substringAfterLast(":").substringBefore("?")
-            val secret: String? = if (url.contains("secret=")) url.substringAfter("secret=").substringBefore("&") else null
-            val algorithm: String? = if (url.contains("algorithm=")) url.substringAfter("algorithm=").substringBefore("&") else ALGO_SHA1
-            val digits: Int? = if (url.contains("digits=")) url.substringAfter("digits=").substringBefore("&").toInt() else 6
-            val period: Int? = if (url.contains("period=")) url.substringAfter("period=").substring(0, 2).toInt() else 30
-            val lock: Boolean? = if (url.contains("lock=")) url.substringAfter("lock=").substringBefore("&").toBoolean() else false
-            val counter: Long? = if (url.contains("counter=")) url.substringAfter("counter=").substringBefore("&").toLong() else 0
-            val label: String? = if (url.contains("label=")) url.substringAfter("label=").substringBefore("&") else account
+    fun decodeOtpAuthURL(otpAuthURL: String): MfaCode? {
+        return try {
+            val decodedURL = URLDecoder.decode(otpAuthURL, "UTF-8")
 
-            return MfaCode(
-                type = type,
-                mode = mode,
-                issuer = issuer,
-                account = account,
-                secret = secret,
-                algorithm = algorithm,
-                digits = digits,
-                period = period,
-                lock = lock,
-                counter = counter,
-                label = label,
-            )
-        } else {
-            return null
-        }
+            val parts = decodedURL.split("?")
+            if (parts.size != 2) return null
+
+            val params = parts[1].split("&")
+            val paramMap = mutableMapOf<String, String>()
+
+            for (param in params) {
+                val keyValue = param.split("=")
+                if (keyValue.size == 2) paramMap[keyValue[0]] = keyValue[1]
+            }
+
+            val mode = if (parts[0].substringAfterLast("/") == "hotp") MFA_COUNTER_MODE else MFA_TIME_MODE
+            val account = parts[0].substringBefore(":")
+            val issuer = paramMap["issuer"] ?: account
+            val secret = paramMap["secret"]
+            val algorithm = paramMap["algorithm"] ?: ALGO_SHA1
+            val digits = paramMap["digits"]?.toIntOrNull() ?: 6 // Default to 6 digits
+            val period = paramMap["period"]?.toIntOrNull() ?: 30 // Default to 30 seconds
+            val lock = paramMap["lock"]?.toBoolean() ?: false // Default to false
+            val counter = paramMap["counter"]?.toLongOrNull()
+            val label = paramMap["label"]
+
+            // Create and return the MfaCode object
+            MfaCode(mode, issuer, account, secret ?: "", algorithm, digits, period, lock, counter ?: 0, label ?: "")
+        } catch (e: Exception) { null }
     }
 
-    fun encodeOTPAuthURL (mfaCodeObject: MfaCode): String? {
-        lateinit var type: String
-        lateinit var issuer: String
-        lateinit var account: String
-        lateinit var secret: String
+    fun encodeOtpAuthURL (mfaCodeObject: MfaCode): String {
+        // TOTPs: otpauth://totp/Google%20LLC%2E:me%400x4f.in?secret=ASDFGHJKL&issuer=Google&algorithm=SHA1&digits=6&period=30&counter=0&label=Work
+        // HOTPs: otpauth://hotp/GitHub%20Inc%2E:me%400x4f.in?secret=QWERTYUIOP&issuer=GitHub&algorithm=SHA1&digits=6&counter=10
 
-        if (mfaCodeObject.type.toString().isNotEmpty())
-            type = if (mfaCodeObject.type.toString().lowercase().contains("backup") || mfaCodeObject.type.toString().lowercase().contains("migration")) "otpauth-migration" else "otpauth"
-        else return null
+        var issuer: String = URLEncoder.encode(mfaCodeObject.issuer)
+        var account: String = URLEncoder.encode(mfaCodeObject.account)
+        val secret: String = mfaCodeObject.secret.replace(" ", "")
+        val digits: String = mfaCodeObject.digits.toString()
+        val period: String = mfaCodeObject.period.toString()
+        val algorithm: String = mfaCodeObject.secret.replace(" ", "").replace("-", "").uppercase()
+        val lock: String = mfaCodeObject.lock.toString()
+        val counter: String = mfaCodeObject.counter.toString()
+        val label: String = URLEncoder.encode(mfaCodeObject.label)
 
-        val mode: String = if (mfaCodeObject.mode.toString().isNotEmpty())
-            if (mfaCodeObject.mode.toString().lowercase().contains("time") || mfaCodeObject.mode.toString().contains("totp")) "totp" else "hotp"
-        else "totp"
-
-        account = mfaCodeObject.account.toString().ifEmpty { "" }
-
-        issuer = mfaCodeObject.issuer.toString().ifEmpty { account }
-
-        if (mfaCodeObject.secret.toString().isNotEmpty())
-            secret = mfaCodeObject.secret.toString().trim().trim().replace(" ", "")
-        else return null
-
-        val algorithm: String = mfaCodeObject.algorithm.toString().ifEmpty { "SHA1" }
-
-        val digits: String = mfaCodeObject.digits.toString().ifEmpty { "6" }
-
-        val period: String = mfaCodeObject.period.toString().ifEmpty { "30" }
-
-        val lock: String = mfaCodeObject.lock.toString().ifEmpty { "false" }
-
-        val counter: String = mfaCodeObject.counter.toString().ifEmpty { "0" }
-
-        val label: String = mfaCodeObject.label.toString().ifEmpty { "" }
-
-        return "$type://$mode/$issuer:$account?secret=$secret&algorithm=$algorithm&digits=$digits&period=$period&lock=$lock&counter=$counter&label=$label"
-    }
-
-    fun writeToVault (mfaCodeObject: MfaCode, uuid4: String): Boolean {
-        val mfaCodeObjectAsString = encodeOTPAuthURL (mfaCodeObject = mfaCodeObject)
-        val data = getLogins()
-
-        vault.edit().remove(uuid4).commit()
-        vault.edit().putString(uuid4, mfaCodeObjectAsString).commit()
-
-        return true
+        return if (mfaCodeObject.mode.lowercase().contains(MFA_TIME_MODE)) "otpauth://${mfaCodeObject.mode}/$issuer:$account?secret=$secret&algorithm=$algorithm&digits=$digits&period=$period&lock=$lock&label=$label"
+        else "otpauth://${MFA_COUNTER_MODE}/$issuer:$account?secret=$secret&algorithm=$algorithm&digits=$digits&counter=$counter&lock=$lock&label=$label"
     }
 
     fun deleteFromVault (uuid4: String): Boolean {
@@ -568,19 +527,19 @@ class Utilities (context: Context) {
         return true
     }
 
-    fun getUuid (login: MfaCode): String? {
+    fun getUuid (login: Utilities.MfaCode): String? {
         val items  = getVaultLoginsOnly()
         for ((key, value) in items) if (value.contains(login.secret.toString())) return key
         return null
     }
 
-    fun getLogin (uuid: String): MfaCode? {
+    fun getLogin (uuid: String): Utilities.MfaCode? {
         val items  = vault.all
-        var value: MfaCode? = null
+        var value: Utilities.MfaCode? = null
 
         for (item in items) {
             try {
-                value = decodeOTPAuthURL(item.value as String) as MfaCode
+                value = decodeOtpAuthURL(item.value as String) as Utilities.MfaCode
                 if (item.key == uuid) return value
             } catch (_: Exception) { }
         }
@@ -588,7 +547,7 @@ class Utilities (context: Context) {
         return value
     }
 
-    fun overwriteLogin (oldLogin: MfaCode, newLogin: MfaCode): Boolean {
+    fun overwriteLogin (oldLogin: Utilities.MfaCode, newLogin: Utilities.MfaCode): Boolean {
 
         val items  = vault.all
         var key: String? = null
@@ -601,15 +560,15 @@ class Utilities (context: Context) {
             }
         }
 
-        vault.edit().putString(key, encodeOTPAuthURL(newLogin)).apply()
+        vault.edit().putString(key, encodeOtpAuthURL(newLogin)).apply()
 
         return true
     }
 
-    fun getVault (): List<MfaCode> {
+    fun getVault (): List<Utilities.MfaCode> {
         var vault = vault.all.values.toList()
-        if (vault.isEmpty()) vault = mutableListOf<MfaCode>()
-        return vault as MutableList<MfaCode>
+        if (vault.isEmpty()) vault = mutableListOf<Utilities.MfaCode>()
+        return vault as MutableList<Utilities.MfaCode>
     }
 
     fun getVaultLoginsOnly (): Map<String, String> {
@@ -624,16 +583,16 @@ class Utilities (context: Context) {
         return finalVault
     }
 
-    fun getLogins (): List<MfaCode> {
+    fun getLogins (): List<Utilities.MfaCode> {
         val items  = vault.all
-        val logins = mutableListOf<MfaCode>()
+        val logins = mutableListOf<Utilities.MfaCode>()
         var key: String? = null
 
         for (item in items) {
             key = item.key
             try {
                 val uuid = UUID.fromString(item.key as String)
-                logins.add(decodeOTPAuthURL(item.value as String)!!)
+                logins.add(decodeOtpAuthURL(item.value as String)!!)
             } catch (_: IllegalArgumentException) { }
         }
 

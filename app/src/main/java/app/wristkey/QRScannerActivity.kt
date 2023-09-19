@@ -64,8 +64,8 @@ class QRScannerActivity : AppCompatActivity() {
             && !scanData.contains("otpauth-migration://")
             && scanData.contains("secret=")
         ) {
-            Toast.makeText(this, "Saving \"${utilities.decodeOTPAuthURL(scanData)?.issuer}\"", Toast.LENGTH_LONG).show()
-            utilities.writeToVault(utilities.decodeOTPAuthURL(scanData)!!, UUID.randomUUID().toString())
+            Toast.makeText(this, "Saving \"${utilities.decodeOtpAuthURL(scanData)?.issuer}\"", Toast.LENGTH_LONG).show()
+            //// utilities.writeToVault(utilities.decodeOtpAuthURL(scanData)!!, UUID.randomUUID().toString())
             scannerView.performHapticFeedback(HapticFeedbackConstants.REJECT)
             finishAffinity()
             startActivity(Intent(applicationContext, MainActivity::class.java))
@@ -83,7 +83,7 @@ class QRScannerActivity : AppCompatActivity() {
             val logins = utilities.authenticatorToWristkey(scanData)
             Toast.makeText(this, "Saving login(s)", Toast.LENGTH_LONG).show()
             for (login in logins) {
-                utilities.writeToVault(login, UUID.randomUUID().toString())
+                //// utilities.writeToVault(login, UUID.randomUUID().toString())
             }
             scannerView.performHapticFeedback(HapticFeedbackConstants.REJECT)
             finishAffinity()

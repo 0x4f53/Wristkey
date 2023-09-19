@@ -49,7 +49,9 @@
                 android:id="@+id/issuer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Issuer" >
+                android:hint="Issuer"
+                style="@style/Wristkey.TextInputLayout"
+                app:startIconDrawable="@drawable/outline_factory_24" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/issuerInput"
@@ -61,9 +63,11 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/secret"
+                style="@style/Wristkey.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Secret" >
+                android:hint="Secret"
+                app:startIconDrawable="@drawable/outline_password_24" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/secretInput"
@@ -73,10 +77,28 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/account"
+                android:layout_width="match_parent"
+                style="@style/Wristkey.TextInputLayout"
+                android:layout_height="wrap_content"
+                android:hint="Account"
+                app:startIconDrawable="@drawable/outline_account_circle_24" >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/accountInput"
+                    style="@style/Wristkey.TextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Label" >
+                app:startIconTint="@color/white"
+                style="@style/Wristkey.TextInputLayout"
+                android:hint="Label"
+                app:startIconDrawable="@drawable/outline_label_24" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/labelInput"
@@ -102,18 +124,81 @@
                     android:layout_margin="5dp"
                     android:letterSpacing="0.05" />
                 <CheckedTextView
-                    android:id="@+id/timerButton"
+                    android:id="@+id/timeButton"
                     style="@style/Wristkey.RadioButton"
                     android:checked="true"
                     android:drawableStart="@drawable/ic_outline_access_time_24"
                     android:text="Time"
                     />
+
                 <CheckedTextView
                     android:id="@+id/counterButton"
                     style="@style/Wristkey.RadioButton"
                     android:drawableStart="@drawable/baseline_exposure_plus_1_24"
                     android:text="Counter"
                     />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/counter"
+                    style="@style/Wristkey.TextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Count"
+                    app:startIconDrawable="@drawable/outline_add_circle_outline_24" >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/counterInput"
+                        style="@style/Wristkey.TextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="0" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/validityGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+                    <TextView
+                        android:id="@+id/validityLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center"
+                        android:gravity="center"
+                        android:text="Validity"
+                        android:layout_margin="5dp"
+                        android:letterSpacing="0.05" />
+
+                    <TextView
+                        android:id="@+id/periodText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:letterSpacing="0.05"
+                        android:text="30" />
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/periodSlider"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="25dp"
+                        app:tickVisible="false"
+                        android:stepSize="1.0"
+                        android:value="30"
+                        android:valueFrom="1"
+                        android:valueTo="59" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -190,44 +275,6 @@
                     />
             </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="10dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/productsans"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                android:text="Validity"
-                android:layout_margin="5dp"
-                android:letterSpacing="0.05" />
-
-            <com.google.android.material.slider.Slider
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="25dp"
-                android:stepSize="1.0"
-                android:value="30"
-                android:valueFrom="0"
-                android:valueTo="60" />
-        </LinearLayout>
-
-            <Button
-                android:id="@+id/showQrCodeButton"
-                app:icon="@drawable/ic_outline_qr_code_2_24"
-                style="@style/Wristkey.Button"
-                android:text="Show QR Code" />
-
-            <Button
-                android:id="@+id/deleteButton"
-                style="@style/Wristkey.Button"
-                app:icon="@drawable/ic_outline_delete_24"
-                android:text="Delete" />
-
             <Button
                 android:id="@+id/doneButton"
                 style="@style/Wristkey.Button"
@@ -244,6 +291,12 @@
                 style="@style/Wristkey.Button"
                 app:icon="@drawable/ic_prev"
                 android:text="Back" />
+
+            <Button
+                android:id="@+id/deleteButton"
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_outline_delete_24"
+                android:text="Delete" />
 
         </LinearLayout>
     </ScrollView>

@@ -84,24 +84,20 @@
                     android:layout_gravity="center_horizontal"
                     android:hint="192.168.xxx.xxx:xxxxx"
                     android:maxEms="21"
+                app:startIconDrawable="@drawable/baseline_wifi_24"
                     app:endIconMode="none"
                     android:layout_marginBottom="10dp" >
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/searchBoxInput"
+                        style="@style/Wristkey.TextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
                         android:digits="0123456789:htpsHTPS/."
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_horizontal"
-                        android:gravity="center_horizontal"
                         android:imeOptions="actionDone"
                         android:inputType="textFilter"
                         android:maxLines="1"
-                        android:minWidth="200dp"
-                        android:singleLine="true"
-                        android:textCursorDrawable="@null" />
+                        android:minWidth="250dp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             <View
