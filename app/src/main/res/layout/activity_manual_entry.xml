@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 app:startIconTint="@color/white"
                 style="@style/Wristkey.TextInputLayout"
-                android:hint="Label"
+                android:hint="Label (optional)"
                 app:startIconDrawable="@drawable/outline_label_24" >
 
                 <com.google.android.material.textfield.TextInputEditText

@@ -2,6 +2,7 @@ package app.wristkey
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.media.AudioManager
@@ -67,7 +68,7 @@ class Utilities (context: Context) {
     val AUTHENTICATOR_EXPORT_SCAN_CODE = "AUTHENTICATOR_EXPORT_SCAN_CODE"
     val QR_CODE_SCAN_REQUEST = "QR_CODE_SCAN_REQUEST"
 
-    val INTENT_WIFI_TRANSFER_PAYLOAD = "INTENT_WIFI_TRANSFER_PAYLOAD"
+    val INTENT_WIFI_IP = "INTENT_WIFI_IP"
 
     val context = context
 
@@ -148,12 +149,19 @@ class Utilities (context: Context) {
         val label: String,
     )
 
+    fun isIp (string: String): Boolean {
+        if (string.contains("0.0.") || string.contains("10.0.")) return false
+        return """^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}$""".toRegex().matches(string)
+    }
+    fun hasCamera(): Boolean {
+        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
+    }
     fun generateQrCode (qrData: String, windowManager: WindowManager): Bitmap? {
         val display = windowManager.defaultDisplay
         val point = Point()
         display.getSize(point)
-        val width: Int = point.x
-        val height: Int = point.y
+        val width: Int = point.x + 150
+        val height: Int = point.y + 150
         val dimensions = if (width < height) width else height
 
         val qrEncoder = QRGEncoder(qrData, null, QRGContents.Type.TEXT, dimensions)

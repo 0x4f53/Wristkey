@@ -42,6 +42,10 @@
             android:label="@string/title_activity_receive_decrypt" />
 
         <activity
+            android:name="app.wristkey.EncryptSendActivity"
+            android:label="@string/title_activity_encrypt_send" />
+
+        <activity
             android:name="app.wristkey.AndOtpJSONImport"
             android:label="@string/title_activity_andotp_import" />
 

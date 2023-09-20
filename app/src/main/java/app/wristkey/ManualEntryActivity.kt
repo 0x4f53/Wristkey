@@ -11,8 +11,8 @@ import android.widget.CheckedTextView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -200,27 +200,24 @@ class ManualEntryActivity : AppCompatActivity() {
         doneButton.setOnClickListener {
 
             if (issuerInput.length() <= 1) {
-                MaterialAlertDialogBuilder(this@ManualEntryActivity)
-                    .setTitle("Invalid issuer name")
-                    .setMessage("Please enter the issuer's name")
+                AlertDialog.Builder(this@ManualEntryActivity)
+                    .setMessage(getString(R.string.issuer_empty))
                     .setPositiveButton("Go back", null)
                     .create().show()
                 return@setOnClickListener
             }
 
             if (accountInput.length() <= 2) {
-                MaterialAlertDialogBuilder(this@ManualEntryActivity)
-                    .setTitle("Invalid label")
-                    .setMessage("This could be your username")
+                AlertDialog.Builder(this@ManualEntryActivity)
+                    .setMessage(R.string.account_empty)
                     .setPositiveButton("Go back", null)
                     .create().show()
                 return@setOnClickListener
             }
 
             if (secretInput.length() <= 7) {
-                MaterialAlertDialogBuilder(this@ManualEntryActivity)
-                    .setTitle("Invalid secret")
-                    .setMessage("This secret is too short")
+                AlertDialog.Builder(this@ManualEntryActivity)
+                    .setMessage(R.string.secret_empty)
                     .setPositiveButton("Go back", null)
                     .create().show()
                 return@setOnClickListener
@@ -251,9 +248,8 @@ class ManualEntryActivity : AppCompatActivity() {
 
         backButton.setOnClickListener {
             if (secretInput.text!!.isNotEmpty() || issuerInput.text!!.isNotEmpty() || labelInput.text!!.isNotEmpty()) {
-                MaterialAlertDialogBuilder(this@ManualEntryActivity)
-                    .setTitle("Go back")
-                    .setMessage("Discard changes and go back?")
+                AlertDialog.Builder(this@ManualEntryActivity)
+                    .setMessage(R.string.go_back)
                     .setPositiveButton("Keep editing", null)
                     .setNegativeButton("Discard") { _, _ -> finish() }
                     .create().show()
@@ -274,9 +270,8 @@ class ManualEntryActivity : AppCompatActivity() {
         deleteButton.visibility = View.VISIBLE
 
         deleteButton.setOnClickListener {
-            MaterialAlertDialogBuilder(this@ManualEntryActivity)
-                .setTitle("Delete")
-                .setMessage("Would you like to delete this item?")
+            AlertDialog.Builder(this@ManualEntryActivity)
+                .setMessage(R.string.delete)
                 .setPositiveButton("Yes, delete", null)
                 .setPositiveButton("Back", null)
                 .create().show()

@@ -99,20 +99,12 @@ class AuthenticatorQRImport : Activity() {
     }
 
     // Function to check and request permission.
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun checkPermission(permission: String, requestCode: Int) {
-        if (ContextCompat.checkSelfPermission(this@AuthenticatorQRImport, permission) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this@AuthenticatorQRImport, arrayOf(permission), requestCode)
-        } else {
+        if (ContextCompat.checkSelfPermission(this@AuthenticatorQRImport, permission) == PackageManager.PERMISSION_DENIED) ActivityCompat.requestPermissions(this@AuthenticatorQRImport, arrayOf(permission), requestCode)
+        else {
             when (requestCode) {
-                utilities.FILES_REQUEST_CODE -> {
-                    initializeScanUI(null)
-                }
-
-                utilities.CAMERA_REQUEST_CODE -> {
-                    startScannerUI()
-                }
-
+                utilities.FILES_REQUEST_CODE -> initializeScanUI(null)
+                utilities.CAMERA_REQUEST_CODE -> startScannerUI()
             }
         }
     }
@@ -159,8 +151,7 @@ class AuthenticatorQRImport : Activity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun startScannerUI () {
         val intent = Intent (applicationContext, QRScannerActivity::class.java)
-        intent.putExtra (utilities.QR_CODE_SCAN_REQUEST, utilities.AUTHENTICATOR_EXPORT_SCAN_CODE)
-        startActivity(intent)
+        startActivityForResult(intent, utilities.CAMERA_REQUEST_CODE)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

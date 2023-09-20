@@ -9,8 +9,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.zxing.WriterException
 import fi.iki.elonen.NanoHTTPD
 import wristkey.R
@@ -29,7 +29,7 @@ class ReceiveActivity : AppCompatActivity() {
 
     private lateinit var server: NanoHTTPD
     private var ip = "192.168.xxx.xxx"
-    private var port = 8080
+    private var port = 4200
 
     private lateinit var backButton: Button
 
@@ -85,6 +85,7 @@ class ReceiveActivity : AppCompatActivity() {
         ipAndPort = findViewById(R.id.ipAndPort)
 
         ip = utilities.getLocalIpAddress(applicationContext).toString()
+        port = (1000..9999).random()
 
         val server: NanoHTTPD = object : NanoHTTPD(ip, port) {
             override fun serve(session: IHTTPSession): Response {
@@ -95,20 +96,19 @@ class ReceiveActivity : AppCompatActivity() {
                     if (!deviceName.isNullOrBlank()) {
                         runOnUiThread {
                             ipAndPort.performHapticFeedback(HapticGenerator.SUCCESS)
-                            MaterialAlertDialogBuilder(this@ReceiveActivity)
-                                .setTitle("Connection request")
+                            AlertDialog.Builder(this@ReceiveActivity)
                                 .setMessage("${getString(R.string.wifi_connection_request)} $deviceName?")
                                 .setPositiveButton("Allow") { _, _ ->
                                     val intent = Intent(this@ReceiveActivity, ReceiveDecryptActivity::class.java)
-                                    intent.putExtra(utilities.INTENT_WIFI_TRANSFER_PAYLOAD, data)
+                                    intent.putExtra(utilities.INTENT_WIFI_IP, data)
                                     startActivity(intent)
-                                    stop()
                                     finish()
+                                    stop()
                                 }
                                 .setNegativeButton("Deny") { _, _ ->
                                     Toast.makeText(applicationContext, "Transfer canceled", Toast.LENGTH_SHORT).show()
-                                    stop()
                                     finish()
+                                    stop()
                                 }
                                 .setCancelable(false).create().show()
                         }

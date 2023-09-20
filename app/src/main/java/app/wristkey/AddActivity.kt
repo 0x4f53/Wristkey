@@ -7,9 +7,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import wristkey.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,7 +22,6 @@ class AddActivity : AppCompatActivity() {
 
     private lateinit var manualEntry: Button
     private lateinit var wifiTransfer: Button
-    private lateinit var backupFileButton: CardView
     private lateinit var scanQRCode: Button
 
     private lateinit var backButton: Button
@@ -77,7 +75,6 @@ class AddActivity : AppCompatActivity() {
 
         manualEntry = findViewById (R.id.manualEntry)
         wifiTransfer = findViewById (R.id.wifiTransfer)
-        backupFileButton = findViewById (R.id.backupFileButton)
         scanQRCode = findViewById (R.id.scanQrCode)
 
         backButton = findViewById (R.id.backButton)
@@ -88,22 +85,17 @@ class AddActivity : AppCompatActivity() {
         }
 
         wifiTransfer.setOnClickListener {
-            if (utilities.wiFiExists(applicationContext)) startActivity(Intent(applicationContext, WiFiTransferActivity::class.java))
-            else {
+            if (utilities.wiFiExists(applicationContext)) {
+                startActivity(Intent(applicationContext, WiFiTransferActivity::class.java))
+                finish()
+            } else {
                 wifiTransfer.performHapticFeedback(HapticGenerator.ERROR)
-                MaterialAlertDialogBuilder(this@AddActivity)
-                    .setTitle("No Wi-Fi")
+                AlertDialog.Builder(this@AddActivity)
                     .setMessage(getString(R.string.wifi_error))
                     .setPositiveButton("Back", null)
                     .setCancelable(false)
                     .create().show()
             }
-            finish()
-        }
-
-        backupFileButton.setOnClickListener {
-            startActivity(Intent(applicationContext, WristkeyImport::class.java))
-            finish()
         }
 
         scanQRCode.setOnClickListener {

@@ -1,9 +1,9 @@
 package app.wristkey
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.HapticFeedbackConstants
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -16,8 +16,6 @@ class QRScannerActivity : AppCompatActivity() {
 
     private lateinit var scannerView: CodeScannerView
 
-    private lateinit var scanType: String
-
     lateinit var utilities: Utilities
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -26,7 +24,6 @@ class QRScannerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_qr_scanner)
 
         utilities = Utilities(applicationContext)
-        scanType = intent.getStringExtra(utilities.QR_CODE_SCAN_REQUEST)!!
 
         scannerView = findViewById(R.id.scanner_view)
         codeScanner = CodeScanner(this, scannerView)
@@ -39,8 +36,10 @@ class QRScannerActivity : AppCompatActivity() {
 
         codeScanner.decodeCallback = DecodeCallback {
             runOnUiThread {
-                if (scanType == utilities.OTPAUTH_SCAN_CODE) _2faScan(it.text)
-                else if (scanType == utilities.AUTHENTICATOR_EXPORT_SCAN_CODE) authenticatorExportScan(it.text)
+                it.text
+                val resultIntent = Intent()
+                resultIntent.putExtra(utilities.QR_CODE_SCAN_REQUEST, it.text)
+                setResult(Activity.RESULT_OK, resultIntent)
                 finish()
             }
         }
@@ -55,42 +54,6 @@ class QRScannerActivity : AppCompatActivity() {
             codeScanner.startPreview()
         }
 
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun _2faScan (scanData: String) {
-        if (
-            scanData.contains("otpauth://")
-            && !scanData.contains("otpauth-migration://")
-            && scanData.contains("secret=")
-        ) {
-            Toast.makeText(this, "Saving \"${utilities.decodeOtpAuthURL(scanData)?.issuer}\"", Toast.LENGTH_LONG).show()
-            //// utilities.writeToVault(utilities.decodeOtpAuthURL(scanData)!!, UUID.randomUUID().toString())
-            scannerView.performHapticFeedback(HapticFeedbackConstants.REJECT)
-            finishAffinity()
-            startActivity(Intent(applicationContext, MainActivity::class.java))
-        } else {
-            Toast.makeText(this, "This QR code is invalid", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun authenticatorExportScan (scanData: String) {
-        if (
-            !scanData.contains("otpauth://")
-            && scanData.contains("otpauth-migration://")
-        ) {
-            val logins = utilities.authenticatorToWristkey(scanData)
-            Toast.makeText(this, "Saving login(s)", Toast.LENGTH_LONG).show()
-            for (login in logins) {
-                //// utilities.writeToVault(login, UUID.randomUUID().toString())
-            }
-            scannerView.performHapticFeedback(HapticFeedbackConstants.REJECT)
-            finishAffinity()
-            startActivity(Intent(applicationContext, MainActivity::class.java))
-        } else {
-            Toast.makeText(this, "This QR code is invalid", Toast.LENGTH_LONG).show()
-        }
     }
 
     override fun onResume() {
