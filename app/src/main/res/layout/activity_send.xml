@@ -46,6 +46,7 @@
                 android:textStyle="normal" />
 
             <TextView
+                android:id="@+id/scanQrCodeDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -56,29 +57,13 @@
                 android:textStyle="normal" />
 
             <Button
-                android:id="@+id/send"
+                android:id="@+id/scanQrCode"
                 style="@style/Wristkey.Button"
                 android:text="Scan code"
                 app:icon="@drawable/ic_baseline_qr_code_scanner_24" />
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="15dp"
-                android:layout_gravity="center_horizontal" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginVertical="5dp"
-                android:fontFamily="@font/productsans"
-                android:gravity="center"
-                android:text="@string/ip_box_description"
-                android:textStyle="normal" />
-
             <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/searchBox"
+                    android:id="@+id/ipLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -89,7 +74,7 @@
                     android:layout_marginBottom="10dp" >
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/searchBoxInput"
+                        android:id="@+id/ipInput"
                         style="@style/Wristkey.TextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

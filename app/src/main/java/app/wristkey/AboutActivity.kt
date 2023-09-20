@@ -12,8 +12,8 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.wearable.intent.RemoteIntent
 import wristkey.BuildConfig
 import wristkey.R
@@ -113,8 +113,7 @@ class AboutActivity : AppCompatActivity() {
 
         licenseButton = findViewById(R.id.licenseButton)
         licenseButton.setOnClickListener {
-            MaterialAlertDialogBuilder(this@AboutActivity)
-                .setTitle("MIT License")
+            AlertDialog.Builder(this@AboutActivity)
                 .setMessage(getString(R.string.copyright))
                 .setPositiveButton("Back", null)
                 .setCancelable(true)

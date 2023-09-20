@@ -1,7 +1,6 @@
 package app.wristkey
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.Button
@@ -33,7 +32,7 @@ class ReceiveDecryptActivity : AppCompatActivity() {
         setContentView(R.layout.activity_receive_decrypt)
         utilities = Utilities(applicationContext)
 
-        if (intent != null) payload = intent.getStringExtra(utilities.INTENT_WIFI_TRANSFER_PAYLOAD).toString()
+        if (intent != null) payload = intent.getStringExtra(utilities.INTENT_WIFI_IP).toString()
 
         timer = Timer()
         initializeUI()
@@ -79,19 +78,25 @@ class ReceiveDecryptActivity : AppCompatActivity() {
         otp = findViewById(R.id.otp)
         otpInput = findViewById(R.id.otpInput)
 
+        var attempts = 0
         otpInput.addTextChangedListener { s ->
             if (s?.length == 6) {
                 val decryptedData = utilities.decrypt(payload, s.toString())
                 if (decryptedData != null) {
-                    Log.d ("WRISTKEY-decryptTest", "Received -> $payload")
-                    Log.d ("WRISTKEY-decryptTest", "Decrypted -> $decryptedData")
-                    utilities.db.edit().putString(utilities.DATA_STORE, decryptedData)
+                    utilities.db.edit().putString(utilities.DATA_STORE, decryptedData).apply()
                     Toast.makeText(applicationContext, "Transfer complete! :)", Toast.LENGTH_LONG).show()
                     startActivity(Intent(applicationContext, MainActivity::class.java))
                     finish()
                 } else {
-                    otp.error = "Invalid OTP entered!"
+                    if (attempts == 10) {
+                        Toast.makeText(applicationContext, "Too many attempts. Please try again!", Toast.LENGTH_LONG).show()
+                        startActivity(Intent(applicationContext, MainActivity::class.java))
+                        finish()
+                    }
+                    otp.error = "Incorrect OTP!"
                     otp.performHapticFeedback(HapticFeedbackConstants.REJECT)
+                    otpInput.text?.clear()
+                    attempts++
                 }
             } else {
                 otp.error = null
