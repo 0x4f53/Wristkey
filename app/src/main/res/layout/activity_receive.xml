@@ -57,15 +57,12 @@
 
             <ImageView
                 android:id="@+id/qrCode"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="5dp"
-                android:scaleX="1.5"
-                android:scaleY="1.5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:backgroundTint="@color/white"
-                android:tintMode="multiply" />
+                android:tintMode="multiply"
+                android:contentDescription="@string/qrCode_content_description_receiver" />
 
             <TextView
                 android:id="@+id/ipAndPort"

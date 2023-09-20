@@ -93,11 +93,13 @@
                         style="@style/Wristkey.TextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:digits="0123456789:htpsHTPS/."
+                        android:digits="0123456789:."
+                        android:fontFamily="@font/sfmono"
+                        android:maxLength="21"
                         android:imeOptions="actionDone"
                         android:inputType="textFilter"
                         android:maxLines="1"
-                        android:minWidth="250dp" />
+                        android:minWidth="300dp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             <View

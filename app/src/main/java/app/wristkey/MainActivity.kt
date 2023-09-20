@@ -51,9 +51,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var addAccountButton: Button
     private lateinit var settingsButton: Button
 
-    private lateinit var vault: List<Utilities.MfaCode>
-    private lateinit var keys: List<String>
-
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,9 +58,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         utilities = Utilities (applicationContext)
-
-        vault = utilities.getVault()
-        keys = utilities.vault.all.keys.toList()
 
         timer = Timer()
 
@@ -120,16 +114,16 @@ class MainActivity : AppCompatActivity() {
 
             searchBoxInput.doOnTextChanged { text, start, before, count ->
 
-                val logins = utilities.searchLogins(text.toString(), utilities.getLogins().toMutableList())
+                // val logins = utilities.searchLogins(text.toString(), utilities.getLogins().toMutableList())
 
-                val adapter = LoginsAdapter(logins)
+                // val adapter = LoginsAdapter(logins)
 
                 loginsRecycler.layoutManager = LinearLayoutManager(this@MainActivity)
-                loginsRecycler.adapter = adapter
+                // loginsRecycler.adapter = adapter
                 loginsRecycler.invalidate()
                 loginsRecycler.refreshDrawableState()
                 loginsRecycler.scheduleLayoutAnimation()
-                loginsRecycler.setItemViewCacheSize(vault.size)
+                // loginsRecycler.setItemViewCacheSize(vault.size)
 
             }
 
@@ -145,7 +139,7 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setShape () {
-        if (utilities.vault.getBoolean (utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)) {
+        if (utilities.db.getBoolean (utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)) {
             roundTimeLeft.visibility = View.VISIBLE
 
         } else {
@@ -163,7 +157,7 @@ class MainActivity : AppCompatActivity() {
 
         searchButton = findViewById(R.id.searchButton)
 
-        if (utilities.vault.getBoolean (utilities.SETTINGS_SEARCH_ENABLED, true)) {
+        if (utilities.db.getBoolean (utilities.SETTINGS_SEARCH_ENABLED, true)) {
             scrollView = findViewById(R.id.scrollView)
             scrollView.post { scrollView.smoothScrollTo (0, 175) }
             searchButton.visibility = View.VISIBLE
@@ -178,20 +172,20 @@ class MainActivity : AppCompatActivity() {
         addAccountButton = findViewById(R.id.addAccount)
         settingsButton = findViewById(R.id.settings)
 
-        val logins = utilities.getLogins().toMutableList()
+        // val logins = utilities.getLogins().toMutableList()
 
-        val adapter = LoginsAdapter(logins)
+        // val adapter = LoginsAdapter(logins)
 
         val layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
         val snapHelper: SnapHelper = PagerSnapHelper()
         loginsRecycler.layoutManager = layoutManager
         snapHelper.attachToRecyclerView(loginsRecycler)
 
-        loginsRecycler.adapter = adapter
+        // loginsRecycler.adapter = adapter
         loginsRecycler.invalidate()
         loginsRecycler.refreshDrawableState()
         loginsRecycler.scheduleLayoutAnimation()
-        loginsRecycler.setItemViewCacheSize(vault.size)
+        // loginsRecycler.setItemViewCacheSize(vault.size)
 
         searchButton.setOnClickListener {
             searchBox()
@@ -220,7 +214,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startClock () {
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
+        if (!utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
 
         try {
             timer.scheduleAtFixedRate(object : TimerTask() {
@@ -236,7 +230,7 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun lockScreen () {
-        if (utilities.vault.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)) {
+        if (utilities.db.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)) {
             val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
             if (lockscreen.isKeyguardSecure) {
                 val i = lockscreen.createConfirmDeviceCredentialIntent ("Wristkey", "App locked")
@@ -434,7 +428,7 @@ class MainActivity : AppCompatActivity() {
                                 label = login.label
                             )
 
-                            utilities.overwriteLogin(oldLogin = login, newLogin = loginData)
+                            // utilities.overwriteLogin(oldLogin = login, newLogin = loginData)
 
                         }
 
@@ -474,7 +468,7 @@ class MainActivity : AppCompatActivity() {
                                 label = login.label
                             )
 
-                            utilities.overwriteLogin(oldLogin = login, newLogin = loginData)
+                            // utilities.overwriteLogin(oldLogin = login, newLogin = loginData)
 
                         }
 
@@ -501,7 +495,7 @@ class MainActivity : AppCompatActivity() {
             loginCard.loginCard.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
                 override fun onLongClick() {
                     val intent = Intent(applicationContext, ManualEntryActivity::class.java)
-                    intent.putExtra(utilities.INTENT_QR_DATA, utilities.getUuid(login))
+                    // intent.putExtra(utilities.INTENT_QR_DATA, utilities.getUuid(login))
                     startActivity(intent)
                     loginCard.loginCard.performHapticFeedback(HapticGenerator.SUCCESS)
                     super.onSwipeRight()
@@ -528,7 +522,7 @@ class MainActivity : AppCompatActivity() {
 
             init {
 
-                if (utilities.vault.getBoolean (utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)) {
+                if (utilities.db.getBoolean (utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)) {
                     val centeringParameters = LinearLayout.LayoutParams (
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
@@ -554,8 +548,8 @@ class MainActivity : AppCompatActivity() {
                 singleBlinkAnimation.startOffset = 20
                 singleBlinkAnimation.repeatCount = 0
 
-                beepEnabled = utilities.vault.getBoolean(utilities.SETTINGS_BEEP_ENABLED, false)
-                hapticsEnabled = utilities.vault.getBoolean(utilities.SETTINGS_HAPTICS_ENABLED, true)
+                beepEnabled = utilities.db.getBoolean(utilities.SETTINGS_BEEP_ENABLED, false)
+                hapticsEnabled = utilities.db.getBoolean(utilities.SETTINGS_HAPTICS_ENABLED, true)
 
             }
 

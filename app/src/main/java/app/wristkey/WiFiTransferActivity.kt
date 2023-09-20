@@ -1,6 +1,5 @@
 package app.wristkey
 import android.content.Intent
-import android.media.audiofx.HapticGenerator
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -34,7 +33,7 @@ class WiFiTransferActivity : AppCompatActivity() {
     }
 
     private fun startClock () {
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
+        if (!utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
 
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
@@ -70,13 +69,12 @@ class WiFiTransferActivity : AppCompatActivity() {
         sendButton = findViewById (R.id.send)
         sendButton.setOnClickListener {
             startActivity(Intent(applicationContext, SendActivity::class.java))
-            sendButton.performHapticFeedback(HapticGenerator.SUCCESS)
         }
 
         receiveButton = findViewById (R.id.receive)
         receiveButton.setOnClickListener {
             startActivity(Intent(applicationContext, ReceiveActivity::class.java))
-            sendButton.performHapticFeedback(HapticGenerator.SUCCESS) }
+        }
 
         backButton = findViewById (R.id.backButton)
         backButton.setOnClickListener { finish() }

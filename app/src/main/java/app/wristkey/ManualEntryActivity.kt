@@ -1,9 +1,9 @@
 package app.wristkey
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -62,7 +62,7 @@ class ManualEntryActivity : AppCompatActivity() {
 
     private lateinit var uuid: String
 
-    private lateinit var loginData: Utilities.MfaCode
+    private lateinit var data: Utilities.MfaCode
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -199,7 +199,7 @@ class ManualEntryActivity : AppCompatActivity() {
         doneButton = findViewById (R.id.doneButton)
         doneButton.setOnClickListener {
 
-            if (issuerInput.length() < 2) {
+            if (issuerInput.length() <= 1) {
                 MaterialAlertDialogBuilder(this@ManualEntryActivity)
                     .setTitle("Invalid issuer name")
                     .setMessage("Please enter the issuer's name")
@@ -226,7 +226,7 @@ class ManualEntryActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            loginData = Utilities.MfaCode (
+            data = Utilities.MfaCode (
                 mode = mode,
                 issuer = issuerInput.text.toString(),
                 account = accountInput.text.toString(),
@@ -239,13 +239,11 @@ class ManualEntryActivity : AppCompatActivity() {
                 label = labelInput.text.toString()
             )
 
-            Log.d("Wristkey-TEST", utilities.encodeOtpAuthURL(loginData))
+            val dataUrl = utilities.encodeOtpAuthURL(data)
+            utilities.overwriteLogin(dataUrl)
 
-            //// utilities.writeToVault(loginData, uuid)
-
-            //finish()
-            //finishAffinity()
-            //startActivity(Intent(applicationContext, MainActivity::class.java))
+            startActivity(Intent(applicationContext, MainActivity::class.java))
+            finish()
 
         }
 

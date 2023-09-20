@@ -58,7 +58,7 @@ class QRCodeActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setShape () {
         if (
-            utilities.vault.getBoolean (
+            utilities.db.getBoolean (
                 utilities.CONFIG_SCREEN_ROUND,
                 resources.configuration.isScreenRound
             )

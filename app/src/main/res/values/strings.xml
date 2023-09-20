@@ -33,6 +33,7 @@
     <string name="title_activity_wristkey_import">WristkeyImport</string>
     <string name="title_activity_otpauth_import">OtpAuthImport</string>
     <string name="title_activity_aegis_jsonimport">AegisJSONImport</string>
+    <string name="title_activity_receive_decrypt">ReceiveDecrypt</string>
     <string name="title_activity_andotp_import">AndOtpImport</string>
     <string name="bitcoin_wallet_address">19xgj8XoDMcHSENUDrkW3GtjQjfnbnmWTS</string>
 
@@ -48,9 +49,12 @@
     </string>
     <string name="settings_label">Settings</string>
     <string name="wifi_error">Can\'t connect to Wi-Fi network. Go to your device settings and connect to one before continuing.\n\nIf your device doesn\'t support Wi-Fi, try using the ADB transfer method instead.</string>
+    <string name="wifi_connection_request">Accept data from</string>
     <string name="donate_label">Donate</string>
     <string name="wifi_transfer_description">Use this option to transfer data between two devices, such as a phone and a smartwatch.</string>
     <string name="send_description">Make sure both devices are on the same Wi-Fi network, then open Wristkey on the other device, select the \"Receive\" option and tap the button below to scan the QR code displayed.</string>
     <string name="receive_description">Make sure both devices are on the same Wi-Fi network, then open Wristkey on the other device, select the \"Send\" option and scan this QR code or enter the IP shown below.</string>
+    <string name="receive_decrypt">Enter the OTP displayed on the other device to finish transfer.</string>
     <string name="ip_box_description">If your device doesn\'t have a camera, enter the other device\'s IP address and port in the box below.</string>
+    <string name="qrCode_content_description_receiver">Scan this QR Code or enter the IP address shown below it.</string>
 </resources>

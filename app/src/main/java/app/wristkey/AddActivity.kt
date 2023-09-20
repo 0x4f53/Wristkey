@@ -23,10 +23,6 @@ class AddActivity : AppCompatActivity() {
 
     private lateinit var manualEntry: Button
     private lateinit var wifiTransfer: Button
-    private lateinit var aegisImportButton: CardView
-    private lateinit var googleAuthenticatorImport: CardView
-    private lateinit var bitwardenImport: CardView
-    private lateinit var andOtpImport: CardView
     private lateinit var backupFileButton: CardView
     private lateinit var scanQRCode: Button
 
@@ -45,7 +41,7 @@ class AddActivity : AppCompatActivity() {
     }
 
     private fun startClock () {
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
+        if (!utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
 
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
@@ -81,10 +77,6 @@ class AddActivity : AppCompatActivity() {
 
         manualEntry = findViewById (R.id.manualEntry)
         wifiTransfer = findViewById (R.id.wifiTransfer)
-        aegisImportButton = findViewById (R.id.aegisImportButton)
-        googleAuthenticatorImport = findViewById (R.id.googleAuthenticatorImport)
-        andOtpImport = findViewById (R.id.andOtpImportButton)
-        bitwardenImport = findViewById (R.id.bitwardenImport)
         backupFileButton = findViewById (R.id.backupFileButton)
         scanQRCode = findViewById (R.id.scanQrCode)
 
@@ -92,14 +84,12 @@ class AddActivity : AppCompatActivity() {
 
         manualEntry.setOnClickListener {
             startActivity(Intent(applicationContext, ManualEntryActivity::class.java))
-            manualEntry.performHapticFeedback(HapticGenerator.SUCCESS)
+            finish()
         }
 
         wifiTransfer.setOnClickListener {
-            if (utilities.wiFiExists(applicationContext)) {
-                startActivity(Intent(applicationContext, WiFiTransferActivity::class.java))
-                wifiTransfer.performHapticFeedback(HapticGenerator.SUCCESS)
-            } else {
+            if (utilities.wiFiExists(applicationContext)) startActivity(Intent(applicationContext, WiFiTransferActivity::class.java))
+            else {
                 wifiTransfer.performHapticFeedback(HapticGenerator.ERROR)
                 MaterialAlertDialogBuilder(this@AddActivity)
                     .setTitle("No Wi-Fi")
@@ -108,36 +98,17 @@ class AddActivity : AppCompatActivity() {
                     .setCancelable(false)
                     .create().show()
             }
+            finish()
         }
 
         backupFileButton.setOnClickListener {
             startActivity(Intent(applicationContext, WristkeyImport::class.java))
-            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
+            finish()
         }
 
         scanQRCode.setOnClickListener {
             startActivity(Intent(applicationContext, OtpAuthImport::class.java))
-            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
-        }
-
-        aegisImportButton.setOnClickListener {
-            startActivity(Intent(applicationContext, AegisJSONImport::class.java))
-            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
-        }
-
-        googleAuthenticatorImport.setOnClickListener {
-            startActivity(Intent(applicationContext, AuthenticatorQRImport::class.java))
-            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
-        }
-
-        bitwardenImport.setOnClickListener {
-            startActivity(Intent(applicationContext, BitwardenJSONImport::class.java))
-            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
-        }
-
-        andOtpImport.setOnClickListener {
-            startActivity(Intent(applicationContext, AndOtpJSONImport::class.java))
-            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
+            finish()
         }
 
         backButton.setOnClickListener {

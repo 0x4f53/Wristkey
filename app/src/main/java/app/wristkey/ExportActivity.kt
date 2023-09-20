@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import org.json.JSONObject
 import wristkey.R
 import java.io.File
 import java.io.FileWriter
@@ -75,7 +74,7 @@ class ExportActivity : AppCompatActivity() {
 
         backButton = findViewById (R.id.backButton)
 
-        logins = utilities.getLogins()
+        //logins = utilities.getLogins()
 
         qrExportButton.setOnClickListener {
             exportViaQrCodes()
@@ -108,7 +107,7 @@ class ExportActivity : AppCompatActivity() {
         Log.d ("Wristkey", "Writing export file to: " + applicationContext.filesDir.toString())
 
         val writer = FileWriter(filename)
-        writer.write(JSONObject(utilities.getVaultLoginsOnly()).toString(4))
+        // writer.write(JSONObject(utilities.getVaultLoginsOnly()).toString(4))
         writer.flush()
         writer.close()
 
@@ -127,7 +126,7 @@ class ExportActivity : AppCompatActivity() {
         }
 
         val intent = Intent (applicationContext, QRCodeActivity::class.java)
-        intent.putExtra (utilities.INTENT_QR_DATA, utilities.getUuid(logins[loginNumber]))
+        // intent.putExtra (utilities.INTENT_QR_DATA, utilities.getUuid(logins[loginNumber]))
         loginNumber += 1
         startActivityForResult (intent, utilities.EXPORT_RESPONSE_CODE)
 
@@ -141,7 +140,7 @@ class ExportActivity : AppCompatActivity() {
                 if (logins.size > 2) {
                     if (loginNumber < logins.size) {
                         val intent = Intent (applicationContext, QRCodeActivity::class.java)
-                        intent.putExtra (utilities.INTENT_QR_DATA, utilities.getUuid(logins[loginNumber]))
+                        // intent.putExtra (utilities.INTENT_QR_DATA, utilities.getUuid(logins[loginNumber]))
                         loginNumber += 1
                         startActivityForResult (intent, utilities.EXPORT_RESPONSE_CODE)
                     } else {
@@ -155,7 +154,7 @@ class ExportActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun startClock () {
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
+        if (!utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
 
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
