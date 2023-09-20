@@ -74,42 +74,42 @@ class SettingsActivity : AppCompatActivity() {
         aboutButton = findViewById (R.id.aboutButton)
         backButton = findViewById (R.id.backButton)
 
-        searchButton.isChecked = utilities.vault.getBoolean(utilities.SETTINGS_SEARCH_ENABLED, true)
+        searchButton.isChecked = utilities.db.getBoolean(utilities.SETTINGS_SEARCH_ENABLED, true)
         searchButton.setOnCheckedChangeListener { _, isChecked ->
             settingsChanged = true
-            utilities.vault.edit().remove(utilities.SETTINGS_SEARCH_ENABLED).apply()
-            utilities.vault.edit().putBoolean(utilities.SETTINGS_SEARCH_ENABLED, isChecked).apply()
+            utilities.db.edit().remove(utilities.SETTINGS_SEARCH_ENABLED).apply()
+            utilities.db.edit().putBoolean(utilities.SETTINGS_SEARCH_ENABLED, isChecked).apply()
         }
 
-        clockButton.isChecked = utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)
+        clockButton.isChecked = utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)
         clockButton.setOnCheckedChangeListener { _, isChecked ->
             settingsChanged = true
-            utilities.vault.edit().remove(utilities.SETTINGS_CLOCK_ENABLED).apply()
-            utilities.vault.edit().putBoolean(utilities.SETTINGS_CLOCK_ENABLED, isChecked).apply()
+            utilities.db.edit().remove(utilities.SETTINGS_CLOCK_ENABLED).apply()
+            utilities.db.edit().putBoolean(utilities.SETTINGS_CLOCK_ENABLED, isChecked).apply()
             if (!isChecked) clock.visibility = View.GONE else clock.visibility = View.VISIBLE
         }
 
         val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
-        if (!lockscreen.isKeyguardSecure) utilities.vault.edit().putBoolean(utilities.SETTINGS_LOCK_ENABLED, false).apply()
-        lockButton.isChecked = utilities.vault.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)
+        if (!lockscreen.isKeyguardSecure) utilities.db.edit().putBoolean(utilities.SETTINGS_LOCK_ENABLED, false).apply()
+        lockButton.isChecked = utilities.db.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)
         lockButton.setOnCheckedChangeListener { _, isChecked ->
             if (!lockscreen.isKeyguardSecure) {
                 lockButton.isChecked = false
                 Toast.makeText(this, "Enable screen lock in device settings first!", Toast.LENGTH_LONG).show()
-                utilities.vault.edit().remove(utilities.SETTINGS_LOCK_ENABLED).apply()
-                utilities.vault.edit().putBoolean(utilities.SETTINGS_LOCK_ENABLED, false).apply()
+                utilities.db.edit().remove(utilities.SETTINGS_LOCK_ENABLED).apply()
+                utilities.db.edit().putBoolean(utilities.SETTINGS_LOCK_ENABLED, false).apply()
             } else {
                 settingsChanged = true
-                utilities.vault.edit().remove(utilities.SETTINGS_LOCK_ENABLED).apply()
-                utilities.vault.edit().putBoolean(utilities.SETTINGS_LOCK_ENABLED, isChecked).apply()
+                utilities.db.edit().remove(utilities.SETTINGS_LOCK_ENABLED).apply()
+                utilities.db.edit().putBoolean(utilities.SETTINGS_LOCK_ENABLED, isChecked).apply()
             }
         }
 
-        roundButton.isChecked = utilities.vault.getBoolean(utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)
+        roundButton.isChecked = utilities.db.getBoolean(utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)
         roundButton.setOnCheckedChangeListener { _, isChecked ->
             settingsChanged = true
-            utilities.vault.edit().remove(utilities.CONFIG_SCREEN_ROUND).apply()
-            utilities.vault.edit().putBoolean(utilities.CONFIG_SCREEN_ROUND, isChecked).apply()
+            utilities.db.edit().remove(utilities.CONFIG_SCREEN_ROUND).apply()
+            utilities.db.edit().putBoolean(utilities.CONFIG_SCREEN_ROUND, isChecked).apply()
         }
 
         aboutButton.setOnClickListener {
@@ -123,7 +123,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun startClock () {
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
+        if (!utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
 
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {

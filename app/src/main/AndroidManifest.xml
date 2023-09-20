@@ -38,6 +38,10 @@
             android:label="@string/title_activity_aegis_jsonimport" />
 
         <activity
+            android:name="app.wristkey.ReceiveDecryptActivity"
+            android:label="@string/title_activity_receive_decrypt" />
+
+        <activity
             android:name="app.wristkey.AndOtpJSONImport"
             android:label="@string/title_activity_andotp_import" />
 

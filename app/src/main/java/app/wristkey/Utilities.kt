@@ -28,6 +28,9 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import org.json.JSONArray
@@ -64,6 +67,8 @@ class Utilities (context: Context) {
     val AUTHENTICATOR_EXPORT_SCAN_CODE = "AUTHENTICATOR_EXPORT_SCAN_CODE"
     val QR_CODE_SCAN_REQUEST = "QR_CODE_SCAN_REQUEST"
 
+    val INTENT_WIFI_TRANSFER_PAYLOAD = "INTENT_WIFI_TRANSFER_PAYLOAD"
+
     val context = context
 
     val QR_TIMER_DURATION = 5
@@ -85,6 +90,8 @@ class Utilities (context: Context) {
     val CONFIG_SCREEN_ROUND = "CONFIG_SCREEN_ROUND"
     val SETTINGS_LOCK_ENABLED = "SETTINGS_LOCK_ENABLED"
 
+    val DATA_STORE = "DATA_STORE"
+
     val MFA_TIME_MODE = "totp"
     val MFA_COUNTER_MODE = "hotp"
 
@@ -94,7 +101,8 @@ class Utilities (context: Context) {
 
     var masterKey: MasterKey
     private val accountsFilename: String = "vault.wfs" // WristkeyFS
-    var vault: SharedPreferences
+    var db: SharedPreferences
+    private val objectMapper: ObjectMapper
 
     init {
         masterKey = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
@@ -113,13 +121,18 @@ class Utilities (context: Context) {
             .setRequestStrongBoxBacked(true)
             .build()
 
-        vault = EncryptedSharedPreferences.create (
+        db = EncryptedSharedPreferences.create (
             context,
             accountsFilename,
             masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
+
+        objectMapper = ObjectMapper()
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true)
+        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
     }
 
     data class MfaCode (
@@ -501,8 +514,8 @@ class Utilities (context: Context) {
         // TOTPs: otpauth://totp/Google%20LLC%2E:me%400x4f.in?secret=ASDFGHJKL&issuer=Google&algorithm=SHA1&digits=6&period=30&counter=0&label=Work
         // HOTPs: otpauth://hotp/GitHub%20Inc%2E:me%400x4f.in?secret=QWERTYUIOP&issuer=GitHub&algorithm=SHA1&digits=6&counter=10
 
-        var issuer: String = URLEncoder.encode(mfaCodeObject.issuer)
-        var account: String = URLEncoder.encode(mfaCodeObject.account)
+        val issuer: String = URLEncoder.encode(mfaCodeObject.issuer)
+        val account: String = URLEncoder.encode(mfaCodeObject.account)
         val secret: String = mfaCodeObject.secret.replace(" ", "")
         val digits: String = mfaCodeObject.digits.toString()
         val period: String = mfaCodeObject.period.toString()
@@ -516,25 +529,19 @@ class Utilities (context: Context) {
     }
 
     fun deleteFromVault (uuid4: String): Boolean {
-        val items  = vault.all
+        val items  = db.all
 
         for (item in items) {
             if (item.key.contains(uuid4)) {
-                vault.edit().remove(item.key).apply()
+                db.edit().remove(item.key).apply()
             }
         }
 
         return true
     }
 
-    fun getUuid (login: Utilities.MfaCode): String? {
-        val items  = getVaultLoginsOnly()
-        for ((key, value) in items) if (value.contains(login.secret.toString())) return key
-        return null
-    }
-
     fun getLogin (uuid: String): Utilities.MfaCode? {
-        val items  = vault.all
+        val items  = db.all
         var value: Utilities.MfaCode? = null
 
         for (item in items) {
@@ -547,56 +554,46 @@ class Utilities (context: Context) {
         return value
     }
 
-    fun overwriteLogin (oldLogin: Utilities.MfaCode, newLogin: Utilities.MfaCode): Boolean {
+    class WristkeyFileSystem (
+        @JsonProperty("otpauth") val otpauth: MutableList<String>
+    )
 
-        val items  = vault.all
-        var key: String? = null
+    fun overwriteLogin (otpAuthURL: String): Boolean {  // Overwrites an otpAuth String if it already exists
+        var data = objectMapper.writeValueAsString (
+            WristkeyFileSystem(
+                mutableListOf()
+            )
+        )
 
-        for (item in items) {
-            key = item.key
-            if (item.value == oldLogin) {
-                vault.edit().remove(key).apply()
-                break
-            }
+        data = db.getString(DATA_STORE, data)
+
+        val dataStore =
+            objectMapper.readValue (
+                data,
+                WristkeyFileSystem::class.java
+            )
+
+        val iterator = dataStore.otpauth.iterator()
+        while (iterator.hasNext()) {
+            val login = iterator.next()
+            val loginSecret = decodeOtpAuthURL(login)!!.secret.lowercase().replace(" ", "")
+            val secretToWrite = decodeOtpAuthURL(otpAuthURL)!!.secret.lowercase().replace(" ", "")
+            if (loginSecret.contains(secretToWrite)) iterator.remove()
         }
 
-        vault.edit().putString(key, encodeOtpAuthURL(newLogin)).apply()
+        dataStore.otpauth.add(otpAuthURL)
+        data = objectMapper.writeValueAsString(dataStore)
+        db.edit().putString(DATA_STORE, data).apply()
 
         return true
     }
 
-    fun getVault (): List<Utilities.MfaCode> {
-        var vault = vault.all.values.toList()
-        if (vault.isEmpty()) vault = mutableListOf<Utilities.MfaCode>()
-        return vault as MutableList<Utilities.MfaCode>
-    }
-
-    fun getVaultLoginsOnly (): Map<String, String> {
-        val vault = vault.all
-        val finalVault = mutableMapOf<String, String>()
-        for ((key, value) in vault) {
-            try {
-                UUID.fromString(key)
-                finalVault[key] = value.toString()
-            } catch (_: IllegalArgumentException) { }
-        }
-        return finalVault
-    }
-
-    fun getLogins (): List<Utilities.MfaCode> {
-        val items  = vault.all
-        val logins = mutableListOf<Utilities.MfaCode>()
-        var key: String? = null
-
-        for (item in items) {
-            key = item.key
-            try {
-                val uuid = UUID.fromString(item.key as String)
-                logins.add(decodeOtpAuthURL(item.value as String)!!)
-            } catch (_: IllegalArgumentException) { }
-        }
-
-        return logins
+    fun getData (): WristkeyFileSystem {
+        val data = db.getString (DATA_STORE, null)
+        return objectMapper.readValue(
+            data,
+            WristkeyFileSystem::class.java
+        )
     }
 
     fun beep () {

@@ -1,13 +1,16 @@
 package app.wristkey
+import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
+import android.media.audiofx.HapticGenerator
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.zxing.WriterException
 import fi.iki.elonen.NanoHTTPD
 import wristkey.R
@@ -42,7 +45,7 @@ class ReceiveActivity : AppCompatActivity() {
     }
 
     private fun startClock () {
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
+        if (!utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
 
         try {
             timer.scheduleAtFixedRate(object : TimerTask() {
@@ -58,7 +61,7 @@ class ReceiveActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        server.stop()
+        try { server.stop() } catch (_: UninitializedPropertyAccessException) { }
         timer.cancel()
         finish()
     }
@@ -66,7 +69,7 @@ class ReceiveActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         timer.cancel()
-        server.stop()
+        try { server.stop() } catch (_: UninitializedPropertyAccessException) { }
         finish()
     }
 
@@ -86,18 +89,33 @@ class ReceiveActivity : AppCompatActivity() {
         val server: NanoHTTPD = object : NanoHTTPD(ip, port) {
             override fun serve(session: IHTTPSession): Response {
                 val headers = session.headers
-                val deviceName = headers["device-name"]
-
-                if (deviceName != null) {
-                    Log.d("Wristkey-server", deviceName)
-                    val response = utilities.encrypt("test", "12345678")
-                    Log.d("Wristkey-server", response.toString())
-                    return newFixedLengthResponse(response)
-                } else {
-                    stop()
+                if (session.headers.isNotEmpty()) {
+                    val deviceName = headers["device-name"]
+                    val data = headers["data"]
+                    if (!deviceName.isNullOrBlank()) {
+                        runOnUiThread {
+                            ipAndPort.performHapticFeedback(HapticGenerator.SUCCESS)
+                            MaterialAlertDialogBuilder(this@ReceiveActivity)
+                                .setTitle("Connection request")
+                                .setMessage("${getString(R.string.wifi_connection_request)} $deviceName?")
+                                .setPositiveButton("Allow") { _, _ ->
+                                    val intent = Intent(this@ReceiveActivity, ReceiveDecryptActivity::class.java)
+                                    intent.putExtra(utilities.INTENT_WIFI_TRANSFER_PAYLOAD, data)
+                                    startActivity(intent)
+                                    stop()
+                                    finish()
+                                }
+                                .setNegativeButton("Deny") { _, _ ->
+                                    Toast.makeText(applicationContext, "Transfer canceled", Toast.LENGTH_SHORT).show()
+                                    stop()
+                                    finish()
+                                }
+                                .setCancelable(false).create().show()
+                        }
+                        return newFixedLengthResponse("Transfer complete")
+                    } else return newFixedLengthResponse("This page only works with the Wristkey app")
                 }
-
-                return newFixedLengthResponse("This page only works with the Wristkey app.")
+                return newFixedLengthResponse("Pair request received")
             }
         }
         server.start()
