@@ -1,16 +1,9 @@
 package app.wristkey
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import okhttp3.Callback
-import okhttp3.Headers
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
 import wristkey.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -80,13 +73,12 @@ class EncryptSendActivity : AppCompatActivity() {
 
         otp.text = otpString
         val data = utilities.encrypt(utilities.db.getString(utilities.DATA_STORE, "").toString(), otpString).toString()
-        sendData(ipAndPort, data)
 
         doneButton = findViewById (R.id.doneButton)
         doneButton.setOnClickListener { finish() }
     }
 
-    private fun sendData(ipAndPort: String, data: String) {
+    /*private fun sendData(ipAndPort: String, data: String) {
         val client = OkHttpClient()
         val headers = Headers.Builder()
             .add("device-name", Build.MODEL)
@@ -111,6 +103,6 @@ class EncryptSendActivity : AppCompatActivity() {
                 }
             }
         })
-    }
+    }*/
 
 }

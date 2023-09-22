@@ -32,21 +32,36 @@ import com.chaquo.python.android.AndroidPlatform
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.android.gms.common.api.Response
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
+import fi.iki.elonen.NanoHTTPD
+import org.bouncycastle.crypto.agreement.X25519Agreement
+import org.bouncycastle.crypto.generators.X25519KeyPairGenerator
+import org.bouncycastle.crypto.params.X25519KeyGenerationParameters
+import org.bouncycastle.crypto.params.X25519PrivateKeyParameters
+import org.bouncycastle.crypto.params.X25519PublicKeyParameters
+import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import wristkey.R
 import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.InetAddress
 import java.net.URLDecoder
 import java.net.URLEncoder
+import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
+import java.security.SecureRandom
+import java.security.Security
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.crypto.Cipher
+import javax.crypto.Mac
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -635,44 +650,61 @@ class Utilities (context: Context) {
     }
 
     fun encrypt(data: String, passphrase: String): String? {
-        val digest: MessageDigest = MessageDigest.getInstance("SHA-256")
-        val sha256 = digest.digest(passphrase.toByteArray(StandardCharsets.UTF_8)) // base64-ing the payload first lets you encode things like emoji properly
+        try {
+            // Generate a random IV (Initialization Vector)
+            val random = SecureRandom()
+            val iv = ByteArray(16)
+            random.nextBytes(iv)
 
-        val hashedPassphrase: ByteArray = sha256
+            // Compute the HMAC of the data using SHA-256 and the passphrase
+            val hmacKey = SecretKeySpec(passphrase.toByteArray(StandardCharsets.UTF_8), "HmacSHA256")
+            val hmac = Mac.getInstance("HmacSHA256")
+            hmac.init(hmacKey)
+            val hmacBytes = hmac.doFinal(data.toByteArray(StandardCharsets.UTF_8))
 
-        val secretKey: SecretKey = SecretKeySpec(hashedPassphrase, "AES")
+            // Encrypt the data using AES-GCM
+            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+            val hashedPassphrase: ByteArray = MessageDigest.getInstance("SHA-256").digest(passphrase.toByteArray(StandardCharsets.UTF_8))
+            val secretKey: SecretKey = SecretKeySpec(hashedPassphrase, "AES")
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParameterSpec(iv))
+            val encryptedData = cipher.doFinal(data.toByteArray(StandardCharsets.UTF_8))
 
-        val iv = ByteArray(16)
-        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParameterSpec(iv))
-
-        val encryptedData = cipher.doFinal(encodeToString(data.toByteArray(charset("UTF-8")), DEFAULT).toByteArray(charset("UTF-8")))
-        return encodeToString(encryptedData, DEFAULT)
+            val resultBytes = iv + hmacBytes + encryptedData
+            return encodeToString(resultBytes, DEFAULT)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
     }
 
     fun decrypt(encryptedData: String, passphrase: String): String? {
         try {
-            val digest: MessageDigest = MessageDigest.getInstance("SHA-256")
-            val sha256 = digest.digest(passphrase.toByteArray(StandardCharsets.UTF_8))
-
-            val secretKey: SecretKey = SecretKeySpec(sha256, "AES")
-
-            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-            val iv = ByteArray(16)
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(iv))
-
             val encryptedBytes = Base64.decode(encryptedData, DEFAULT)
-            val decryptedBytes = cipher.doFinal(encryptedBytes)
 
-            return String(
-                Base64.decode( // decoding again because we base64-ed the payload as we to let you encode things like emoji properly
-                    String(
-                        decryptedBytes,
-                        StandardCharsets.UTF_8
-                    ), DEFAULT
-                ),
-                StandardCharsets.UTF_8
-            )
+            // Extract IV, HMAC, and encrypted data
+            val iv = encryptedBytes.copyOfRange(0, 16)
+            val hmacBytes = encryptedBytes.copyOfRange(16, 48)
+            val ciphertext = encryptedBytes.copyOfRange(48, encryptedBytes.size)
+
+            // Compute HMAC and verify it
+            val hmacKey = SecretKeySpec(passphrase.toByteArray(StandardCharsets.UTF_8), "HmacSHA256")
+            val hmac = Mac.getInstance("HmacSHA256")
+            hmac.init(hmacKey)
+            val computedHmacBytes = hmac.doFinal(ciphertext)
+
+            // Compare computed HMAC with received HMAC
+            if (!MessageDigest.isEqual(hmacBytes, computedHmacBytes)) {
+                throw IllegalArgumentException("HMAC verification failed. Data may have been tampered with.")
+            }
+
+            // Decrypt the data using AES-GCM
+            val hashedPassphrase: ByteArray = MessageDigest.getInstance("SHA-256").digest(passphrase.toByteArray(StandardCharsets.UTF_8))
+            val secretKey: SecretKey = SecretKeySpec(hashedPassphrase, "AES")
+            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(iv))
+            val decryptedBytes = cipher.doFinal(ciphertext)
+
+            return String(decryptedBytes, StandardCharsets.UTF_8)
         } catch (e: Exception) {
             e.printStackTrace()
             return null
@@ -747,5 +779,145 @@ open class OnSwipeTouchListener(c: Context?) : View.OnTouchListener {
     open fun onLongClick() { }
 
     init { gestureDetector = GestureDetector(c, GestureListener()) }
+
+}
+
+class Keys (
+    val publicKey: ByteArray,
+    val privateKey: ByteArray
+)
+fun generateKeyPair(): Keys {
+    Security.addProvider(BouncyCastleProvider())
+    val generator = X25519KeyPairGenerator()
+    val keyGenParam = X25519KeyGenerationParameters(null)
+    generator.init(keyGenParam)
+
+    val keyPair = generator.generateKeyPair()
+
+    val privateKeyBytes = (keyPair.private as X25519PrivateKeyParameters).encoded
+    val publicKeyBytes = (keyPair.public as X25519PublicKeyParameters).encoded
+
+    return Keys(publicKeyBytes, privateKeyBytes)
+}
+
+fun exchangeKeys(publicKeyBytes: ByteArray, privateKeyBytes: ByteArray): ByteArray {
+    val publicKey = X25519PublicKeyParameters(publicKeyBytes, 0)
+    val privateKey = X25519PrivateKeyParameters(privateKeyBytes, 0)
+
+    val agreement = X25519Agreement()
+    agreement.init(privateKey)
+    agreement.calculateAgreement(publicKey, ByteArray(agreement.agreementSize), 0)
+
+    val sharedSecret = ByteArray(agreement.agreementSize)
+    agreement.calculateAgreement(publicKey, sharedSecret, 0)
+
+    return sharedSecret
+}
+
+fun encryptData(data: String, sharedSecret: ByteArray): ByteArray {
+    val keySpec = SecretKeySpec(sharedSecret, "AES")
+    val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
+    cipher.init(Cipher.ENCRYPT_MODE, keySpec)
+    return cipher.doFinal(data.toByteArray())
+}
+
+fun decryptData(encryptedData: ByteArray, sharedSecret: ByteArray): String {
+    val keySpec = SecretKeySpec(sharedSecret, "AES")
+    val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
+    cipher.init(Cipher.DECRYPT_MODE, keySpec)
+    val decryptedBytes = cipher.doFinal(encryptedData)
+    return String(decryptedBytes)
+}
+
+class HttpServer (context: Context, ip: String, port: Int): NanoHTTPD (ip, port) {
+
+    private val activityContext = context
+
+    class RequestData (
+        val deviceName: String,
+        val clientEphemeralPublicKey: String
+    )
+
+    class RespondData (
+        val serverEphemeralPublicKey: String,
+        val encryptedData: String
+    )
+
+    override fun serve(session: IHTTPSession): Response {
+
+        val keyPair = generateKeyPair()
+        Log.d("Wristkey--", String(keyPair.publicKey))
+
+        // Perform key exchange
+        val sharedSecret = exchangeKeys (keyPair.publicKey, keyPair.privateKey)
+
+        // Example data to encrypt
+        val dataToEncrypt = "Hello, X25519!"
+
+        // Encrypt data using shared secret
+        val encryptedData = encryptData(dataToEncrypt, sharedSecret)
+
+        // Decrypt data using shared secret
+        val decryptedData = decryptData(encryptedData, sharedSecret)
+
+        Log.d ("Wristkey--S", "Original data: $dataToEncrypt")
+        Log.d ("Wristkey--S", "Encrypted data (Base64): " + encodeToString(encryptedData, DEFAULT))
+        Log.d ("Wristkey--S", "Decrypted data: $decryptedData")
+
+        Log.d ("Wristkey--S", "Server serving")
+
+        val requestBody = HashMap<String, String>()
+        session.parseBody(requestBody)
+
+        val method = session.method
+        val uri = session.uri
+        return if (method == Method.POST) {
+            Log.d ("Wristkey--S", "POST received")
+
+            var receivedData = ""
+            val parameters = session.parameters
+            for ((key, value) in parameters.entries) {
+                receivedData += ("$key: $value\n")
+            }
+
+            Log.d ("Wristkey--S", "${session.uri}  |  $receivedData")
+            newFixedLengthResponse(Response.Status.OK, "text/plain", "Received POST data: $receivedData")
+        } else {
+            newFixedLengthResponse (
+                Response.Status.FORBIDDEN,
+                "text/plain",
+                activityContext.getString(R.string.forbidden_wifi_transfer)
+            )
+        }
+    }
+
+    fun startServer() {
+        Log.d ("Wristkey--S", "Server started")
+        super.start()
+    }
+
+    // To make server compatible with Darwin based devices like macOS and iOS.
+    private fun readInputStream(inputStream: InputStream): String {
+        val inputStreamReader = InputStreamReader(inputStream, Charset.forName("UTF-8"))
+        val reader = BufferedReader(inputStreamReader)
+        val stringBuilder = StringBuilder()
+        var line: String?
+
+        try {
+            while (reader.readLine().also { line = it } != null) {
+                stringBuilder.append(line).append("\n")
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            try {
+                inputStreamReader.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+
+        return stringBuilder.toString()
+    }
 
 }
