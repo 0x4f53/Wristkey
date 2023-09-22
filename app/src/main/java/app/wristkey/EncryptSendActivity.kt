@@ -72,7 +72,7 @@ class EncryptSendActivity : AppCompatActivity() {
         val otpString = (100000..999999).random().toString()
 
         otp.text = otpString
-        val data = utilities.encrypt(utilities.db.getString(utilities.DATA_STORE, "").toString(), otpString).toString()
+        val data = encrypt(utilities.db.getString(utilities.DATA_STORE, "").toString(), otpString.toByteArray()).toString()
 
         doneButton = findViewById (R.id.doneButton)
         doneButton.setOnClickListener { finish() }

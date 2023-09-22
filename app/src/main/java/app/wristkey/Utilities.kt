@@ -14,7 +14,6 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import android.util.Base64
 import android.util.Base64.DEFAULT
 import android.util.Base64.encodeToString
 import android.util.Log
@@ -54,15 +53,11 @@ import java.net.InetAddress
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
 import java.security.SecureRandom
 import java.security.Security
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.crypto.Cipher
-import javax.crypto.Mac
-import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import kotlin.math.abs
@@ -649,68 +644,6 @@ class Utilities (context: Context) {
         return null
     }
 
-    fun encrypt(data: String, passphrase: String): String? {
-        try {
-            // Generate a random IV (Initialization Vector)
-            val random = SecureRandom()
-            val iv = ByteArray(16)
-            random.nextBytes(iv)
-
-            // Compute the HMAC of the data using SHA-256 and the passphrase
-            val hmacKey = SecretKeySpec(passphrase.toByteArray(StandardCharsets.UTF_8), "HmacSHA256")
-            val hmac = Mac.getInstance("HmacSHA256")
-            hmac.init(hmacKey)
-            val hmacBytes = hmac.doFinal(data.toByteArray(StandardCharsets.UTF_8))
-
-            // Encrypt the data using AES-GCM
-            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-            val hashedPassphrase: ByteArray = MessageDigest.getInstance("SHA-256").digest(passphrase.toByteArray(StandardCharsets.UTF_8))
-            val secretKey: SecretKey = SecretKeySpec(hashedPassphrase, "AES")
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParameterSpec(iv))
-            val encryptedData = cipher.doFinal(data.toByteArray(StandardCharsets.UTF_8))
-
-            val resultBytes = iv + hmacBytes + encryptedData
-            return encodeToString(resultBytes, DEFAULT)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return null
-        }
-    }
-
-    fun decrypt(encryptedData: String, passphrase: String): String? {
-        try {
-            val encryptedBytes = Base64.decode(encryptedData, DEFAULT)
-
-            // Extract IV, HMAC, and encrypted data
-            val iv = encryptedBytes.copyOfRange(0, 16)
-            val hmacBytes = encryptedBytes.copyOfRange(16, 48)
-            val ciphertext = encryptedBytes.copyOfRange(48, encryptedBytes.size)
-
-            // Compute HMAC and verify it
-            val hmacKey = SecretKeySpec(passphrase.toByteArray(StandardCharsets.UTF_8), "HmacSHA256")
-            val hmac = Mac.getInstance("HmacSHA256")
-            hmac.init(hmacKey)
-            val computedHmacBytes = hmac.doFinal(ciphertext)
-
-            // Compare computed HMAC with received HMAC
-            if (!MessageDigest.isEqual(hmacBytes, computedHmacBytes)) {
-                throw IllegalArgumentException("HMAC verification failed. Data may have been tampered with.")
-            }
-
-            // Decrypt the data using AES-GCM
-            val hashedPassphrase: ByteArray = MessageDigest.getInstance("SHA-256").digest(passphrase.toByteArray(StandardCharsets.UTF_8))
-            val secretKey: SecretKey = SecretKeySpec(hashedPassphrase, "AES")
-            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(iv))
-            val decryptedBytes = cipher.doFinal(ciphertext)
-
-            return String(decryptedBytes, StandardCharsets.UTF_8)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return null
-        }
-    }
-
 }
 
 // UI stuff
@@ -782,54 +715,77 @@ open class OnSwipeTouchListener(c: Context?) : View.OnTouchListener {
 
 }
 
-class Keys (
-    val publicKey: ByteArray,
-    val privateKey: ByteArray
-)
-fun generateKeyPair(): Keys {
-    Security.addProvider(BouncyCastleProvider())
-    val generator = X25519KeyPairGenerator()
-    val keyGenParam = X25519KeyGenerationParameters(null)
-    generator.init(keyGenParam)
-
-    val keyPair = generator.generateKeyPair()
-
-    val privateKeyBytes = (keyPair.private as X25519PrivateKeyParameters).encoded
-    val publicKeyBytes = (keyPair.public as X25519PublicKeyParameters).encoded
-
-    return Keys(publicKeyBytes, privateKeyBytes)
-}
-
-fun exchangeKeys(publicKeyBytes: ByteArray, privateKeyBytes: ByteArray): ByteArray {
-    val publicKey = X25519PublicKeyParameters(publicKeyBytes, 0)
-    val privateKey = X25519PrivateKeyParameters(privateKeyBytes, 0)
-
-    val agreement = X25519Agreement()
-    agreement.init(privateKey)
-    agreement.calculateAgreement(publicKey, ByteArray(agreement.agreementSize), 0)
-
-    val sharedSecret = ByteArray(agreement.agreementSize)
-    agreement.calculateAgreement(publicKey, sharedSecret, 0)
-
-    return sharedSecret
-}
-
-fun encryptData(data: String, sharedSecret: ByteArray): ByteArray {
-    val keySpec = SecretKeySpec(sharedSecret, "AES")
-    val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
-    cipher.init(Cipher.ENCRYPT_MODE, keySpec)
-    return cipher.doFinal(data.toByteArray())
-}
-
-fun decryptData(encryptedData: ByteArray, sharedSecret: ByteArray): String {
-    val keySpec = SecretKeySpec(sharedSecret, "AES")
-    val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
-    cipher.init(Cipher.DECRYPT_MODE, keySpec)
-    val decryptedBytes = cipher.doFinal(encryptedData)
-    return String(decryptedBytes)
-}
 
 class HttpServer (context: Context, ip: String, port: Int): NanoHTTPD (ip, port) {
+
+
+    class Keys (
+        val publicKey: ByteArray,
+        val privateKey: ByteArray
+    )
+    private fun generateKeyPair(): Keys {
+        Security.addProvider(BouncyCastleProvider())
+        val generator = X25519KeyPairGenerator()
+        val keyGenParam = X25519KeyGenerationParameters(null)
+        generator.init(keyGenParam)
+
+        val keyPair = generator.generateKeyPair()
+
+        val privateKeyBytes = (keyPair.private as X25519PrivateKeyParameters).encoded
+        val publicKeyBytes = (keyPair.public as X25519PublicKeyParameters).encoded
+
+        return Keys(publicKeyBytes, privateKeyBytes)
+    }
+
+    private fun exchangeKeys(publicKeyBytes: ByteArray, privateKeyBytes: ByteArray): ByteArray {
+        val publicKey = X25519PublicKeyParameters(publicKeyBytes, 0)
+        val privateKey = X25519PrivateKeyParameters(privateKeyBytes, 0)
+
+        val agreement = X25519Agreement()
+        agreement.init(privateKey)
+        agreement.calculateAgreement(publicKey, ByteArray(agreement.agreementSize), 0)
+
+        val sharedSecret = ByteArray(agreement.agreementSize)
+        agreement.calculateAgreement(publicKey, sharedSecret, 0)
+
+        return sharedSecret
+    }
+
+    private fun encrypt(data: String, sharedSecret: ByteArray): ByteArray {
+        val iv = ByteArray(16)
+        val random = SecureRandom()
+        random.nextBytes(iv)
+
+        val keySpec = SecretKeySpec(sharedSecret, "AES")
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        val ivParameterSpec = IvParameterSpec(iv)
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivParameterSpec)
+
+        val encryptedData = cipher.doFinal(data.toByteArray())
+
+        val result = ByteArray(iv.size + encryptedData.size)
+        System.arraycopy(iv, 0, result, 0, iv.size)
+        System.arraycopy(encryptedData, 0, result, iv.size, encryptedData.size)
+
+        return result
+    }
+
+    private fun decrypt(encryptedData: ByteArray, sharedSecret: ByteArray): String {
+        val ivSize = 16
+        val iv = ByteArray(ivSize)
+        val encryptedBytes = ByteArray(encryptedData.size - ivSize)
+        System.arraycopy(encryptedData, 0, iv, 0, ivSize)
+        System.arraycopy(encryptedData, ivSize, encryptedBytes, 0, encryptedData.size - ivSize)
+
+        val keySpec = SecretKeySpec(sharedSecret, "AES")
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        val ivParameterSpec = IvParameterSpec(iv)
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivParameterSpec)
+
+        val decryptedBytes = cipher.doFinal(encryptedBytes)
+
+        return String(decryptedBytes)
+    }
 
     private val activityContext = context
 
@@ -838,7 +794,7 @@ class HttpServer (context: Context, ip: String, port: Int): NanoHTTPD (ip, port)
         val clientEphemeralPublicKey: String
     )
 
-    class RespondData (
+    class ResponseData (
         val serverEphemeralPublicKey: String,
         val encryptedData: String
     )
@@ -848,17 +804,10 @@ class HttpServer (context: Context, ip: String, port: Int): NanoHTTPD (ip, port)
         val keyPair = generateKeyPair()
         Log.d("Wristkey--", String(keyPair.publicKey))
 
-        // Perform key exchange
         val sharedSecret = exchangeKeys (keyPair.publicKey, keyPair.privateKey)
-
-        // Example data to encrypt
         val dataToEncrypt = "Hello, X25519!"
-
-        // Encrypt data using shared secret
-        val encryptedData = encryptData(dataToEncrypt, sharedSecret)
-
-        // Decrypt data using shared secret
-        val decryptedData = decryptData(encryptedData, sharedSecret)
+        val encryptedData = encrypt(dataToEncrypt, sharedSecret)
+        val decryptedData = decrypt(encryptedData, sharedSecret)
 
         Log.d ("Wristkey--S", "Original data: $dataToEncrypt")
         Log.d ("Wristkey--S", "Encrypted data (Base64): " + encodeToString(encryptedData, DEFAULT))
@@ -871,15 +820,14 @@ class HttpServer (context: Context, ip: String, port: Int): NanoHTTPD (ip, port)
 
         val method = session.method
         val uri = session.uri
+
+        var receivedData = ""
+        val parameters = session.parameters
+
+        for ((key, value) in parameters.entries) { receivedData += ("$key: $value\n") }
+
         return if (method == Method.POST) {
             Log.d ("Wristkey--S", "POST received")
-
-            var receivedData = ""
-            val parameters = session.parameters
-            for ((key, value) in parameters.entries) {
-                receivedData += ("$key: $value\n")
-            }
-
             Log.d ("Wristkey--S", "${session.uri}  |  $receivedData")
             newFixedLengthResponse(Response.Status.OK, "text/plain", "Received POST data: $receivedData")
         } else {
