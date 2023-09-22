@@ -1,19 +1,18 @@
 package app.wristkey
-import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
-import android.media.audiofx.HapticGenerator
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.zxing.WriterException
-import fi.iki.elonen.NanoHTTPD
+import org.json.JSONObject
 import wristkey.R
+import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -27,7 +26,6 @@ class ReceiveActivity : AppCompatActivity() {
     private lateinit var qrCode: ImageView  
     private lateinit var ipAndPort: TextView
 
-    private lateinit var server: NanoHTTPD
     private var ip = "192.168.xxx.xxx"
     private var port = 4200
 
@@ -61,7 +59,6 @@ class ReceiveActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        try { server.stop() } catch (_: UninitializedPropertyAccessException) { }
         timer.cancel()
         finish()
     }
@@ -69,7 +66,6 @@ class ReceiveActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         timer.cancel()
-        try { server.stop() } catch (_: UninitializedPropertyAccessException) { }
         finish()
     }
 
@@ -78,6 +74,7 @@ class ReceiveActivity : AppCompatActivity() {
         timer = Timer()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun initializeUI () {
         clock = findViewById(R.id.clock)
 
@@ -85,40 +82,10 @@ class ReceiveActivity : AppCompatActivity() {
         ipAndPort = findViewById(R.id.ipAndPort)
 
         ip = utilities.getLocalIpAddress(applicationContext).toString()
-        port = (1000..9999).random()
+        port = 8080 // (1000..9999).random()
 
-        val server: NanoHTTPD = object : NanoHTTPD(ip, port) {
-            override fun serve(session: IHTTPSession): Response {
-                val headers = session.headers
-                if (session.headers.isNotEmpty()) {
-                    val deviceName = headers["device-name"]
-                    val data = headers["data"]
-                    if (!deviceName.isNullOrBlank()) {
-                        runOnUiThread {
-                            ipAndPort.performHapticFeedback(HapticGenerator.SUCCESS)
-                            AlertDialog.Builder(this@ReceiveActivity)
-                                .setMessage("${getString(R.string.wifi_connection_request)} $deviceName?")
-                                .setPositiveButton("Allow") { _, _ ->
-                                    val intent = Intent(this@ReceiveActivity, ReceiveDecryptActivity::class.java)
-                                    intent.putExtra(utilities.INTENT_WIFI_IP, data)
-                                    startActivity(intent)
-                                    finish()
-                                    stop()
-                                }
-                                .setNegativeButton("Deny") { _, _ ->
-                                    Toast.makeText(applicationContext, "Transfer canceled", Toast.LENGTH_SHORT).show()
-                                    finish()
-                                    stop()
-                                }
-                                .setCancelable(false).create().show()
-                        }
-                        return newFixedLengthResponse("Transfer complete")
-                    } else return newFixedLengthResponse("This page only works with the Wristkey app")
-                }
-                return newFixedLengthResponse("Pair request received")
-            }
-        }
-        server.start()
+        val server = HttpServer(this@ReceiveActivity, ip, port)
+        server.startServer()
 
         val wm = getSystemService(WINDOW_SERVICE) as WindowManager
         val data = "$ip:$port"

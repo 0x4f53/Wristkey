@@ -11,6 +11,11 @@ apply plugin: 'com.chaquo.python'
 android {
     compileSdk 34
 
+    packagingOptions {
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/io.netty.versions.properties'
+    }
+
     defaultConfig {
         applicationId 'app.wristkey'
         minSdk 23  // Wear OS 2.0 / Android 7.1.1
@@ -57,10 +62,10 @@ android {
 }
 
 dependencies {
-    // implementation "androidx.wear:wear-input:1.0.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+    compileOnly 'com.google.android.wearable:wearable:2.9.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.10"
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
-    implementation 'com.squareup.okhttp3:okhttp:+'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.68'
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'com.google.android.support:wearable:2.9.0'
@@ -80,10 +85,10 @@ dependencies {
     implementation 'com.google.zxing:core:3.5.1'
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.core:core-ktx:1.12.0'
-    compileOnly 'com.google.android.wearable:wearable:2.9.0'
     implementation "androidx.security:security-crypto:1.1.0-alpha06"
     implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
     implementation 'androidx.biometric:biometric:1.2.0-alpha05'
     implementation "com.anggrayudi:storage:1.5.4"
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
+    implementation "org.bouncycastle:bcprov-jdk15on:1.68"
 }
