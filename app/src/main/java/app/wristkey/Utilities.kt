@@ -128,7 +128,7 @@ class Utilities (context: Context) {
     var masterKey: MasterKey
     private val accountsFilename: String = "vault.wfs" // WristkeyFS
     var db: SharedPreferences
-    private val objectMapper: ObjectMapper
+    val objectMapper: ObjectMapper
 
     init {
         masterKey = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
@@ -580,7 +580,7 @@ class Utilities (context: Context) {
     }
 
     class WristkeyFileSystem (
-        @JsonProperty("otpauth") val otpauth: MutableList<String>
+        @JsonProperty("otpauth") var otpauth: MutableList<String>
     )
 
     fun overwriteLogin (otpAuthURL: String): Boolean {  // Overwrites an otpAuth String if it already exists
@@ -844,7 +844,7 @@ interface ItemTouchHelperAdapter {
     fun onItemDismiss(position: Int)
 }
 
-class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) : ItemTouchHelper.Callback() {
+class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter, val loginsList: MutableList<Utilities.MfaCode>) : ItemTouchHelper.Callback() {
 
     lateinit var context: Context
     private lateinit var _recyclerView: RecyclerView
@@ -872,7 +872,33 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) : Ite
     }
 
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-        return adapter.onItemMove(viewHolder.adapterPosition, target.adapterPosition)
+        val fromPosition = viewHolder.absoluteAdapterPosition
+        val toPosition = target.absoluteAdapterPosition
+
+        Collections.swap(loginsList, fromPosition, toPosition)
+
+        var data = utilities.objectMapper.writeValueAsString (
+            Utilities.WristkeyFileSystem(
+                mutableListOf()
+            )
+        )
+
+        val dataStore =
+            utilities.objectMapper.readValue (
+                utilities.db.getString(utilities.DATA_STORE, data),
+                Utilities.WristkeyFileSystem::class.java
+            )
+
+        val encodedLogins = mutableListOf<String>()
+        for (login in loginsList) encodedLogins.add(utilities.encodeOtpAuthURL(login))
+
+        dataStore.otpauth = encodedLogins
+        val newData = utilities.objectMapper.writeValueAsString(dataStore)
+        utilities.db.edit().putString(utilities.DATA_STORE, newData).apply()
+
+        recyclerView.adapter?.notifyItemMoved(fromPosition, toPosition)
+
+        return true
     }
 
     private var swipedItemViewHolder: RecyclerView.ViewHolder? = null
@@ -1045,6 +1071,7 @@ class LoginsAdapter(private val data: List<Utilities.MfaCode>, val timer: Timer,
 
                     incrementDialog.setOnPositiveClickListener {
                         counter++
+                        if (counter.toInt() > 0) minus.isEnabled = true
                         item.counter = counter
                         utilities.overwriteLogin(utilities.encodeOtpAuthURL(item))
                         accountAndLabel.text = "$counter ⋅ $assembledLabel"
@@ -1058,6 +1085,7 @@ class LoginsAdapter(private val data: List<Utilities.MfaCode>, val timer: Timer,
 
                 }
 
+                if (counter.toInt() == 0) minus.isEnabled = false
                 minus.setOnClickListener {
 
                     val decrementDialog = CustomFullscreenDialogFragment(
@@ -1071,6 +1099,7 @@ class LoginsAdapter(private val data: List<Utilities.MfaCode>, val timer: Timer,
 
                     decrementDialog.setOnPositiveClickListener {
                         counter--
+                        if (counter.toInt() == 0) minus.isEnabled = false
                         item.counter = counter
                         utilities.overwriteLogin(utilities.encodeOtpAuthURL(item))
                         accountAndLabel.text = "$counter ⋅ $assembledLabel"
