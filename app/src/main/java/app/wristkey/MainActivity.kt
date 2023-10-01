@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity() {
 
         loginsAdapter = LoginsAdapter (logins, timer, isRound)
 
-        callback = ItemTouchHelperCallback (loginsAdapter)
+        callback = ItemTouchHelperCallback (loginsAdapter, logins)
         touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(loginsRecycler)
 
