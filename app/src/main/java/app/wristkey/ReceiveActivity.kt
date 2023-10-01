@@ -11,7 +11,9 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.zxing.WriterException
 import org.json.JSONObject
+import wristkey.BuildConfig
 import wristkey.R
+import java.lang.Exception
 import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,6 +30,7 @@ class ReceiveActivity : AppCompatActivity() {
 
     private var ip = "192.168.xxx.xxx"
     private var port = 4200
+    private lateinit var server: HttpServer
 
     private lateinit var backButton: Button
 
@@ -60,12 +63,14 @@ class ReceiveActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         timer.cancel()
+        try { server.stop() } catch (_: Exception) { }
         finish()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         timer.cancel()
+        try { server.stop() } catch (_: Exception) { }
         finish()
     }
 
@@ -84,7 +89,7 @@ class ReceiveActivity : AppCompatActivity() {
         ip = utilities.getLocalIpAddress(applicationContext).toString()
         port = 8080 // (1000..9999).random()
 
-        val server = HttpServer(this@ReceiveActivity, ip, port)
+        server = HttpServer(this@ReceiveActivity, ip, port)
         server.startServer()
 
         val wm = getSystemService(WINDOW_SERVICE) as WindowManager

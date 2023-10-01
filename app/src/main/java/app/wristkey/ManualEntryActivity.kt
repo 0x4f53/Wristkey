@@ -11,7 +11,6 @@ import android.widget.CheckedTextView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.TextInputEditText
@@ -76,9 +75,9 @@ class ManualEntryActivity : AppCompatActivity() {
 
         initializeUI()
 
-        if (intent.hasExtra(utilities.INTENT_QR_DATA)) {
-            uuid = intent.getStringExtra(utilities.INTENT_QR_DATA)!!
-            loadLogin ()
+        if (intent.hasExtra(utilities.INTENT_EDIT)) {
+            val intentData = intent.getStringExtra(utilities.INTENT_EDIT)!!
+            loadLogin (intentData)
         }
 
     }
@@ -161,7 +160,7 @@ class ManualEntryActivity : AppCompatActivity() {
         validityGroup = findViewById(R.id.validityGroup)
         periodText = findViewById(R.id.periodText)
         periodSlider = findViewById(R.id.periodSlider)
-        periodSlider.addOnChangeListener { slider, value, fromUser ->
+        periodSlider.addOnChangeListener { slider, _, fromUser ->
             if (fromUser) {
                 periodText.text = slider.value.toInt().toString()
                 validity = slider.value.toInt()
@@ -170,9 +169,9 @@ class ManualEntryActivity : AppCompatActivity() {
 
         mode = utilities.MFA_TIME_MODE
         timeButton.setOnClickListener { v ->
+            mode = utilities.MFA_TIME_MODE
             if (!(v as CheckedTextView).isChecked) {
                 v.isChecked = true
-                mode = utilities.MFA_TIME_MODE
                 counterButton.isChecked = false
                 validityGroup.visibility = View.VISIBLE
                 counterLayout.visibility = View.GONE
@@ -181,8 +180,8 @@ class ManualEntryActivity : AppCompatActivity() {
         }
 
         counterButton.setOnClickListener { v ->
+            mode = utilities.MFA_COUNTER_MODE
             if (!(v as CheckedTextView).isChecked) {
-                mode = utilities.MFA_COUNTER_MODE
                 v.isChecked = true
                 timeButton.isChecked = false
                 validityGroup.visibility = View.GONE
@@ -200,26 +199,44 @@ class ManualEntryActivity : AppCompatActivity() {
         doneButton.setOnClickListener {
 
             if (issuerInput.length() <= 1) {
-                AlertDialog.Builder(this@ManualEntryActivity)
-                    .setMessage(getString(R.string.issuer_empty))
-                    .setPositiveButton("Go back", null)
-                    .create().show()
+
+                CustomFullscreenDialogFragment(
+                    title = "Invalid Issuer",
+                    message = getString(R.string.issuer_empty),
+                    positiveButtonText = null,
+                    positiveButtonIcon = null,
+                    negativeButtonText = "Go back",
+                    negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                ).show(supportFragmentManager, "CustomFullscreenDialog")
+
                 return@setOnClickListener
             }
 
             if (accountInput.length() <= 2) {
-                AlertDialog.Builder(this@ManualEntryActivity)
-                    .setMessage(R.string.account_empty)
-                    .setPositiveButton("Go back", null)
-                    .create().show()
+
+                CustomFullscreenDialogFragment(
+                    title = "Invalid Issuer",
+                    message = getString(R.string.account_empty),
+                    positiveButtonText = null,
+                    positiveButtonIcon = null,
+                    negativeButtonText = "Go back",
+                    negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                ).show(supportFragmentManager, "CustomFullscreenDialog")
+
                 return@setOnClickListener
             }
 
             if (secretInput.length() <= 7) {
-                AlertDialog.Builder(this@ManualEntryActivity)
-                    .setMessage(R.string.secret_empty)
-                    .setPositiveButton("Go back", null)
-                    .create().show()
+
+                CustomFullscreenDialogFragment(
+                    title = "Invalid Issuer",
+                    message = getString(R.string.secret_empty),
+                    positiveButtonText = null,
+                    positiveButtonIcon = null,
+                    negativeButtonText = "Go back",
+                    negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                ).show(supportFragmentManager, "CustomFullscreenDialog")
+
                 return@setOnClickListener
             }
 
@@ -232,15 +249,15 @@ class ManualEntryActivity : AppCompatActivity() {
                 digits = digits,
                 period = validity,
                 lock = false,
-                counter = counter,
+                counter = counterInput.text.toString().toLong(),
                 label = labelInput.text.toString()
             )
 
             val dataUrl = utilities.encodeOtpAuthURL(data)
             utilities.overwriteLogin(dataUrl)
 
+            finishAffinity()
             startActivity(Intent(applicationContext, MainActivity::class.java))
-            finish()
 
         }
 
@@ -248,33 +265,65 @@ class ManualEntryActivity : AppCompatActivity() {
 
         backButton.setOnClickListener {
             if (secretInput.text!!.isNotEmpty() || issuerInput.text!!.isNotEmpty() || labelInput.text!!.isNotEmpty()) {
-                AlertDialog.Builder(this@ManualEntryActivity)
-                    .setMessage(R.string.go_back)
-                    .setPositiveButton("Keep editing", null)
-                    .setNegativeButton("Discard") { _, _ -> finish() }
-                    .create().show()
+                CustomFullscreenDialogFragment(
+                    title = "Invalid Issuer",
+                    message = getString(R.string.go_back),
+                    positiveButtonText = null,
+                    positiveButtonIcon = null,
+                    negativeButtonText = "Go back",
+                    negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                ).show(supportFragmentManager, "CustomFullscreenDialog")
             } else finish()
         }
 
     }
 
-    private fun loadLogin () {
-        val login = utilities.getLogin(uuid)
+    private fun loadLogin (loginData: String) {
+        val login = utilities.decodeOtpAuthURL (loginData)!!
+        issuerInput.setText (login.issuer)
+        secretInput.setText (login.secret)
+        accountInput.setText (login.account)
+        labelInput.setText (login.label)
 
-        issuerInput.setText (login?.issuer.toString())
+        if (login.mode.contains("hotp")) {
+            counterButton.performClick()
+            counterInput.setText (login.counter.toString())
+        }
 
-        val label = if (login?.account.isNullOrEmpty()) login?.label.toString() else login?.account
-        labelInput.setText (label)
-        secretInput.setText (login?.secret.toString())
+        periodText.text = login.period.toString()
+        periodSlider.value = login.period.toFloat()
+
+        when (login.algorithm) {
+            utilities.ALGO_SHA1 -> sha1Button.performClick()
+            utilities.ALGO_SHA256 -> sha256Button.performClick()
+            utilities.ALGO_SHA512 -> sha512Button.performClick()
+        }
+
+        when (login.digits) {
+            4 -> fourButton.performClick()
+            6 -> sixButton.performClick()
+            8 -> eightButton.performClick()
+        }
 
         deleteButton.visibility = View.VISIBLE
 
         deleteButton.setOnClickListener {
-            AlertDialog.Builder(this@ManualEntryActivity)
-                .setMessage(R.string.delete)
-                .setPositiveButton("Yes, delete", null)
-                .setPositiveButton("Back", null)
-                .create().show()
+            val deleteDialog = CustomFullscreenDialogFragment(
+                title = "Invalid Issuer",
+                message = getString(R.string.delete),
+                positiveButtonText = "Delete",
+                positiveButtonIcon = getDrawable(R.drawable.ic_outline_delete_24)!!,
+                negativeButtonText = "Go back",
+                negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+            )
+
+            deleteDialog.setOnPositiveClickListener {
+                utilities.deleteFromDataStore (loginData)
+                finishAffinity()
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+            }
+
+            deleteDialog.show(supportFragmentManager, "CustomFullscreenDialog")
         }
 
     }

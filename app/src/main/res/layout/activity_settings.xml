@@ -11,7 +11,7 @@
     tools:context="app.wristkey.SettingsActivity"
     tools:deviceIds="wear">
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -63,7 +63,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.0075"
                     android:layout_marginStart="22.5dp"
-                    android:layout_marginEnd="7.5dp"
+                    android:layout_marginEnd="20dp"
                     android:layout_marginVertical="10dp"
                     android:src="@drawable/ic_baseline_search_24"
                     app:tint="@color/white" />
@@ -104,7 +104,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.0075"
                     android:layout_marginStart="22.5dp"
-                    android:layout_marginEnd="7.5dp"
+                    android:layout_marginEnd="20dp"
                     android:layout_marginVertical="10dp"
                     android:src="@drawable/ic_outline_access_time_24"
                     app:tint="@color/white" />
@@ -146,7 +146,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.0075"
                     android:layout_marginStart="22.5dp"
-                    android:layout_marginEnd="7.5dp"
+                    android:layout_marginEnd="20dp"
                     android:layout_marginVertical="10dp"
                     android:src="@drawable/ic_outline_lock_24"
                     app:tint="@color/white" />
@@ -188,7 +188,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.0075"
                     android:layout_marginStart="22.5dp"
-                    android:layout_marginEnd="7.5dp"
+                    android:layout_marginEnd="20dp"
                     android:layout_marginVertical="10dp"
                     android:src="@drawable/ic_outline_access_time_24"
                     app:tint="@color/white" />
@@ -233,7 +233,7 @@
                 android:text="Back" />
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
     <TextView
         android:id="@+id/clock"
@@ -249,7 +249,6 @@
         android:paddingHorizontal="5dp"
         android:layout_marginTop="5dp"
         android:text="04:20"
-        android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

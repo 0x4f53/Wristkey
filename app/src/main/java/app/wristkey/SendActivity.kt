@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.audiofx.HapticGenerator
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -18,6 +20,7 @@ import com.google.android.material.textfield.TextInputLayout
 import wristkey.R
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class SendActivity : AppCompatActivity() {
 
@@ -94,10 +97,23 @@ class SendActivity : AppCompatActivity() {
 
         ipLayout = findViewById (R.id.ipLayout)
         ipInput = findViewById (R.id.ipInput)
+        val delayMillis = 1000
+
+        val handler = Handler(Looper.getMainLooper())
+        var runnable: Runnable? = null
+
         ipInput.doOnTextChanged { text, _, _, _ ->
+            // Remove any previously posted callbacks
+            runnable?.let { handler.removeCallbacks(it) }
+
             if (utilities.isIp(text.toString())) {
-                startEncryptSend()
-                ipInput.performHapticFeedback(HapticGenerator.SUCCESS)
+                // Post a delayed action to startEncryptSend()
+                runnable = Runnable {
+                    ipAndPort = text.toString()
+                    startEncryptSend()
+                    ipInput.performHapticFeedback(HapticGenerator.SUCCESS)
+                }
+                handler.postDelayed(runnable!!, delayMillis.toLong())
             }
         }
 

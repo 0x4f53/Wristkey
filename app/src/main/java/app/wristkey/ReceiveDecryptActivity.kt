@@ -81,7 +81,7 @@ class ReceiveDecryptActivity : AppCompatActivity() {
         var attempts = 0
         otpInput.addTextChangedListener { s ->
             if (s?.length == 6) {
-                val decryptedData = decrypt(payload.toByteArray(), s.toString().toByteArray())
+                val decryptedData = ""//decrypt(payload.toByteArray(), s.toString().toByteArray())
                 if (decryptedData != null) {
                     utilities.db.edit().putString(utilities.DATA_STORE, decryptedData).apply()
                     Toast.makeText(applicationContext, "Transfer complete! :)", Toast.LENGTH_LONG).show()

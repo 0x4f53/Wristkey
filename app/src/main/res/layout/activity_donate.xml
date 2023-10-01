@@ -94,7 +94,6 @@
         android:layout_marginTop="5dp"
         android:textColor="@color/white"
         android:text="04:20"
-        android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
