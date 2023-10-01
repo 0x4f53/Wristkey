@@ -104,6 +104,11 @@
                 style="@style/Wristkey.Button"
                 android:text="Settings" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

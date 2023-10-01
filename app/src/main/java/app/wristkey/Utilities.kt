@@ -923,26 +923,28 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter, val l
             utilities = Utilities(context)
         }
 
-        val icon = ContextCompat.getDrawable(recyclerView.context, wristkey.R.drawable.ic_baseline_edit_24)
+        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+            val icon = ContextCompat.getDrawable(recyclerView.context, R.drawable.ic_baseline_edit_24)
 
-        val itemView = viewHolder.itemView
+            val itemView = viewHolder.itemView
 
-        val iconMargin = (itemView.height - icon!!.intrinsicHeight) / 2
-        val iconTop = itemView.top + (itemView.height - icon.intrinsicHeight) / 2
-        val iconBottom = iconTop + icon.intrinsicHeight
+            val iconMargin = (itemView.height - icon!!.intrinsicHeight) / 2
+            val iconTop = itemView.top + (itemView.height - icon.intrinsicHeight) / 2
+            val iconBottom = iconTop + icon.intrinsicHeight
 
-        val iconLeft: Int
-        val iconRight: Int
+            val iconLeft: Int
+            val iconRight: Int
 
-        if (dX > 0) {
-            iconLeft = itemView.left + iconMargin
-            iconRight = itemView.left + iconMargin + icon.intrinsicWidth
-        } else {
-            iconLeft = itemView.right - iconMargin - icon.intrinsicWidth
-            iconRight = itemView.right - iconMargin
+            if (dX > 0) {
+                iconLeft = itemView.left + iconMargin
+                iconRight = itemView.left + iconMargin + icon.intrinsicWidth
+            } else {
+                iconLeft = itemView.right - iconMargin - icon.intrinsicWidth
+                iconRight = itemView.right - iconMargin
+            }
+            icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+            icon.draw(c)
         }
-        icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-        icon.draw(c)
     }
 
 }
