@@ -10,7 +10,7 @@
     tools:context="app.wristkey.AegisJSONImport"
     tools:deviceIds="wear">
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fadeScrollbars="false"
@@ -66,7 +66,7 @@
                 android:text="Back" />
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/SquareTimeLeftTop"

@@ -130,7 +130,7 @@ class WristkeyImport : AppCompatActivity() {
         try {
 
             if (fileName != null) {
-                val file = contentResolver.openInputStream(fileName!!)
+                val file = contentResolver.openInputStream(fileName)
 
                 Log.d ("Wristkey", "Reading: $fileName")
                 importingDescription.text = "Reading \n$fileName"

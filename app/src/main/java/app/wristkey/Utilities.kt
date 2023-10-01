@@ -1,9 +1,14 @@
 package app.wristkey
 
+import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Point
 import android.media.AudioManager
 import android.media.ToneGenerator
@@ -17,13 +22,22 @@ import android.security.keystore.KeyProperties
 import android.util.Base64.DEFAULT
 import android.util.Base64.encodeToString
 import android.util.Log
-import android.view.GestureDetector
-import android.view.MotionEvent
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.chaquo.python.Python
@@ -31,9 +45,13 @@ import com.chaquo.python.android.AndroidPlatform
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.android.gms.common.api.Response
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
+import dev.turingcomplete.kotlinonetimepassword.HmacAlgorithm
+import dev.turingcomplete.kotlinonetimepassword.HmacOneTimePasswordConfig
+import dev.turingcomplete.kotlinonetimepassword.HmacOneTimePasswordGenerator
+import dev.turingcomplete.kotlinonetimepassword.TimeBasedOneTimePasswordConfig
+import dev.turingcomplete.kotlinonetimepassword.TimeBasedOneTimePasswordGenerator
 import fi.iki.elonen.NanoHTTPD
 import org.bouncycastle.crypto.agreement.X25519Agreement
 import org.bouncycastle.crypto.generators.X25519KeyPairGenerator
@@ -46,21 +64,18 @@ import org.json.JSONException
 import org.json.JSONObject
 import wristkey.R
 import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.InetAddress
 import java.net.URLDecoder
 import java.net.URLEncoder
-import java.nio.charset.Charset
 import java.security.SecureRandom
 import java.security.Security
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
-import kotlin.math.abs
 
 
 @RequiresApi(Build.VERSION_CODES.M)
@@ -87,7 +102,7 @@ class Utilities (context: Context) {
     val INTENT_QR_DATA = "INTENT_QR_DATA"
     val INTENT_QR_METADATA = "INTENT_QR_METADATA"
     val INTENT_WIPE = "INTENT_WIPE"
-    val INTENT_DELETE = "INTENT_DELETE"
+    val INTENT_EDIT = "INTENT_EDIT"
     val INTENT_DELETE_MODE = "INTENT_DELETE_MODE"
 
     val SETTINGS_BACKGROUND_COLOR = "SETTINGS_BACKGROUND_COLOR"
@@ -155,7 +170,7 @@ class Utilities (context: Context) {
         val digits: Int,
         val period: Int,
         val lock: Boolean,
-        val counter: Long,
+        var counter: Long,
         val label: String,
     )
 
@@ -512,9 +527,9 @@ class Utilities (context: Context) {
                 if (keyValue.size == 2) paramMap[keyValue[0]] = keyValue[1]
             }
 
-            val mode = if (parts[0].substringAfterLast("/") == "hotp") MFA_COUNTER_MODE else MFA_TIME_MODE
-            val account = parts[0].substringBefore(":")
-            val issuer = paramMap["issuer"] ?: account
+            val mode = if (parts[0].substringAfter("://").substringBefore("/") == "hotp") MFA_COUNTER_MODE else MFA_TIME_MODE
+            val issuer = parts[0].substringAfter("otp/").substringBefore(":")
+            val account = parts[0].substringAfter("otp/").substringAfter(":")
             val secret = paramMap["secret"]
             val algorithm = paramMap["algorithm"] ?: ALGO_SHA1
             val digits = paramMap["digits"]?.toIntOrNull() ?: 6 // Default to 6 digits
@@ -530,8 +545,6 @@ class Utilities (context: Context) {
 
     fun encodeOtpAuthURL (mfaCodeObject: MfaCode): String {
         // TOTPs: otpauth://totp/Google%20LLC%2E:me%400x4f.in?secret=ASDFGHJKL&issuer=Google&algorithm=SHA1&digits=6&period=30&counter=0&label=Work
-        // HOTPs: otpauth://hotp/GitHub%20Inc%2E:me%400x4f.in?secret=QWERTYUIOP&issuer=GitHub&algorithm=SHA1&digits=6&counter=10
-
         val issuer: String = URLEncoder.encode(mfaCodeObject.issuer)
         val account: String = URLEncoder.encode(mfaCodeObject.account)
         val secret: String = mfaCodeObject.secret.replace(" ", "")
@@ -546,30 +559,24 @@ class Utilities (context: Context) {
         else "otpauth://${MFA_COUNTER_MODE}/$issuer:$account?secret=$secret&algorithm=$algorithm&digits=$digits&counter=$counter&lock=$lock&label=$label"
     }
 
-    fun deleteFromVault (uuid4: String): Boolean {
-        val items  = db.all
+    fun deleteFromDataStore (dataToDelete: String): Boolean {
+        var data  = db.all[DATA_STORE].toString()
+        val dataStore = objectMapper.readValue (
+            data,
+            WristkeyFileSystem::class.java
+        )
 
-        for (item in items) {
-            if (item.key.contains(uuid4)) {
-                db.edit().remove(item.key).apply()
-            }
-        }
+        val iterator: MutableIterator<String> = dataStore.otpauth.iterator()
+        while (iterator.hasNext()) if (iterator.next().contains(dataToDelete)) iterator.remove()
+
+        data = objectMapper.writeValueAsString(dataStore)
+        db.edit().putString(DATA_STORE, data).apply()
 
         return true
     }
 
-    fun getLogin (uuid: String): Utilities.MfaCode? {
-        val items  = db.all
-        var value: Utilities.MfaCode? = null
-
-        for (item in items) {
-            try {
-                value = decodeOtpAuthURL(item.value as String) as Utilities.MfaCode
-                if (item.key == uuid) return value
-            } catch (_: Exception) { }
-        }
-
-        return value
+    fun randomString(length: Int): String {
+        return (1..length).map { ('A'..'Z').random() }.joinToString("")
     }
 
     class WristkeyFileSystem (
@@ -607,8 +614,14 @@ class Utilities (context: Context) {
     }
 
     fun getData (): WristkeyFileSystem {
-        val data = db.getString (DATA_STORE, null)
-        return objectMapper.readValue(
+        val wfs = objectMapper.writeValueAsString (
+            WristkeyFileSystem(
+                mutableListOf()
+            )
+        )
+
+        val data = db.getString (DATA_STORE, wfs)
+        return objectMapper.readValue (
             data,
             WristkeyFileSystem::class.java
         )
@@ -644,80 +657,40 @@ class Utilities (context: Context) {
         return null
     }
 
-}
+    fun generateTotp (secret: String, algorithm: String, digits: Int, period: Int): String {
+        lateinit var _algorithm: HmacAlgorithm
+        when (algorithm) {
+            ALGO_SHA1 -> _algorithm = HmacAlgorithm.SHA1
+            ALGO_SHA256 -> _algorithm = HmacAlgorithm.SHA256
+            ALGO_SHA512 -> _algorithm = HmacAlgorithm.SHA512
+        }
 
-// UI stuff
-open class OnSwipeTouchListener(c: Context?) : View.OnTouchListener {
-    private val gestureDetector: GestureDetector
-    override fun onTouch(view: View?, motionEvent: MotionEvent?): Boolean {
-        return gestureDetector.onTouchEvent(motionEvent!!)
+        val config = TimeBasedOneTimePasswordConfig(
+            codeDigits = digits,
+            hmacAlgorithm = _algorithm,
+            timeStep = period.toLong(),
+            timeStepUnit = TimeUnit.SECONDS
+        )
+
+        return TimeBasedOneTimePasswordGenerator(secret.toByteArray(), config).generate()
     }
 
-    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
-
-        private val SWIPE_THRESHOLD = 100
-        private val SWIPE_VELOCITY_THRESHOLD = 100
-
-        override fun onDown(e: MotionEvent): Boolean {
-            return true
+    fun generateHotp (secret: String, algorithm: String, digits: Int, counter: Long): String {
+        lateinit var _algorithm: HmacAlgorithm
+        when (algorithm) {
+            ALGO_SHA1 -> _algorithm = HmacAlgorithm.SHA1
+            ALGO_SHA256 -> _algorithm = HmacAlgorithm.SHA256
+            ALGO_SHA512 -> _algorithm = HmacAlgorithm.SHA512
         }
 
-        override fun onSingleTapUp(e: MotionEvent): Boolean {
-            onClick()
-            return super.onSingleTapUp(e)
-        }
+        val config = HmacOneTimePasswordConfig (codeDigits = digits, hmacAlgorithm = _algorithm)
 
-        override fun onDoubleTap(e: MotionEvent): Boolean {
-            onDoubleClick()
-            return super.onDoubleTap(e)
-        }
-
-        override fun onLongPress(e: MotionEvent) {
-            onLongClick()
-            super.onLongPress(e)
-        }
-
-        // Determines the fling velocity and then fires the appropriate swipe event accordingly
-        override fun onFling(
-            e1: MotionEvent?,
-            e2: MotionEvent,
-            velocityX: Float,
-            velocityY: Float
-        ): Boolean {
-            val result = false
-            try {
-                val diffY = e2.y - e1!!.y
-                val diffX = e2.x - e1.x
-                if (abs(diffX) > abs(diffY)) {
-                    if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                        if (diffX > 0) onSwipeRight() else onSwipeLeft()
-                    }
-                } else {
-                    if (abs(diffY) > SWIPE_THRESHOLD && abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                        if (diffY > 0) onSwipeDown() else onSwipeUp()
-                    }
-                }
-            } catch (exception: java.lang.Exception) { exception.printStackTrace() }
-            return result
-        }
-
+        return HmacOneTimePasswordGenerator (secret.toByteArray(), config).generate(counter)
     }
-
-    open fun onSwipeRight() { }
-    open fun onSwipeLeft() { }
-    open fun onSwipeUp() { }
-    open fun onSwipeDown() { }
-    open fun onClick() { }
-    fun onDoubleClick() { }
-    open fun onLongClick() { }
-
-    init { gestureDetector = GestureDetector(c, GestureListener()) }
 
 }
 
-
-class HttpServer (context: Context, ip: String, port: Int): NanoHTTPD (ip, port) {
-
+class HttpServer (private val activityContext: Context, ip: String, port: Int): NanoHTTPD (ip, port) {
 
     class Keys (
         val publicKey: ByteArray,
@@ -787,85 +760,334 @@ class HttpServer (context: Context, ip: String, port: Int): NanoHTTPD (ip, port)
         return String(decryptedBytes)
     }
 
-    private val activityContext = context
+    private var accepted = false
+    private var publicKeySent = false
+    private var acceptancePrompted = false
 
-    class RequestData (
-        val deviceName: String,
-        val clientEphemeralPublicKey: String
-    )
-
-    class ResponseData (
-        val serverEphemeralPublicKey: String,
-        val encryptedData: String
-    )
+    val activity = (activityContext as Activity)
 
     override fun serve(session: IHTTPSession): Response {
-
         val keyPair = generateKeyPair()
-        Log.d("Wristkey--", String(keyPair.publicKey))
+        //Log.d("Wristkey--S", encodeToString(keyPair.publicKey, DEFAULT))
 
-        val sharedSecret = exchangeKeys (keyPair.publicKey, keyPair.privateKey)
-        val dataToEncrypt = "Hello, X25519!"
-        val encryptedData = encrypt(dataToEncrypt, sharedSecret)
-        val decryptedData = decrypt(encryptedData, sharedSecret)
+        //val sharedSecret = exchangeKeys (keyPair.publicKey, keyPair.privateKey)
+       // val dataToEncrypt = "Hello, X25519!"
+       // val encryptedData = encrypt(dataToEncrypt, sharedSecret)
+        //val decryptedData = decrypt(encryptedData, sharedSecret)
 
-        Log.d ("Wristkey--S", "Original data: $dataToEncrypt")
-        Log.d ("Wristkey--S", "Encrypted data (Base64): " + encodeToString(encryptedData, DEFAULT))
-        Log.d ("Wristkey--S", "Decrypted data: $decryptedData")
+        //Log.d ("Wristkey--S", "Original data: $dataToEncrypt")
+        //Log.d ("Wristkey--S", "Encrypted data (Base64): " + encodeToString(encryptedData, DEFAULT))
+        //Log.d ("Wristkey--S", "Decrypted data: $decryptedData")
+
+        //Log.d ("Wristkey--S", "Accepted? $accepted")
 
         Log.d ("Wristkey--S", "Server serving")
 
         val requestBody = HashMap<String, String>()
         session.parseBody(requestBody)
 
-        val method = session.method
-        val uri = session.uri
-
-        var receivedData = ""
         val parameters = session.parameters
 
-        for ((key, value) in parameters.entries) { receivedData += ("$key: $value\n") }
+        lateinit var deviceName: String
+        for ((key, value) in parameters.entries) { if (key == "deviceName") deviceName = value[0] }
 
-        return if (method == Method.POST) {
+        if (session.method == Method.POST && parameters.entries.size > 0 && deviceName.isNotBlank() && deviceName.length >= 8 &&  deviceName.contains('(')) {
             Log.d ("Wristkey--S", "POST received")
-            Log.d ("Wristkey--S", "${session.uri}  |  $receivedData")
-            newFixedLengthResponse(Response.Status.OK, "text/plain", "Received POST data: $receivedData")
+
+            activity.runOnUiThread {
+                if (!acceptancePrompted) {
+                    acceptancePrompted = true
+                    AlertDialog.Builder(activityContext)
+                        .setMessage("\n\n" + deviceName + " " + activityContext.getString(wristkey.R.string.wifi_connection_request))
+                        .setPositiveButton("Accept") { _, _ ->
+                            accepted = true
+                        }
+                        .setNegativeButton("Decline") { _, _ ->
+                            Log.d ("Wristkey--S", "Server stopped")
+                            stop()
+                            activity.finish()
+                        }
+                        .setCancelable(false)
+                        .create().show()
+                }
+            }
+
+            if (publicKeySent) {
+                // activity.finish()
+            }
+
+            if (accepted) {
+                publicKeySent = true
+                return newFixedLengthResponse(Response.Status.OK, "text/plain", "publicKey=${encodeToString(keyPair.publicKey, DEFAULT).trim()}")
+            }
+
+            return newFixedLengthResponse(Response.Status.OK, "text/plain", "requested")
+
         } else {
-            newFixedLengthResponse (
-                Response.Status.FORBIDDEN,
-                "text/plain",
-                activityContext.getString(R.string.forbidden_wifi_transfer)
-            )
+            stop()
+            activity.finish()
+            return newFixedLengthResponse (Response.Status.FORBIDDEN, "text/plain", activityContext.getString(
+                wristkey.R.string.forbidden_wifi_transfer))
         }
     }
 
     fun startServer() {
         Log.d ("Wristkey--S", "Server started")
-        super.start()
-    }
-
-    // To make server compatible with Darwin based devices like macOS and iOS.
-    private fun readInputStream(inputStream: InputStream): String {
-        val inputStreamReader = InputStreamReader(inputStream, Charset.forName("UTF-8"))
-        val reader = BufferedReader(inputStreamReader)
-        val stringBuilder = StringBuilder()
-        var line: String?
-
-        try {
-            while (reader.readLine().also { line = it } != null) {
-                stringBuilder.append(line).append("\n")
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } finally {
-            try {
-                inputStreamReader.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-
-        return stringBuilder.toString()
+        makeSecure(makeSSLSocketFactory("/res/raw/keystore.bks", "Wristkey".toCharArray()), null)
+        super.start(SOCKET_READ_TIMEOUT, false)
     }
 
 }
+
+interface ItemTouchHelperAdapter {
+    fun onItemMove(fromPosition: Int, toPosition: Int): Boolean
+    fun onItemDismiss(position: Int)
+}
+
+class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) : ItemTouchHelper.Callback() {
+
+    lateinit var context: Context
+    private lateinit var _recyclerView: RecyclerView
+    lateinit var utilities: Utilities
+    override fun isLongPressDragEnabled(): Boolean {
+        return true
+    }
+
+    override fun isItemViewSwipeEnabled(): Boolean {
+        return true
+    }
+
+    override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+        _recyclerView = recyclerView
+        val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+        var swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+
+        if (isRightToLeftSwipeAllowedForItem()) swipeFlags = ItemTouchHelper.LEFT
+
+        return makeMovementFlags(dragFlags, swipeFlags)
+    }
+
+    private fun isRightToLeftSwipeAllowedForItem(): Boolean {
+        return true
+    }
+
+    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+        return adapter.onItemMove(viewHolder.adapterPosition, target.adapterPosition)
+    }
+
+    private var swipedItemViewHolder: RecyclerView.ViewHolder? = null
+
+    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+        swipedItemViewHolder = viewHolder
+
+        adapter.onItemDismiss(viewHolder.bindingAdapterPosition)
+        _recyclerView.adapter?.notifyItemChanged(viewHolder.bindingAdapterPosition)
+
+        val position = viewHolder.absoluteAdapterPosition
+        val intent = Intent(context, ManualEntryActivity::class.java)
+        intent.putExtra(utilities.INTENT_EDIT, utilities.getData().otpauth[position])
+        context.startActivity(intent)
+
+    }
+    override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+
+        if (!::context.isInitialized || !::utilities.isInitialized) {
+            context = viewHolder.itemView.context
+            utilities = Utilities(context)
+        }
+
+        val icon = ContextCompat.getDrawable(recyclerView.context, wristkey.R.drawable.ic_baseline_edit_24)
+
+        val itemView = viewHolder.itemView
+
+        val iconMargin = (itemView.height - icon!!.intrinsicHeight) / 2
+        val iconTop = itemView.top + (itemView.height - icon.intrinsicHeight) / 2
+        val iconBottom = iconTop + icon.intrinsicHeight
+
+        val iconLeft: Int
+        val iconRight: Int
+
+        if (dX > 0) {
+            iconLeft = itemView.left + iconMargin
+            iconRight = itemView.left + iconMargin + icon.intrinsicWidth
+        } else {
+            iconLeft = itemView.right - iconMargin - icon.intrinsicWidth
+            iconRight = itemView.right - iconMargin
+        }
+        icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+        icon.draw(c)
+    }
+
+}
+
+class LoginsAdapter(private val data: List<Utilities.MfaCode>, val timer: Timer, val isRound: Boolean) : RecyclerView.Adapter<LoginsAdapter.ViewHolder>(), ItemTouchHelperAdapter {
+
+    lateinit var context: Context
+    lateinit var utilities: Utilities
+    lateinit var clipboard: ClipboardManager
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val itemView = LayoutInflater.from(parent.context).inflate(wristkey.R.layout.login_card, parent, false)
+
+        if (!::context.isInitialized || !::utilities.isInitialized) {
+            context = itemView.context
+            utilities = Utilities(context)
+            clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        }
+
+        return ViewHolder(itemView)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = data[position]
+        holder.bind(item)
+    }
+
+    override fun getItemCount(): Int {
+        return data.size
+    }
+
+    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        // Handle item movement and reordering here
+        // Update your data list accordingly
+        // Notify the adapter of the data change
+        return true
+    }
+
+    override fun onItemDismiss(position: Int) {
+        // Handle item dismissal (swipe left or right) here
+        // Update your data list accordingly
+        // Notify the adapter of the data change
+    }
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private val code: TextView = itemView.findViewById(wristkey.R.id.code)
+        private val issuer: TextView = itemView.findViewById(wristkey.R.id.issuer)
+        private val accountAndLabel: TextView = itemView.findViewById(wristkey.R.id.accountAndLabel)
+        private val loginInfo: LinearLayout = itemView.findViewById(wristkey.R.id.loginInfo)
+        private val counterControls: LinearLayout = itemView.findViewById(wristkey.R.id.counterControls)
+        private val progressIndicator: ProgressBar = itemView.findViewById(wristkey.R.id.progressIndicator)
+        private val accountIcon: TextView = itemView.findViewById(wristkey.R.id.accountIcon)
+        private val plus: ImageView = itemView.findViewById(wristkey.R.id.plus)
+        private val minus: ImageView = itemView.findViewById(wristkey.R.id.minus)
+
+        fun bind(item: Utilities.MfaCode) {
+
+            accountIcon.text = item.issuer[0].toString()
+
+            issuer.text = item.issuer
+
+            var assembledLabel = item.account
+            if (item.label.isNotBlank()) assembledLabel = "$assembledLabel (${item.label})"
+            if (item.account.isNotBlank()) accountAndLabel.text = assembledLabel else accountAndLabel.visibility = View.GONE
+
+            // Time mode
+            if (item.mode.contains(utilities.MFA_TIME_MODE)) {
+                counterControls.visibility = View.GONE
+                var mfaCode = utilities.generateTotp (secret = item.secret, algorithm = item.algorithm, digits = item.digits, period = item.period)
+                mfaCode = "${mfaCode.substring(0, mfaCode.length/2)} ${mfaCode.substring(mfaCode.length/2)}"
+                code.text = mfaCode
+                loginInfo.setOnClickListener { clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(
+                    R.string.app_name), code.text.toString().replace(" ", ""))) }
+                progressIndicator.max = item.period
+
+                if (isRound) {
+                    (itemView.context as? Activity)?.runOnUiThread {
+                        progressIndicator.visibility = View.INVISIBLE
+                        accountIcon.visibility = View.VISIBLE
+                    }
+                } else accountIcon.visibility = View.INVISIBLE
+
+                timer.scheduleAtFixedRate(object : TimerTask() {
+                    override fun run() {
+
+                        val second = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
+                        val tickerValue = (item.period*2 - (second % item.period*2)) % item.period
+                        try {
+                            progressIndicator.progress = tickerValue
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) progressIndicator.setProgress(tickerValue, true)
+                        } catch (_: Exception) { }
+
+                        if (tickerValue == 29) {
+                            mfaCode = utilities.generateTotp (secret = item.secret, algorithm = item.algorithm, digits = item.digits, period = item.period)
+                            mfaCode = "${mfaCode.substring(0, mfaCode.length/2)} ${mfaCode.substring(mfaCode.length/2)}"
+                            (itemView.context as? Activity)?.runOnUiThread {
+                                code.text = mfaCode
+                                loginInfo.setOnClickListener { clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.app_name), code.text.toString().replace(" ", ""))) }
+                            }
+                        }
+                    }
+                }, 0, 1000)
+            }
+
+            // Counter mode
+            else {
+                var counter = item.counter
+                progressIndicator.visibility = View.INVISIBLE
+                accountAndLabel.text = "$counter ⋅ $assembledLabel"
+
+                var hmacCode = utilities.generateHotp (secret = item.secret, algorithm = item.algorithm, digits = item.digits, counter = counter)
+                hmacCode = "${hmacCode.substring(0, hmacCode.length/2)} ${hmacCode.substring(hmacCode.length/2)}"
+                code.text = hmacCode
+                loginInfo.setOnClickListener { clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(
+                    R.string.app_name), code.text.toString().replace(" ", ""))) }
+
+                plus.setOnClickListener {
+                    val incrementDialog = CustomFullscreenDialogFragment(
+                        title = "Increment",
+                        message = "Increment ${item.issuer} from\n${item.counter} to ${item.counter+1}?",
+                        positiveButtonText =  "Increment",
+                        positiveButtonIcon = context.getDrawable(R.drawable.ic_add_white_24dp)!!,
+                        negativeButtonText = "Go back",
+                        negativeButtonIcon = context.getDrawable(R.drawable.ic_prev)!!,
+                    )
+
+                    incrementDialog.setOnPositiveClickListener {
+                        counter++
+                        item.counter = counter
+                        utilities.overwriteLogin(utilities.encodeOtpAuthURL(item))
+                        accountAndLabel.text = "$counter ⋅ $assembledLabel"
+                        hmacCode = utilities.generateHotp (secret = item.secret, algorithm = item.algorithm, digits = item.digits, counter = counter)
+                        hmacCode = "${hmacCode.substring(0, hmacCode.length/2)} ${hmacCode.substring(hmacCode.length/2)}"
+                        code.text = hmacCode
+                        loginInfo.setOnClickListener { clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.app_name), code.text.toString().replace(" ", ""))) }
+                    }
+
+                    incrementDialog.show((context as AppCompatActivity).supportFragmentManager, "CustomFullscreenDialog")
+
+                }
+
+                minus.setOnClickListener {
+
+                    val decrementDialog = CustomFullscreenDialogFragment(
+                        title = "Decrement",
+                        message = "Decrement ${item.issuer} from\n${item.counter} to ${item.counter-1}?",
+                        positiveButtonText =  "Decrement",
+                        positiveButtonIcon = context.getDrawable(R.drawable.ic_prev_selector)!!,
+                        negativeButtonText = "Go back",
+                        negativeButtonIcon = context.getDrawable(R.drawable.ic_prev)!!,
+                    )
+
+                    decrementDialog.setOnPositiveClickListener {
+                        counter--
+                        item.counter = counter
+                        utilities.overwriteLogin(utilities.encodeOtpAuthURL(item))
+                        accountAndLabel.text = "$counter ⋅ $assembledLabel"
+                        hmacCode = utilities.generateHotp (secret = item.secret, algorithm = item.algorithm, digits = item.digits, counter = counter)
+                        hmacCode = "${hmacCode.substring(0, hmacCode.length/2)} ${hmacCode.substring(hmacCode.length/2)}"
+                        code.text = hmacCode
+                        loginInfo.setOnClickListener { clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(
+                            R.string.app_name), code.text.toString().replace(" ", ""))) }
+                    }
+
+                    decrementDialog.show((context as AppCompatActivity).supportFragmentManager, "CustomFullscreenDialog")
+
+                }
+
+            }
+
+        }
+    }
+}
+

@@ -11,7 +11,7 @@
     tools:context="app.wristkey.AddActivity"
     tools:deviceIds="wear">
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -90,7 +90,7 @@
                 android:text="Back" />
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
     <TextView
         android:id="@+id/clock"
@@ -106,7 +106,6 @@
         android:paddingHorizontal="5dp"
         android:layout_marginTop="5dp"
         android:text="04:20"
-        android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

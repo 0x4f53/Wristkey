@@ -38,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="35dp"
+                android:layout_marginBottom="55dp"
                 android:layout_marginHorizontal="10dp"
                 android:orientation="vertical">
 
@@ -74,11 +75,6 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="15dp"
-                android:layout_gravity="center_horizontal" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/loginsRecycler"
@@ -145,7 +141,6 @@
         android:paddingHorizontal="5dp"
         android:layout_marginTop="6.5dp"
         android:text="04:20"
-        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

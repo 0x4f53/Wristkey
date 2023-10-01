@@ -1,13 +1,11 @@
 package app.wristkey
 import android.content.Intent
-import android.media.audiofx.HapticGenerator
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import wristkey.R
 import java.text.SimpleDateFormat
@@ -89,12 +87,16 @@ class AddActivity : AppCompatActivity() {
                 startActivity(Intent(applicationContext, WiFiTransferActivity::class.java))
                 finish()
             } else {
-                wifiTransfer.performHapticFeedback(HapticGenerator.ERROR)
-                AlertDialog.Builder(this@AddActivity)
-                    .setMessage(getString(R.string.wifi_error))
-                    .setPositiveButton("Back", null)
-                    .setCancelable(false)
-                    .create().show()
+
+                CustomFullscreenDialogFragment(
+                    title = "Network error",
+                    message = getString(R.string.wifi_error),
+                    positiveButtonText = null,
+                    positiveButtonIcon = null,
+                    negativeButtonText = "Go back",
+                    negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                ).show(supportFragmentManager, "CustomFullscreenDialog")
+
             }
         }
 

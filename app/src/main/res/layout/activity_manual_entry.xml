@@ -68,7 +68,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Secret"
-                app:startIconDrawable="@drawable/outline_password_24" >
+                app:startIconDrawable="@drawable/outline_password_24"
+                app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/secretInput"
@@ -98,7 +99,7 @@
                 android:layout_height="wrap_content"
                 app:startIconTint="@color/white"
                 style="@style/Wristkey.TextInputLayout"
-                android:hint="Label (optional)"
+                android:hint="Label"
                 app:startIconDrawable="@drawable/outline_label_24" >
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -198,7 +199,7 @@
                         android:stepSize="1.0"
                         android:value="30"
                         android:valueFrom="1"
-                        android:valueTo="59" />
+                        android:valueTo="60" />
 
                 </LinearLayout>
 
@@ -318,7 +319,6 @@
         android:paddingHorizontal="5dp"
         android:layout_marginTop="5dp"
         android:text="04:20"
-        android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

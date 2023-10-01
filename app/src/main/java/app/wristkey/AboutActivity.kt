@@ -12,7 +12,6 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.wearable.intent.RemoteIntent
 import wristkey.BuildConfig
@@ -113,11 +112,18 @@ class AboutActivity : AppCompatActivity() {
 
         licenseButton = findViewById(R.id.licenseButton)
         licenseButton.setOnClickListener {
-            AlertDialog.Builder(this@AboutActivity)
-                .setMessage(getString(R.string.copyright))
-                .setPositiveButton("Back", null)
-                .setCancelable(true)
-                .create().show()
+
+            val licenseDialog = CustomFullscreenDialogFragment(
+                title = "MIT License",
+                message = getString(R.string.copyright),
+                positiveButtonText = null,
+                positiveButtonIcon = null,
+                negativeButtonText = "Go back",
+                negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+            )
+
+            licenseDialog.show(supportFragmentManager, "CustomFullscreenDialog")
+
         }
     }
 

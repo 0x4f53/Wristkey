@@ -43,20 +43,19 @@
     <string name="paypal_uri">https://paypal.me/0x4f</string>
     <string name="sponsors_uri">https://github.com/sponsors/0x4f53</string>
 
-    <string name="copyright">\n\nMIT License
-\n\nCopyright © 2022 Owais Shaikh\n(me@0x4f.in)
+    <string name="copyright">Copyright © 2023 Owais Shaikh\n(me@0x4f.in)
 \n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 \n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 \n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     </string>
     <string name="settings_label">Settings</string>
-    <string name="wifi_error">\n\n\nCan\'t connect to Wi-Fi network. Go to your device settings and connect to one before continuing.\n\nIf your device doesn\'t support Wi-Fi, try using the ADB transfer method instead.</string>
-    <string name="wifi_connection_request">\n\n\nAccept data from</string>
-    <string name="issuer_empty">\n\n\nPlease enter issuer name</string>
-    <string name="secret_empty">\n\n\nThis secret is too short</string>
-    <string name="account_empty">\n\n\nPlease enter username/email</string>
-    <string name="go_back">\n\n\nDiscard changes and go back?</string>
-    <string name="delete">\n\n\nWould you like to delete this item?</string>
+    <string name="wifi_error">Can\'t connect to Wi-Fi network. Go to your device settings and connect to one before continuing.\n\nIf your device doesn\'t support Wi-Fi, try using the ADB transfer method instead.</string>
+    <string name="wifi_connection_request">wants to send you data</string>
+    <string name="issuer_empty">Please enter issuer name</string>
+    <string name="secret_empty">This secret is too short</string>
+    <string name="account_empty">Please enter username/email</string>
+    <string name="go_back">Discard changes and go back?</string>
+    <string name="delete">Would you like to delete this item?</string>
     <string name="donate_label">Donate</string>
     <string name="invalid_send_qr_code">This QR code is invalid. Please try again.</string>
     <string name="wifi_transfer_description">Transfer data between two devices, such as a phone and a smartwatch</string>
