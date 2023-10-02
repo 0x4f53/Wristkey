@@ -422,6 +422,13 @@ class Utilities (context: Context) {
 
     }
 
+    fun getTime(): String {
+        val hourType = if (android.text.format.DateFormat.is24HourFormat(context)) "HH" else "hh"
+        val currentHour = SimpleDateFormat(hourType, Locale.getDefault()).format(Date())
+        val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
+        return "$currentHour:$currentMinute"
+    }
+
     fun decodeOtpAuthURL(otpAuthURL: String): MfaCode? {
         return try {
             val decodedURL = URLDecoder.decode(otpAuthURL, "UTF-8")

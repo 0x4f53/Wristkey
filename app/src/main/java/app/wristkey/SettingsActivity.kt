@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.materialswitch.MaterialSwitch
 import wristkey.R
-import java.text.SimpleDateFormat
 import java.util.*
 
 class SettingsActivity : AppCompatActivity() {
@@ -128,10 +127,7 @@ class SettingsActivity : AppCompatActivity() {
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
-                    val hourType = if (android.text.format.DateFormat.is24HourFormat(applicationContext)) "HH" else "hh"
-                    val currentHour = SimpleDateFormat(hourType, Locale.getDefault()).format(Date())
-                    val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
-                    runOnUiThread { clock.text = "$currentHour:$currentMinute" }
+                    runOnUiThread { clock.text = utilities.getTime() }
                 }
             }, 0, 1000)
         } catch (_: IllegalStateException) { }
