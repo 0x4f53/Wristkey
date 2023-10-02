@@ -309,7 +309,7 @@ class ManualEntryActivity : AppCompatActivity() {
 
         deleteButton.setOnClickListener {
             val deleteDialog = CustomFullscreenDialogFragment(
-                title = "Invalid Issuer",
+                title = "Delete \"${login.issuer}\"",
                 message = getString(R.string.delete),
                 positiveButtonText = "Delete",
                 positiveButtonIcon = getDrawable(R.drawable.ic_outline_delete_24)!!,

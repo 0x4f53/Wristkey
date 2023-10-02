@@ -40,8 +40,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.chaquo.python.Python
-import com.chaquo.python.android.AndroidPlatform
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -63,8 +61,6 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import wristkey.R
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.net.InetAddress
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -224,94 +220,6 @@ class Utilities (context: Context) {
         return contents
     }
 
-    fun authenticatorToWristkey (decodedQRCodeData: String): MutableList<MfaCode> {
-
-        fun decodeAuthenticatorData (authenticatorJsonString: String): MutableList<MfaCode> {
-            val logins = mutableListOf<MfaCode>()
-
-            val items = JSONObject(authenticatorJsonString)
-            for (key in items.keys()) {
-                val itemData = JSONObject(items[key].toString())
-
-                var mode: String = if (itemData["type"].toString() == "1") "hotp" else "totp"
-
-                var issuer: String = key
-
-                var account: String = if (itemData["username"].toString().isNotEmpty()
-                    && itemData["username"].toString() != issuer)
-                    itemData["username"].toString()
-                else ""
-
-                var secret: String = itemData["secret"].toString()
-
-                logins.add(
-                    MfaCode (
-                        mode = mode,
-                        issuer = issuer,
-                        account = account,
-                        secret = secret,
-                        algorithm = ALGO_SHA1,
-                        digits = 6,
-                        period = 30,
-                        lock = false,
-                        counter = 0,
-                        label = ""
-                    )
-                )
-            }
-
-            return logins
-        }
-
-        fun scanAndDecodeQrCode(decodedQRCodeData: String): String {
-            if (!Python.isStarted()) {
-                Python.start(AndroidPlatform(context))
-            }
-
-            val pythonRuntime = Python
-                .getInstance()
-                .getModule("extract_otp_secret_keys")
-                .callAttr("decode", decodedQRCodeData)
-
-            val timeStamp: String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
-
-            val logcat: Process
-            val log = StringBuilder()
-            try {
-                logcat = Runtime.getRuntime().exec(arrayOf("logcat", "-d"))
-                val br =
-                    BufferedReader(InputStreamReader(logcat.inputStream), 4 * 1024)
-                var line: String?
-                val separator = System.getProperty("line.separator")
-                while (br.readLine().also { line = it } != null) {
-                    log.append(line)
-                    log.append(separator)
-                }
-                Runtime.getRuntime().exec("clear")
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-            }
-
-            // pythonRuntime.close()
-
-            return log.toString()
-                .substringAfter(timeStamp)  // get most recent occurrence of data
-                .substringAfter("python.stdout")
-                .substringAfter("<wristkey>")
-                .substringBefore("<\\wristkey>")
-        }
-
-        // put data in Python script and extract Authenticator data
-        var logins: MutableList<MfaCode> = mutableListOf()
-        if (decodedQRCodeData.contains("otpauth-migration://")) {
-            val logExtractedString = scanAndDecodeQrCode(decodedQRCodeData)
-            logins = decodeAuthenticatorData(logExtractedString)
-        }
-
-        return logins
-
-    }
-
     fun wfsToHashmap(jsonObject: JSONObject): Map<String, Any> {
         val map: MutableMap<String, String> = HashMap()
         for (key in jsonObject.keys()) {
@@ -396,6 +304,10 @@ class Utilities (context: Context) {
 
     }
 
+    fun isWearOsDevice(): Boolean {
+        return context.packageManager.hasSystemFeature("android.hardware.type.watch")
+    }
+
     fun andOtpToWristkey (jsonArray: JSONArray): MutableList<MfaCode> {
 
         val logins = mutableListOf<MfaCode>()
@@ -456,11 +368,11 @@ class Utilities (context: Context) {
         return results
     }
 
-    fun aegisToWristkey (unencryptedAegisJsonString: String): MutableList<MfaCode> {
+    fun aegisToWristkey (unencryptedAegisJsonString: JSONObject): MutableList<MfaCode> {
 
         val logins = mutableListOf<MfaCode>()
 
-        val db = JSONObject(unencryptedAegisJsonString)["db"].toString()
+        val db = unencryptedAegisJsonString["db"].toString()
         val entries = JSONObject(db)["entries"].toString()
 
         val itemsArray = JSONArray(entries)
@@ -474,9 +386,7 @@ class Utilities (context: Context) {
                 val issuer = accountData["issuer"].toString()
                 var username = accountData["name"].toString()
 
-                if (username == issuer || username == "null" || username.isNullOrEmpty()) {
-                    username = ""
-                }
+                if (username == issuer || username == "null" || username.isEmpty()) username = ""
 
                 var totpSecret = JSONObject(accountData["info"].toString())["secret"].toString()
                 val digits = JSONObject(accountData["info"].toString())["digits"].toString().toInt()
@@ -559,6 +469,11 @@ class Utilities (context: Context) {
         else "otpauth://${MFA_COUNTER_MODE}/$issuer:$account?secret=$secret&algorithm=$algorithm&digits=$digits&counter=$counter&lock=$lock&label=$label"
     }
 
+    fun decodeGoogleAuthenticator (otpAuthUrl: String): List<String> {
+        // Todo: Removed this functionality for now.
+        return mutableListOf()
+    }
+
     fun deleteFromDataStore (dataToDelete: String): Boolean {
         var data  = db.all[DATA_STORE].toString()
         val dataStore = objectMapper.readValue (
@@ -601,9 +516,11 @@ class Utilities (context: Context) {
         val iterator = dataStore.otpauth.iterator()
         while (iterator.hasNext()) {
             val login = iterator.next()
-            val loginSecret = decodeOtpAuthURL(login)!!.secret.lowercase().replace(" ", "")
-            val secretToWrite = decodeOtpAuthURL(otpAuthURL)!!.secret.lowercase().replace(" ", "")
-            if (loginSecret.contains(secretToWrite)) iterator.remove()
+            try {
+                val loginSecret = decodeOtpAuthURL(login)!!.secret.lowercase().replace(" ", "")
+                val secretToWrite = decodeOtpAuthURL(otpAuthURL)!!.secret.lowercase()
+                if (loginSecret.contains(secretToWrite)) iterator.remove()
+            } catch (_: java.lang.Exception) { }
         }
 
         dataStore.otpauth.add(otpAuthURL)
@@ -872,6 +789,7 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter, val l
     }
 
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+
         val fromPosition = viewHolder.absoluteAdapterPosition
         val toPosition = target.absoluteAdapterPosition
 
@@ -897,6 +815,9 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter, val l
         utilities.db.edit().putString(utilities.DATA_STORE, newData).apply()
 
         recyclerView.adapter?.notifyItemMoved(fromPosition, toPosition)
+
+        val scrollY = recyclerView.computeVerticalScrollOffset()
+        if (viewHolder.absoluteAdapterPosition == 0 && scrollY > 0) recyclerView.smoothScrollBy(0, -1)
 
         return true
     }

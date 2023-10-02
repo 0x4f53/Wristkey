@@ -2,7 +2,6 @@ package app.wristkey
 
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
-import android.content.Context
 import android.content.Intent
 import android.media.audiofx.HapticGenerator
 import android.os.Build
@@ -11,10 +10,9 @@ import android.view.*
 import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
-import androidx.core.widget.doOnTextChanged
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -23,6 +21,11 @@ import androidx.recyclerview.widget.SnapHelper
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import dev.turingcomplete.kotlinonetimepassword.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import wristkey.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,16 +56,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var loginsRecycler: RecyclerView
     private lateinit var touchHelper: ItemTouchHelper
 
-    @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-
         utilities = Utilities (applicationContext)
-
         timer = Timer()
-
         lockScreen()
     }
 
@@ -77,6 +75,7 @@ class MainActivity : AppCompatActivity() {
         timer.cancel()
         isTimerRunning = false
     }
+
     override fun onPause() {
         super.onPause()
         timer.cancel()
@@ -94,54 +93,72 @@ class MainActivity : AppCompatActivity() {
     }
 
     var activated = false
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun searchBox() {
+
+        val searchScope = CoroutineScope(Dispatchers.IO)
+        searchBoxInput.doAfterTextChanged { text ->
+            val text = text.toString().lowercase()
+            searchScope.launch {
+                val searchResults = logins.filter { login ->
+                    login.issuer.lowercase().contains(text) || login.account.lowercase().contains(text) || login.label.lowercase().contains(text)
+                }
+
+                loginsAdapter = LoginsAdapter(searchResults, timer, isRound)
+
+                withContext(Dispatchers.Main) {
+                    delay(250)
+                    loginsAdapter.notifyDataSetChanged()
+                    loginsRecycler.adapter = loginsAdapter
+                }
+
+            }
+
+        }
+
         if (!activated) {
+
             searchBox.visibility = View.VISIBLE
+            searchButton.setImageDrawable(getDrawable(R.drawable.ic_cancel))
 
             searchBox.requestFocus()
 
-            (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
-
             searchBox.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
                 if (!hasFocus) {
-                    (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(v.windowToken, 0)
                     if (searchBoxInput.text?.isEmpty() == true) {
                         searchBox.visibility = View.GONE
                     }
                 }
             }
 
-            searchBox.performClick()
-
-            searchBoxInput.doOnTextChanged { text, start, before, count ->
-
-                loginsRecycler.layoutManager = LinearLayoutManager(this@MainActivity)
-                // loginsRecycler.adapter = adapter
-                loginsRecycler.invalidate()
-                loginsRecycler.refreshDrawableState()
-                loginsRecycler.scheduleLayoutAnimation()
-                // loginsRecycler.setItemViewCacheSize(vault.size)
-
-            }
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(searchBoxInput, InputMethodManager.SHOW_IMPLICIT)
 
             activated = true
+
         } else {
+
+            searchButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_search_24))
             searchBoxInput.text?.clear()
             searchBox.clearFocus()
             searchBox.visibility = View.GONE
 
+            loginsAdapter = LoginsAdapter (logins, timer, isRound)
+            loginsAdapter.notifyDataSetChanged()
+            loginsRecycler.adapter = loginsAdapter
+
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(searchBoxInput.windowToken, 0)
+
             activated = false
+
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun setShape () {
         isRound = utilities.db.getBoolean (utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)
         if (isRound) roundTimeLeft.visibility = View.VISIBLE else roundTimeLeft.visibility = View.GONE
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun initializeUI () {
         setContentView(R.layout.activity_main)
 
@@ -187,7 +204,7 @@ class MainActivity : AppCompatActivity() {
         loginsRecycler.invalidate()
         loginsRecycler.refreshDrawableState()
         loginsRecycler.scheduleLayoutAnimation()
-        // loginsRecycler.setItemViewCacheSize(vault.size)
+        // loginsRecycler.setItemViewCacheSize (logins.size)
 
         searchButton.setOnClickListener {
             searchBox()
@@ -233,7 +250,6 @@ class MainActivity : AppCompatActivity() {
         } catch (_: IllegalStateException) { }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun lockScreen () {
         if (utilities.db.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)) {
             val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
@@ -248,7 +264,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

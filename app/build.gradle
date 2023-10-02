@@ -1,12 +1,9 @@
 plugins {
     id 'kotlin-android'
     id 'com.android.application'
-    id 'com.chaquo.python'
-    id 'org.jetbrains.kotlin.android'
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.chaquo.python'
 
 android {
     compileSdk 34
@@ -25,13 +22,6 @@ android {
 
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-        }
-
-        // A pip requirement specifier, with or without a version number
-        python {
-            pip {
-                install "protobuf"
-            }
         }
 
     }
@@ -62,7 +52,7 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core:1.12.0'
+    implementation 'androidx.core:core-ktx:1.12.0'
     compileOnly 'com.google.android.wearable:wearable:2.9.0'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.10'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
@@ -95,4 +85,5 @@ dependencies {
     implementation 'com.android.volley:volley:1.2.1'
     implementation 'androidx.recyclerview:recyclerview:1.3.1'
     implementation 'androidx.recyclerview:recyclerview-selection:1.1.0'
+    implementation 'com.google.protobuf:protobuf-java:3.19.3'
 }
