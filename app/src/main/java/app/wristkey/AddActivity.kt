@@ -29,6 +29,7 @@ class AddActivity : AppCompatActivity() {
     private lateinit var manualEntry: Button
     private lateinit var wifiTransfer: Button
     private lateinit var fileImport: Button
+    private lateinit var adbImport: Button
     private lateinit var scanQRCode: Button
 
     private lateinit var backButton: Button
@@ -50,7 +51,7 @@ class AddActivity : AppCompatActivity() {
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
-                    val hourType = if (android.text.format.DateFormat.is24HourFormat(applicationContext)) "hh" else "HH"
+                    val hourType = if (android.text.format.DateFormat.is24HourFormat(applicationContext)) "HH" else "hh"
                     val currentHour = SimpleDateFormat(hourType, Locale.getDefault()).format(Date())
                     val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
                     runOnUiThread { clock.text = "$currentHour:$currentMinute" }
@@ -139,6 +140,7 @@ class AddActivity : AppCompatActivity() {
         wifiTransfer = findViewById (R.id.wifiTransfer)
         scanQRCode = findViewById (R.id.scanQrCode)
         fileImport = findViewById (R.id.fileImport)
+        adbImport = findViewById (R.id.adbTransfer)
 
         backButton = findViewById (R.id.backButton)
 
@@ -173,6 +175,11 @@ class AddActivity : AppCompatActivity() {
 
         fileImport.setOnClickListener {
             startActivity(Intent(applicationContext, FileImportActivity::class.java))
+            finish()
+        }
+
+        adbImport.setOnClickListener {
+            startActivity(Intent(applicationContext, AdbImportActivity::class.java))
             finish()
         }
 

@@ -25,7 +25,7 @@ import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
-class FileImportActivity : AppCompatActivity() {
+class AdbImportActivity : AppCompatActivity() {
 
     lateinit var mfaCodesTimer: Timer
     lateinit var utilities: Utilities
@@ -36,7 +36,6 @@ class FileImportActivity : AppCompatActivity() {
     var isRound: Boolean = false
 
     lateinit var backButton: Button
-    lateinit var pickFileButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,12 +50,11 @@ class FileImportActivity : AppCompatActivity() {
     }
 
     private fun initializeUI () {
-        setContentView(R.layout.activity_file_import)
+        setContentView(R.layout.activity_adb_import)
 
         clock = findViewById(R.id.clock)
         startClock()
 
-        pickFileButton = findViewById (R.id.filePickerButton)
         backButton = findViewById (R.id.backButton)
 
         isRound = utilities.db.getBoolean (utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)
@@ -66,20 +64,10 @@ class FileImportActivity : AppCompatActivity() {
             finish()
         }
 
-        pickFileButton.setOnClickListener {
-            storageHelper.openFilePicker (
-                allowMultiple = false,
-                filterMimeTypes = arrayOf (utilities.JSON_MIME_TYPE)
-            )
-        }
-
         storageHelper.onFileSelected = { _, files ->
             val path = files[0].uri
             readData(path)
         }
-
-        // Wear OS doesn't have a file picker, disable button
-        if (utilities.isWearOsDevice()) pickFileButton.visibility = View.GONE
 
     }
 
@@ -136,7 +124,7 @@ class FileImportActivity : AppCompatActivity() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 readData(null)
             } else {
-                Toast.makeText(this@FileImportActivity, "Please grant Wristkey storage permissions in settings", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@AdbImportActivity, "Please grant Wristkey storage permissions in settings", Toast.LENGTH_LONG).show()
                 val intent = Intent (android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 intent.data = Uri.parse("package:$packageName")
                 startActivity(intent)

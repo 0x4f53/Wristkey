@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context="app.wristkey.AddActivity"
+    tools:context="app.wristkey.FileImportActivity"
     tools:deviceIds="wear">
 
     <ScrollView
@@ -35,7 +35,7 @@
             android:paddingBottom="75dp">
 
             <TextView
-                android:id="@+id/addLabel"
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -46,37 +46,42 @@
                 android:letterSpacing="0.05"
                 android:textColor="@color/grayAccents"
                 android:textSize="16sp"
-                android:text="Add data" />
+                android:text="Import via ADB" />
 
-            <Button
-                android:id="@+id/scanQrCode"
-                style="@style/Wristkey.Button"
-                app:icon="@drawable/ic_baseline_qr_code_scanner_24"
-                android:text="Scan code" />
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:indeterminate="true"
+                app:trackColor="@android:color/transparent"
+                app:indicatorColor="@color/white"
+                app:trackCornerRadius="100dp"
+                android:layout_marginHorizontal="10dp" />
 
-            <Button
-                android:id="@+id/manualEntry"
-                style="@style/Wristkey.Button"
-                app:icon="@drawable/ic_baseline_edit_24"
-                android:text="Manual entry" />
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="2.5dp"
+                android:fontFamily="@font/productsans"
+                android:gravity="center"
+                android:text="@string/adb_import_blurb"
+                android:textStyle="normal" />
 
-            <Button
-                android:id="@+id/fileImport"
-                style="@style/Wristkey.Button"
-                app:icon="@drawable/ic_outline_insert_drive_file_24"
-                android:text="Import from file" />
-
-            <Button
-                android:id="@+id/wifiTransfer"
-                style="@style/Wristkey.Button"
-                app:icon="@drawable/baseline_wifi_24"
-                android:text="Wi-Fi transfer" />
-
-            <Button
-                android:id="@+id/adbTransfer"
-                style="@style/Wristkey.Button"
-                app:icon="@drawable/baseline_usb_24"
-                android:text="ADB transfer" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="2.5dp"
+                android:paddingHorizontal="5dp"
+                android:fontFamily="@font/sfmono"
+                android:textSize="12dp"
+                android:gravity="start"
+                android:text="@string/adb_commands"
+                android:textIsSelectable="true"
+                android:textStyle="normal" />
 
             <View
                 android:layout_width="0dp"
@@ -91,6 +96,25 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progressRound"
+        style="@style/Widget.Material3.CircularProgressIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center|top"
+        android:foregroundGravity="center"
+        android:scaleX="1.2"
+        android:indeterminate="true"
+        android:scaleY="1.2"
+        app:indicatorColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:trackColor="@android:color/transparent"
+        app:trackCornerRadius="100dp"
+        app:trackThickness="0.75dp" />
 
     <TextView
         android:id="@+id/clock"

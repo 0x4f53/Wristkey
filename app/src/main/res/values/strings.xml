@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">Wristkey</string>
-    <!--
-    This string is used for square devices and overridden by hello_world in
-    values-round/strings.xml for round devices.
-    -->
+
     <string name="about_app">A secure cross-platform 2FA client.</string>
     <string name="donation_message">Your donations help me maintain my projects.\n\nTap on a button below to open it in your browser.</string>
     <string name="bitwarden_import_blurb">To import secrets from Bitwarden, export an unencrypted Bitwarden JSON file and place it in the following directory: </string>
@@ -13,13 +10,15 @@
     <string name="andotp_import_blurb">To import secrets from andOTP, export an unencrypted andOTP JSON file and place it in the following directory: </string>
     <string name="wristkey_import_blurb">To import secrets from an old backup, place your WFS file in the following directory: </string>
     <string name="file_import_blurb">To import logins from a file, make sure you export them in an unencrypted JSON format and place them on your device\'s internal storage. You can then use the file picker below.\n\nThe following services are currently supported:\n⋅ Aegis Authenticator\n⋅ Bitwarden&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\n⋅ AndOTP&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
+    <string name="adb_import_blurb">To import logins via ADB, make sure you export them in an unencrypted JSON format, and send them to this device via ADB commands. \n\nThe following services are currently supported:\n⋅ Aegis Authenticator\n⋅ Bitwarden&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\n⋅ AndOTP&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\n\nRun the following commands to send your export files to this device:</string>
+    <string name="adb_commands"><![CDATA[adb push <file> /data/local/tmp\nadb shell run-as app.wristkey mkdir files\nadb shell run-as app.wristkey cp /data/local/tmp/<file> files/]]>
+    </string>
     <string name="about_url">https://github.com/0x4f53/Wristkey</string>
     <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_add">AddActivity</string>
-    <!-- Strings used for fragments for navigation -->
+
     <string name="use_adb_blurb">You can use the file picker, ADB or a file transfer app for this.</string>
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
+
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="importing">Importing...</string>
@@ -35,6 +34,7 @@
     <string name="title_activity_otpauth_import">OtpAuthImport</string>
     <string name="title_activity_aegis_jsonimport">AegisJSONImport</string>
     <string name="title_activity_file_import">FileImport</string>
+    <string name="title_activity_adb_import">AdbImport</string>
     <string name="title_activity_receive_decrypt">ReceiveDecrypt</string>
     <string name="title_activity_encrypt_send">EncryptSend</string>
     <string name="title_activity_andotp_import">AndOtpImport</string>
