@@ -53,7 +53,7 @@ class SendActivity : AppCompatActivity() {
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
-                    val hourType = if (android.text.format.DateFormat.is24HourFormat(applicationContext)) "hh" else "HH"
+                    val hourType = if (android.text.format.DateFormat.is24HourFormat(applicationContext)) "HH" else "hh"
                     val currentHour = SimpleDateFormat(hourType, Locale.getDefault()).format(Date())
                     val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
                     runOnUiThread { clock.text = "$currentHour:$currentMinute" }

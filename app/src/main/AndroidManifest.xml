@@ -38,6 +38,10 @@
             android:label="@string/title_activity_file_import" />
 
         <activity
+            android:name="app.wristkey.AdbImportActivity"
+            android:label="@string/title_activity_adb_import" />
+
+        <activity
             android:name="app.wristkey.ReceiveDecryptActivity"
             android:label="@string/title_activity_receive_decrypt" />
 

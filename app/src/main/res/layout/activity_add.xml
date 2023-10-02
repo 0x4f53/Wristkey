@@ -73,7 +73,7 @@
                 android:text="Wi-Fi transfer" />
 
             <Button
-                android:id="@+id/usbTransfer"
+                android:id="@+id/adbTransfer"
                 style="@style/Wristkey.Button"
                 app:icon="@drawable/baseline_usb_24"
                 android:text="ADB transfer" />
