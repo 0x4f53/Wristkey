@@ -76,7 +76,7 @@
                 android:id="@+id/adbTransfer"
                 style="@style/Wristkey.Button"
                 app:icon="@drawable/baseline_usb_24"
-                android:text="ADB transfer" />
+                android:text="Import via ADB" />
 
             <View
                 android:layout_width="0dp"
