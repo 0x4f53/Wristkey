@@ -33,9 +33,10 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
-                android:src="@mipmap/ic_launcher_round" />
+                android:src="@mipmap/ic_launcher" />
 
             <TextView
+                style="@style/Wristkey.TextView"
                 android:id="@+id/AppName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -48,6 +49,7 @@
 
             <TextView
                 android:id="@+id/Version"
+                style="@style/Wristkey.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -59,11 +61,11 @@
 
             <TextView
                 android:id="@+id/AuthenticatorDescription"
+                style="@style/Wristkey.TextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="2.5dp"
-                android:fontFamily="@font/productsans"
                 android:gravity="center"
                 android:text="@string/about_app"
                 android:textStyle="normal" />

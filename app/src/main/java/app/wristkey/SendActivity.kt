@@ -130,7 +130,7 @@ class SendActivity : AppCompatActivity() {
                 scanQrCode.performHapticFeedback(HapticGenerator.SUCCESS)
             } else {
                 AlertDialog.Builder(this@SendActivity)
-                    .setMessage(R.string.invalid_send_qr_code)
+                    .setMessage(R.string.invalid_qr_code)
                     .setNegativeButton("Go back") { _, _ -> finish() }
                     .create().show()
             }
