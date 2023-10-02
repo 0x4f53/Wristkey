@@ -959,7 +959,7 @@ class LoginsAdapter(private val data: List<Utilities.MfaCode>, val timer: Timer,
                     override fun run() {
 
                         val second = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-                        val tickerValue = (item.period*2 - (second % item.period*2)) % item.period
+                        val tickerValue = (item.period - (second % item.period)) % item.period
                         try {
                             progressIndicator.progress = tickerValue
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) progressIndicator.setProgress(tickerValue, true)
