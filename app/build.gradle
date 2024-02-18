@@ -14,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        applicationId 'app.wristkey'
+        applicationId 'zeroxfourf.wristkey'
         minSdk 23  // Wear OS 2.0 / Android 7.1.1
         targetSdkVersion 34  // Play Store requires API29+
         versionCode 3
