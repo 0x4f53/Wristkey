@@ -1,31 +1,27 @@
 plugins {
     id 'kotlin-android'
     id 'com.android.application'
-    id 'com.chaquo.python'
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.chaquo.python'
 
 android {
-    compileSdk 33
+    compileSdk 34
+
+    packagingOptions {
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/io.netty.versions.properties'
+    }
 
     defaultConfig {
-        applicationId 'app.wristkey'
-        minSdk 21
-        targetSdkVersion 33  // Play Store requires API29+
-        versionCode 2
-        versionName "2.2"
+        applicationId 'zeroxfourf.wristkey'
+        minSdk 23  // Wear OS 2.0 / Android 7.1.1
+        targetSdkVersion 34  // Play Store requires API29+
+        versionCode 3
+        versionName "3.0"
 
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-        }
-
-        // A pip requirement specifier, with or without a version number
-        python {
-            pip {
-                install "protobuf"
-            }
         }
 
     }
@@ -56,30 +52,41 @@ android {
 }
 
 dependencies {
-    // implementation "androidx.wear:wear-input:1.0.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.7.20"
-    implementation 'com.google.code.gson:gson:2.10'
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    compileOnly 'com.google.android.wearable:wearable:2.9.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.10'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.68'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'com.google.android.support:wearable:2.9.0'
-    implementation 'com.google.android.gms:play-services-wearable:18.0.0'
+    implementation 'com.google.android.gms:play-services-wearable:18.1.0'
     implementation 'androidx.percentlayout:percentlayout:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation 'androidx.wear:wear:1.2.0'
+    implementation 'androidx.wear:wear:1.3.0'
     implementation 'dev.turingcomplete:kotlin-onetimepassword:2.4.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.material:material:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.7'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.7'
     implementation 'com.github.androidmads:QRGenerator:1.0.1'
     implementation 'com.google.zxing:core:3.5.1'
-    implementation 'androidx.core:core-ktx:1.9.0'
-    compileOnly 'com.google.android.wearable:wearable:2.9.0'
-    implementation "androidx.security:security-crypto:1.1.0-alpha04"
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
     implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
     implementation 'androidx.biometric:biometric:1.2.0-alpha05'
-    implementation "com.anggrayudi:storage:1.5.1"
+    implementation 'com.anggrayudi:storage:1.5.4'
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.recyclerview:recyclerview-selection:1.1.0'
+    implementation 'com.google.protobuf:protobuf-java:3.19.3'
+    implementation "com.goterl:lazysodium-android:5.1.0@aar"
+    implementation "net.java.dev.jna:jna:5.8.0@aar"
+    implementation "com.squareup.okhttp3:okhttp:4.9.0"
+    implementation "com.goterl:lazysodium-android:VERSION_NUMBER@aar"
+    implementation "net.java.dev.jna:jna:5.8.0@aar"
 }

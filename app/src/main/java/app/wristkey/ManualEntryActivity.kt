@@ -1,21 +1,22 @@
 package app.wristkey
+
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
-import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.WindowManager
-import android.widget.SeekBar
+import android.widget.Button
+import android.widget.CheckedTextView
+import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
+import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import wristkey.R
 import java.util.*
-import kotlin.properties.Delegates
 
 
 class ManualEntryActivity : AppCompatActivity() {
@@ -25,30 +26,42 @@ class ManualEntryActivity : AppCompatActivity() {
     private lateinit var issuerInput: TextInputEditText
     private lateinit var labelInput: TextInputEditText
     private lateinit var secretInput: TextInputEditText
+    private lateinit var accountInput: TextInputEditText
 
-    private lateinit var typeLabel: TextView
-    private lateinit var periodLabel: TextView
-    private lateinit var hashLabel: TextView
-    private lateinit var lengthLabel: TextView
+    private var mode: String = "totp"
+    private lateinit var timeButton: CheckedTextView
+    private lateinit var counterButton: CheckedTextView
 
-    private lateinit var modeSeekbar: SeekBar
-    private lateinit var periodSeekbar: SeekBar
-    private lateinit var hashSeekbar: SeekBar
-    private lateinit var lengthSeekbar: SeekBar
 
-    private lateinit var showQrCodeButton: CardView
-    private lateinit var doneButton: CardView
-    private lateinit var deleteButton: CardView
-    private lateinit var backButton: CardView
+    private var algorithm: String = "SHA1"
+    private lateinit var sha1Button: CheckedTextView
+    private lateinit var sha256Button: CheckedTextView
+    private lateinit var sha512Button: CheckedTextView
 
-    private lateinit var mode: String
-    private lateinit var hashingAlgorithm: String
-    private var length by Delegates.notNull<Int>()
-    private var period by Delegates.notNull<Int>()
+
+    private var digits: Int = 6
+    private lateinit var fourButton: CheckedTextView
+    private lateinit var sixButton: CheckedTextView
+    private lateinit var eightButton: CheckedTextView
+
+
+    private var validity: Int = 30
+    private lateinit var validityGroup: LinearLayout
+    private lateinit var periodText: TextView
+    private lateinit var periodSlider: Slider
+
+
+    private var counter: Long = 0
+    private lateinit var counterInput: TextInputEditText
+    private lateinit var counterLayout: TextInputLayout
+
+    private lateinit var doneButton: Button
+    private lateinit var deleteButton: Button
+    private lateinit var backButton: Button
 
     private lateinit var uuid: String
 
-    private lateinit var loginData: Utilities.MfaCode
+    private lateinit var data: Utilities.MfaCode
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,188 +75,258 @@ class ManualEntryActivity : AppCompatActivity() {
 
         initializeUI()
 
-        if (intent.hasExtra(utilities.INTENT_UUID)) {
-            uuid = intent.getStringExtra(utilities.INTENT_UUID)!!
-            loadLogin ()
+        if (intent.hasExtra(utilities.INTENT_EDIT)) {
+            val intentData = intent.getStringExtra(utilities.INTENT_EDIT)!!
+            loadLogin (intentData)
         }
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun initializeUI () {
         issuerInput = findViewById (R.id.issuerInput)
         labelInput = findViewById (R.id.labelInput)
         secretInput = findViewById (R.id.secretInput)
+        accountInput = findViewById (R.id.accountInput)
 
-        modeSeekbar = findViewById (R.id.modeSeekbar)
-        hashSeekbar = findViewById (R.id.hashSeekbar)
-        lengthSeekbar = findViewById (R.id.lengthSeekbar)
-        periodSeekbar = findViewById (R.id.periodSeekbar)
+        counterInput = findViewById(R.id.counterInput)
+        counterLayout = findViewById(R.id.counter)
+        counterLayout.visibility = View.GONE
 
-        typeLabel = findViewById (R.id.typeLabel)
-        hashLabel = findViewById (R.id.hashLabel)
-        lengthLabel = findViewById (R.id.lengthLabel)
-        periodLabel = findViewById (R.id.periodLabel)
+        timeButton = findViewById(R.id.timeButton)
+        counterButton = findViewById(R.id.counterButton)
 
-        showQrCodeButton = findViewById (R.id.showQrCodeButton)
-        doneButton = findViewById (R.id.doneButton)
-        deleteButton = findViewById (R.id.deleteButton)
+        sha1Button = findViewById(R.id.sha1Button)
+        sha256Button = findViewById(R.id.sha256Button)
+        sha512Button = findViewById(R.id.sha512Button)
+
+        sha1Button.setOnClickListener { v ->
+            if (!(v as CheckedTextView).isChecked) {
+                v.isChecked = true
+                algorithm = utilities.ALGO_SHA1
+            }
+            if (sha256Button.isChecked) sha256Button.isChecked = false
+            if (sha512Button.isChecked) sha512Button.isChecked = false
+        }
+
+        sha256Button.setOnClickListener { v ->
+            if (!(v as CheckedTextView).isChecked) {
+                v.isChecked = true
+                algorithm = utilities.ALGO_SHA256
+            }
+            if (sha1Button.isChecked) sha1Button.isChecked = false
+            if (sha512Button.isChecked) sha512Button.isChecked = false
+        }
+
+        sha512Button.setOnClickListener { v ->
+            if (!(v as CheckedTextView).isChecked) {
+                v.isChecked = true
+                algorithm = utilities.ALGO_SHA512
+            }
+            if (sha1Button.isChecked) sha1Button.isChecked = false
+            if (sha256Button.isChecked) sha256Button.isChecked = false
+        }
+
+        fourButton = findViewById(R.id.fourButton)
+        sixButton = findViewById(R.id.sixButton)
+        eightButton = findViewById(R.id.eightButton)
+
+        fourButton.setOnClickListener { v ->
+            if (!(v as CheckedTextView).isChecked) {
+                v.isChecked = true
+                digits = 4
+            }
+            if (sixButton.isChecked) sixButton.isChecked = false
+            if (eightButton.isChecked) eightButton.isChecked = false
+        }
+
+        sixButton.setOnClickListener { v ->
+            if (!(v as CheckedTextView).isChecked) {
+                v.isChecked = true
+                digits = 6
+            }
+            if (fourButton.isChecked) fourButton.isChecked = false
+            if (eightButton.isChecked) eightButton.isChecked = false
+        }
+
+        eightButton.setOnClickListener { v ->
+            if (!(v as CheckedTextView).isChecked) {
+                v.isChecked = true
+                digits = 8
+            }
+            if (fourButton.isChecked) fourButton.isChecked = false
+            if (sixButton.isChecked) sixButton.isChecked = false
+        }
+
+        validityGroup = findViewById(R.id.validityGroup)
+        periodText = findViewById(R.id.periodText)
+        periodSlider = findViewById(R.id.periodSlider)
+        periodSlider.addOnChangeListener { slider, _, fromUser ->
+            if (fromUser) {
+                periodText.text = slider.value.toInt().toString()
+                validity = slider.value.toInt()
+            }
+        }
+
+        mode = utilities.MFA_TIME_MODE
+        timeButton.setOnClickListener { v ->
+            mode = utilities.MFA_TIME_MODE
+            if (!(v as CheckedTextView).isChecked) {
+                v.isChecked = true
+                counterButton.isChecked = false
+                validityGroup.visibility = View.VISIBLE
+                counterLayout.visibility = View.GONE
+                counterButton.isChecked = false
+            }
+        }
+
+        counterButton.setOnClickListener { v ->
+            mode = utilities.MFA_COUNTER_MODE
+            if (!(v as CheckedTextView).isChecked) {
+                v.isChecked = true
+                timeButton.isChecked = false
+                validityGroup.visibility = View.GONE
+                counterLayout.visibility = View.VISIBLE
+                counterButton.isChecked = true
+            }
+        }
+
+        deleteButton = findViewById(R.id.deleteButton)
         backButton = findViewById (R.id.backButton)
 
         secretInput.transformationMethod = PasswordTransformationMethod()
 
-        mode = "totp"
-        modeSeekbar.setOnSeekBarChangeListener (object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged (p0: SeekBar?, p1: Int, p2: Boolean) {
-                when (p0?.progress) {
-                    0 -> {
-                        typeLabel.text = "Time"
-                        mode = "totp"
-                        periodSeekbar.visibility = View.VISIBLE
-                        periodLabel.visibility = View.VISIBLE
-                    }
-
-                    1 -> {
-                        typeLabel.text = "Counter"
-                        mode = "hotp"
-                        periodSeekbar.visibility = View.GONE
-                        periodLabel.visibility = View.GONE
-                    }
-                }
-            }
-            override fun onStartTrackingTouch (seekBar: SeekBar?) { }
-            override fun onStopTrackingTouch (seekBar: SeekBar?) { }
-        })
-
-        hashingAlgorithm = "SHA1"
-        hashSeekbar.setOnSeekBarChangeListener (object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged (p0: SeekBar?, p1: Int, p2: Boolean) {
-                when (p0?.progress) {
-                    0 -> hashingAlgorithm = utilities.ALGO_SHA1
-                    1 -> hashingAlgorithm = utilities.ALGO_SHA256
-                    2 -> hashingAlgorithm = utilities.ALGO_SHA512
-                }
-                hashLabel.text = hashingAlgorithm
-            }
-            override fun onStartTrackingTouch (seekBar: SeekBar?) { }
-            override fun onStopTrackingTouch (seekBar: SeekBar?) { }
-        })
-
-        length = 6
-        lengthSeekbar.setOnSeekBarChangeListener (object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged (p0: SeekBar?, p1: Int, p2: Boolean) {
-                when (p0?.progress) {
-                    0 -> length = 6
-                    1 -> length = 8
-                }
-                lengthLabel.text = "$length digits"
-            }
-            override fun onStartTrackingTouch (seekBar: SeekBar?) { }
-            override fun onStopTrackingTouch (seekBar: SeekBar?) { }
-        })
-
-        period = 30
-        periodSeekbar.setOnSeekBarChangeListener (object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged (p0: SeekBar?, p1: Int, p2: Boolean) {
-                when (p0?.progress) {
-                    0 -> period = 15
-                    1 -> period = 30
-                    2 -> period = 60
-                }
-                periodLabel.text = "$period seconds"
-            }
-            override fun onStartTrackingTouch (seekBar: SeekBar?) { }
-            override fun onStopTrackingTouch (seekBar: SeekBar?) { }
-        })
-
+        doneButton = findViewById (R.id.doneButton)
         doneButton.setOnClickListener {
 
-            if (issuerInput.length() < 2) {
-                Toast.makeText(applicationContext, "Enter issuer name", Toast.LENGTH_SHORT).show()
+            if (issuerInput.length() <= 1) {
+
+                CustomFullscreenDialogFragment(
+                    title = "Invalid Issuer",
+                    message = getString(R.string.issuer_empty),
+                    positiveButtonText = null,
+                    positiveButtonIcon = null,
+                    negativeButtonText = "Go back",
+                    negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                ).show(supportFragmentManager, "CustomFullscreenDialog")
+
+                return@setOnClickListener
+            }
+
+            if (accountInput.length() <= 2) {
+
+                CustomFullscreenDialogFragment(
+                    title = "Invalid Issuer",
+                    message = getString(R.string.account_empty),
+                    positiveButtonText = null,
+                    positiveButtonIcon = null,
+                    negativeButtonText = "Go back",
+                    negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                ).show(supportFragmentManager, "CustomFullscreenDialog")
+
                 return@setOnClickListener
             }
 
             if (secretInput.length() <= 7) {
-                Toast.makeText(applicationContext, "Enter a valid secret", Toast.LENGTH_SHORT).show()
+
+                CustomFullscreenDialogFragment(
+                    title = "Invalid Issuer",
+                    message = getString(R.string.secret_empty),
+                    positiveButtonText = null,
+                    positiveButtonIcon = null,
+                    negativeButtonText = "Go back",
+                    negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                ).show(supportFragmentManager, "CustomFullscreenDialog")
+
                 return@setOnClickListener
             }
 
-            loginData = Utilities.MfaCode (
-                type = utilities.DEFAULT_TYPE,
+            data = Utilities.MfaCode (
                 mode = mode,
                 issuer = issuerInput.text.toString(),
-                account = if (!labelInput.text.isNullOrEmpty()) labelInput.text.toString()  else "",
+                account = accountInput.text.toString(),
                 secret = secretInput.text.toString(),
-                algorithm = hashingAlgorithm,
-                digits = length,
-                period = period,
+                algorithm = algorithm,
+                digits = digits,
+                period = validity,
                 lock = false,
-                counter = 0,
+                counter = counterInput.text.toString().toLong(),
                 label = labelInput.text.toString()
             )
 
-            utilities.writeToVault(loginData, uuid)
+            val dataUrl = utilities.encodeOtpAuthURL(data)
 
-            finish()
+            utilities.overwriteLogin(dataUrl)
+
             finishAffinity()
             startActivity(Intent(applicationContext, MainActivity::class.java))
 
         }
 
-        showQrCodeButton.visibility = View.GONE
         deleteButton.visibility = View.GONE
 
         backButton.setOnClickListener {
-            finish()
+            if (secretInput.text!!.isNotEmpty() || issuerInput.text!!.isNotEmpty() || labelInput.text!!.isNotEmpty()) {
+                val dialog = CustomFullscreenDialogFragment(
+                    title = "Invalid Issuer",
+                    message = getString(R.string.go_back),
+                    positiveButtonText = "Keep editing",
+                    positiveButtonIcon = getDrawable(R.drawable.ic_baseline_edit_24),
+                    negativeButtonText = "Go back",
+                    negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                )
+                dialog.setOnNegativeClickListener { finish() }
+                dialog.show(supportFragmentManager, "CustomFullscreenDialog")
+            } else finish()
         }
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun loadLogin () {
-        val login = utilities.getLogin(uuid)
+    private fun loadLogin (loginData: String) {
+        val login = utilities.decodeOtpAuthURL (loginData)!!
+        issuerInput.setText (login.issuer)
+        secretInput.setText (login.secret)
+        accountInput.setText (login.account)
+        labelInput.setText (login.label)
 
-        issuerInput.setText (login?.issuer.toString())
-
-        val label = if (login?.account.isNullOrEmpty()) login?.label.toString() else login?.account
-        labelInput.setText (label)
-        secretInput.setText (login?.secret.toString())
-
-        if (login?.mode == utilities.MFA_TIME_MODE) modeSeekbar.progress = 0 else modeSeekbar.progress = 1
-
-        when (login?.algorithm) {
-            utilities.ALGO_SHA1 -> hashSeekbar.progress = 0
-            utilities.ALGO_SHA256 -> hashSeekbar.progress = 1
-            utilities.ALGO_SHA512 -> hashSeekbar.progress = 2
+        if (login.mode.contains("hotp")) {
+            counterButton.performClick()
+            counterInput.setText (login.counter.toString())
         }
 
-        when (login?.digits) {
-            6 -> lengthSeekbar.progress = 0
-            8 -> lengthSeekbar.progress = 1
+        periodText.text = login.period.toString()
+        periodSlider.value = login.period.toFloat()
+
+        when (login.algorithm) {
+            utilities.ALGO_SHA1 -> sha1Button.performClick()
+            utilities.ALGO_SHA256 -> sha256Button.performClick()
+            utilities.ALGO_SHA512 -> sha512Button.performClick()
         }
 
-        when (login?.period) {
-            15 -> periodSeekbar.progress = 0
-            30 -> periodSeekbar.progress = 1
-            60 -> periodSeekbar.progress = 2
-        }
-
-        showQrCodeButton.visibility = View.VISIBLE
-
-        showQrCodeButton.setOnClickListener {
-            val intent = Intent(applicationContext, QRCodeActivity::class.java)
-            intent.putExtra(utilities.INTENT_UUID, uuid)
-            startActivity(intent)
-            deleteButton.performHapticFeedback(HapticFeedbackConstants.REJECT)
+        when (login.digits) {
+            4 -> fourButton.performClick()
+            6 -> sixButton.performClick()
+            8 -> eightButton.performClick()
         }
 
         deleteButton.visibility = View.VISIBLE
 
         deleteButton.setOnClickListener {
-            val intent = Intent(applicationContext, DeleteActivity::class.java)
-            intent.putExtra(utilities.INTENT_UUID, uuid)
-            startActivity(intent)
-            deleteButton.performHapticFeedback(HapticFeedbackConstants.REJECT)
+            val deleteDialog = CustomFullscreenDialogFragment(
+                title = "Delete \"${login.issuer}\"",
+                message = getString(R.string.delete),
+                positiveButtonText = "Delete",
+                positiveButtonIcon = getDrawable(R.drawable.ic_outline_delete_24)!!,
+                negativeButtonText = "Go back",
+                negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+            )
+
+            deleteDialog.setOnPositiveClickListener {
+                utilities.deleteFromDataStore (loginData)
+                finishAffinity()
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+            }
+
+            deleteDialog.show(supportFragmentManager, "CustomFullscreenDialog")
         }
 
     }

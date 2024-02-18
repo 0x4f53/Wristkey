@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "app.wristkey",
+  "applicationId": "zeroxfourf.wristkey",
   "variantName": "debug",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 2,
-      "versionName": "2.2",
+      "versionCode": 3,
+      "versionName": "3.0",
       "outputFile": "app-debug.apk"
     }
   ],

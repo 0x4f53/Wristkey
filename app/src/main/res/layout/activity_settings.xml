@@ -11,23 +11,27 @@
     tools:context="app.wristkey.SettingsActivity"
     tools:deviceIds="wear">
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fadeScrollbars="false"
+        android:fillViewport="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:scrollbars="vertical"
-        android:fadeScrollbars="false"
-        android:fillViewport="true">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
         <requestFocus />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
             android:orientation="vertical"
-            android:paddingTop="55dp"
+            android:layout_marginHorizontal="7.5dp"
+            android:paddingTop="25dp"
             android:paddingBottom="75dp">
 
             <TextView
@@ -35,603 +39,268 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="12dp"
+                android:layout_margin="10dp"
                 android:fontFamily="@font/productsans"
                 android:foregroundGravity="center"
                 android:gravity="center"
-                android:text="Settings"
-                android:textColor="@color/lightDemo"
-                android:textSize="16dp"
+                android:text="@string/settings_label"
+                android:textColor="@color/grayAccents"
+                android:textSize="14sp"
                 android:textStyle="normal" />
 
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/pill_shape_border"
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
+                android:layout_marginVertical="2.5dp"
+                android:orientation="horizontal">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/productsans"
+                    android:letterSpacing="0.05"
+                    android:text="Search"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:id="@+id/searchText"
+                    android:singleLine="true" />
 
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="0.0075"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_baseline_search_24"
-                        android:tint="@color/white" />
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/searchButtonToggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" />
+            </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/productsans"
-                        android:paddingStart="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingEnd="7.5dp"
-                        android:paddingBottom="10dp"
-                        android:text="Show search button"
-                        android:textSize="14dp" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/searchButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="0.0075" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
+                android:background="@drawable/pill_shape_border"
+                android:layout_gravity="center_horizontal"
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
+                android:layout_marginVertical="2.5dp"
+                android:orientation="horizontal">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/clockText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/productsans"
+                    android:letterSpacing="0.05"
+                    android:text="Clock"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true" />
 
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="0.0075"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_outline_access_time_24"
-                        android:tint="@color/white" />
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/clockButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/productsans"
-                        android:paddingStart="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingEnd="7.5dp"
-                        android:paddingBottom="10dp"
-                        android:text="Show clock"
-                        android:textSize="14dp" />
+            </LinearLayout>
 
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/clockButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="0.0075" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/pill_shape_border"
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
+                android:layout_marginVertical="2.5dp"
+                android:orientation="horizontal">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/lockscreenText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/productsans"
+                    android:letterSpacing="0.05"
+                    android:text="App lock"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true" />
 
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="0.0075"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_baseline_more_time_24"
-                        android:tint="@color/white" />
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/lockButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/productsans"
-                        android:paddingStart="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingEnd="7.5dp"
-                        android:paddingBottom="10dp"
-                        android:text="24-hour clock"
-                        android:textSize="14dp" />
+            </LinearLayout>
 
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/twentyFourHourClockButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="0.0075" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
+                android:background="@drawable/pill_shape_border"
+                android:layout_gravity="center_horizontal"
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
+                android:layout_marginVertical="2.5dp"
+                android:orientation="horizontal">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/roundText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/productsans"
+                    android:letterSpacing="0.05"
+                    android:text="Round device"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true" />
 
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="0.0075"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_baseline_vibration_24"
-                        android:tint="@color/white" />
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/roundButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/productsans"
-                        android:paddingStart="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingEnd="7.5dp"
-                        android:paddingBottom="10dp"
-                        android:text="Haptics"
-                        android:textSize="14dp" />
+            </LinearLayout>
 
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/vibrateButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="0.0075" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
+                android:layout_gravity="center_horizontal"
+                android:layout_marginVertical="2.5dp"
+                android:background="@drawable/pill_shape_border"
+                android:orientation="horizontal"
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
+                android:visibility="gone">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/compactText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:fontFamily="@font/productsans"
+                    android:letterSpacing="0.05"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:text="Compact view"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
 
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="0.0075"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_outline_volume_up_24"
-                        android:tint="@color/white" />
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/compactButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/productsans"
-                        android:paddingStart="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingEnd="7.5dp"
-                        android:paddingBottom="10dp"
-                        android:text="Beep"
-                        android:textSize="14dp" />
+            </LinearLayout>
 
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/beepButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="0.0075" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
+                android:layout_gravity="center_horizontal"
+                android:layout_marginVertical="2.5dp"
+                android:background="@drawable/pill_shape_border"
+                android:orientation="horizontal"
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
+                android:visibility="gone">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/concealedText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:fontFamily="@font/productsans"
+                    android:letterSpacing="0.05"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:text="Concealed view"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
 
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="0.0075"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_outline_lock_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/productsans"
-                        android:paddingStart="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingEnd="7.5dp"
-                        android:paddingBottom="10dp"
-                        android:text="Lock screen"
-                        android:textSize="14dp" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/lockButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="0.0075" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/concealedButton"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
+                    android:layout_gravity="center_vertical" />
 
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="0.0075"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_baseline_watch_24"
-                        android:tint="@color/white" />
+            </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/productsans"
-                        android:paddingStart="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingEnd="7.5dp"
-                        android:paddingBottom="10dp"
-                        android:text="Round screen"
-                        android:textSize="14dp" />
+            <Button
+                android:id="@+id/aboutButton"
+                style="@style/Wristkey.Button"
+                android:text="About Wristkey"
+                app:icon="@drawable/ic_outline_info_24" />
 
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/roundButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="0.0075" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_horizontal" />
 
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:id="@+id/exportButton"
-                app:cardCornerRadius="25dp">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="0.075"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_outline_send_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/productsans"
-                        android:paddingStart="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingEnd="7.5dp"
-                        android:paddingBottom="10dp"
-                        android:text="Export data"
-                        android:textSize="14dp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+            <Button
                 android:id="@+id/backButton"
-                app:cardCornerRadius="25dp">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="7.5dp"
-                        android:layout_weight="0.075"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_baseline_arrow_back_ios_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/productsans"
-                        android:paddingStart="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingEnd="7.5dp"
-                        android:paddingBottom="10dp"
-                        android:text="Back"
-                        android:textSize="14dp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="75dp" />
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:id="@+id/deleteButton"
-                app:cardCornerRadius="25dp">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="0.075"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_outline_delete_forever_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/productsans"
-                        android:paddingStart="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingEnd="7.5dp"
-                        android:paddingBottom="10dp"
-                        android:text="Delete everything"
-                        android:textSize="14dp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_prev"
+                android:text="Back" />
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/clockBackground"
+    <TextView
+        android:id="@+id/clock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="@color/black"
-        app:cardCornerRadius="10dp"
+        android:fontFamily="@font/productsans"
+        android:foregroundGravity="center"
+        android:gravity="center_horizontal"
+        android:letterSpacing="0.075"
+        android:orientation="horizontal"
+        android:background="@drawable/pill_shape_black"
+        android:textColor="@color/white"
+        android:paddingHorizontal="5dp"
+        android:layout_marginTop="5dp"
+        android:text="04:20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/clock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
-                android:fontFamily="@font/productsans"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                android:letterSpacing="0.085"
-                android:paddingHorizontal="5dp"
-                android:text="12:00"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

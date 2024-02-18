@@ -20,22 +20,23 @@
         <requestFocus/>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="2.5dp"
-            android:layout_marginTop="55dp"
-            android:layout_marginRight="2.5dp"
-            android:orientation="vertical"
-            android:paddingBottom="150dp">
+            android:layout_marginHorizontal="7.5dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="75dp"
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/AppIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="75dp"
+                android:layout_margin="10dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
-                android:src="@mipmap/ic_launcher_round" />
+                android:src="@mipmap/ic_launcher" />
 
             <TextView
+                style="@style/Wristkey.TextView"
                 android:id="@+id/AppName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,55 +44,50 @@
                 android:fontFamily="@font/productsans"
                 android:text="@string/app_name"
                 android:textAlignment="center"
-                android:textColor="@color/primary_text_dark"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/Version"
+                style="@style/Wristkey.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
                 android:fontFamily="@font/productsans"
                 android:gravity="center"
                 android:text="version x.x"
-                android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/AuthenticatorDescription"
-                android:layout_width="wrap_content"
+                style="@style/Wristkey.TextView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:layout_marginHorizontal="10dp"
-                android:fontFamily="@font/productsans"
+                android:layout_margin="2.5dp"
                 android:gravity="center"
                 android:text="@string/about_app"
-                android:textColor="@color/primary_text_dark"
                 android:textStyle="normal" />
 
             <TextView
-                android:id="@+id/SourceCode"
-                android:layout_width="wrap_content"
+                android:id="@+id/sourceCode"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
+                android:layout_margin="2.5dp"
                 android:fontFamily="@font/productsans"
                 android:gravity="center"
                 android:text="@string/about_url"
-                android:textColor="#97A1DC"
+                android:textColor="@color/colorAccent"
                 android:textIsSelectable="true"
-                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
+                android:layout_margin="2.5dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -100,9 +96,7 @@
                     android:layout_gravity="center"
                     android:fontFamily="@font/productsans"
                     android:gravity="center"
-                    android:text="With "
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp" />
+                    android:text="With " />
 
                 <TextView
                     android:id="@+id/heart"
@@ -112,9 +106,8 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
                     android:gravity="center"
-                    android:text="❤️"
                     android:textColor="#FFFFFF"
-                    android:textSize="14sp" />
+                    android:text="❤️" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -123,170 +116,57 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
                     android:gravity="center"
-                    android:text=" by Owais"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp" />
+                    android:text=" by Owais" />
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:fontFamily="@font/productsans"
-                android:gravity="center"
-                android:text="Special thanks to"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_horizontal" />
 
-            <TextView
-                android:id="@+id/thanksText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2.5dp"
-                android:ellipsize="marquee"
-                android:fontFamily="@font/productsans"
-                android:maxLines="3"
-                android:singleLine="true"
-                android:layout_gravity="center"
-                android:text="@string/contributors"
-                android:textColor="#FFFFFF"
-                android:layout_marginBottom="5dp"
-                android:textSize="12sp" />
+            <Button
+                android:id="@+id/donateButton"
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/outline_attach_money_24"
+                android:text="Donate" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/productsans"
-                android:gravity="center"
-                android:layout_marginTop="10dp"
-                android:text="Donate Bitcoin"
-                android:textColor="#FFFFFF" />
+            <Button
+                android:id="@+id/licenseButton"
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/outline_gavel_24"
+                android:text="View License" />
 
-            <ImageView
-                android:id="@+id/bitcoinDonateQrCode"
-                android:layout_width="125dp"
-                android:layout_height="125dp"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/owais_bitcoin_wear" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_horizontal" />
 
-            <TextView
-                android:id="@+id/bitcoinWalletAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="20dp"
-                android:layout_marginHorizontal="20dp"
-                android:fontFamily="@font/sfmono"
-                android:gravity="center"
-                android:text="@string/bitcoin_wallet_address"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-                android:textStyle="normal" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:background="#1AFFFFFF"
-                android:fontFamily="@font/sfmono"
-                android:paddingStart="10dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="10dp"
-                android:text="@string/copyright"
-                android:textColor="@color/primary_text_dark"
-                android:textSize="12sp"
-                android:textStyle="normal" />
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+            <Button
                 android:id="@+id/backButton"
-                app:cardCornerRadius="25dp">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="7.5dp"
-                        android:layout_weight="0.075"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_baseline_arrow_back_ios_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/productsans"
-                        android:paddingStart="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingEnd="7.5dp"
-                        android:paddingBottom="10dp"
-                        android:text="Back"
-                        android:textSize="14dp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_prev"
+                android:text="Back" />
 
         </LinearLayout>
     </ScrollView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/clockBackground"
+    <TextView
+        android:id="@+id/clock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="@color/black"
-        app:cardCornerRadius="10dp"
+        android:fontFamily="@font/productsans"
+        android:foregroundGravity="center"
+        android:gravity="center_horizontal"
+        android:letterSpacing="0.075"
+        android:orientation="horizontal"
+        android:background="@drawable/pill_shape_black"
+        android:textColor="@color/white"
+        android:paddingHorizontal="5dp"
+        android:layout_marginTop="5dp"
+        android:text="04:20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/clock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
-                android:fontFamily="@font/productsans"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                android:letterSpacing="0.085"
-                android:paddingHorizontal="5dp"
-                android:text="12:00"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

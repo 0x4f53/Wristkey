@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import org.json.JSONObject
 import wristkey.R
 import java.io.File
 import java.io.FileWriter
@@ -75,7 +74,7 @@ class ExportActivity : AppCompatActivity() {
 
         backButton = findViewById (R.id.backButton)
 
-        logins = utilities.getLogins()
+        //logins = utilities.getLogins()
 
         qrExportButton.setOnClickListener {
             exportViaQrCodes()
@@ -108,7 +107,7 @@ class ExportActivity : AppCompatActivity() {
         Log.d ("Wristkey", "Writing export file to: " + applicationContext.filesDir.toString())
 
         val writer = FileWriter(filename)
-        writer.write(JSONObject(utilities.getVaultLoginsOnly()).toString(4))
+        // writer.write(JSONObject(utilities.getVaultLoginsOnly()).toString(4))
         writer.flush()
         writer.close()
 
@@ -127,7 +126,7 @@ class ExportActivity : AppCompatActivity() {
         }
 
         val intent = Intent (applicationContext, QRCodeActivity::class.java)
-        intent.putExtra (utilities.INTENT_UUID, utilities.getUuid(logins[loginNumber]))
+        // intent.putExtra (utilities.INTENT_QR_DATA, utilities.getUuid(logins[loginNumber]))
         loginNumber += 1
         startActivityForResult (intent, utilities.EXPORT_RESPONSE_CODE)
 
@@ -141,7 +140,7 @@ class ExportActivity : AppCompatActivity() {
                 if (logins.size > 2) {
                     if (loginNumber < logins.size) {
                         val intent = Intent (applicationContext, QRCodeActivity::class.java)
-                        intent.putExtra (utilities.INTENT_UUID, utilities.getUuid(logins[loginNumber]))
+                        // intent.putExtra (utilities.INTENT_QR_DATA, utilities.getUuid(logins[loginNumber]))
                         loginNumber += 1
                         startActivityForResult (intent, utilities.EXPORT_RESPONSE_CODE)
                     } else {
@@ -155,34 +154,14 @@ class ExportActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun startClock () {
-
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) {
-            findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
-        }
+        if (!utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
 
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
-                    val currentHour24 = SimpleDateFormat("HH", Locale.getDefault()).format(Date())
-                    val currentHour = SimpleDateFormat("hh", Locale.getDefault()).format(Date())
-                    val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
-                    val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-                    val currentAmPm = SimpleDateFormat("a", Locale.getDefault()).format(Date())
-                    runOnUiThread {
-                        try {
-
-                            if (utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, false)) {
-                                clock.text = "$currentHour24:$currentMinute"
-                                if ((currentSecond % 2) == 0) clock.text = "$currentHour24 $currentMinute"
-                            } else {
-                                clock.text = "$currentHour:$currentMinute"
-                                if ((currentSecond % 2) == 0) clock.text = "$currentHour $currentMinute"
-                            }
-
-                        } catch (_: Exception) { }
-                    }
+                    runOnUiThread { clock.text = utilities.getTime() }
                 }
-            }, 0, 1000) // 1000 milliseconds = 1 second
+            }, 0, 1000)
         } catch (_: IllegalStateException) { }
     }
 
