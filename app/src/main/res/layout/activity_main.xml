@@ -34,6 +34,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/searchLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -47,10 +48,10 @@
                     android:layout_width="65dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-                    android:paddingHorizontal="20dp"
-                    android:foregroundGravity="center"
-                    app:srcCompat="@drawable/ic_baseline_search_24"
                     android:background="@drawable/pill_shape_simple"
+                    android:foregroundGravity="center"
+                    android:paddingHorizontal="20dp"
+                    app:srcCompat="@drawable/ic_baseline_search_24"
                     app:tint="@color/white" />
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -58,14 +59,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Search"
-                    app:endIconMode="none" >
+                    app:endIconMode="none">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/searchBoxInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/productsans"
                         android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/productsans"
                         android:foregroundGravity="center_horizontal"
                         android:gravity="center_horizontal"
                         android:imeOptions="actionDone"
@@ -73,6 +74,22 @@
                         android:maxLines="1"
                         android:singleLine="true" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/searchProgress"
+                    style="@style/Widget.Material3.CircularProgressIndicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center|top"
+                    android:progress="75"
+                    android:foregroundGravity="center"
+                    android:indeterminate="true"
+                    app:indicatorColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:trackCornerRadius="100dp" />
 
             </LinearLayout>
 

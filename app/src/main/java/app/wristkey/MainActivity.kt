@@ -6,9 +6,7 @@ import android.content.Intent
 import android.media.audiofx.HapticGenerator
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -43,9 +41,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var scrollView: NestedScrollView
     private lateinit var clock: TextView
+    private lateinit var searchLayout: LinearLayout
     private lateinit var searchButton: ImageView
     private lateinit var searchBox: TextInputLayout
     private lateinit var searchBoxInput: TextInputEditText
+    private lateinit var searchProgress: ProgressBar
     private lateinit var roundTimeLeft: ProgressBar
     private lateinit var addAccountButton: Button
     private lateinit var settingsButton: Button
@@ -111,65 +111,38 @@ class MainActivity : AppCompatActivity() {
 
     private fun searchBox() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        val searchScope = CoroutineScope(Dispatchers.IO)
-        val searchDelayMillis = 300
+        val searchDelayMillis = 300L // Use Long for delay
 
         searchBoxInput.doAfterTextChanged { text ->
-            searchJob?.cancel()
-            searchJob = searchScope.launch {
-                delay(searchDelayMillis.toLong()) // Throttle the search
-                val searchTerms = text.toString().lowercase()
-                val searchResults = mutableListOf<Utilities.MfaCode>()
-
-                for (item in processedLogins) {
-                    if (("${item.issuer} ${item.account} ${item.label}").lowercase()
-                            .contains(searchTerms)
-                    ) {
-                        searchResults.add(item)
-                    }
+            searchProgress.visibility = View.VISIBLE
+            searchJob?.cancel() // Cancel any existing job to ensure only one search operation runs at a time
+            searchJob = CoroutineScope(Dispatchers.IO).launch {
+                delay(searchDelayMillis) // Throttle the search to avoid flickering and excessive processing
+                val searchTerms = text.toString().lowercase(Locale.getDefault())
+                val searchResults = logins.filter { item ->  // Filter the logins list based on the search terms
+                    ("${item.issuer} ${item.account} ${item.label}").lowercase(Locale.getDefault()).contains(searchTerms)
                 }
-
-                withContext(Dispatchers.Main) {
-                    loginsAdapter = LoginsAdapter(processedLogins, timer, isRound)
-                    loginsRecycler.adapter = loginsAdapter
+                withContext(Dispatchers.Main) { // Update the RecyclerView on the main thread
+                    loginsAdapter.updateData(searchResults)
+                    searchProgress.visibility = View.GONE
                 }
-
-                searchResults.clear()
             }
         }
 
+        // Toggle search box visibility and input handling
         if (!activated) {
-
             searchBox.visibility = View.VISIBLE
             searchButton.setImageDrawable(getDrawable(R.drawable.ic_cancel))
-
             searchBox.requestFocus()
-
-            searchBox.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    if (searchBoxInput.text?.isEmpty() == true) {
-                        searchBox.visibility = View.GONE
-                    }
-                }
-            }
-
             imm.showSoftInput(searchBoxInput, InputMethodManager.SHOW_IMPLICIT)
-
             activated = true
-
         } else {
-
-            loginsAdapter.notifyDataSetChanged()
-
             searchButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_search_24))
             searchBoxInput.text?.clear()
             searchBox.clearFocus()
             searchBox.visibility = View.GONE
-
             imm.hideSoftInputFromWindow(searchBoxInput.windowToken, 0)
-
             activated = false
-
         }
     }
 
@@ -215,15 +188,19 @@ class MainActivity : AppCompatActivity() {
         loginsRecycler.layoutManager = layoutManager
         snapHelper.attachToRecyclerView(loginsRecycler)
 
+        searchLayout = findViewById(R.id.searchLayout)
+        searchBox = findViewById(R.id.searchBox)
+        searchButton = findViewById(R.id.searchButton)
+        searchProgress = findViewById(R.id.searchProgress)
+        searchProgress.visibility = View.GONE
+        scrollView = findViewById(R.id.scrollView)
+
         if (utilities.db.getBoolean(utilities.SETTINGS_SEARCH_ENABLED, true)) {
-            scrollView = findViewById(R.id.scrollView)
             scrollView.post { scrollView.smoothScrollTo(0, 175) }
 
-            searchBox = findViewById(R.id.searchBox)
             searchBoxInput = findViewById(R.id.searchBoxInput)
             searchBox.visibility = View.GONE
 
-            searchButton = findViewById(R.id.searchButton)
             searchButton.visibility = View.VISIBLE
 
             searchButton.setOnClickListener {
@@ -231,7 +208,7 @@ class MainActivity : AppCompatActivity() {
                 searchBox()
             }
 
-        } else searchButton.visibility = View.GONE
+        } else searchLayout.visibility = View.INVISIBLE
 
         addAccountButton.setOnClickListener {
             startActivity(
@@ -309,7 +286,7 @@ class MainActivity : AppCompatActivity() {
                 * Note: This is for TOTPs only. Since HOTPs are updated once at a time after user input, they do not cause performanca issues.
                 * */
 
-                if (tickerValue == 29) updateLogins()
+                try { if (tickerValue == 29) updateLogins() } catch (_: IllegalArgumentException) { }
 
             }
         }, 0, 1000) // 1000 milliseconds = 1 second
