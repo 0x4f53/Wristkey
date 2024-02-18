@@ -1,69 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/LoadingLayout"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    android:padding="@dimen/box_inset_layout_padding"
-    tools:context="app.wristkey.BitwardenJSONImport"
+    tools:context="app.wristkey.FileImportActivity"
     tools:deviceIds="wear">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fadeScrollbars="false"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:scrollbars="vertical"
-        android:fadeScrollbars="false">
-        <requestFocus/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/RoundTimeLeft"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <requestFocus />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="55dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="75dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginHorizontal="7.5dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="75dp">
 
             <TextView
-                android:id="@+id/ImportingLabel"
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_margin="10dp"
                 android:fontFamily="@font/productsans"
-                android:text="@string/importing"
-                android:textAlignment="center"
-                android:textColor="@color/primary_text_dark"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:letterSpacing="0.05"
+                android:textColor="@color/grayAccents"
                 android:textSize="16sp"
-                android:textStyle="normal" />
+                android:text="Importing" />
 
-            <ProgressBar
-                android:id="@+id/LoadingIcon"
-                android:layout_width="wrap_content"
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progress"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="10dp"
                 android:indeterminate="true"
-                android:indeterminateBehavior="repeat"
-                android:indeterminateTint="@color/colorAccent"
-                android:progressTint="@color/colorAccent"
-                android:secondaryProgressTint="@color/colorAccent" />
+                app:trackColor="@android:color/transparent"
+                app:indicatorColor="@color/white"
+                app:trackCornerRadius="100dp"
+                android:layout_marginHorizontal="10dp" />
 
             <TextView
-                android:id="@+id/ImportingDescription"
-                android:layout_width="wrap_content"
+                android:id="@+id/description"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center"
+                android:layout_margin="2.5dp"
                 android:fontFamily="@font/productsans"
                 android:gravity="center"
-                android:text="@string/import_description"
-                android:textColor="@color/primary_text_dark"
+                android:text="Importing data..."
                 android:textStyle="normal" />
 
-        </LinearLayout>
-    </ScrollView>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_horizontal" />
 
-</androidx.wear.widget.BoxInsetLayout>
+            <Button
+                android:id="@+id/doneButton"
+                style="@style/Wristkey.Button"
+                android:text="Save data" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progressRound"
+        style="@style/Widget.Material3.CircularProgressIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center|top"
+        android:foregroundGravity="center"
+        android:scaleX="1.2"
+        android:indeterminate="true"
+        android:scaleY="1.2"
+        app:indicatorColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:trackColor="@android:color/transparent"
+        app:trackCornerRadius="100dp"
+        app:trackThickness="0.75dp" />
+
+    <TextView
+        android:id="@+id/clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/productsans"
+        android:foregroundGravity="center"
+        android:gravity="center_horizontal"
+        android:letterSpacing="0.075"
+        android:orientation="horizontal"
+        android:background="@drawable/pill_shape_black"
+        android:textColor="@color/white"
+        android:paddingHorizontal="5dp"
+        android:layout_marginTop="6.5dp"
+        android:text="04:20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
