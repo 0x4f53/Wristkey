@@ -54,16 +54,12 @@
             <Button
                 android:id="@+id/positive_button"
                 style="@style/Wristkey.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:text="Positive Button"
                 android:singleLine="false" />
 
             <Button
                 android:id="@+id/negative_button"
                 style="@style/Wristkey.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:text="Negative Button"
                 android:singleLine="false" />
 

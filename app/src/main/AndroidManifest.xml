@@ -19,12 +19,14 @@
         android:maxSdkVersion="32" />
 
     <application
+        android:networkSecurityConfig="@xml/network"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Wristkey">
+
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
@@ -40,14 +42,6 @@
         <activity
             android:name="app.wristkey.AdbImportActivity"
             android:label="@string/title_activity_adb_import" />
-
-        <activity
-            android:name="app.wristkey.ReceiveDecryptActivity"
-            android:label="@string/title_activity_receive_decrypt" />
-
-        <activity
-            android:name="app.wristkey.EncryptSendActivity"
-            android:label="@string/title_activity_encrypt_send" />
 
         <activity
             android:name="app.wristkey.MainActivity"
@@ -69,7 +63,8 @@
 
         <activity
             android:name="app.wristkey.WiFiTransferActivity"
-            android:label="Wi-Fi transfer" />
+            android:label="Wi-Fi transfer"
+            android:exported="true" />
 
         <activity
             android:name="app.wristkey.SendActivity"

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.media.audiofx.HapticGenerator
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.InputMethodManager
@@ -23,11 +24,11 @@ import com.google.android.material.textfield.TextInputLayout
 import dev.turingcomplete.kotlinonetimepassword.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import wristkey.R
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -51,6 +52,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var data: Utilities.WristkeyFileSystem
     private lateinit var logins: MutableList<Utilities.MfaCode>
+    private lateinit var processedLogins: MutableList<Utilities.MfaCode> // This one goes to RecyclerView
     private lateinit var loginsAdapter: LoginsAdapter
     private lateinit var callback: ItemTouchHelperCallback
     private lateinit var loginsRecycler: RecyclerView
@@ -59,9 +61,21 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        utilities = Utilities (applicationContext)
+        utilities = Utilities(applicationContext)
         timer = Timer()
-        lockScreen()
+
+        if (utilities.db.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)) {
+            val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
+            if (lockscreen.isKeyguardSecure) {
+                val i = lockscreen.createConfirmDeviceCredentialIntent("Wristkey", "App locked")
+                startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
+            }
+        } else {
+            initializeUI()
+            startClock()
+            startTimer()
+        }
+
     }
 
     override fun onStop() {
@@ -92,27 +106,36 @@ class MainActivity : AppCompatActivity() {
         if (!isTimerRunning) startTimer()
     }
 
+    private var searchJob: Job? = null
     private var activated = false
-    private fun searchBox() {
 
+    private fun searchBox() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         val searchScope = CoroutineScope(Dispatchers.IO)
+        val searchDelayMillis = 300
+
         searchBoxInput.doAfterTextChanged { text ->
-            val text = text.toString().lowercase()
-            searchScope.launch {
-                val searchResults = logins.filter { login ->
-                    login.issuer.lowercase().contains(text) || login.account.lowercase().contains(text) || login.label.lowercase().contains(text)
+            searchJob?.cancel()
+            searchJob = searchScope.launch {
+                delay(searchDelayMillis.toLong()) // Throttle the search
+                val searchTerms = text.toString().lowercase()
+                val searchResults = mutableListOf<Utilities.MfaCode>()
+
+                for (item in processedLogins) {
+                    if (("${item.issuer} ${item.account} ${item.label}").lowercase()
+                            .contains(searchTerms)
+                    ) {
+                        searchResults.add(item)
+                    }
                 }
 
-                loginsAdapter = LoginsAdapter(searchResults, timer, isRound)
-
                 withContext(Dispatchers.Main) {
-                    delay(250)
-                    loginsAdapter.notifyDataSetChanged()
+                    loginsAdapter = LoginsAdapter(processedLogins, timer, isRound)
                     loginsRecycler.adapter = loginsAdapter
                 }
 
+                searchResults.clear()
             }
-
         }
 
         if (!activated) {
@@ -122,7 +145,7 @@ class MainActivity : AppCompatActivity() {
 
             searchBox.requestFocus()
 
-            searchBox.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
+            searchBox.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
                     if (searchBoxInput.text?.isEmpty() == true) {
                         searchBox.visibility = View.GONE
@@ -130,23 +153,19 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(searchBoxInput, InputMethodManager.SHOW_IMPLICIT)
 
             activated = true
 
         } else {
 
+            loginsAdapter.notifyDataSetChanged()
+
             searchButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_search_24))
             searchBoxInput.text?.clear()
             searchBox.clearFocus()
             searchBox.visibility = View.GONE
 
-            loginsAdapter = LoginsAdapter (logins, timer, isRound)
-            loginsAdapter.notifyDataSetChanged()
-            loginsRecycler.adapter = loginsAdapter
-
-            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(searchBoxInput.windowToken, 0)
 
             activated = false
@@ -154,25 +173,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setShape () {
-        isRound = utilities.db.getBoolean (utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)
-        if (isRound) roundTimeLeft.visibility = View.VISIBLE else roundTimeLeft.visibility = View.GONE
+    private fun setShape() {
+        isRound = utilities.db.getBoolean(
+            utilities.CONFIG_SCREEN_ROUND,
+            resources.configuration.isScreenRound
+        )
+        if (isRound) roundTimeLeft.visibility = View.VISIBLE else roundTimeLeft.visibility =
+            View.GONE
     }
 
-    private fun initializeUI () {
+    private fun initializeUI() {
         setContentView(R.layout.activity_main)
-
-        searchBox = findViewById(R.id.searchBox)
-        searchBoxInput = findViewById(R.id.searchBoxInput)
-        searchBox.visibility = View.GONE
-
-        searchButton = findViewById(R.id.searchButton)
-
-        if (utilities.db.getBoolean (utilities.SETTINGS_SEARCH_ENABLED, true)) {
-            scrollView = findViewById(R.id.scrollView)
-            scrollView.post { scrollView.smoothScrollTo (0, 175) }
-            searchButton.visibility = View.VISIBLE
-        } else searchButton.visibility = View.GONE
 
         clock = findViewById(R.id.clock)
 
@@ -183,15 +194,19 @@ class MainActivity : AppCompatActivity() {
         addAccountButton = findViewById(R.id.addAccount)
         settingsButton = findViewById(R.id.settings)
 
-        data = utilities.getData()
-        logins = mutableListOf()
-        for (login in data.otpauth) { utilities.decodeOtpAuthURL(login)?.let { logins.add(it) } }
-
         setShape()
 
-        loginsAdapter = LoginsAdapter (logins, timer, isRound)
+        data = utilities.getData()
+        logins = mutableListOf()
+        processedLogins = mutableListOf()
 
-        callback = ItemTouchHelperCallback (loginsAdapter, logins)
+        for (login in data.otpauth) utilities.decodeOtpAuthURL(login)?.let { logins.add(it) }
+
+        processedLogins = logins
+
+        updateLogins()
+
+        callback = ItemTouchHelperCallback(loginsAdapter, processedLogins)
         touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(loginsRecycler)
 
@@ -200,43 +215,109 @@ class MainActivity : AppCompatActivity() {
         loginsRecycler.layoutManager = layoutManager
         snapHelper.attachToRecyclerView(loginsRecycler)
 
-        loginsRecycler.adapter = loginsAdapter
-        loginsRecycler.invalidate()
-        loginsRecycler.refreshDrawableState()
-        loginsRecycler.scheduleLayoutAnimation()
-        // loginsRecycler.setItemViewCacheSize (logins.size)
+        if (utilities.db.getBoolean(utilities.SETTINGS_SEARCH_ENABLED, true)) {
+            scrollView = findViewById(R.id.scrollView)
+            scrollView.post { scrollView.smoothScrollTo(0, 175) }
 
-        searchButton.setOnClickListener {
-            searchBox()
-            searchButton.performHapticFeedback(HapticGenerator.SUCCESS)
+            searchBox = findViewById(R.id.searchBox)
+            searchBoxInput = findViewById(R.id.searchBoxInput)
+            searchBox.visibility = View.GONE
+
+            searchButton = findViewById(R.id.searchButton)
+            searchButton.visibility = View.VISIBLE
+
+            searchButton.setOnClickListener {
+                searchButton.performHapticFeedback(HapticGenerator.SUCCESS)
+                searchBox()
+            }
+
+        } else searchButton.visibility = View.GONE
+
+        addAccountButton.setOnClickListener {
+            startActivity(
+                Intent(
+                    applicationContext,
+                    AddActivity::class.java
+                )
+            )
         }
-
-        addAccountButton.setOnClickListener { startActivity(Intent(applicationContext, AddActivity::class.java)) }
-        settingsButton.setOnClickListener { startActivity(Intent(applicationContext, SettingsActivity::class.java)) }
+        settingsButton.setOnClickListener {
+            startActivity(
+                Intent(
+                    applicationContext,
+                    SettingsActivity::class.java
+                )
+            )
+        }
 
     }
 
-    private fun startTimer () {
+    private fun updateLogins() {
+        processedLogins = logins
+        for (processedLogin in processedLogins) {
+            var mfaCode = utilities.generateTotp(
+                secret = processedLogin.secret,
+                algorithm = processedLogin.algorithm,
+                digits = processedLogin.digits,
+                period = processedLogin.period
+            )
+            mfaCode = "${
+                mfaCode.substring(
+                    0,
+                    mfaCode.length / 2
+                )
+            } ${mfaCode.substring(mfaCode.length / 2)}"
+            runOnUiThread { processedLogin.secret = mfaCode }
+        }
 
+        if (!::loginsAdapter.isInitialized) {
+            loginsAdapter = LoginsAdapter(processedLogins, timer, isRound)
+            loginsRecycler.adapter = loginsAdapter
+        }
+
+        runOnUiThread { loginsAdapter.notifyItemRangeChanged(0, processedLogins.size) }
+
+    }
+
+    private fun startTimer() {
+
+        // Set circle around screen edge to show appropriate time interval
         val largestPeriod = logins.maxByOrNull { it.period }?.period ?: 30
         roundTimeLeft.max = largestPeriod
 
+        // Start timer
         if (!isTimerRunning) timer = Timer()
-        timer.scheduleAtFixedRate (object : TimerTask() {
+        timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 isTimerRunning = true
-                val second = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-                val tickerValue = (largestPeriod*2 - (second % largestPeriod*2)) % largestPeriod
+                val second = utilities.second()
+                val tickerValue = (largestPeriod - (second % largestPeriod)) % largestPeriod
                 try {
+                    // Set ticker progress per seconds here.
                     roundTimeLeft.progress = tickerValue
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) roundTimeLeft.setProgress(tickerValue, true)
-                } catch (_: Exception) { }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) roundTimeLeft.setProgress(
+                        tickerValue,
+                        true
+                    )
+                } catch (_: Exception) {
+                }
+
+                /*
+                * Instead of setting TOTP secret in RecyclerView's ViewHolder,
+                * iterate through logins list when time is up, replace the secret with the code itself and simple render it in the ViewHolder.
+                * This prevents sequential secret computation on UI thread and reduces lag.
+                * Note: This is for TOTPs only. Since HOTPs are updated once at a time after user input, they do not cause performanca issues.
+                * */
+
+                if (tickerValue == 29) updateLogins()
+
             }
         }, 0, 1000) // 1000 milliseconds = 1 second
     }
 
-    private fun startClock () {
-        if (!utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
+    private fun startClock() {
+        if (!utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility =
+            View.GONE
 
         try {
             timer.scheduleAtFixedRate(object : TimerTask() {
@@ -244,20 +325,7 @@ class MainActivity : AppCompatActivity() {
                     runOnUiThread { clock.text = utilities.getTime() }
                 }
             }, 0, 1000)
-        } catch (_: IllegalStateException) { }
-    }
-
-    private fun lockScreen () {
-        if (utilities.db.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)) {
-            val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
-            if (lockscreen.isKeyguardSecure) {
-                val i = lockscreen.createConfirmDeviceCredentialIntent ("Wristkey", "App locked")
-                startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
-            }
-        } else {
-            initializeUI()
-            startClock()
-            startTimer()
+        } catch (_: IllegalStateException) {
         }
     }
 

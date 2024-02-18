@@ -17,10 +17,10 @@ import android.net.NetworkCapabilities
 import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.os.Handler
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import android.util.Base64.DEFAULT
-import android.util.Base64.encodeToString
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -33,7 +33,6 @@ import android.widget.TextView
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -45,33 +44,28 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
+import com.goterl.lazysodium.LazySodiumAndroid
+import com.goterl.lazysodium.SodiumAndroid
+import dev.turingcomplete.kotlinonetimepassword.GoogleAuthenticator
 import dev.turingcomplete.kotlinonetimepassword.HmacAlgorithm
 import dev.turingcomplete.kotlinonetimepassword.HmacOneTimePasswordConfig
 import dev.turingcomplete.kotlinonetimepassword.HmacOneTimePasswordGenerator
 import dev.turingcomplete.kotlinonetimepassword.TimeBasedOneTimePasswordConfig
 import dev.turingcomplete.kotlinonetimepassword.TimeBasedOneTimePasswordGenerator
 import fi.iki.elonen.NanoHTTPD
-import org.bouncycastle.crypto.agreement.X25519Agreement
-import org.bouncycastle.crypto.generators.X25519KeyPairGenerator
-import org.bouncycastle.crypto.params.X25519KeyGenerationParameters
-import org.bouncycastle.crypto.params.X25519PrivateKeyParameters
-import org.bouncycastle.crypto.params.X25519PublicKeyParameters
-import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import wristkey.R
+import java.io.IOException
 import java.net.InetAddress
 import java.net.URLDecoder
 import java.net.URLEncoder
-import java.security.SecureRandom
-import java.security.Security
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import javax.crypto.Cipher
-import javax.crypto.spec.IvParameterSpec
-import javax.crypto.spec.SecretKeySpec
 
 
 @RequiresApi(Build.VERSION_CODES.M)
@@ -106,9 +100,8 @@ class Utilities (context: Context) {
 
     val SETTINGS_SEARCH_ENABLED = "SETTINGS_SEARCH_ENABLED"
     val SETTINGS_CLOCK_ENABLED = "SETTINGS_CLOCK_ENABLED"
-    val SETTINGS_24H_CLOCK_ENABLED = "SETTINGS_24H_CLOCK_ENABLED"
-    val SETTINGS_HAPTICS_ENABLED = "SETTINGS_HAPTICS_ENABLED"
-    val SETTINGS_BEEP_ENABLED = "SETTINGS_BEEP_ENABLED"
+    val SETTINGS_COMPACT_ENABLED = "SETTINGS_COMPACT_ENABLED"
+    val SETTINGS_CONCEALED_ENABLED = "SETTINGS_CONCEALED_ENABLED"
     val CONFIG_SCREEN_ROUND = "CONFIG_SCREEN_ROUND"
     val SETTINGS_LOCK_ENABLED = "SETTINGS_LOCK_ENABLED"
 
@@ -161,7 +154,7 @@ class Utilities (context: Context) {
         val mode: String,
         val issuer: String,
         val account: String,
-        val secret: String,
+        var secret: String,
         val algorithm: String,
         val digits: Int,
         val period: Int,
@@ -169,6 +162,12 @@ class Utilities (context: Context) {
         var counter: Long,
         val label: String,
     )
+
+    fun deviceName () : String {
+        return "${Build.MANUFACTURER.toTitleCase()} ${Build.MODEL}"
+    }
+
+    fun String.toTitleCase(): String = this.split(" ").joinToString(" ") { it.capitalize() }
 
     fun isIp (string: String): Boolean {
         if (string.contains("0.0.") || string.contains("10.0.")) return false
@@ -505,6 +504,15 @@ class Utilities (context: Context) {
         @JsonProperty("otpauth") var otpauth: MutableList<String>
     )
 
+    fun toBase64(string: String): String {
+        return Base64.encodeToString(string.toByteArray(Charsets.UTF_8), Base64.DEFAULT)
+    }
+
+    fun fromBase64(string: String): String {
+        val decodedBytes = Base64.decode(string, Base64.DEFAULT)
+        return String(decodedBytes, Charsets.UTF_8)
+    }
+
     fun overwriteLogin (otpAuthURL: String): Boolean {  // Overwrites an otpAuth String if it already exists
         var data = objectMapper.writeValueAsString (
             WristkeyFileSystem(
@@ -545,6 +553,7 @@ class Utilities (context: Context) {
         )
 
         val data = db.getString (DATA_STORE, wfs)
+
         return objectMapper.readValue (
             data,
             WristkeyFileSystem::class.java
@@ -596,7 +605,9 @@ class Utilities (context: Context) {
             timeStepUnit = TimeUnit.SECONDS
         )
 
-        return TimeBasedOneTimePasswordGenerator(secret.toByteArray(), config).generate()
+        if (algorithm == ALGO_SHA1 && period == 30 && digits == 6) return GoogleAuthenticator(secret.toByteArray(Charset.defaultCharset())).generate()
+
+        return TimeBasedOneTimePasswordGenerator(secret.toByteArray(Charset.defaultCharset()), config).generate()
     }
 
     fun generateHotp (secret: String, algorithm: String, digits: Int, counter: Long): String {
@@ -612,155 +623,26 @@ class Utilities (context: Context) {
         return HmacOneTimePasswordGenerator (secret.toByteArray(), config).generate(counter)
     }
 
+    fun second (): Int {
+        return SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
+    }
+
+
 }
 
-class HttpServer (private val activityContext: Context, ip: String, port: Int): NanoHTTPD (ip, port) {
-
-    class Keys (
-        val publicKey: ByteArray,
-        val privateKey: ByteArray
-    )
-    private fun generateKeyPair(): Keys {
-        Security.addProvider(BouncyCastleProvider())
-        val generator = X25519KeyPairGenerator()
-        val keyGenParam = X25519KeyGenerationParameters(null)
-        generator.init(keyGenParam)
-
-        val keyPair = generator.generateKeyPair()
-
-        val privateKeyBytes = (keyPair.private as X25519PrivateKeyParameters).encoded
-        val publicKeyBytes = (keyPair.public as X25519PublicKeyParameters).encoded
-
-        return Keys(publicKeyBytes, privateKeyBytes)
+class Cryptography () {
+    val sodium = SodiumAndroid()
+    val lazySodium = LazySodiumAndroid(sodium, StandardCharsets.UTF_8)
+    fun encrypt(data: String, publicKey: com.goterl.lazysodium.utils.Key): String {
+        //val keypair = lazySodium.cryptoKxKeypair()
+        //val publicKey = keypair.publicKey
+        return lazySodium.cryptoBoxSealEasy(data, publicKey)
     }
-
-    private fun exchangeKeys(publicKeyBytes: ByteArray, privateKeyBytes: ByteArray): ByteArray {
-        val publicKey = X25519PublicKeyParameters(publicKeyBytes, 0)
-        val privateKey = X25519PrivateKeyParameters(privateKeyBytes, 0)
-
-        val agreement = X25519Agreement()
-        agreement.init(privateKey)
-        agreement.calculateAgreement(publicKey, ByteArray(agreement.agreementSize), 0)
-
-        val sharedSecret = ByteArray(agreement.agreementSize)
-        agreement.calculateAgreement(publicKey, sharedSecret, 0)
-
-        return sharedSecret
+    fun decrypt (data: String, privateKey: com.goterl.lazysodium.utils.Key): String {
+        //val keypair = lazySodium.cryptoKxKeypair()
+        //val publicKey = keypair.publicKey
+        return lazySodium.cryptoBoxSealEasy(data, privateKey)
     }
-
-    private fun encrypt(data: String, sharedSecret: ByteArray): ByteArray {
-        val iv = ByteArray(16)
-        val random = SecureRandom()
-        random.nextBytes(iv)
-
-        val keySpec = SecretKeySpec(sharedSecret, "AES")
-        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-        val ivParameterSpec = IvParameterSpec(iv)
-        cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivParameterSpec)
-
-        val encryptedData = cipher.doFinal(data.toByteArray())
-
-        val result = ByteArray(iv.size + encryptedData.size)
-        System.arraycopy(iv, 0, result, 0, iv.size)
-        System.arraycopy(encryptedData, 0, result, iv.size, encryptedData.size)
-
-        return result
-    }
-
-    private fun decrypt(encryptedData: ByteArray, sharedSecret: ByteArray): String {
-        val ivSize = 16
-        val iv = ByteArray(ivSize)
-        val encryptedBytes = ByteArray(encryptedData.size - ivSize)
-        System.arraycopy(encryptedData, 0, iv, 0, ivSize)
-        System.arraycopy(encryptedData, ivSize, encryptedBytes, 0, encryptedData.size - ivSize)
-
-        val keySpec = SecretKeySpec(sharedSecret, "AES")
-        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-        val ivParameterSpec = IvParameterSpec(iv)
-        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivParameterSpec)
-
-        val decryptedBytes = cipher.doFinal(encryptedBytes)
-
-        return String(decryptedBytes)
-    }
-
-    private var accepted = false
-    private var publicKeySent = false
-    private var acceptancePrompted = false
-
-    val activity = (activityContext as Activity)
-
-    override fun serve(session: IHTTPSession): Response {
-        val keyPair = generateKeyPair()
-        //Log.d("Wristkey--S", encodeToString(keyPair.publicKey, DEFAULT))
-
-        //val sharedSecret = exchangeKeys (keyPair.publicKey, keyPair.privateKey)
-       // val dataToEncrypt = "Hello, X25519!"
-       // val encryptedData = encrypt(dataToEncrypt, sharedSecret)
-        //val decryptedData = decrypt(encryptedData, sharedSecret)
-
-        //Log.d ("Wristkey--S", "Original data: $dataToEncrypt")
-        //Log.d ("Wristkey--S", "Encrypted data (Base64): " + encodeToString(encryptedData, DEFAULT))
-        //Log.d ("Wristkey--S", "Decrypted data: $decryptedData")
-
-        //Log.d ("Wristkey--S", "Accepted? $accepted")
-
-        Log.d ("Wristkey--S", "Server serving")
-
-        val requestBody = HashMap<String, String>()
-        session.parseBody(requestBody)
-
-        val parameters = session.parameters
-
-        lateinit var deviceName: String
-        for ((key, value) in parameters.entries) { if (key == "deviceName") deviceName = value[0] }
-
-        if (session.method == Method.POST && parameters.entries.size > 0 && deviceName.isNotBlank() && deviceName.length >= 8 &&  deviceName.contains('(')) {
-            Log.d ("Wristkey--S", "POST received")
-
-            activity.runOnUiThread {
-                if (!acceptancePrompted) {
-                    acceptancePrompted = true
-                    AlertDialog.Builder(activityContext)
-                        .setMessage("\n\n" + deviceName + " " + activityContext.getString(wristkey.R.string.wifi_connection_request))
-                        .setPositiveButton("Accept") { _, _ ->
-                            accepted = true
-                        }
-                        .setNegativeButton("Decline") { _, _ ->
-                            Log.d ("Wristkey--S", "Server stopped")
-                            stop()
-                            activity.finish()
-                        }
-                        .setCancelable(false)
-                        .create().show()
-                }
-            }
-
-            if (publicKeySent) {
-                // activity.finish()
-            }
-
-            if (accepted) {
-                publicKeySent = true
-                return newFixedLengthResponse(Response.Status.OK, "text/plain", "publicKey=${encodeToString(keyPair.publicKey, DEFAULT).trim()}")
-            }
-
-            return newFixedLengthResponse(Response.Status.OK, "text/plain", "requested")
-
-        } else {
-            stop()
-            activity.finish()
-            return newFixedLengthResponse (Response.Status.FORBIDDEN, "text/plain", activityContext.getString(
-                wristkey.R.string.forbidden_wifi_transfer))
-        }
-    }
-
-    fun startServer() {
-        Log.d ("Wristkey--S", "Server started")
-        makeSecure(makeSSLSocketFactory("/res/raw/keystore.bks", "Wristkey".toCharArray()), null)
-        super.start(SOCKET_READ_TIMEOUT, false)
-    }
-
 }
 
 interface ItemTouchHelperAdapter {
@@ -877,7 +759,7 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter, val l
 
 }
 
-class LoginsAdapter(private val data: List<Utilities.MfaCode>, val timer: Timer, val isRound: Boolean) : RecyclerView.Adapter<LoginsAdapter.ViewHolder>(), ItemTouchHelperAdapter {
+class LoginsAdapter(private val data: MutableList<Utilities.MfaCode>, val timer: Timer, val isRound: Boolean) : RecyclerView.Adapter<LoginsAdapter.ViewHolder>(), ItemTouchHelperAdapter {
 
     lateinit var context: Context
     lateinit var utilities: Utilities
@@ -917,7 +799,7 @@ class LoginsAdapter(private val data: List<Utilities.MfaCode>, val timer: Timer,
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
+        // move unnecessary crap out of here and only update the text
         private val code: TextView = itemView.findViewById(wristkey.R.id.code)
         private val issuer: TextView = itemView.findViewById(wristkey.R.id.issuer)
         private val accountAndLabel: TextView = itemView.findViewById(wristkey.R.id.accountAndLabel)
@@ -930,8 +812,8 @@ class LoginsAdapter(private val data: List<Utilities.MfaCode>, val timer: Timer,
 
         fun bind(item: Utilities.MfaCode) {
 
+            accountAndLabel.isSelected = true
             accountIcon.text = item.issuer[0].toString()
-
             issuer.text = item.issuer
 
             var assembledLabel = item.account
@@ -941,11 +823,15 @@ class LoginsAdapter(private val data: List<Utilities.MfaCode>, val timer: Timer,
             // Time mode
             if (item.mode.contains(utilities.MFA_TIME_MODE)) {
                 counterControls.visibility = View.GONE
-                var mfaCode = utilities.generateTotp (secret = item.secret, algorithm = item.algorithm, digits = item.digits, period = item.period)
-                mfaCode = "${mfaCode.substring(0, mfaCode.length/2)} ${mfaCode.substring(mfaCode.length/2)}"
-                code.text = mfaCode
-                loginInfo.setOnClickListener { clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(
-                    R.string.app_name), code.text.toString().replace(" ", ""))) }
+                code.text = item.secret
+                code.visibility = View.GONE
+
+                loginInfo.setOnClickListener {
+                    clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.app_name), code.text.toString().replace(" ", "")))
+                    code.visibility = View.VISIBLE
+                    Handler().postDelayed({ code.visibility = View.GONE }, 3000)
+                }
+
                 progressIndicator.max = item.period
 
                 if (isRound) {
@@ -958,7 +844,7 @@ class LoginsAdapter(private val data: List<Utilities.MfaCode>, val timer: Timer,
                 timer.scheduleAtFixedRate(object : TimerTask() {
                     override fun run() {
 
-                        val second = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
+                        val second = utilities.second()
                         val tickerValue = (item.period - (second % item.period)) % item.period
                         try {
                             progressIndicator.progress = tickerValue
@@ -966,11 +852,8 @@ class LoginsAdapter(private val data: List<Utilities.MfaCode>, val timer: Timer,
                         } catch (_: Exception) { }
 
                         if (tickerValue == 29) {
-                            mfaCode = utilities.generateTotp (secret = item.secret, algorithm = item.algorithm, digits = item.digits, period = item.period)
-                            mfaCode = "${mfaCode.substring(0, mfaCode.length/2)} ${mfaCode.substring(mfaCode.length/2)}"
                             (itemView.context as? Activity)?.runOnUiThread {
-                                code.text = mfaCode
-                                loginInfo.setOnClickListener { clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.app_name), code.text.toString().replace(" ", ""))) }
+                                code.text = item.secret
                             }
                         }
                     }
@@ -1050,3 +933,27 @@ class LoginsAdapter(private val data: List<Utilities.MfaCode>, val timer: Timer,
     }
 }
 
+class Server(port: Int, val responseString: String) : NanoHTTPD(port) {
+    var encryptedVault: String = ""
+    var deviceName: String = ""
+    override fun serve(session: NanoHTTPD.IHTTPSession): Response {
+        if (session.method == Method.POST) {
+            val files = HashMap<String, String>()
+            try {
+                session.parseBody(files)
+            } catch (ioe: IOException) {
+                return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "Server Internal Error")
+            } catch (re: ResponseException) {
+                return newFixedLengthResponse(re.status, MIME_PLAINTEXT, re.message)
+            }
+            val data = files["postData"] ?: "No POST body received"
+            // Log.d("Wristkey-Transfer Log", data)
+            if (data.contains("encryptedVault")) {
+                encryptedVault = JSONObject(data)["encryptedVault"] as String
+                deviceName = JSONObject(data)["deviceName"] as String
+            }
+            return newFixedLengthResponse(Response.Status.OK, "text/plain", responseString)
+        }
+        return newFixedLengthResponse("This server only handles POST requests.")
+    }
+}

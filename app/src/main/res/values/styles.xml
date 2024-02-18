@@ -8,11 +8,10 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@drawable/pill_shape_border</item>
         <item name="backgroundTint">@null</item>
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:layout_margin">2.5dp</item>
-        <item name="iconPadding">20dp</item>
         <item name="drawableTint">@color/white</item>
         <item name="fontFamily">@font/productsans</item>
         <item name="android:gravity">start|center_vertical</item>
@@ -48,14 +47,11 @@
         <item name="android:textSize">16sp</item>
         <item name="android:letterSpacing">0.05</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:paddingStart">50.5dp</item>
         <item name="android:singleLine">true</item>
     </style>
     <style name="Wristkey.TextInputLayout">
-        <item name="android:layout_marginStart">12.5dp</item>
+        <item name="android:layout_margin">2.5dp</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:layout_marginBottom">10dp</item>
-        <item name="android:layout_marginEnd">12.5dp</item>
         <item name="startIconTint">@color/white</item>
     </style>
 
