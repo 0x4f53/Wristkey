@@ -1,6 +1,6 @@
 [![Wear OS](https://img.shields.io/badge/Made%20for-Wear%20OS%203.0-4285f4.svg?style=flat-square&logo=wear%20os)](https://wearos.google.com)
 [![License](https://img.shields.io/badge/License-MIT-purple?style=flat-square&logo=libreoffice)](LICENSE)
-[![Latest Version](https://img.shields.io/github/v/tag/4f77616973/Wristkey?label=Version&style=flat-square&logo=semver)](https://github.com/4f77616973/Wristkey/tags)
+[![Latest Version](https://img.shields.io/github/v/tag/4f77616973/Wristkey?label=Version&style=flat-square&logo=semver)](https://github.com/0x4f53/Wristkey/releases)
 [![Download APK](https://img.shields.io/badge/Download%20APK-Click%20Here-blue?style=flat-square&logo=dropbox)](app/build/outputs/apk/debug/)
 [![Google Play](https://img.shields.io/badge/Play%20Store-Click%20Here-teal?style=flat-square&logo=googleplay)](https://play.google.com/store/apps/details?id=zeroxfourf.wristkey)
 
@@ -16,7 +16,7 @@ You can now run Wristkey on your phone too! Just download the APK on your phone 
 
 or
 
-[Get the APK here.](app/build/outputs/apk/debug/)
+[Get the APK here.](https://github.com/0x4f53/Wristkey/releases)
 
 <img src = screenshots/2024_circle.png alt="mockup">
 
