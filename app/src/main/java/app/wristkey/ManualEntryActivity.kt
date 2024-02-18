@@ -254,6 +254,7 @@ class ManualEntryActivity : AppCompatActivity() {
             )
 
             val dataUrl = utilities.encodeOtpAuthURL(data)
+
             utilities.overwriteLogin(dataUrl)
 
             finishAffinity()
@@ -265,14 +266,16 @@ class ManualEntryActivity : AppCompatActivity() {
 
         backButton.setOnClickListener {
             if (secretInput.text!!.isNotEmpty() || issuerInput.text!!.isNotEmpty() || labelInput.text!!.isNotEmpty()) {
-                CustomFullscreenDialogFragment(
+                val dialog = CustomFullscreenDialogFragment(
                     title = "Invalid Issuer",
                     message = getString(R.string.go_back),
-                    positiveButtonText = null,
-                    positiveButtonIcon = null,
+                    positiveButtonText = "Keep editing",
+                    positiveButtonIcon = getDrawable(R.drawable.ic_baseline_edit_24),
                     negativeButtonText = "Go back",
                     negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
-                ).show(supportFragmentManager, "CustomFullscreenDialog")
+                )
+                dialog.setOnNegativeClickListener { finish() }
+                dialog.show(supportFragmentManager, "CustomFullscreenDialog")
             } else finish()
         }
 

@@ -53,40 +53,34 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/pill_shape_border"
-                android:layout_marginHorizontal="2.5dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
                 android:layout_marginVertical="2.5dp"
                 android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="0.0075"
-                    android:layout_marginStart="22.5dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginVertical="10dp"
-                    android:src="@drawable/ic_baseline_search_24"
-                    app:tint="@color/white" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginVertical="15dp"
-                    android:layout_marginEnd="10dp"
-                    android:textSize="14sp"
+                    android:layout_marginHorizontal="10dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
                     android:letterSpacing="0.05"
-                    android:text="Search button"
-                    android:textColor="@color/white" />
+                    android:text="Search"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:id="@+id/searchText"
+                    android:singleLine="true" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/searchButtonToggle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="10dp" />
+                    android:layout_gravity="center_vertical" />
             </LinearLayout>
 
             <LinearLayout
@@ -94,40 +88,34 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/pill_shape_border"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginHorizontal="2.5dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
                 android:layout_marginVertical="2.5dp"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="0.0075"
-                    android:layout_marginStart="22.5dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginVertical="10dp"
-                    android:src="@drawable/ic_outline_access_time_24"
-                    app:tint="@color/white" />
-
                 <TextView
+                    android:id="@+id/clockText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginVertical="15dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginHorizontal="10dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
                     android:letterSpacing="0.05"
+                    android:text="Clock"
+                    android:textColor="@color/white"
                     android:textSize="14sp"
-                    android:text="Show clock"
-                    android:textColor="@color/white" />
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/clockButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="10dp" />
+                    android:layout_gravity="center_vertical" />
 
             </LinearLayout>
 
@@ -136,40 +124,34 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/pill_shape_border"
-                android:layout_marginHorizontal="2.5dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
                 android:layout_marginVertical="2.5dp"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="0.0075"
-                    android:layout_marginStart="22.5dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginVertical="10dp"
-                    android:src="@drawable/ic_outline_lock_24"
-                    app:tint="@color/white" />
-
                 <TextView
+                    android:id="@+id/lockscreenText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginVertical="15dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginHorizontal="10dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
-                    android:textSize="14sp"
                     android:letterSpacing="0.05"
                     android:text="App lock"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/lockButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="10dp" />
+                    android:layout_gravity="center_vertical" />
 
             </LinearLayout>
 
@@ -178,40 +160,108 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/pill_shape_border"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginHorizontal="2.5dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
                 android:layout_marginVertical="2.5dp"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="0.0075"
-                    android:layout_marginStart="22.5dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginVertical="10dp"
-                    android:src="@drawable/ic_outline_access_time_24"
-                    app:tint="@color/white" />
-
                 <TextView
+                    android:id="@+id/roundText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginVertical="15dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginHorizontal="10dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
                     android:letterSpacing="0.05"
-                    android:textSize="14sp"
                     android:text="Round device"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/roundButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginVertical="2.5dp"
+                android:background="@drawable/pill_shape_border"
+                android:orientation="horizontal"
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/compactText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="10dp" />
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:fontFamily="@font/productsans"
+                    android:letterSpacing="0.05"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:text="Compact view"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/compactButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginVertical="2.5dp"
+                android:background="@drawable/pill_shape_border"
+                android:orientation="horizontal"
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/concealedText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:fontFamily="@font/productsans"
+                    android:letterSpacing="0.05"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:text="Concealed view"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/concealedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" />
 
             </LinearLayout>
 

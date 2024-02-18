@@ -6,7 +6,7 @@
                 android:color="@color/colorAccent"/>
             <size android:width="12dp"
                 android:height="12dp"/>
-            <corners android:radius="50dp" />
+            <corners android:radius="25dp" />
         </shape>
     </item>
 
@@ -18,7 +18,7 @@
         <shape android:shape="rectangle" >
             <solid
                 android:color="@android:color/black"/>
-            <corners android:radius="50dp" />
+            <corners android:radius="25dp" />
         </shape>
     </item>
 

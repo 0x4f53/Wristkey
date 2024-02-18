@@ -80,6 +80,7 @@
                 android:id="@+id/loginsRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:animateLayoutChanges="false"
                 android:nestedScrollingEnabled="false"
                 tools:itemCount="1"

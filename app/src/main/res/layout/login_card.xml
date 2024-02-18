@@ -9,14 +9,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="5dp"
-        android:orientation="horizontal">
+        android:paddingVertical="7.5dp"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="14dp" >
+            android:layout_height="match_parent" >
 
             <TextView
                 android:id="@+id/accountIcon"
@@ -55,17 +54,21 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginHorizontal="7.5dp">
 
             <TextView
                 style="@style/Wristkey.TextView"
                 android:id="@+id/code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="12sp"
+                app:autoSizeMaxTextSize="22sp"
                 android:singleLine="false"
-                android:text="123 456"
+                android:text="125 996"
                 android:textColor="#FFFFFF"
-                android:textSize="22sp" />
+                android:textSize="24sp" />
 
             <TextView
                 style="@style/Wristkey.TextView"
@@ -77,6 +80,7 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
+                android:textSize="16dp"
                 android:scrollHorizontally="true"
                 android:text="Issuer"
                 android:textAlignment="textStart" />
@@ -87,14 +91,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Account"
-                android:singleLine="true"
-                android:textSize="12sp"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:focusable="true"
                 android:focusableInTouchMode="true"
+                android:textAlignment="textStart"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:marqueeRepeatLimit="marquee_forever"
                 android:scrollHorizontally="true"
-                android:textAlignment="textStart" />
+                android:singleLine="true" />
 
         </LinearLayout>
 
@@ -102,8 +105,7 @@
             android:id="@+id/counterControls"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginEnd="20dp" >
+            android:orientation="vertical" >
 
             <ImageView
                 android:id="@+id/plus"

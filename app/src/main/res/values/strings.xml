@@ -60,11 +60,13 @@
     <string name="donate_label">Donate</string>
     <string name="invalid_qr_code">This QR code is invalid. Please try again.</string>
     <string name="wifi_transfer_description">Transfer data between two devices, such as a phone and a smartwatch</string>
-    <string name="send_description">With both devices on the same Wi-Fi, open Wristkey on the other device, select the \"Receive\" option and scan the QR code shown on the other device.</string>
+    <string name="send_description">With both devices on the same Wi-Fi, open Wristkey on the other device, select the \"Receive\" option and scan the QR code shown below on the other device.</string>
     <string name="send_description_no_camera">With both devices on the same Wi-Fi, open Wristkey on the other device, select the \"Receive\" option and enter the IP shown.</string>
     <string name="receive_description">With both devices on the same Wi-Fi, open Wristkey on the other device, select the \"Send\" option and scan this QR code or enter the IP shown.</string>
-    <string name="receive_decrypt">Enter the OTP displayed on the other device to finish transfer.</string>
+    <string name="receive_decrypt">Enter the OTP displayed on the other device to start transfer.</string>
     <string name="send_encrypt">Enter this OTP on the other device to complete transfer.</string>
     <string name="forbidden_wifi_transfer">This is a Wristkey Wi-Fi transfer server. It is ephemeral and uses X25519 and AES encryption, no point wasting your time attacking it. 🖕😉</string>
     <string name="qrCode_content_description_receiver">Scan this QR Code or enter the IP address shown below it.</string>
+
+    <string name="tile_description">View up to 4 2FA codes instantly. To change what tiles appear, open the Wristkey app on your watch and drag to reorder.</string>
 </resources>

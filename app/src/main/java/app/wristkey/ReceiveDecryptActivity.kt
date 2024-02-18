@@ -28,7 +28,7 @@ class ReceiveDecryptActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_receive_decrypt)
+        //setContentView(R.layout.activity_receive_decrypt)
         utilities = Utilities(applicationContext)
 
         if (intent != null) payload = intent.getStringExtra(utilities.INTENT_WIFI_IP).toString()
@@ -72,7 +72,7 @@ class ReceiveDecryptActivity : AppCompatActivity() {
         clock = findViewById(R.id.clock)
 
         otp = findViewById(R.id.otp)
-        otpInput = findViewById(R.id.otpInput)
+        //otpInput = findViewById(R.id.otpInput)
 
         var attempts = 0
         otpInput.addTextChangedListener { s ->

@@ -50,8 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Issuer"
-                style="@style/Wristkey.TextInputLayout"
-                app:startIconDrawable="@drawable/outline_factory_24" >
+                style="@style/Wristkey.TextInputLayout" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/issuerInput"
@@ -68,7 +67,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Secret"
-                app:startIconDrawable="@drawable/outline_password_24"
                 app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -83,8 +81,7 @@
                 android:layout_width="match_parent"
                 style="@style/Wristkey.TextInputLayout"
                 android:layout_height="wrap_content"
-                android:hint="Account"
-                app:startIconDrawable="@drawable/outline_account_circle_24" >
+                android:hint="Account" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/accountInput"
@@ -99,15 +96,15 @@
                 android:layout_height="wrap_content"
                 app:startIconTint="@color/white"
                 style="@style/Wristkey.TextInputLayout"
-                android:hint="Label"
-                app:startIconDrawable="@drawable/outline_label_24" >
+                android:hint="Label" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/labelInput"
                     style="@style/Wristkey.TextInputEditText"
                     android:layout_width="match_parent"
                     android:inputType="textCapWords"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
@@ -116,6 +113,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginBottom="10dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -126,6 +124,7 @@
                     android:text="Mode"
                     android:layout_margin="5dp"
                     android:letterSpacing="0.05" />
+
                 <CheckedTextView
                     android:id="@+id/timeButton"
                     style="@style/Wristkey.RadioButton"
@@ -138,8 +137,12 @@
                     android:id="@+id/counterButton"
                     style="@style/Wristkey.RadioButton"
                     android:drawableStart="@drawable/baseline_exposure_plus_1_24"
-                    android:text="Counter"
-                    />
+                    android:text="Counter" />
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/counter"
@@ -225,19 +228,16 @@
                     android:id="@+id/sha1Button"
                     style="@style/Wristkey.RadioButton"
                     android:checked="true"
-                    android:drawableStart="@drawable/baseline_data_array_24"
                     android:text="SHA-1"
                     />
                 <CheckedTextView
                     android:id="@+id/sha256Button"
                     style="@style/Wristkey.RadioButton"
-                    android:drawableStart="@drawable/baseline_data_array_24"
                     android:text="SHA-256"
                     />
                 <CheckedTextView
                     android:id="@+id/sha512Button"
                     style="@style/Wristkey.RadioButton"
-                    android:drawableStart="@drawable/baseline_data_array_24"
                     android:text="SHA-512"
                     />
             </LinearLayout>
@@ -261,23 +261,26 @@
                 <CheckedTextView
                     android:id="@+id/fourButton"
                     style="@style/Wristkey.RadioButton"
-                    android:drawableStart="@drawable/baseline_dialpad_24"
                     android:text="4 digits"
                     />
                 <CheckedTextView
                     android:id="@+id/sixButton"
                     style="@style/Wristkey.RadioButton"
                     android:checked="true"
-                    android:drawableStart="@drawable/baseline_dialpad_24"
                     android:text="6 digits"
                     />
                 <CheckedTextView
                     android:id="@+id/eightButton"
                     style="@style/Wristkey.RadioButton"
-                    android:drawableStart="@drawable/baseline_dialpad_24"
                     android:text="8 digits"
                     />
             </LinearLayout>
+
+            <Button
+                android:id="@+id/deleteButton"
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_outline_delete_24"
+                android:text="Delete" />
 
             <Button
                 android:id="@+id/doneButton"
@@ -295,12 +298,6 @@
                 style="@style/Wristkey.Button"
                 app:icon="@drawable/ic_prev"
                 android:text="Back" />
-
-            <Button
-                android:id="@+id/deleteButton"
-                style="@style/Wristkey.Button"
-                app:icon="@drawable/ic_outline_delete_24"
-                android:text="Delete" />
 
         </LinearLayout>
     </ScrollView>

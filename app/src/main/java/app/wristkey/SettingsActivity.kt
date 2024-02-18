@@ -23,6 +23,9 @@ class SettingsActivity : AppCompatActivity() {
     lateinit var lockButton: MaterialSwitch
     lateinit var clockButton: MaterialSwitch
     lateinit var roundButton: MaterialSwitch
+    lateinit var compactButton: MaterialSwitch
+    lateinit var concealedButton: MaterialSwitch
+
     lateinit var aboutButton: Button
     lateinit var backButton: Button
 
@@ -70,8 +73,17 @@ class SettingsActivity : AppCompatActivity() {
         lockButton = findViewById (R.id.lockButton)
         clockButton = findViewById (R.id.clockButton)
         roundButton = findViewById (R.id.roundButton)
+        compactButton = findViewById (R.id.compactButton)
+        concealedButton = findViewById (R.id.concealedButton)
         aboutButton = findViewById (R.id.aboutButton)
         backButton = findViewById (R.id.backButton)
+
+        findViewById<TextView>(R.id.searchText).isSelected = true
+        findViewById<TextView>(R.id.lockscreenText).isSelected = true
+        findViewById<TextView>(R.id.clockText).isSelected = true
+        findViewById<TextView>(R.id.roundText).isSelected = true
+        findViewById<TextView>(R.id.compactText).isSelected = true
+        findViewById<TextView>(R.id.concealedText).isSelected = true
 
         searchButton.isChecked = utilities.db.getBoolean(utilities.SETTINGS_SEARCH_ENABLED, true)
         searchButton.setOnCheckedChangeListener { _, isChecked ->
@@ -109,6 +121,37 @@ class SettingsActivity : AppCompatActivity() {
             settingsChanged = true
             utilities.db.edit().remove(utilities.CONFIG_SCREEN_ROUND).apply()
             utilities.db.edit().putBoolean(utilities.CONFIG_SCREEN_ROUND, isChecked).apply()
+        }
+
+
+        var compactButtonChecked = false
+        var concealedButtonChecked = false
+        compactButton.isChecked = utilities.db.getBoolean(utilities.SETTINGS_COMPACT_ENABLED, false)
+        compactButton.setOnCheckedChangeListener { _, isChecked ->
+            if (!compactButtonChecked) {
+                settingsChanged = true
+                utilities.db.edit().remove(utilities.SETTINGS_COMPACT_ENABLED).apply()
+                utilities.db.edit().putBoolean(utilities.SETTINGS_COMPACT_ENABLED, isChecked).apply()
+                concealedButton.isChecked = false
+
+                concealedButtonChecked = true
+                concealedButton.isChecked = !isChecked
+                concealedButtonChecked = false
+            }
+        }
+
+        concealedButton.isChecked = utilities.db.getBoolean(utilities.SETTINGS_CONCEALED_ENABLED, true)
+        concealedButton.setOnCheckedChangeListener { _, isChecked ->
+            if (!concealedButtonChecked) {
+                settingsChanged = true
+                utilities.db.edit().remove(utilities.SETTINGS_CONCEALED_ENABLED).apply()
+                utilities.db.edit().putBoolean(utilities.SETTINGS_CONCEALED_ENABLED, isChecked).apply()
+                compactButton.isChecked = false
+
+                compactButtonChecked = true
+                compactButton.isChecked = !isChecked
+                compactButtonChecked = false
+            }
         }
 
         aboutButton.setOnClickListener {
