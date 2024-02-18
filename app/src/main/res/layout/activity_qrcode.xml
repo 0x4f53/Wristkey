@@ -10,70 +10,63 @@
     tools:context="app.wristkey.AegisJSONImport"
     tools:deviceIds="wear">
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fadeScrollbars="false"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:scrollbars="vertical"
-        android:fadeScrollbars="false">
-        <requestFocus/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <requestFocus />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginHorizontal="7.5dp"
             android:orientation="vertical"
             android:paddingTop="15dp"
             android:paddingBottom="75dp">
 
             <ImageView
                 android:id="@+id/qrCode"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
+                android:layout_marginVertical="25dp"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/ic_outline_qr_code_2_24"
                 android:backgroundTint="@color/white"
                 android:tintMode="multiply" />
 
             <TextView
-                android:id="@+id/qrCodeIssuer"
+                android:id="@+id/qrCodeSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:fontFamily="@font/productsans"
                 android:gravity="center_horizontal"
-                android:text="Site"
-                android:textColor="@color/primary_text_dark"
-                android:textSize="16sp" />
+                android:text="Metadata"
+                android:textIsSelectable="true"
+                android:layout_marginHorizontal="10dp"
+                android:textColor="@color/primary_text_dark" />
 
-            <TextView
-                android:id="@+id/qrCodeAccount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginBottom="10dp"
-                android:fontFamily="@font/productsans"
-                android:text="site.com"
-                android:textColor="@color/primary_text_dark"
-                android:textStyle="normal" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_horizontal" />
 
-                <ImageButton
-                    android:id="@+id/doneButton"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/preference_wrapped_icon"
-                    android:backgroundTint="@color/colorAccent"
-                    android:foregroundGravity="center"
-                    android:src="@drawable/ic_done"
-                    android:tint="@color/darkTheme" />
+            <Button
+                android:id="@+id/backButton"
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_prev"
+                android:text="Back" />
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/SquareTimeLeftTop"
@@ -82,15 +75,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:foregroundGravity="top"
-        android:max="5"
-        android:progress="3"
+        android:max="100"
+        android:progress="30"
         app:indicatorColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:trackColor="@android:color/transparent"
-        app:trackCornerRadius="50dp"
-        app:trackThickness="5.25dp" />
+        app:trackCornerRadius="100dp"
+        app:trackThickness="5dp" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/RoundTimeLeft"
@@ -99,8 +92,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="center|top"
         android:foregroundGravity="center"
-        android:max="5"
-        android:progress="3"
+        android:max="100"
+        android:progress="15"
         android:scaleX="1.215"
         android:scaleY="1.215"
         app:indicatorColor="@color/white"
@@ -109,7 +102,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:trackColor="@android:color/transparent"
-        app:trackCornerRadius="50dp"
-        app:trackThickness="1.5dp" />
+        app:trackCornerRadius="100dp"
+        app:trackThickness="0.75dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

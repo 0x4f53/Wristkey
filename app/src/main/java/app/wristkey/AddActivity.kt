@@ -1,16 +1,22 @@
 package app.wristkey
+import android.Manifest
 import android.content.Intent
-import android.media.audiofx.HapticGenerator
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import wristkey.R
-import java.text.SimpleDateFormat
 import java.util.*
+
 
 class AddActivity : AppCompatActivity() {
 
@@ -19,15 +25,13 @@ class AddActivity : AppCompatActivity() {
 
     private lateinit var clock: TextView
 
-    private lateinit var manualEntry: CardView
-    private lateinit var aegisImportButton: CardView
-    private lateinit var googleAuthenticatorImport: CardView
-    private lateinit var bitwardenImport: CardView
-    private lateinit var andOtpImport: CardView
-    private lateinit var backupFileButton: CardView
-    private lateinit var scanQRCode: CardView
+    private lateinit var manualEntry: Button
+    private lateinit var wifiTransfer: Button
+    private lateinit var fileImport: Button
+    private lateinit var adbImport: Button
+    private lateinit var scanQRCode: Button
 
-    private lateinit var backButton: CardView
+    private lateinit var backButton: Button
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,40 +41,18 @@ class AddActivity : AppCompatActivity() {
         utilities = Utilities(applicationContext)
         mfaCodesTimer = Timer()
         initializeUI()
-        startClock()
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun startClock () {
-
-        if (!utilities.vault.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) {
-            findViewById<CardView>(R.id.clockBackground).visibility = View.GONE
-        }
+        if (!utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
 
         try {
             mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
-                    val currentHour24 = SimpleDateFormat("HH", Locale.getDefault()).format(Date())
-                    val currentHour = SimpleDateFormat("hh", Locale.getDefault()).format(Date())
-                    val currentMinute = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
-                    val currentSecond = SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
-                    val currentAmPm = SimpleDateFormat("a", Locale.getDefault()).format(Date())
-                    runOnUiThread {
-                        try {
-
-                            if (utilities.vault.getBoolean(utilities.SETTINGS_24H_CLOCK_ENABLED, false)) {
-                                clock.text = "$currentHour24:$currentMinute"
-                                if ((currentSecond % 2) == 0) clock.text = "$currentHour24 $currentMinute"
-                            } else {
-                                clock.text = "$currentHour:$currentMinute"
-                                if ((currentSecond % 2) == 0) clock.text = "$currentHour $currentMinute"
-                            }
-
-                        } catch (_: Exception) { }
-                    }
+                    runOnUiThread { clock.text = utilities.getTime() }
                 }
-            }, 0, 1000) // 1000 milliseconds = 1 second
+            }, 0, 1000)
         } catch (_: IllegalStateException) { }
     }
 
@@ -90,53 +72,111 @@ class AddActivity : AppCompatActivity() {
         mfaCodesTimer = Timer()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == utilities.CAMERA_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) startScannerUI()
+            else {
+                Toast.makeText(this@AddActivity, "Please grant Wristkey camera permissions in settings", Toast.LENGTH_LONG).show()
+                val intent = Intent (Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = Uri.parse("package:$packageName")
+                startActivity(intent)
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun checkPermission(permission: String, requestCode: Int) {
+        if (ContextCompat.checkSelfPermission(this@AddActivity, permission) == PackageManager.PERMISSION_DENIED)
+            ActivityCompat.requestPermissions(this@AddActivity, arrayOf(permission), requestCode)
+        else {
+            when (requestCode) {
+                utilities.CAMERA_REQUEST_CODE -> startScannerUI()
+            }
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == utilities.CAMERA_REQUEST_CODE+1 && resultCode == RESULT_OK) {
+            if (data != null && data.hasExtra(utilities.QR_CODE_SCAN_REQUEST)) {
+                val scannedData = data.getStringExtra(utilities.QR_CODE_SCAN_REQUEST)
+
+                if (!scannedData.isNullOrBlank()) {
+                    if (scannedData.contains("otpauth://")) {
+                        utilities.overwriteLogin(scannedData)
+                        finishAffinity()
+                        startActivity(Intent(applicationContext, MainActivity::class.java))
+                        return
+                    } else if (scannedData.contains("otpauth-migration://")) {
+
+                    }
+
+                }
+
+                Toast.makeText(this@AddActivity, getString(R.string.invalid_qr_code), Toast.LENGTH_LONG).show()
+
+            }
+        }
+    }
+
+    private fun startScannerUI () {
+        val intent = Intent(this@AddActivity, QRScannerActivity::class.java)
+        startActivityForResult(intent, utilities.CAMERA_REQUEST_CODE+1)
+    }
+
     private fun initializeUI () {
 
         clock = findViewById(R.id.clock)
+        startClock()
 
         manualEntry = findViewById (R.id.manualEntry)
-        aegisImportButton = findViewById (R.id.aegisImportButton)
-        googleAuthenticatorImport = findViewById (R.id.googleAuthenticatorImport)
-        andOtpImport = findViewById (R.id.andOtpImportButton)
-        bitwardenImport = findViewById (R.id.bitwardenImport)
-        backupFileButton = findViewById (R.id.backupFileButton)
-        scanQRCode = findViewById (R.id.scanQRCode)
+        wifiTransfer = findViewById (R.id.wifiTransfer)
+        scanQRCode = findViewById (R.id.scanQrCode)
+        fileImport = findViewById (R.id.fileImport)
+        adbImport = findViewById (R.id.adbTransfer)
 
         backButton = findViewById (R.id.backButton)
 
         manualEntry.setOnClickListener {
             startActivity(Intent(applicationContext, ManualEntryActivity::class.java))
-            manualEntry.performHapticFeedback(HapticGenerator.SUCCESS)
+            finish()
         }
 
-        backupFileButton.setOnClickListener {
-            startActivity(Intent(applicationContext, WristkeyImport::class.java))
-            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        wifiTransfer.setOnClickListener {
+            if (utilities.wiFiExists(applicationContext)) {
+                startActivity(Intent(applicationContext, WiFiTransferActivity::class.java))
+                finish()
+            } else {
+
+                CustomFullscreenDialogFragment(
+                    title = "Network error",
+                    message = getString(R.string.wifi_error),
+                    positiveButtonText = null,
+                    positiveButtonIcon = null,
+                    negativeButtonText = "Go back",
+                    negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                ).show(supportFragmentManager, "CustomFullscreenDialog")
+
+            }
         }
+
+        if (utilities.hasCamera()) scanQRCode.visibility = View.VISIBLE else scanQRCode.visibility = View.GONE
 
         scanQRCode.setOnClickListener {
-            startActivity(Intent(applicationContext, OtpAuthImport::class.java))
-            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
+            checkPermission(Manifest.permission.CAMERA, utilities.CAMERA_REQUEST_CODE)
         }
 
-        aegisImportButton.setOnClickListener {
-            startActivity(Intent(applicationContext, AegisJSONImport::class.java))
-            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        fileImport.setOnClickListener {
+            startActivity(Intent(applicationContext, FileImportActivity::class.java))
+            finish()
         }
 
-        googleAuthenticatorImport.setOnClickListener {
-            startActivity(Intent(applicationContext, AuthenticatorQRImport::class.java))
-            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
-        }
-
-        bitwardenImport.setOnClickListener {
-            startActivity(Intent(applicationContext, BitwardenJSONImport::class.java))
-            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
-        }
-
-        andOtpImport.setOnClickListener {
-            startActivity(Intent(applicationContext, AndOtpJSONImport::class.java))
-            aegisImportButton.performHapticFeedback(HapticGenerator.SUCCESS)
+        adbImport.setOnClickListener {
+            startActivity(Intent(applicationContext, AdbImportActivity::class.java))
+            finish()
         }
 
         backButton.setOnClickListener {

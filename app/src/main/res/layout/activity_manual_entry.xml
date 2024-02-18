@@ -25,429 +25,299 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:orientation="vertical"
-            android:paddingTop="55dp"
+            android:layout_marginHorizontal="7.5dp"
+            android:paddingTop="25dp"
             android:paddingBottom="75dp">
 
             <TextView
-                android:id="@+id/manualEntryLabel"
+                android:id="@+id/SettingsLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="12dp"
+                android:layout_margin="10dp"
                 android:fontFamily="@font/productsans"
                 android:foregroundGravity="center"
                 android:gravity="center"
-                android:text="Manual entry"
-                android:textColor="@color/lightDemo"
+                android:text="Add Item"
+                android:textColor="@color/grayAccents"
                 android:textSize="16sp"
+                android:letterSpacing="0.05"
                 android:textStyle="normal" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/issuer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:boxBackgroundMode="filled"
-                app:boxBackgroundColor="@color/colorAccent"
-                app:hintTextColor="@color/colorAccent"
-                android:backgroundTint="@color/colorAccent"
                 android:hint="Issuer"
-                app:endIconMode="clear_text" >
+                style="@style/Wristkey.TextInputLayout" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/issuerInput"
+                    style="@style/Wristkey.TextInputEditText"
+                    android:inputType="textCapWords"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
-                    android:fontFamily="@font/productsans"
-                    android:imeOptions="actionDone"
-                    android:inputType="textPhonetic"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textCursorDrawable="@null"
-                    android:backgroundTint="@color/colorAccent" />
+                    android:layout_height="wrap_content" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/secret"
+                style="@style/Wristkey.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:boxBackgroundMode="filled"
-                app:boxBackgroundColor="@color/colorAccent"
-                app:hintTextColor="@color/colorAccent"
-                android:backgroundTint="@color/colorAccent"
                 android:hint="Secret"
-                app:endIconMode="clear_text" >
+                app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/secretInput"
+                    style="@style/Wristkey.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
-                    android:fontFamily="@font/productsans"
-                    android:imeOptions="actionDone"
-                    android:inputType="textPhonetic"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textCursorDrawable="@null"
-                    android:backgroundTint="@color/colorAccent" />
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/account"
+                android:layout_width="match_parent"
+                style="@style/Wristkey.TextInputLayout"
+                android:layout_height="wrap_content"
+                android:hint="Account" >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/accountInput"
+                    style="@style/Wristkey.TextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Label"
-                app:endIconMode="clear_text"
-                app:boxBackgroundColor="@color/colorAccent"
-                app:hintTextColor="@color/colorAccent"
-                android:backgroundTint="@color/colorAccent" >
+                app:startIconTint="@color/white"
+                style="@style/Wristkey.TextInputLayout"
+                android:hint="Label" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/labelInput"
+                    style="@style/Wristkey.TextInputEditText"
                     android:layout_width="match_parent"
+                    android:inputType="textCapWords"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:capitalize="none"
-                    android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM.@+_ "
-                    android:fontFamily="@font/productsans"
-                    android:imeOptions="actionDone"
-                    android:inputType="textUri|textEmailAddress|textWebEmailAddress"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:backgroundTint="@color/colorAccent" />
+                    android:layout_marginBottom="10dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
+                android:id="@+id/modeGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
 
                 <TextView
-                    android:id="@+id/typeLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/productsans"
                     android:foregroundGravity="center"
                     android:gravity="center"
+                    android:text="Mode"
+                    android:layout_margin="5dp"
+                    android:letterSpacing="0.05" />
+
+                <CheckedTextView
+                    android:id="@+id/timeButton"
+                    style="@style/Wristkey.RadioButton"
+                    android:checked="true"
+                    android:drawableStart="@drawable/ic_outline_access_time_24"
                     android:text="Time"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp" />
+                    />
 
-                <SeekBar
-                    android:id="@+id/modeSeekbar"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                <CheckedTextView
+                    android:id="@+id/counterButton"
+                    style="@style/Wristkey.RadioButton"
+                    android:drawableStart="@drawable/baseline_exposure_plus_1_24"
+                    android:text="Counter" />
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/counter"
+                    style="@style/Wristkey.TextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorAccent"
-                    android:backgroundTintMode="src_atop"
-                    android:foregroundTint="@color/colorAccent"
-                    android:foregroundTintMode="src_atop"
-                    android:indeterminateTint="@color/colorAccent"
-                    android:indeterminateTintMode="src_atop"
-                    android:progressBackgroundTint="@color/colorAccent"
-                    android:progressBackgroundTintMode="src_atop"
-                    android:progressTint="@color/colorAccent"
-                    android:progressTintMode="src_atop"
-                    android:secondaryProgressTint="@color/colorAccent"
-                    android:secondaryProgressTintMode="src_atop"
-                    android:thumbTint="@color/colorAccent"
-                    android:thumbTintMode="src_atop"
-                    android:tickMarkTint="@color/colorAccent"
-                    android:max="1"
-                    android:progress="0" />
+                    android:layout_marginTop="10dp"
+                    android:hint="Count"
+                    app:startIconDrawable="@drawable/outline_add_circle_outline_24" >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/counterInput"
+                        style="@style/Wristkey.TextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:text="0" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/validityGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+                    <TextView
+                        android:id="@+id/validityLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center"
+                        android:gravity="center"
+                        android:text="Validity"
+                        android:layout_margin="5dp"
+                        android:letterSpacing="0.05" />
+
+                    <TextView
+                        android:id="@+id/periodText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/productsans"
+                        android:foregroundGravity="center"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:letterSpacing="0.05"
+                        android:text="30" />
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/periodSlider"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="25dp"
+                        app:tickVisible="false"
+                        android:stepSize="1.0"
+                        android:value="30"
+                        android:valueFrom="1"
+                        android:valueTo="60" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/Algorithm"
+                android:id="@+id/algorithmGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:orientation="vertical">
-
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
                 <TextView
-                    android:id="@+id/hashLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/productsans"
                     android:foregroundGravity="center"
                     android:gravity="center"
-                    android:text="SHA1"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp" />
-
-                <SeekBar
-                    android:id="@+id/hashSeekbar"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorAccent"
-                    android:backgroundTintMode="src_atop"
-                    android:foregroundTint="@color/colorAccent"
-                    android:foregroundTintMode="src_atop"
-                    android:indeterminateTint="@color/colorAccent"
-                    android:indeterminateTintMode="src_atop"
-                    android:progressBackgroundTint="@color/colorAccent"
-                    android:progressBackgroundTintMode="src_atop"
-                    android:progressTint="@color/colorAccent"
-                    android:progressTintMode="src_atop"
-                    android:secondaryProgressTint="@color/colorAccent"
-                    android:secondaryProgressTintMode="src_atop"
-                    android:thumbTint="@color/colorAccent"
-                    android:thumbTintMode="src_atop"
-                    android:tickMarkTint="@color/colorAccent"
-                    android:max="2"
-                    android:progress="0" />
-
+                    android:text="Algorithm"
+                    android:layout_margin="5dp"
+                    android:letterSpacing="0.05" />
+                <CheckedTextView
+                    android:id="@+id/sha1Button"
+                    style="@style/Wristkey.RadioButton"
+                    android:checked="true"
+                    android:text="SHA-1"
+                    />
+                <CheckedTextView
+                    android:id="@+id/sha256Button"
+                    style="@style/Wristkey.RadioButton"
+                    android:text="SHA-256"
+                    />
+                <CheckedTextView
+                    android:id="@+id/sha512Button"
+                    style="@style/Wristkey.RadioButton"
+                    android:text="SHA-512"
+                    />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/Digits"
+                android:id="@+id/digitsGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:orientation="vertical">
-
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
                 <TextView
-                    android:id="@+id/lengthLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/productsans"
                     android:foregroundGravity="center"
                     android:gravity="center"
+                    android:text="Digits"
+                    android:layout_margin="5dp"
+                    android:letterSpacing="0.05" />
+                <CheckedTextView
+                    android:id="@+id/fourButton"
+                    style="@style/Wristkey.RadioButton"
+                    android:text="4 digits"
+                    />
+                <CheckedTextView
+                    android:id="@+id/sixButton"
+                    style="@style/Wristkey.RadioButton"
+                    android:checked="true"
                     android:text="6 digits"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp" />
-
-                <SeekBar
-                    android:id="@+id/lengthSeekbar"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorAccent"
-                    android:backgroundTintMode="src_atop"
-                    android:foregroundTint="@color/colorAccent"
-                    android:foregroundTintMode="src_atop"
-                    android:indeterminateTint="@color/colorAccent"
-                    android:indeterminateTintMode="src_atop"
-                    android:progressBackgroundTint="@color/colorAccent"
-                    android:progressBackgroundTintMode="src_atop"
-                    android:progressTint="@color/colorAccent"
-                    android:progressTintMode="src_atop"
-                    android:secondaryProgressTint="@color/colorAccent"
-                    android:secondaryProgressTintMode="src_atop"
-                    android:thumbTint="@color/colorAccent"
-                    android:thumbTintMode="src_atop"
-                    android:tickMarkTint="@color/colorAccent"
-                    android:max="1"
-                    android:progress="0" />
+                    />
+                <CheckedTextView
+                    android:id="@+id/eightButton"
+                    style="@style/Wristkey.RadioButton"
+                    android:text="8 digits"
+                    />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/periodLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:fontFamily="@font/productsans"
-                    android:foregroundGravity="center"
-                    android:gravity="center"
-                    android:text="30 seconds"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp" />
-
-                <SeekBar
-                    android:id="@+id/periodSeekbar"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorAccent"
-                    android:backgroundTintMode="src_atop"
-                    android:foregroundTint="@color/colorAccent"
-                    android:foregroundTintMode="src_atop"
-                    android:indeterminateTint="@color/colorAccent"
-                    android:indeterminateTintMode="src_atop"
-                    android:progressBackgroundTint="@color/colorAccent"
-                    android:progressBackgroundTintMode="src_atop"
-                    android:progressTint="@color/colorAccent"
-                    android:progressTintMode="src_atop"
-                    android:secondaryProgressTint="@color/colorAccent"
-                    android:secondaryProgressTintMode="src_atop"
-                    android:thumbTint="@color/colorAccent"
-                    android:thumbTintMode="src_atop"
-                    android:tickMarkTint="@color/colorAccent"
-                    android:max="2"
-                    android:progress="1" />
-
-            </LinearLayout>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/showQrCodeButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="25dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_outline_qr_code_2_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Show QR code"
-                        android:textSize="16dp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/doneButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_done"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Done"
-                        android:textSize="16dp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <Button
                 android:id="@+id/deleteButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_outline_delete_24"
+                android:text="Delete" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
+            <Button
+                android:id="@+id/doneButton"
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_done"
+                android:text="Done" />
 
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="20dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_outline_delete_24"
-                        android:tint="@color/white" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_horizontal" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Delete"
-                        android:textSize="16dp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <Button
                 android:id="@+id/backButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="25dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/gradient_background"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:paddingStart="25dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:src="@drawable/ic_baseline_arrow_back_ios_24"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:fontFamily="@font/productsans"
-                        android:foregroundGravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:padding="15dp"
-                        android:paddingEnd="15dp"
-                        android:text="Back"
-                        android:textSize="16dp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_prev"
+                android:text="Back" />
 
         </LinearLayout>
     </ScrollView>
+
+    <TextView
+        android:id="@+id/clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/productsans"
+        android:foregroundGravity="center"
+        android:gravity="center_horizontal"
+        android:letterSpacing="0.075"
+        android:textColor="@color/white"
+        android:orientation="horizontal"
+        android:background="@drawable/pill_shape_black"
+        android:paddingHorizontal="5dp"
+        android:layout_marginTop="5dp"
+        android:text="04:20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/BoxInsetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:padding="@dimen/box_inset_layout_padding"
+    tools:context="app.wristkey.AddActivity"
+    tools:deviceIds="wear">
+
+    <ScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fadeScrollbars="false"
+        android:fillViewport="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <requestFocus />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="7.5dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="75dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:fontFamily="@font/productsans"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:letterSpacing="0.05"
+                android:text="WiFi Transfer"
+                android:textSize="16dp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:layout_gravity="center"
+                android:fontFamily="@font/productsans"
+                android:gravity="center"
+                android:text="@string/wifi_transfer_description"
+                android:textStyle="normal" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:id="@+id/send"
+                app:icon="@drawable/baseline_file_upload_24"
+                style="@style/Wristkey.Button"
+                android:text="Send"/>
+
+            <Button
+                android:id="@+id/receive"
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/baseline_file_download_24"
+                android:text="Receive" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:id="@+id/backButton"
+                style="@style/Wristkey.Button"
+                app:icon="@drawable/ic_prev"
+                android:text="Back" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/productsans"
+        android:foregroundGravity="center"
+        android:gravity="center_horizontal"
+        android:letterSpacing="0.075"
+        android:orientation="horizontal"
+        android:background="@drawable/pill_shape_black"
+        android:textColor="@color/white"
+        android:paddingHorizontal="5dp"
+        android:layout_marginTop="5dp"
+        android:text="04:20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
