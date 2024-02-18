@@ -128,15 +128,8 @@ class ReceiveActivity : AppCompatActivity() {
                     receiverServer.encryptedVault
                     runOnUiThread {
                         Toast.makeText(this@ReceiveActivity, "Received data from ${receiverServer.deviceName}", Toast.LENGTH_SHORT).show()
-                        val dataStore = utilities.objectMapper.readValue (
-                                decryptedVault,
-                                Utilities.WristkeyFileSystem::class.java
-                            )
-                        val iterator = dataStore.otpauth.iterator()
-                        while (iterator.hasNext()) {
-                            val login = iterator.next()
-                            utilities.overwriteLogin(otpAuthURL = login)
-                        }
+                        utilities.db.edit().remove(utilities.DATA_STORE).apply()
+                        utilities.db.edit().putString(utilities.DATA_STORE, decryptedVault).apply()
 
                         // Hooray, transfer complete!  ;)
                         // P.S. this took me ages!
