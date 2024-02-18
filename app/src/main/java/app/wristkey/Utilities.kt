@@ -759,7 +759,7 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter, val l
 
 }
 
-class LoginsAdapter(private val data: MutableList<Utilities.MfaCode>, val timer: Timer, val isRound: Boolean) : RecyclerView.Adapter<LoginsAdapter.ViewHolder>(), ItemTouchHelperAdapter {
+class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer: Timer, val isRound: Boolean) : RecyclerView.Adapter<LoginsAdapter.ViewHolder>(), ItemTouchHelperAdapter {
 
     lateinit var context: Context
     lateinit var utilities: Utilities
@@ -796,6 +796,11 @@ class LoginsAdapter(private val data: MutableList<Utilities.MfaCode>, val timer:
         // Handle item dismissal (swipe left or right) here
         // Update your data list accordingly
         // Notify the adapter of the data change
+    }
+
+    fun updateData(newItems: List<Utilities.MfaCode>) {
+        data = newItems.toMutableList()
+        notifyDataSetChanged() // Refresh the RecyclerView with new data
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
