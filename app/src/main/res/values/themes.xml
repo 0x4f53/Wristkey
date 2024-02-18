@@ -1,4 +1,0 @@
-<resources>
-    <style name="AppBarOverlay" parent="Theme.AppCompat.DayNight.NoActionBar" />
-    <style name="PopupOverlay" parent="Theme.AppCompat.DayNight.NoActionBar" />
-</resources>

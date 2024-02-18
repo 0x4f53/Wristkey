@@ -3,112 +3,130 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="5dp">
+    android:background="@drawable/pill_shape_border"
+    android:layout_marginVertical="2.5dp" >
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/loginCard"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:cardCornerRadius="15dp">
+        android:paddingVertical="7.5dp"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="10dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/accountIcon"
+                style="@style/Wristkey.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="X"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progressIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:max="30"
+                android:progress="20"
+                app:indicatorColor="@color/white"
+                app:indicatorSize="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:trackColor="@android:color/transparent"
+                app:trackCornerRadius="50dp"
+                app:trackThickness="3dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/loginInfo"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/gradient_background"
-            android:orientation="horizontal"
-            android:paddingStart="7.5dp"
-            android:paddingTop="2.5dp"
-            android:paddingEnd="2.5dp"
-            android:paddingBottom="5dp">
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="7.5dp">
 
-            <LinearLayout
+            <TextView
+                style="@style/Wristkey.TextView"
+                android:id="@+id/code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="12sp"
+                app:autoSizeMaxTextSize="22sp"
+                android:singleLine="false"
+                android:text="125 996"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp" />
 
-                <TextView
-                    android:id="@+id/code"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:autoSizeMaxTextSize="100sp"
-                    android:autoSizeMinTextSize="12sp"
-                    android:autoSizeStepGranularity="2sp"
-                    android:fontFamily="@font/productsans"
-                    android:letterSpacing="0.025"
-                    android:text="123 456"
-                    android:textColor="#FFFFFF"
-                    android:textSize="38sp" />
-
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-5dp"
-                    android:ellipsize="marquee"
-                    android:fontFamily="@font/productsans"
-                    android:maxLines="3"
-                    android:paddingEnd="5dp"
-                    android:singleLine="true"
-                    android:text="Account / Service"
-                    android:textAlignment="textStart"
-                    android:textColor="#FFFFFF"
-                    android:textSize="22sp" />
-
-                <TextView
-                    android:id="@+id/label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="marquee"
-                    android:fontFamily="@font/productsans"
-                    android:maxLines="3"
-                    android:paddingEnd="5dp"
-                    android:singleLine="true"
-                    android:text="Label"
-                    android:textAlignment="textStart"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/counterControls"
+            <TextView
+                style="@style/Wristkey.TextView"
+                android:id="@+id/issuer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.1"
-                android:orientation="vertical">
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:textSize="16dp"
+                android:scrollHorizontally="true"
+                android:text="Issuer"
+                android:textAlignment="textStart" />
 
-                <ImageView
-                    android:id="@+id/increment_counter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:tint="?android:attr/textColorTertiary"
-                    app:srcCompat="@drawable/ic_baseline_add_circle_24" />
-
-                <TextView
-                    android:id="@+id/counter"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/productsans"
-                    android:gravity="center"
-                    android:text="0" />
-
-                <ImageView
-                    android:id="@+id/decrement_counter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:tint="?android:attr/textColorTertiary"
-                    app:srcCompat="@drawable/ic_baseline_remove_circle_24" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/accountAndLabel"
+                style="@style/Wristkey.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Account"
+                android:focusableInTouchMode="true"
+                android:textAlignment="textStart"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true" />
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+        <LinearLayout
+            android:id="@+id/counterControls"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/plus"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                app:srcCompat="@drawable/ic_baseline_add_24"
+                app:tint="?android:attr/textColorPrimary" />
+
+            <ImageView
+                android:id="@+id/minus"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_prev_selector"
+                android:layout_gravity="center_horizontal"
+                app:tint="?android:attr/textColorPrimary" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 </FrameLayout>
