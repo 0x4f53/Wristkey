@@ -139,7 +139,7 @@ class ReceiveActivity : AppCompatActivity() {
                     cipherTextListenerTimer.cancel()
                 }
             }
-        }, 0, 1000)
+        }, 0, 100)
 
         Log.d("Wristkey-Transfer", "Started receiver server at $receiverServerURL")
     }

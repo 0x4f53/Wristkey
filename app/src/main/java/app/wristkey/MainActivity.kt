@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import wristkey.R
 import java.util.*
+import kotlin.math.hypot
 
 
 const val CODE_AUTHENTICATION_VERIFICATION = 241
@@ -125,16 +126,24 @@ class MainActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) { // Update the RecyclerView on the main thread
                     loginsAdapter.updateData(searchResults)
                     searchProgress.visibility = View.GONE
+                    scrollView.post { scrollView.smoothScrollTo(0, 175) }
                 }
             }
         }
 
         // Toggle search box visibility and input handling
         if (!activated) {
-            searchBox.visibility = View.VISIBLE
-            searchButton.setImageDrawable(getDrawable(R.drawable.ic_cancel))
-            searchBox.requestFocus()
-            imm.showSoftInput(searchBoxInput, InputMethodManager.SHOW_IMPLICIT)
+            searchBox.post {
+                val cx: Int = searchBox.width / 2
+                val cy: Int = searchBox.height / 2
+                val finalRadius = hypot(cx.toDouble(), cy.toDouble()).toFloat()
+                val anim = ViewAnimationUtils.createCircularReveal(searchBox, cx, cy, 0f, finalRadius)
+                searchBox.visibility = View.VISIBLE
+                anim.start()
+                searchButton.setImageDrawable(getDrawable(R.drawable.ic_cancel))
+                searchBox.requestFocus()
+                imm.showSoftInput(searchBoxInput, InputMethodManager.SHOW_IMPLICIT)
+            }
             activated = true
         } else {
             searchButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_search_24))
@@ -142,6 +151,7 @@ class MainActivity : AppCompatActivity() {
             searchBox.clearFocus()
             searchBox.visibility = View.GONE
             imm.hideSoftInputFromWindow(searchBoxInput.windowToken, 0)
+            scrollView.post { scrollView.smoothScrollTo(0, 175) }
             activated = false
         }
     }
