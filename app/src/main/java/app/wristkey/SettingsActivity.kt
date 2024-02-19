@@ -24,7 +24,7 @@ class SettingsActivity : AppCompatActivity() {
     lateinit var clockButton: MaterialSwitch
     lateinit var roundButton: MaterialSwitch
     lateinit var compactButton: MaterialSwitch
-    lateinit var concealedButton: MaterialSwitch
+    lateinit var scrollingTextButton: MaterialSwitch
 
     lateinit var aboutButton: Button
     lateinit var backButton: Button
@@ -74,7 +74,7 @@ class SettingsActivity : AppCompatActivity() {
         clockButton = findViewById (R.id.clockButton)
         roundButton = findViewById (R.id.roundButton)
         compactButton = findViewById (R.id.compactButton)
-        concealedButton = findViewById (R.id.concealedButton)
+        scrollingTextButton = findViewById (R.id.scrollingTextButton)
         aboutButton = findViewById (R.id.aboutButton)
         backButton = findViewById (R.id.backButton)
 
@@ -123,35 +123,11 @@ class SettingsActivity : AppCompatActivity() {
             utilities.db.edit().putBoolean(utilities.CONFIG_SCREEN_ROUND, isChecked).apply()
         }
 
-
-        var compactButtonChecked = false
-        var concealedButtonChecked = false
-        compactButton.isChecked = utilities.db.getBoolean(utilities.SETTINGS_COMPACT_ENABLED, false)
-        compactButton.setOnCheckedChangeListener { _, isChecked ->
-            if (!compactButtonChecked) {
-                settingsChanged = true
-                utilities.db.edit().remove(utilities.SETTINGS_COMPACT_ENABLED).apply()
-                utilities.db.edit().putBoolean(utilities.SETTINGS_COMPACT_ENABLED, isChecked).apply()
-                concealedButton.isChecked = false
-
-                concealedButtonChecked = true
-                concealedButton.isChecked = !isChecked
-                concealedButtonChecked = false
-            }
-        }
-
-        concealedButton.isChecked = utilities.db.getBoolean(utilities.SETTINGS_CONCEALED_ENABLED, true)
-        concealedButton.setOnCheckedChangeListener { _, isChecked ->
-            if (!concealedButtonChecked) {
-                settingsChanged = true
-                utilities.db.edit().remove(utilities.SETTINGS_CONCEALED_ENABLED).apply()
-                utilities.db.edit().putBoolean(utilities.SETTINGS_CONCEALED_ENABLED, isChecked).apply()
-                compactButton.isChecked = false
-
-                compactButtonChecked = true
-                compactButton.isChecked = !isChecked
-                compactButtonChecked = false
-            }
+        scrollingTextButton.isChecked = utilities.db.getBoolean(utilities.SCROLLING_TEXT, true)
+        scrollingTextButton.setOnCheckedChangeListener { _, isChecked ->
+            settingsChanged = true
+            utilities.db.edit().remove(utilities.SCROLLING_TEXT).apply()
+            utilities.db.edit().putBoolean(utilities.SCROLLING_TEXT, isChecked).apply()
         }
 
         aboutButton.setOnClickListener {

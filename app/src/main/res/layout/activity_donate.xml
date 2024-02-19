@@ -49,22 +49,10 @@
                 android:textStyle="normal" />
 
             <Button
-                android:id="@+id/paypal"
+                android:id="@+id/donate"
                 style="@style/Wristkey.Button"
-                app:icon="@drawable/paypal"
-                android:text="PayPal" />
-
-            <Button
-                android:id="@+id/github"
-                style="@style/Wristkey.Button"
-                app:icon="@drawable/github"
-                android:text="GitHub Sponsors" />
-
-            <Button
-                android:id="@+id/bitcoin"
-                style="@style/Wristkey.Button"
-                app:icon="@drawable/bitcoin"
-                android:text="Bitcoin" />
+                app:icon="@drawable/outline_attach_money_24"
+                android:text="Donate" />
 
             <View
                 android:layout_width="0dp"
