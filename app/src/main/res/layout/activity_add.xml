@@ -61,16 +61,16 @@
                 android:text="Manual entry" />
 
             <Button
-                android:id="@+id/fileImport"
-                style="@style/Wristkey.Button"
-                app:icon="@drawable/ic_outline_insert_drive_file_24"
-                android:text="Import from file" />
-
-            <Button
                 android:id="@+id/wifiTransfer"
                 style="@style/Wristkey.Button"
                 app:icon="@drawable/baseline_wifi_24"
                 android:text="Wi-Fi transfer" />
+
+            <Button
+                android:id="@+id/fileImport"
+                style="@style/Wristkey.Button"
+                android:text="Import from file"
+                app:icon="@drawable/ic_outline_insert_drive_file_24" />
 
             <Button
                 android:id="@+id/adbTransfer"

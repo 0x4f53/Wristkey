@@ -107,6 +107,7 @@ class Utilities (context: Context) {
     val SETTINGS_COMPACT_ENABLED = "SETTINGS_COMPACT_ENABLED"
     val SETTINGS_CONCEALED_ENABLED = "SETTINGS_CONCEALED_ENABLED"
     val CONFIG_SCREEN_ROUND = "CONFIG_SCREEN_ROUND"
+    val SCROLLING_TEXT = "SCROLLING_TEXT"
     val SETTINGS_LOCK_ENABLED = "SETTINGS_LOCK_ENABLED"
 
     val DATA_STORE = "DATA_STORE"
@@ -823,6 +824,9 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
 
             code.text = "lmao"
             accountAndLabel.isSelected = true
+
+            if (!utilities.db.getBoolean(utilities.SCROLLING_TEXT, true)) accountAndLabel.ellipsize = null
+
             accountIcon.text = item.issuer[0].toString()
             issuer.text = item.issuer
 

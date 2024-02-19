@@ -12,7 +12,7 @@ Need a minimal and open-source 2FA app you can trust? Wristkey is an open-source
 
 You can now run Wristkey on your phone too! Just download the APK on your phone and install it.
 
-<img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/1200px-Google_Play_Store_badge_EN.svg.png" alt = "Wristkey logo" width = "125dp">
+[<img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/1200px-Google_Play_Store_badge_EN.svg.png" alt = "Wristkey logo" width = "125dp">](https://play.google.com/store/apps/details?id=zeroxfourf.wristkey)
 
 or
 
