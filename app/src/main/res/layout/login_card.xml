@@ -9,11 +9,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="7.5dp"
+        android:paddingVertical="5dp"
         android:orientation="horizontal"
-        android:layout_marginHorizontal="10dp">
+        android:layout_marginHorizontal="7.5dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/iconLayout"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" >
 
@@ -55,7 +56,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_marginHorizontal="7.5dp">
+            android:layout_marginHorizontal="5dp">
 
             <TextView
                 style="@style/Wristkey.TextView"
@@ -63,12 +64,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:autoSizeTextType="uniform"
-                app:autoSizeMinTextSize="12sp"
-                app:autoSizeMaxTextSize="22sp"
+                app:autoSizeMinTextSize="20sp"
+                app:autoSizeMaxTextSize="28sp"
                 android:singleLine="false"
                 android:text="125 996"
                 android:textColor="#FFFFFF"
-                android:textSize="24sp" />
+                android:textSize="28sp" />
 
             <TextView
                 style="@style/Wristkey.TextView"
@@ -80,7 +81,6 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:textSize="16dp"
                 android:scrollHorizontally="true"
                 android:text="Issuer"
                 android:textAlignment="textStart" />
@@ -89,6 +89,7 @@
                 android:id="@+id/accountAndLabel"
                 style="@style/Wristkey.TextView"
                 android:layout_width="wrap_content"
+                android:textSize="13dp"
                 android:layout_height="wrap_content"
                 android:text="Account"
                 android:focusableInTouchMode="true"

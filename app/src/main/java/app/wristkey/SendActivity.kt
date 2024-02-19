@@ -203,18 +203,17 @@ class SendActivity : AppCompatActivity() {
                 val encryptedData = cryptography.lazySodium.cryptoBoxSealEasy(wfsBase64, publicKey)
 
                 GlobalScope.launch(Dispatchers.IO) {
-                    val transferData = postRequest(
+                    postRequest(
                         """{"encryptedVault":"$encryptedData","deviceName":"${utilities.deviceName()}"}""".trimIndent(),
                         url
                     )
                     withContext(Dispatchers.Main) {
-                        Log.d("Wristkey-Transfer", "Data to send: $encryptedData")
-                        Toast.makeText(this@SendActivity, "Transfer complete!", Toast.LENGTH_SHORT).show()
-
                         finishAffinity()
                         startActivity(Intent(applicationContext, MainActivity::class.java))
+                        Log.d("Wristkey-Transfer", "Data to send: $encryptedData")
+                        Toast.makeText(this@SendActivity, "Transfer complete!", Toast.LENGTH_SHORT).show()
+                        senderServer.stop()
                     }
-                    senderServer.stop()
                 }
             }
         }
