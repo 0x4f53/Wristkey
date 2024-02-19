@@ -6,7 +6,7 @@ Wristkey does not send any data to a server or backend. All 2FA data is stored l
 
 
 #### Wi-Fi transfers
-For Wi-Fi transfers, Wristkey starts two [HTTP servers](https://github.com/NanoHttpd/nanohttpd) (one on each device) on random ports on your local LAN (your Wi-Fi router connection, hotspot network etc). Devices are paired by scanning a QR code displayed on the receiving device. Data transfers are encrypted using public key encryption via [libsodium's crypto_box_seal](https://libsodium.gitbook.io/doc/public-key_cryptography/sealed_boxes), which in turn uses XSalsa20-Poly1305 and X25519 key exchange. Data is encrypted on the sending device using the public key the receiver sends, and the receiver decrypts it using their secret key. Both HTTP servers are stopped as soon as the transfer is complete. 
+For Wi-Fi transfers, Wristkey starts two [HTTP servers](https://github.com/NanoHttpd/nanohttpd) (one on each device) on random ports on your local LAN (your Wi-Fi router connection, hotspot network etc). Devices are paired by scanning a QR code displayed on the receiving device. Data transfers are encrypted using public key encryption via [libsodium's crypto_box_seal()](https://libsodium.gitbook.io/doc/public-key_cryptography/sealed_boxes), which in turn uses XSalsa20-Poly1305 and X25519 key exchange. Data is encrypted on the sending device using the public key the receiver sends, and the receiver decrypts it using their secret key. Both HTTP servers are stopped as soon as the transfer is complete. 
 
 
 #### On-device encryption
