@@ -62,7 +62,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         utilities = Utilities(applicationContext)
-        timer = Timer()
 
         if (utilities.db.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)) {
             val lockscreen = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
@@ -71,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                 startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
             }
         } else {
+            timer = Timer()
             initializeUI()
             startClock()
             startTimer()
@@ -158,9 +158,10 @@ class MainActivity : AppCompatActivity() {
     private fun initializeUI() {
         setContentView(R.layout.activity_main)
 
-        clock = findViewById(R.id.clock)
+        scrollView = findViewById(R.id.scrollView)
+        if (utilities.db.getBoolean(utilities.SETTINGS_SEARCH_ENABLED, true)) scrollView.post { scrollView.smoothScrollTo(0, 175) }
 
-        loginsRecycler = findViewById(R.id.loginsRecycler)
+        clock = findViewById(R.id.clock)
 
         roundTimeLeft = findViewById(R.id.RoundTimeLeft)
 
@@ -177,7 +178,9 @@ class MainActivity : AppCompatActivity() {
 
         processedLogins = logins
 
-        updateLogins()
+        loginsRecycler = findViewById(R.id.loginsRecycler)
+        loginsAdapter = LoginsAdapter(processedLogins, timer, isRound)
+        loginsRecycler.adapter = loginsAdapter
 
         callback = ItemTouchHelperCallback(loginsAdapter, processedLogins)
         touchHelper = ItemTouchHelper(callback)
@@ -193,11 +196,8 @@ class MainActivity : AppCompatActivity() {
         searchButton = findViewById(R.id.searchButton)
         searchProgress = findViewById(R.id.searchProgress)
         searchProgress.visibility = View.GONE
-        scrollView = findViewById(R.id.scrollView)
 
         if (utilities.db.getBoolean(utilities.SETTINGS_SEARCH_ENABLED, true)) {
-            scrollView.post { scrollView.smoothScrollTo(0, 175) }
-
             searchBoxInput = findViewById(R.id.searchBoxInput)
             searchBox.visibility = View.GONE
 
@@ -229,33 +229,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun updateLogins() {
-        processedLogins = logins
-        for (processedLogin in processedLogins) {
-            var mfaCode = utilities.generateTotp(
-                secret = processedLogin.secret,
-                algorithm = processedLogin.algorithm,
-                digits = processedLogin.digits,
-                period = processedLogin.period
-            )
-            mfaCode = "${
-                mfaCode.substring(
-                    0,
-                    mfaCode.length / 2
-                )
-            } ${mfaCode.substring(mfaCode.length / 2)}"
-            runOnUiThread { processedLogin.secret = mfaCode }
-        }
-
-        if (!::loginsAdapter.isInitialized) {
-            loginsAdapter = LoginsAdapter(processedLogins, timer, isRound)
-            loginsRecycler.adapter = loginsAdapter
-        }
-
-        runOnUiThread { loginsAdapter.notifyItemRangeChanged(0, processedLogins.size) }
-
-    }
-
     private fun startTimer() {
 
         // Set circle around screen edge to show appropriate time interval
@@ -269,8 +242,7 @@ class MainActivity : AppCompatActivity() {
                 isTimerRunning = true
                 val second = utilities.second()
                 val tickerValue = (largestPeriod - (second % largestPeriod)) % largestPeriod
-                try {
-                    // Set ticker progress per seconds here.
+                try { // Set ticker progress per seconds here.
                     roundTimeLeft.progress = tickerValue
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) roundTimeLeft.setProgress(
                         tickerValue,
@@ -285,8 +257,6 @@ class MainActivity : AppCompatActivity() {
                 * This prevents sequential secret computation on UI thread and reduces lag.
                 * Note: This is for TOTPs only. Since HOTPs are updated once at a time after user input, they do not cause performanca issues.
                 * */
-
-                try { if (tickerValue == 29) updateLogins() } catch (_: IllegalArgumentException) { }
 
             }
         }, 0, 1000) // 1000 milliseconds = 1 second

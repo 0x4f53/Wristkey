@@ -1,5 +1,7 @@
 package app.wristkey
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -24,6 +26,7 @@ import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
@@ -66,6 +69,7 @@ import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.hypot
 
 
 @RequiresApi(Build.VERSION_CODES.M)
@@ -817,6 +821,7 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
 
         fun bind(item: Utilities.MfaCode) {
 
+            code.text = "lmao"
             accountAndLabel.isSelected = true
             accountIcon.text = item.issuer[0].toString()
             issuer.text = item.issuer
@@ -828,13 +833,51 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
             // Time mode
             if (item.mode.contains(utilities.MFA_TIME_MODE)) {
                 counterControls.visibility = View.GONE
-                code.text = item.secret
                 code.visibility = View.GONE
 
                 loginInfo.setOnClickListener {
-                    clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.app_name), code.text.toString().replace(" ", "")))
-                    code.visibility = View.VISIBLE
-                    Handler().postDelayed({ code.visibility = View.GONE }, 3000)
+
+                    var mfaCode = utilities.generateTotp(
+                        secret = item.secret,
+                        algorithm = item.algorithm,
+                        digits = item.digits,
+                        period = item.period
+                    )
+
+                    mfaCode = "${mfaCode.substring(0, mfaCode.length / 2)} ${mfaCode.substring(mfaCode.length / 2)}"
+                    code.text = mfaCode
+
+                    clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.app_name), mfaCode.replace(" ", "")))
+
+                    code.post {
+                        val cx: Int = code.width / 2
+                        val cy: Int = code.height / 2
+                        val finalRadius = hypot(cx.toDouble(), cy.toDouble()).toFloat()
+                        val anim = ViewAnimationUtils.createCircularReveal(code, cx, cy, 0f, finalRadius)
+                        issuer.visibility = View.GONE
+                        accountAndLabel.visibility = View.GONE
+                        code.visibility = View.VISIBLE
+                        anim.start()
+                    }
+
+                    Handler().postDelayed({
+                        code.post {
+                            val cx: Int = code.width / 2
+                            val cy: Int = code.height / 2
+                            val startRadius = hypot(cx.toDouble(), cy.toDouble()).toFloat()
+                            val endRadius = 0f
+                            val anim = ViewAnimationUtils.createCircularReveal(code, cx, cy, startRadius, endRadius)
+                            anim.addListener(object : AnimatorListenerAdapter() {
+                                override fun onAnimationEnd(animation: Animator) {
+                                    super.onAnimationEnd(animation)
+                                    code.visibility = View.GONE
+                                    issuer.visibility = View.VISIBLE
+                                    accountAndLabel.visibility = View.VISIBLE
+                                }
+                            })
+                            anim.start()
+                        }
+                    }, 3000)
                 }
 
                 progressIndicator.max = item.period
@@ -848,19 +891,12 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
 
                 timer.scheduleAtFixedRate(object : TimerTask() {
                     override fun run() {
-
                         val second = utilities.second()
                         val tickerValue = (item.period - (second % item.period)) % item.period
                         try {
                             progressIndicator.progress = tickerValue
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) progressIndicator.setProgress(tickerValue, true)
                         } catch (_: Exception) { }
-
-                        if (tickerValue == 29) {
-                            (itemView.context as? Activity)?.runOnUiThread {
-                                code.text = item.secret
-                            }
-                        }
                     }
                 }, 0, 1000)
             }
