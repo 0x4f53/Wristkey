@@ -1,4 +1,4 @@
-package app.wristkey
+package zeroxfourf.wristkey
 
 import android.app.Activity
 import android.content.Intent
@@ -9,7 +9,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.budiyev.android.codescanner.*
 import wristkey.R
-import java.util.*
 
 class QRScannerActivity : AppCompatActivity() {
     private lateinit var codeScanner: CodeScanner

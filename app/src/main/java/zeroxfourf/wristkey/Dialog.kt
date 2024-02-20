@@ -1,4 +1,4 @@
-package app.wristkey
+package zeroxfourf.wristkey
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle

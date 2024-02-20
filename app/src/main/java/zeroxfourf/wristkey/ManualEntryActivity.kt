@@ -1,4 +1,4 @@
-package app.wristkey
+package zeroxfourf.wristkey
 
 import android.content.Intent
 import android.os.Build
@@ -267,7 +267,7 @@ class ManualEntryActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             if (secretInput.text!!.isNotEmpty() || issuerInput.text!!.isNotEmpty() || labelInput.text!!.isNotEmpty()) {
                 val dialog = CustomFullscreenDialogFragment(
-                    title = "Invalid Issuer",
+                    title = "Go back",
                     message = getString(R.string.go_back),
                     positiveButtonText = "Keep editing",
                     positiveButtonIcon = getDrawable(R.drawable.ic_baseline_edit_24),

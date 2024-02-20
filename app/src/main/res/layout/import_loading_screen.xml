@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context="app.wristkey.FileImportActivity"
+    tools:context="zeroxfourf.wristkey.FileImportActivity"
     tools:deviceIds="wear">
 
     <androidx.core.widget.NestedScrollView

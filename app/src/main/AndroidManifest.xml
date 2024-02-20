@@ -32,22 +32,21 @@
             android:value="true" />
 
         <activity
-            android:name="app.wristkey.QRScannerActivity"
+            android:name="zeroxfourf.wristkey.QRScannerActivity"
             android:label="@string/title_activity_bitwarden_jsonimport" />
 
         <activity
-            android:name="app.wristkey.FileImportActivity"
+            android:name="zeroxfourf.wristkey.FileImportActivity"
             android:label="@string/title_activity_file_import" />
 
         <activity
-            android:name="app.wristkey.AdbImportActivity"
+            android:name="zeroxfourf.wristkey.AdbImportActivity"
             android:label="@string/title_activity_adb_import" />
 
         <activity
-            android:name="app.wristkey.MainActivity"
+            android:name="zeroxfourf.wristkey.MainActivity"
             android:label="@string/app_name"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -55,43 +54,43 @@
 
         </activity>
         <activity
-            android:name="app.wristkey.QRCodeActivity"
+            android:name="zeroxfourf.wristkey.QRCodeActivity"
             android:label="QR code" />
         <activity
-            android:name="app.wristkey.AddActivity"
+            android:name="zeroxfourf.wristkey.AddActivity"
             android:label="Add account" />
 
         <activity
-            android:name="app.wristkey.WiFiTransferActivity"
+            android:name="zeroxfourf.wristkey.WiFiTransferActivity"
             android:label="Wi-Fi transfer"
             android:exported="true" />
 
         <activity
-            android:name="app.wristkey.SendActivity"
+            android:name="zeroxfourf.wristkey.SendActivity"
             android:label="Send" />
 
         <activity
-            android:name="app.wristkey.ReceiveActivity"
+            android:name="zeroxfourf.wristkey.ReceiveActivity"
             android:label="Receive" />
 
         <activity
-            android:name="app.wristkey.ManualEntryActivity"
+            android:name="zeroxfourf.wristkey.ManualEntryActivity"
             android:label="Add account" />
 
         <activity
-            android:name="app.wristkey.ExportActivity"
+            android:name="zeroxfourf.wristkey.ExportActivity"
             android:label="Add account" />
 
         <activity
-            android:name="app.wristkey.AboutActivity"
+            android:name="zeroxfourf.wristkey.AboutActivity"
             android:label="About" />
 
         <activity
-            android:name="app.wristkey.DonateActivity"
+            android:name="zeroxfourf.wristkey.DonateActivity"
             android:label="About" />
 
         <activity
-            android:name="app.wristkey.SettingsActivity"
+            android:name="zeroxfourf.wristkey.SettingsActivity"
             android:label="Settings" />
 
     </application>
