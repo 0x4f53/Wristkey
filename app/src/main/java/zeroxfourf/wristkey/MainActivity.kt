@@ -1,4 +1,4 @@
-package app.wristkey
+package zeroxfourf.wristkey
 
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
+        timer = Timer()
         super.onCreate(savedInstanceState)
         utilities = Utilities(applicationContext)
 
@@ -71,7 +72,6 @@ class MainActivity : AppCompatActivity() {
                 startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
             }
         } else {
-            timer = Timer()
             initializeUI()
             startClock()
             startTimer()

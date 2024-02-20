@@ -1,4 +1,4 @@
-package app.wristkey
+package zeroxfourf.wristkey
 
 
 import android.annotation.SuppressLint
@@ -7,38 +7,30 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.wearable.intent.RemoteIntent
-import wristkey.BuildConfig
 import wristkey.R
 import java.util.*
 
-class AboutActivity : AppCompatActivity() {
+class DonateActivity : AppCompatActivity() {
 
     lateinit var mfaCodesTimer: Timer
     lateinit var utilities: Utilities
 
     private lateinit var clock: TextView
+    private lateinit var donate: Button
 
     private lateinit var backButton: Button
-    private lateinit var appNameText: TextView
-    private lateinit var heart: TextView
-    private lateinit var versionText: TextView
-    private lateinit var urlLink: TextView
-
-    private lateinit var donateButton: Button
-    private lateinit var licenseButton: Button
 
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
+        setContentView(R.layout.activity_donate)
 
         utilities = Utilities(applicationContext)
         mfaCodesTimer = Timer()
@@ -78,22 +70,16 @@ class AboutActivity : AppCompatActivity() {
     fun initializeUI () {
         clock = findViewById(R.id.clock)
 
-        versionText = findViewById(R.id.Version)
-        versionText.text = "v${BuildConfig.VERSION_NAME}"
-
-        heart = findViewById(R.id.heart)
-        heart.startAnimation(AnimationUtils.loadAnimation(this, R.anim.heartbeat))
-
-        val uri: String = getString(R.string.about_url)
-        urlLink = findViewById(R.id.sourceCode)
-        urlLink.setOnClickListener {
+        donate = findViewById(R.id.donate)
+        donate.setOnClickListener {
+            val uri: String = getString(R.string.donation_uri)
             val intent = Intent(Intent.ACTION_VIEW).addCategory(Intent.CATEGORY_BROWSABLE).setData(Uri.parse(uri))
             RemoteIntent.startRemoteActivity(this, intent, null)
-            Toast.makeText(this, "Opening repository URL in browser", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Opening GitHub donation page", Toast.LENGTH_SHORT).show()
             try {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
                 startActivity(browserIntent)
-            } catch (ex: Exception) { }
+            } catch (_: Exception) { }
         }
 
         backButton = findViewById(R.id.backButton)
@@ -101,25 +87,12 @@ class AboutActivity : AppCompatActivity() {
             finish()
         }
 
-        donateButton = findViewById(R.id.donateButton)
-        donateButton.setOnClickListener {
-            startActivity(Intent(applicationContext, DonateActivity::class.java))
-        }
+    }
 
-        licenseButton = findViewById(R.id.licenseButton)
-        licenseButton.setOnClickListener {
-
-            val licenseDialog = CustomFullscreenDialogFragment(
-                title = "MIT License",
-                message = getString(R.string.copyright),
-                positiveButtonText = null,
-                positiveButtonIcon = null,
-                negativeButtonText = "Go back",
-                negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
-            )
-
-            licenseDialog.show(supportFragmentManager, "CustomFullscreenDialog")
-
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            utilities.EXPORT_RESPONSE_CODE -> {  }
         }
     }
 

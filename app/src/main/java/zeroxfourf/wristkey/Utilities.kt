@@ -1,4 +1,4 @@
-package app.wristkey
+package zeroxfourf.wristkey
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -505,10 +505,6 @@ class Utilities (context: Context) {
         return (1..length).map { ('A'..'Z').random() }.joinToString("")
     }
 
-    class WristkeyFileSystem (
-        @JsonProperty("otpauth") var otpauth: MutableList<String>
-    )
-
     fun toBase64(string: String): String {
         return Base64.encodeToString(string.toByteArray(Charsets.UTF_8), Base64.DEFAULT)
     }
@@ -549,6 +545,10 @@ class Utilities (context: Context) {
 
         return true
     }
+
+    class WristkeyFileSystem (
+        @JsonProperty("otpauth") var otpauth: MutableList<String>
+    )
 
     fun getData (): WristkeyFileSystem {
         val wfs = objectMapper.writeValueAsString (

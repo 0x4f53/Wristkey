@@ -1,4 +1,4 @@
-package app.wristkey
+package zeroxfourf.wristkey
 
 import android.content.Intent
 import android.content.pm.PackageManager

@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context="app.wristkey.ExportActivity"
+    tools:context="zeroxfourf.wristkey.ExportActivity"
     tools:deviceIds="wear">
 
     <ScrollView
