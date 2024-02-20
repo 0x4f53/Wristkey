@@ -42,13 +42,11 @@ or
 
 ## CONTRIBUTION
 
-_Further reading: [Contributing](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md)_
+### [Contributing](CONTRIBUTING.md)
 
-### Contributing
+I made this app for myself because the ancient LG G Watch W100 I use barely works when paired with iOS. [But you can contribute too if you want.](CONTRIBUTING.md)
 
-I made this app for myself because the ancient LG G Watch W100 I use barely works when paired with iOS. But you can contribute too if you want. [Click here](CONTRIBUTING.md) to read how to do so. 
-
-### Code of Conduct
+### [Code of Conduct](CODE_OF_CONDUCT.md)
 
 Make sure to adhere to the [code of conduct](CODE_OF_CONDUCT.md) when interacting with others on this project.
 
@@ -78,4 +76,4 @@ Multimedia licensed under [![License: CC BY-NC-SA 4.0](https://licensebuttons.ne
 
 ## DONATE
 
-If you'd like to donate to me, [visit my GitHub page](https://github.com/0x4f53).
+If you'd like to donate to me, [visit my GitHub page](https://github.com/0x4f53). It incentivizes me to develop more.
