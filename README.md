@@ -46,23 +46,17 @@ or
 
 #### [Code of Conduct](CODE_OF_CONDUCT.md)
 
-## ACKNOWLEDGEMENTS
-
 #### Contributors
 
 [Trương Huỳnh Đức](https://github.com/huynhduc0)
 
-#### Libraries, apps and projects
+## ACKNOWLEDGEMENTS
 
 The [Aegis Authenticator](https://getaegis.app/), [andOTP](https://github.com/andOTP/andOTP), [Google Authenticator](https://github.com/google/google-authenticator) and [Bitwarden](https://bitwarden.com/) names, data export formats, logos and trademarks belong to their respective owners.
 
-Please star and support these developers for their hard work. All libraries, dependencies and tools used belong to their respective owners.
-
-[Marcel Kliemannel - Kotlin Onetimepassword (to generate OTPs)](https://github.com/marcelkliemannel/kotlin-onetimepassword)
-
-[Androidmads - QR Generator library (to generate QR Codes)](https://github.com/androidmads/QRGenerator)
-
-[Yuriy Budiyev - Code scanner](https://github.com/yuriy-budiyev/code-scanner)
+- [Marcel Kliemannel - Kotlin Onetimepassword (to generate OTPs)](https://github.com/marcelkliemannel/kotlin-onetimepassword)
+- [Androidmads - QR Generator library (to generate QR Codes)](https://github.com/androidmads/QRGenerator)
+- [Yuriy Budiyev - Code scanner](https://github.com/yuriy-budiyev/code-scanner)
 
 ## LICENSE
 
