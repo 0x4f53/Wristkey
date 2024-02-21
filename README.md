@@ -38,17 +38,13 @@ or
 
 ## USAGE
 
-[Click here to see the usage guide](https://github.com/0x4f53/Wristkey/wiki)
+#### [Wiki](https://github.com/0x4f53/Wristkey/wiki)
 
 ## CONTRIBUTION
 
-### [Contributing](CONTRIBUTING.md)
+#### [Contributing](CONTRIBUTING.md)
 
-I made this app for myself because the ancient LG G Watch W100 I use barely works when paired with iOS. [But you can contribute too if you want.](CONTRIBUTING.md)
-
-### [Code of Conduct](CODE_OF_CONDUCT.md)
-
-Make sure to adhere to the [code of conduct](CODE_OF_CONDUCT.md) when interacting with others on this project.
+#### [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## ACKNOWLEDGEMENTS
 
