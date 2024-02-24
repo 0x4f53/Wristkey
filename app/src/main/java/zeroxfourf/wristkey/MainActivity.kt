@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     var isTimerRunning: Boolean = false
     lateinit var utilities: Utilities
     private var isRound: Boolean = false
+    private var unlocked: Boolean = false
 
     private lateinit var scrollView: NestedScrollView
     private lateinit var clock: TextView
@@ -53,7 +54,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var data: Utilities.WristkeyFileSystem
     private lateinit var logins: MutableList<Utilities.MfaCode>
-    private lateinit var processedLogins: MutableList<Utilities.MfaCode> // This one goes to RecyclerView
     private lateinit var loginsAdapter: LoginsAdapter
     private lateinit var callback: ItemTouchHelperCallback
     private lateinit var loginsRecycler: RecyclerView
@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
-        timer = Timer()
         super.onCreate(savedInstanceState)
         utilities = Utilities(applicationContext)
 
@@ -71,45 +70,40 @@ class MainActivity : AppCompatActivity() {
                 val i = lockscreen.createConfirmDeviceCredentialIntent("Wristkey", "App locked")
                 startActivityForResult(i, CODE_AUTHENTICATION_VERIFICATION)
             }
-        } else {
-            initializeUI()
-            startClock()
-            startTimer()
-        }
-
+        } else initializeUI()
     }
 
     override fun onStop() {
         super.onStop()
-        timer.cancel()
+        if (isTimerRunning) timer.cancel()
         isTimerRunning = false
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        timer.cancel()
+        if (isTimerRunning) timer.cancel()
         isTimerRunning = false
     }
 
     override fun onPause() {
         super.onPause()
-        timer.cancel()
+        if (isTimerRunning) timer.cancel()
         isTimerRunning = false
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (!isTimerRunning) startTimer()
     }
 
     override fun onResume() {
         super.onResume()
-        if (!isTimerRunning) startTimer()
+        if (!isTimerRunning && unlocked) {
+            initializeUI()
+            startTimer()
+            isTimerRunning = true
+        }
     }
 
     private var searchJob: Job? = null
     private var activated = false
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun searchBox() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         val searchDelayMillis = 300L // Use Long for delay
@@ -182,17 +176,17 @@ class MainActivity : AppCompatActivity() {
 
         data = utilities.getData()
         logins = mutableListOf()
-        processedLogins = mutableListOf()
+
+        startTimer()
+        startClock()
 
         for (login in data.otpauth) utilities.decodeOtpAuthURL(login)?.let { logins.add(it) }
 
-        processedLogins = logins
-
         loginsRecycler = findViewById(R.id.loginsRecycler)
-        loginsAdapter = LoginsAdapter(processedLogins, timer, isRound)
+        loginsAdapter = LoginsAdapter(logins, timer, isRound)
         loginsRecycler.adapter = loginsAdapter
 
-        callback = ItemTouchHelperCallback(loginsAdapter, processedLogins)
+        callback = ItemTouchHelperCallback(loginsAdapter, logins)
         touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(loginsRecycler)
 
@@ -241,12 +235,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun startTimer() {
 
+        // Start timer
+        timer = Timer()
+        isTimerRunning = true
+
         // Set circle around screen edge to show appropriate time interval
         val largestPeriod = logins.maxByOrNull { it.period }?.period ?: 30
         roundTimeLeft.max = largestPeriod
 
-        // Start timer
-        if (!isTimerRunning) timer = Timer()
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 isTimerRunning = true
@@ -258,24 +254,18 @@ class MainActivity : AppCompatActivity() {
                         tickerValue,
                         true
                     )
-                } catch (_: Exception) {
-                }
-
-                /*
-                * Instead of setting TOTP secret in RecyclerView's ViewHolder,
-                * iterate through logins list when time is up, replace the secret with the code itself and simple render it in the ViewHolder.
-                * This prevents sequential secret computation on UI thread and reduces lag.
-                * Note: This is for TOTPs only. Since HOTPs are updated once at a time after user input, they do not cause performanca issues.
-                * */
-
+                } catch (_: Exception) { }
             }
         }, 0, 1000) // 1000 milliseconds = 1 second
     }
 
     private fun startClock() {
-        if (!utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility =
-            View.GONE
+        if (!utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) {
+            clock.visibility = View.GONE
+            return
+        }
 
+        clock.text = utilities.getTime()
         try {
             timer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
@@ -293,8 +283,7 @@ class MainActivity : AppCompatActivity() {
             finish()
         } else {
             initializeUI()
-            startClock()
-            startTimer()
+            unlocked = true
         }
     }
 
