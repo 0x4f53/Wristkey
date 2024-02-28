@@ -93,10 +93,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (!isTimerRunning && unlocked) {
-            initializeUI()
-            startTimer()
-            isTimerRunning = true
+
+        val lockScreenEnabled = utilities.db.getBoolean(utilities.SETTINGS_LOCK_ENABLED, false)
+
+        if (lockScreenEnabled) {
+            if (!isTimerRunning && unlocked) {
+                initializeUI()
+                startTimer()
+                isTimerRunning = true
+            }
+        } else {
+            if (!isTimerRunning) {
+                initializeUI()
+                startTimer()
+                isTimerRunning = true
+            }
         }
     }
 
@@ -155,8 +166,8 @@ class MainActivity : AppCompatActivity() {
             utilities.CONFIG_SCREEN_ROUND,
             resources.configuration.isScreenRound
         )
-        if (isRound) roundTimeLeft.visibility = View.VISIBLE else roundTimeLeft.visibility =
-            View.GONE
+        if (isRound) roundTimeLeft.visibility = View.VISIBLE
+        else roundTimeLeft.visibility = View.GONE
     }
 
     private fun initializeUI() {
