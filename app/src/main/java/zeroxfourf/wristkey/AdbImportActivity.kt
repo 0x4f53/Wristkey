@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +31,9 @@ class AdbImportActivity : AppCompatActivity() {
     lateinit var utilities: Utilities
     lateinit var storageHelper: SimpleStorageHelper
 
+    lateinit var progress: ProgressBar
+    lateinit var progressRound: ProgressBar
+
     private lateinit var clock: TextView
 
     var isRound: Boolean = false
@@ -51,6 +55,11 @@ class AdbImportActivity : AppCompatActivity() {
     private fun initializeUI () {
         setContentView(R.layout.activity_adb_import)
 
+        progress = findViewById(R.id.progress)
+        progressRound = findViewById(R.id.progressRound)
+
+        setShape()
+
         clock = findViewById(R.id.clock)
         startClock()
 
@@ -69,6 +78,18 @@ class AdbImportActivity : AppCompatActivity() {
         }
 
     }
+
+    private fun setShape() {
+        isRound = utilities.db.getBoolean(
+            utilities.CONFIG_SCREEN_ROUND,
+            resources.configuration.isScreenRound
+        )
+        if (isRound) {
+            progressRound.visibility = View.VISIBLE
+            progress.visibility = View.GONE
+        } else progressRound.visibility = View.GONE
+    }
+
 
     private fun startClock () {
         if (!utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
