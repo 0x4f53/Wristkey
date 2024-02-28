@@ -23,6 +23,9 @@ class ManualEntryActivity : AppCompatActivity() {
 
     lateinit var utilities: Utilities
 
+    private lateinit var clock: TextView
+    lateinit var mfaCodesTimer: Timer
+
     private lateinit var issuerInput: TextInputEditText
     private lateinit var labelInput: TextInputEditText
     private lateinit var secretInput: TextInputEditText
@@ -50,7 +53,6 @@ class ManualEntryActivity : AppCompatActivity() {
     private lateinit var periodText: TextView
     private lateinit var periodSlider: Slider
 
-
     private var counter: Long = 0
     private lateinit var counterInput: TextInputEditText
     private lateinit var counterLayout: TextInputLayout
@@ -58,8 +60,6 @@ class ManualEntryActivity : AppCompatActivity() {
     private lateinit var doneButton: Button
     private lateinit var deleteButton: Button
     private lateinit var backButton: Button
-
-    private lateinit var uuid: String
 
     private lateinit var data: Utilities.MfaCode
 
@@ -71,7 +71,7 @@ class ManualEntryActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 
         utilities = Utilities(applicationContext)
-        uuid = UUID.randomUUID().toString()
+        mfaCodesTimer = Timer()
 
         initializeUI()
 
@@ -82,7 +82,40 @@ class ManualEntryActivity : AppCompatActivity() {
 
     }
 
+    private fun startClock () {
+        if (!utilities.db.getBoolean(utilities.SETTINGS_CLOCK_ENABLED, true)) clock.visibility = View.GONE
+
+        try {
+            mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    runOnUiThread { clock.text = utilities.getTime() }
+                }
+            }, 0, 1000)
+        } catch (_: IllegalStateException) { }
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        mfaCodesTimer.cancel()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mfaCodesTimer.cancel()
+        finish()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mfaCodesTimer = Timer()
+    }
+
     private fun initializeUI () {
+
+        clock = findViewById(R.id.clock)
+        startClock()
+
         issuerInput = findViewById (R.id.issuerInput)
         labelInput = findViewById (R.id.labelInput)
         secretInput = findViewById (R.id.secretInput)
