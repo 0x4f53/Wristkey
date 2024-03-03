@@ -194,7 +194,7 @@ class MainActivity : AppCompatActivity() {
         for (login in data.otpauth) utilities.decodeOtpAuthURL(login)?.let { logins.add(it) }
 
         loginsRecycler = findViewById(R.id.loginsRecycler)
-        loginsAdapter = LoginsAdapter(logins, timer, isRound)
+        loginsAdapter = LoginsAdapter(logins, timer, isRound, this@MainActivity)
         loginsRecycler.adapter = loginsAdapter
 
         callback = ItemTouchHelperCallback(loginsAdapter, logins)

@@ -130,6 +130,17 @@ class SettingsActivity : AppCompatActivity() {
             utilities.db.edit().putBoolean(utilities.SCROLLING_TEXT, isChecked).apply()
         }
 
+        var compactDevice = false
+        val width = utilities.screenResolution(applicationContext).first
+        if (width < 640) compactDevice = true
+
+        compactButton.isChecked = utilities.db.getBoolean(utilities.SETTINGS_COMPACT_ENABLED, compactDevice)
+        compactButton.setOnCheckedChangeListener { _, isChecked ->
+            settingsChanged = true
+            utilities.db.edit().remove(utilities.SETTINGS_COMPACT_ENABLED).apply()
+            utilities.db.edit().putBoolean(utilities.SETTINGS_COMPACT_ENABLED, isChecked).apply()
+        }
+
         aboutButton.setOnClickListener {
             startActivity(Intent(applicationContext, AboutActivity::class.java))
         }
