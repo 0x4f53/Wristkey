@@ -235,8 +235,7 @@
                 android:background="@drawable/pill_shape_border"
                 android:orientation="horizontal"
                 android:paddingStart="15dp"
-                android:paddingEnd="10dp"
-                android:visibility="gone">
+                android:paddingEnd="10dp">
 
                 <TextView
                     android:id="@+id/compactText"
