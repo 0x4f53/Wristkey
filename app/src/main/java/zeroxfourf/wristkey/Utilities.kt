@@ -842,30 +842,16 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
 
         fun bind(item: Utilities.MfaCode) {
 
-
-            var compactDeviceSetting = false
+            var compactDevice = false
             val width = utilities.screenResolution(context).first
-            if (width < 640) compactDeviceSetting = true
-            val compactDevice = utilities.db.getBoolean(utilities.SETTINGS_COMPACT_ENABLED, compactDeviceSetting)
+            if (width < 640) compactDevice = true
+            compactDevice = utilities.db.getBoolean(utilities.SETTINGS_COMPACT_ENABLED, compactDevice)
+
+            Log.d("WK-LOG", compactDevice.toString())
 
             lateinit var mfaCode: String
 
             if (compactDevice) {
-                code.visibility = View.VISIBLE
-
-                issuer.textSize = 20f
-                accountAndLabel.textSize = 16f
-
-                code.visibility = View.VISIBLE
-
-                mfaCode = utilities.generateTotp(secret=item.secret, algorithm=item.algorithm, digits=item.digits, period=item.period)
-                mfaCode = "${mfaCode.substring(0, mfaCode.length / 2)} ${mfaCode.substring(mfaCode.length / 2)}"
-
-                code.text = mfaCode
-
-                loginInfo.setOnClickListener { clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.app_name), mfaCode.replace(" ", ""))) }
-
-            } else {
 
                 code.visibility = View.GONE
 
@@ -909,6 +895,21 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
 
 
                 }
+
+            } else {
+                code.visibility = View.VISIBLE
+
+                issuer.textSize = 20f
+                accountAndLabel.textSize = 16f
+
+                code.visibility = View.VISIBLE
+
+                mfaCode = utilities.generateTotp(secret=item.secret, algorithm=item.algorithm, digits=item.digits, period=item.period)
+                mfaCode = "${mfaCode.substring(0, mfaCode.length / 2)} ${mfaCode.substring(mfaCode.length / 2)}"
+
+                code.text = mfaCode
+
+                loginInfo.setOnClickListener { clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.app_name), mfaCode.replace(" ", ""))) }
 
             }
 
