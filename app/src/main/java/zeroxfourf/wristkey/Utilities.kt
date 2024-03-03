@@ -56,6 +56,10 @@ import dev.turingcomplete.kotlinonetimepassword.HmacOneTimePasswordGenerator
 import dev.turingcomplete.kotlinonetimepassword.TimeBasedOneTimePasswordConfig
 import dev.turingcomplete.kotlinonetimepassword.TimeBasedOneTimePasswordGenerator
 import fi.iki.elonen.NanoHTTPD
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -572,6 +576,17 @@ class Utilities (context: Context) {
         } catch (_: Exception) { }
     }
 
+    fun screenResolution(context: Context): Pair<Int, Int> {
+        val metrics = android.util.DisplayMetrics()
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager.defaultDisplay.getMetrics(metrics)
+
+        val width = metrics.widthPixels
+        val height = metrics.heightPixels
+
+        return Pair(width, height)
+    }
+
     fun getLocalIpAddress(context: Context): String? {
         try {
             val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -613,6 +628,11 @@ class Utilities (context: Context) {
         if (algorithm == ALGO_SHA1 && period == 30 && digits == 6) return GoogleAuthenticator(secret.toByteArray(Charset.defaultCharset())).generate()
 
         return TimeBasedOneTimePasswordGenerator(secret.toByteArray(Charset.defaultCharset()), config).generate()
+    }
+
+    private fun pixelsToSp(context: Context, px: Float): Float {
+        val scaledDensity = context.resources.displayMetrics.scaledDensity
+        return px / scaledDensity
     }
 
     fun generateHotp (secret: String, algorithm: String, digits: Int, counter: Long): String {
@@ -764,7 +784,7 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter, val l
 
 }
 
-class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer: Timer, val isRound: Boolean) : RecyclerView.Adapter<LoginsAdapter.ViewHolder>(), ItemTouchHelperAdapter {
+class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer: Timer, val isRound: Boolean, val activity: Activity) : RecyclerView.Adapter<LoginsAdapter.ViewHolder>(), ItemTouchHelperAdapter {
 
     lateinit var context: Context
     lateinit var utilities: Utilities
@@ -822,47 +842,40 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
 
         fun bind(item: Utilities.MfaCode) {
 
-            code.text = "lmao"
-            accountAndLabel.isSelected = true
 
-            if (!utilities.db.getBoolean(utilities.SCROLLING_TEXT, true)) accountAndLabel.ellipsize = null
+            var compactDeviceSetting = false
+            val width = utilities.screenResolution(context).first
+            if (width < 640) compactDeviceSetting = true
+            val compactDevice = utilities.db.getBoolean(utilities.SETTINGS_COMPACT_ENABLED, compactDeviceSetting)
 
-            accountIcon.text = item.issuer[0].toString()
-            issuer.text = item.issuer
+            lateinit var mfaCode: String
 
-            var assembledLabel = item.account
-            if (item.label.isNotBlank()) assembledLabel = "$assembledLabel (${item.label})"
-            if (item.account.isNotBlank()) accountAndLabel.text = assembledLabel else accountAndLabel.visibility = View.GONE
+            if (compactDevice) {
+                code.visibility = View.VISIBLE
 
-            // Time mode
-            if (item.mode.contains(utilities.MFA_TIME_MODE)) {
-                counterControls.visibility = View.GONE
+                issuer.textSize = 20f
+                accountAndLabel.textSize = 16f
+
+                code.visibility = View.VISIBLE
+
+                mfaCode = utilities.generateTotp(secret=item.secret, algorithm=item.algorithm, digits=item.digits, period=item.period)
+                mfaCode = "${mfaCode.substring(0, mfaCode.length / 2)} ${mfaCode.substring(mfaCode.length / 2)}"
+
+                code.text = mfaCode
+
+                loginInfo.setOnClickListener { clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.app_name), mfaCode.replace(" ", ""))) }
+
+            } else {
+
                 code.visibility = View.GONE
 
+                mfaCode = utilities.generateTotp(secret=item.secret, algorithm=item.algorithm, digits=item.digits, period=item.period)
+                mfaCode = "${mfaCode.substring(0, mfaCode.length / 2)} ${mfaCode.substring(mfaCode.length / 2)}"
+
+                code.text = mfaCode
+
                 loginInfo.setOnClickListener {
-
-                    var mfaCode = utilities.generateTotp(
-                        secret = item.secret,
-                        algorithm = item.algorithm,
-                        digits = item.digits,
-                        period = item.period
-                    )
-
-                    mfaCode = "${mfaCode.substring(0, mfaCode.length / 2)} ${mfaCode.substring(mfaCode.length / 2)}"
-                    code.text = mfaCode
-
                     clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.app_name), mfaCode.replace(" ", "")))
-
-                    code.post {
-                        val cx: Int = code.width / 2
-                        val cy: Int = code.height / 2
-                        val finalRadius = hypot(cx.toDouble(), cy.toDouble()).toFloat()
-                        val anim = ViewAnimationUtils.createCircularReveal(code, cx, cy, 0f, finalRadius)
-                        issuer.visibility = View.GONE
-                        accountAndLabel.visibility = View.GONE
-                        code.visibility = View.VISIBLE
-                        anim.start()
-                    }
 
                     Handler().postDelayed({
                         code.post {
@@ -882,7 +895,36 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
                             anim.start()
                         }
                     }, 3000)
+
+                    code.post {
+                        val cx: Int = code.width / 2
+                        val cy: Int = code.height / 2
+                        val finalRadius = hypot(cx.toDouble(), cy.toDouble()).toFloat()
+                        val anim = ViewAnimationUtils.createCircularReveal(code, cx, cy, 0f, finalRadius)
+                        issuer.visibility = View.GONE
+                        accountAndLabel.visibility = View.GONE
+                        code.visibility = View.VISIBLE
+                        anim.start()
+                    }
+
+
                 }
+
+            }
+
+            accountAndLabel.isSelected = true
+            if (!utilities.db.getBoolean(utilities.SCROLLING_TEXT, true)) accountAndLabel.ellipsize = null
+
+            accountIcon.text = item.issuer[0].toString()
+            issuer.text = item.issuer
+
+            var assembledLabel = item.account
+            if (item.label.isNotBlank()) assembledLabel = "$assembledLabel (${item.label})"
+            if (item.account.isNotBlank()) accountAndLabel.text = assembledLabel else accountAndLabel.visibility = View.GONE
+
+            // Time mode
+            if (item.mode.contains(utilities.MFA_TIME_MODE)) {
+                counterControls.visibility = View.GONE
 
                 progressIndicator.max = item.period
 
@@ -897,10 +939,24 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
                     override fun run() {
                         val second = utilities.second()
                         val tickerValue = (item.period - (second % item.period)) % item.period
+
                         try {
                             progressIndicator.progress = tickerValue
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) progressIndicator.setProgress(tickerValue, true)
                         } catch (_: Exception) { }
+
+                        if (tickerValue == 29) {
+
+                            CoroutineScope(Dispatchers.IO).launch {
+                                mfaCode = utilities.generateTotp(secret=item.secret, algorithm=item.algorithm, digits=item.digits, period=item.period)
+                                mfaCode = "${mfaCode.substring(0, mfaCode.length / 2)} ${mfaCode.substring(mfaCode.length / 2)}"
+                                withContext(Dispatchers.Main) {
+                                    code.text = mfaCode
+                                }
+                            }
+
+                        }
+
                     }
                 }, 0, 1000)
             }
@@ -971,6 +1027,8 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
                     decrementDialog.show((context as AppCompatActivity).supportFragmentManager, "CustomFullscreenDialog")
 
                 }
+
+                code.visibility = View.VISIBLE
 
             }
 

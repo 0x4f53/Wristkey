@@ -17,8 +17,8 @@ android {
         applicationId 'zeroxfourf.wristkey'
         minSdk 23  // Wear OS 2.0 / Android 7.1.1
         targetSdkVersion 33  // Play Store requires API29+
-        versionCode 32
-        versionName "3.0"
+        versionCode 33
+        versionName "3.1"
 
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
