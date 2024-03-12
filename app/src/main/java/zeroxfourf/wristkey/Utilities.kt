@@ -916,7 +916,7 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
             accountAndLabel.isSelected = true
             if (!utilities.db.getBoolean(utilities.SCROLLING_TEXT, true)) accountAndLabel.ellipsize = null
 
-            accountIcon.text = item.issuer[0].toString()
+            accountIcon.text = if (item.issuer.isNotEmpty()) item.issuer[0].toString() else ""
             issuer.text = item.issuer
 
             var assembledLabel = item.account
