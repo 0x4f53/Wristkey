@@ -57,12 +57,7 @@ class QRCodeActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setShape () {
-        if (
-            utilities.db.getBoolean (
-                utilities.CONFIG_SCREEN_ROUND,
-                resources.configuration.isScreenRound
-            )
-        ) {
+        if (resources.configuration.isScreenRound) {
             roundTimeLeft.visibility = View.VISIBLE
             squareTimeLeft.visibility = View.GONE
         } else {
@@ -133,7 +128,7 @@ class QRCodeActivity : AppCompatActivity() {
                 0 -> {
                     state += 1
                     qrCode.imageTintList = ColorStateList.valueOf(Color.parseColor("#818181"))
-                    Toast.makeText(this, "Dimmed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.dimmed), Toast.LENGTH_SHORT).show()
                 }
 
                 1 -> {

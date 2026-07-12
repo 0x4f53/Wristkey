@@ -93,7 +93,7 @@ class ExportActivity : AppCompatActivity() {
     private fun exportViaFile () {
 
         if (logins.isEmpty()) {
-            Toast.makeText(this, "Your vault is empty!", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.vault_empty), Toast.LENGTH_LONG).show()
             finish()
             return
         }
@@ -111,7 +111,7 @@ class ExportActivity : AppCompatActivity() {
         writer.flush()
         writer.close()
 
-        Toast.makeText(this, "Exported Wristkey vault to ${directory.absolutePath}", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, getString(R.string.exported_vault, directory.absolutePath), Toast.LENGTH_LONG).show()
         finish()
 
     }
@@ -120,7 +120,7 @@ class ExportActivity : AppCompatActivity() {
     private fun exportViaQrCodes() {
 
         if (logins.isEmpty()) {
-            Toast.makeText(this, "Your vault is empty!", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.vault_empty), Toast.LENGTH_LONG).show()
             finish()
             return
         }
@@ -144,7 +144,7 @@ class ExportActivity : AppCompatActivity() {
                         loginNumber += 1
                         startActivityForResult (intent, utilities.EXPORT_RESPONSE_CODE)
                     } else {
-                        Toast.makeText(applicationContext, "Done!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, getString(R.string.done_exclamation), Toast.LENGTH_SHORT).show()
                         qrExportButton.performHapticFeedback(HapticFeedbackConstants.REJECT)
                     }
                 }

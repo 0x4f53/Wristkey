@@ -58,7 +58,7 @@ class FileImportActivity : AppCompatActivity() {
         pickFileButton = findViewById (R.id.filePickerButton)
         backButton = findViewById (R.id.backButton)
 
-        isRound = utilities.db.getBoolean (utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)
+        isRound = resources.configuration.isScreenRound
 
         backButton.setOnClickListener {
             backButton.performHapticFeedback(HapticGenerator.SUCCESS)
@@ -126,7 +126,7 @@ class FileImportActivity : AppCompatActivity() {
         storageHelper.storage.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == utilities.FILES_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

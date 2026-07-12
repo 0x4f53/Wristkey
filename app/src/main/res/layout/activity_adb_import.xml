@@ -76,7 +76,7 @@
                 android:layout_gravity="center"
                 android:layout_margin="2.5dp"
                 android:paddingHorizontal="5dp"
-                android:fontFamily="@font/sfmono"
+                android:fontFamily="@font/productsans"
                 android:textSize="12dp"
                 android:gravity="start"
                 android:text="@string/adb_commands"

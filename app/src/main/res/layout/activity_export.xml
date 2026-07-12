@@ -39,7 +39,7 @@
                 android:fontFamily="@font/productsans"
                 android:foregroundGravity="center"
                 android:gravity="center"
-                android:text="Export"
+                android:text="@string/export_label"
                 android:textColor="@color/grayAccents"
                 android:textSize="16dp"
                 android:textStyle="normal" />
@@ -76,7 +76,7 @@
                         android:gravity="center_vertical"
                         android:padding="15dp"
                         android:paddingEnd="15dp"
-                        android:text="Export via QR codes"
+                        android:text="@string/export_via_qr"
                         android:textSize="16dp" />
 
                 </LinearLayout>
@@ -114,7 +114,7 @@
                         android:gravity="center_vertical"
                         android:padding="15dp"
                         android:paddingEnd="15dp"
-                        android:text="Export via file"
+                        android:text="@string/export_via_file"
                         android:textSize="16dp" />
 
                 </LinearLayout>
@@ -152,7 +152,7 @@
                         android:gravity="center_vertical"
                         android:padding="15dp"
                         android:paddingEnd="15dp"
-                        android:text="Back"
+                        android:text="@string/back"
                         android:textSize="16dp" />
 
                 </LinearLayout>

@@ -42,7 +42,7 @@
                 android:foregroundGravity="center"
                 android:gravity="center"
                 android:letterSpacing="0.05"
-                android:text="Send"
+                android:text="@string/send_label"
                 android:textSize="16sp"
                 android:textStyle="normal" />
 
@@ -60,7 +60,7 @@
             <Button
                 android:id="@+id/scanQrCode"
                 style="@style/Wristkey.Button"
-                android:text="Scan code"
+                android:text="@string/scan_code"
                 app:icon="@drawable/ic_baseline_qr_code_scanner_24" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -68,7 +68,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:hint="192.168.xxx.xxx:xxxxx"
+                    android:hint="@string/ip_placeholder"
                     android:maxEms="21"
                 app:startIconDrawable="@drawable/baseline_wifi_24"
                     app:endIconMode="none"
@@ -80,7 +80,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:digits="0123456789:."
-                        android:fontFamily="@font/sfmono"
+                        android:fontFamily="@font/productsans"
                         android:maxLength="21"
                         android:imeOptions="actionDone"
                         android:inputType="textFilter"
@@ -97,7 +97,7 @@
                 style="@style/Wristkey.Button"
                 android:id="@+id/backButton"
                 app:icon="@drawable/ic_prev"
-                android:text="Back" />
+                android:text="@string/back" />
 
         </LinearLayout>
     </ScrollView>

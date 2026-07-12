@@ -234,12 +234,12 @@ class ManualEntryActivity : AppCompatActivity() {
             if (issuerInput.length() <= 1) {
 
                 CustomFullscreenDialogFragment(
-                    title = "Invalid Issuer",
+                    title = getString(R.string.invalid_issuer_title),
                     message = getString(R.string.issuer_empty),
                     positiveButtonText = null,
                     positiveButtonIcon = null,
-                    negativeButtonText = "Go back",
-                    negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                    negativeButtonText = getString(R.string.back),
+                    negativeButtonIcon = R.drawable.ic_prev,
                 ).show(supportFragmentManager, "CustomFullscreenDialog")
 
                 return@setOnClickListener
@@ -248,12 +248,12 @@ class ManualEntryActivity : AppCompatActivity() {
             if (accountInput.length() <= 2) {
 
                 CustomFullscreenDialogFragment(
-                    title = "Invalid Issuer",
+                    title = getString(R.string.invalid_issuer_title),
                     message = getString(R.string.account_empty),
                     positiveButtonText = null,
                     positiveButtonIcon = null,
-                    negativeButtonText = "Go back",
-                    negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                    negativeButtonText = getString(R.string.back),
+                    negativeButtonIcon = R.drawable.ic_prev,
                 ).show(supportFragmentManager, "CustomFullscreenDialog")
 
                 return@setOnClickListener
@@ -262,12 +262,12 @@ class ManualEntryActivity : AppCompatActivity() {
             if (secretInput.length() <= 7) {
 
                 CustomFullscreenDialogFragment(
-                    title = "Invalid Issuer",
+                    title = getString(R.string.invalid_issuer_title),
                     message = getString(R.string.secret_empty),
                     positiveButtonText = null,
                     positiveButtonIcon = null,
-                    negativeButtonText = "Go back",
-                    negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                    negativeButtonText = getString(R.string.back),
+                    negativeButtonIcon = R.drawable.ic_prev,
                 ).show(supportFragmentManager, "CustomFullscreenDialog")
 
                 return@setOnClickListener
@@ -300,12 +300,12 @@ class ManualEntryActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             if (secretInput.text!!.isNotEmpty() || issuerInput.text!!.isNotEmpty() || labelInput.text!!.isNotEmpty()) {
                 val dialog = CustomFullscreenDialogFragment(
-                    title = "Go back",
+                    title = getString(R.string.back),
                     message = getString(R.string.go_back),
-                    positiveButtonText = "Keep editing",
-                    positiveButtonIcon = getDrawable(R.drawable.ic_baseline_edit_24),
-                    negativeButtonText = "Go back",
-                    negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                    positiveButtonText = getString(R.string.keep_editing),
+                    positiveButtonIcon = R.drawable.ic_baseline_edit_24,
+                    negativeButtonText = getString(R.string.back),
+                    negativeButtonIcon = R.drawable.ic_prev,
                 )
                 dialog.setOnNegativeClickListener { finish() }
                 dialog.show(supportFragmentManager, "CustomFullscreenDialog")
@@ -345,12 +345,12 @@ class ManualEntryActivity : AppCompatActivity() {
 
         deleteButton.setOnClickListener {
             val deleteDialog = CustomFullscreenDialogFragment(
-                title = "Delete \"${login.issuer}\"",
+                title = getString(R.string.delete_issuer_title, login.issuer),
                 message = getString(R.string.delete),
-                positiveButtonText = "Delete",
-                positiveButtonIcon = getDrawable(R.drawable.ic_outline_delete_24)!!,
-                negativeButtonText = "Go back",
-                negativeButtonIcon = getDrawable(R.drawable.ic_prev)!!,
+                positiveButtonText = getString(R.string.delete_label),
+                positiveButtonIcon = R.drawable.ic_outline_delete_24,
+                negativeButtonText = getString(R.string.back),
+                negativeButtonIcon = R.drawable.ic_prev,
             )
 
             deleteDialog.setOnPositiveClickListener {

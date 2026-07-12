@@ -1,7 +1,6 @@
 package zeroxfourf.wristkey
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
@@ -16,40 +15,56 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.foundation.lazy.AutoCenteringParams
 import androidx.wear.compose.material3.*
-import com.google.android.wearable.intent.RemoteIntent
 import wristkey.R
 
-class DonateActivity : AppCompatActivity() {
+class DeveloperOptionsActivity : AppCompatActivity() {
+
+    private lateinit var utilities: Utilities
+    private var dataGenerated = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        utilities = Utilities(applicationContext)
 
         setContent {
             WristkeyM3Theme {
                 AppScaffold(
                     timeText = { TimeText() }
                 ) {
-                    DonateScreen(
-                        onBackClick = { finish() }
+                    DeveloperOptionsScreen(
+                        utilities = utilities,
+                        onBackClick = { finish() },
+                        onDataGenerated = { dataGenerated = true }
                     )
                 }
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (dataGenerated) {
+            val intent = Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            startActivity(intent)
+        }
+    }
 }
 
 @Composable
-fun DonateScreen(
-    onBackClick: () -> Unit
+fun DeveloperOptionsScreen(
+    utilities: Utilities,
+    onBackClick: () -> Unit,
+    onDataGenerated: () -> Unit
 ) {
-    val context = LocalContext.current
     val listState = rememberScalingLazyListState()
+    val context = LocalContext.current
     val amoled = LocalAmoledEnabled.current
 
     ScreenScaffold(
@@ -86,37 +101,26 @@ fun DonateScreen(
         ) {
             item {
                 Text(
-                    text = stringResource(R.string.donate_label),
+                    text = stringResource(R.string.developer_options),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            item {
-                Text(
-                    text = stringResource(R.string.donation_message),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 10.dp)
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
 
             item {
                 Button(
                     onClick = {
-                        val uri = context.getString(R.string.donation_uri)
-                        val intent = Intent(Intent.ACTION_VIEW)
-                            .addCategory(Intent.CATEGORY_BROWSABLE)
-                            .setData(Uri.parse(uri))
-                        RemoteIntent.startRemoteActivity(context, intent, null)
-                        Toast.makeText(context, context.getString(R.string.opening_donation_page), Toast.LENGTH_SHORT).show()
-                        try {
-                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
-                            context.startActivity(browserIntent)
-                        } catch (_: Exception) { }
+                        val services = listOf("Google", "GitHub", "Microsoft", "Amazon", "Discord", "Facebook", "Twitter", "Reddit", "LinkedIn", "Dropbox")
+                        val fakeAccounts = mutableListOf<String>()
+                        for (i in 1..25) {
+                            val service = services.random()
+                            val secret = utilities.randomString(16)
+                            fakeAccounts.add("otpauth://totp/$service:user$i@example.com?secret=$secret&issuer=$service")
+                        }
+                        fakeAccounts.forEach { utilities.overwriteLogin(it) }
+                        onDataGenerated()
+                        Toast.makeText(context, context.getString(R.string.fake_accounts_generated), Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier.fillMaxWidth().height(50.dp),
                     shape = CircleShape,
@@ -126,14 +130,14 @@ fun DonateScreen(
                         contentColor = if (amoled) Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Icon(painterResource(R.drawable.outline_attach_money_24), contentDescription = null, tint = Color.White)
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(stringResource(R.string.donate_label), style = MaterialTheme.typography.labelMedium, maxLines = 2, softWrap = true)
-                    }
+                    Text(
+                        text = stringResource(R.string.generate_fake_accounts),
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        maxLines = 2,
+                        softWrap = true
+                    )
                 }
             }
         }

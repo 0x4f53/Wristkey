@@ -66,7 +66,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
                     android:letterSpacing="0.05"
-                    android:text="Search"
+                    android:text="@string/search_label"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     android:ellipsize="marquee"
@@ -102,7 +102,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
                     android:letterSpacing="0.05"
-                    android:text="Clock"
+                    android:text="@string/clock_label"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     android:ellipsize="marquee"
@@ -138,7 +138,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
                     android:letterSpacing="0.05"
-                    android:text="App lock"
+                    android:text="@string/app_locked"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     android:ellipsize="marquee"
@@ -174,7 +174,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
                     android:letterSpacing="0.05"
-                    android:text="Round device"
+                    android:text="@string/round_device"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     android:ellipsize="marquee"
@@ -210,7 +210,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/productsans"
                     android:letterSpacing="0.05"
-                    android:text="Scrolling Text"
+                    android:text="@string/scrolling_text"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     android:ellipsize="marquee"
@@ -251,7 +251,7 @@
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
-                    android:text="Compact view"
+                    android:text="@string/compact_view"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
@@ -288,7 +288,7 @@
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
-                    android:text="Concealed view"
+                    android:text="@string/concealed_view"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
@@ -303,19 +303,13 @@
             <Button
                 android:id="@+id/aboutButton"
                 style="@style/Wristkey.Button"
-                android:text="About Wristkey"
-                app:icon="@drawable/ic_outline_info_24" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="15dp"
-                android:layout_gravity="center_horizontal" />
+                android:text="@string/about_wristkey" />
 
             <Button
                 android:id="@+id/backButton"
                 style="@style/Wristkey.Button"
                 app:icon="@drawable/ic_prev"
-                android:text="Back" />
+                android:text="@string/back" />
 
         </LinearLayout>
     </ScrollView>

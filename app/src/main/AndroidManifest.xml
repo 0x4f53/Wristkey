@@ -46,12 +46,12 @@
         <activity
             android:name="zeroxfourf.wristkey.MainActivity"
             android:label="@string/app_name"
+            android:theme="@style/Theme.App.Starting"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name="zeroxfourf.wristkey.QRCodeActivity"
@@ -92,6 +92,14 @@
         <activity
             android:name="zeroxfourf.wristkey.SettingsActivity"
             android:label="Settings" />
+
+        <activity
+            android:name="zeroxfourf.wristkey.DeveloperOptionsActivity"
+            android:label="Developer Options" />
+
+        <activity
+            android:name="zeroxfourf.wristkey.ViewTypeActivity"
+            android:label="View Type" />
 
     </application>
 

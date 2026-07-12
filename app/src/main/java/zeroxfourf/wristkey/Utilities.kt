@@ -76,6 +76,103 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.hypot
 
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.wear.compose.material3.ColorScheme
+import androidx.wear.compose.material3.MaterialTheme
+import androidx.wear.compose.material3.Typography
+
+val LocalAmoledEnabled = staticCompositionLocalOf { false }
+
+@Composable
+fun WristkeyM3Theme(
+    accentColor: Color? = null,
+    isAmoled: Boolean? = null,
+    content: @Composable () -> Unit
+) {
+    val context = LocalContext.current
+    val utilities = remember { Utilities(context) }
+    val themeColor = remember(accentColor) { 
+        accentColor ?: Color(utilities.db.getInt(utilities.SETTINGS_ACCENT_COLOR, Color(0xFFA970FF).toArgb()))
+    }
+    
+    val amoledEnabled = remember(isAmoled) {
+        isAmoled ?: utilities.db.getBoolean(utilities.SETTINGS_AMOLED_ENABLED, false)
+    }
+
+    val isLight = themeColor.luminance() > 0.45f
+    val onPrimaryColor = if (isLight) Color.Black else Color.White
+
+    val productSansFamily = FontFamily(
+        Font(R.font.productsans)
+    )
+
+    val defaultTypography = Typography()
+    val typography = Typography(
+        displayLarge = defaultTypography.displayLarge.copy(fontFamily = productSansFamily),
+        displayMedium = defaultTypography.displayMedium.copy(fontFamily = productSansFamily),
+        displaySmall = defaultTypography.displaySmall.copy(fontFamily = productSansFamily),
+        titleLarge = defaultTypography.titleLarge.copy(fontFamily = productSansFamily),
+        titleMedium = defaultTypography.titleMedium.copy(fontFamily = productSansFamily),
+        titleSmall = defaultTypography.titleSmall.copy(fontFamily = productSansFamily),
+        bodyLarge = defaultTypography.bodyLarge.copy(fontFamily = productSansFamily),
+        bodyMedium = defaultTypography.bodyMedium.copy(fontFamily = productSansFamily),
+        bodySmall = defaultTypography.bodySmall.copy(fontFamily = productSansFamily),
+        labelLarge = defaultTypography.labelLarge.copy(fontFamily = productSansFamily),
+        labelMedium = defaultTypography.labelMedium.copy(fontFamily = productSansFamily),
+        labelSmall = defaultTypography.labelSmall.copy(fontFamily = productSansFamily)
+    )
+
+    val colorScheme = if (amoledEnabled) {
+        ColorScheme(
+            primary = themeColor,
+            onPrimary = Color.White,
+            primaryContainer = Color.Transparent,
+            onPrimaryContainer = Color.White,
+            secondaryContainer = Color.Transparent,
+            onSecondaryContainer = Color.White,
+            background = Color.Black,
+            onBackground = Color.White,
+            surfaceContainer = Color.Transparent,
+            onSurface = Color.White,
+            onSurfaceVariant = Color.Gray,
+            surfaceContainerLow = Color.Black
+        )
+    } else {
+        ColorScheme(
+            primary = themeColor,
+            onPrimary = onPrimaryColor,
+            primaryContainer = themeColor.copy(alpha = 0.25f),
+            onPrimaryContainer = Color.White,
+            secondaryContainer = Color(0xFF2C2C2C),
+            onSecondaryContainer = Color.White,
+            background = Color.Black,
+            onBackground = Color.White,
+            surfaceContainer = Color(0xFF1C1C1C),
+            onSurface = Color.White,
+            onSurfaceVariant = Color.Gray,
+            surfaceContainerLow = themeColor.copy(alpha = 0.25f).compositeOver(Color.Black)
+        )
+    }
+
+    CompositionLocalProvider(LocalAmoledEnabled provides amoledEnabled) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = typography,
+            content = content
+        )
+    }
+}
+
 @RequiresApi(Build.VERSION_CODES.M)
 class Utilities (context: Context) {
 
@@ -110,8 +207,9 @@ class Utilities (context: Context) {
     val SETTINGS_CLOCK_ENABLED = "SETTINGS_CLOCK_ENABLED"
     val SETTINGS_COMPACT_ENABLED = "SETTINGS_COMPACT_ENABLED"
     val SETTINGS_CONCEALED_ENABLED = "SETTINGS_CONCEALED_ENABLED"
-    val CONFIG_SCREEN_ROUND = "CONFIG_SCREEN_ROUND"
-    val SCROLLING_TEXT = "SCROLLING_TEXT"
+    val SETTINGS_VIEW_TYPE = "SETTINGS_VIEW_TYPE"
+    val SETTINGS_RECENTS_ENABLED = "SETTINGS_RECENTS_ENABLED"
+    val SETTINGS_AMOLED_ENABLED = "SETTINGS_AMOLED_ENABLED"
     val SETTINGS_LOCK_ENABLED = "SETTINGS_LOCK_ENABLED"
 
     val DATA_STORE = "DATA_STORE"
@@ -222,7 +320,7 @@ class Utilities (context: Context) {
             val result = reader.decode(bitmap)
             result.text
         } catch (e: Exception) {
-            "No data found"
+            context.getString(R.string.no_data_found)
         }
 
         return contents
@@ -290,7 +388,7 @@ class Utilities (context: Context) {
                         logins.add (
                             MfaCode(
                                 mode = "totp",
-                                issuer = issuer.ifBlank { "Unknown issuer" },
+                                issuer = issuer.ifBlank { context.getString(R.string.unknown_issuer) },
                                 account = username.ifBlank { "" },
                                 secret = totp,
                                 algorithm = ALGO_SHA1,
@@ -652,6 +750,17 @@ class Utilities (context: Context) {
         return SimpleDateFormat("s", Locale.getDefault()).format(Date()).toInt()
     }
 
+    fun appVersion(): String {
+        val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0L))
+        } else {
+            @Suppress("DEPRECATION")
+            context.packageManager.getPackageInfo(context.packageName, 0)
+        }
+
+        return packageInfo.versionName ?: "Unknown"
+    }
+
 
 }
 
@@ -914,7 +1023,6 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
             }
 
             accountAndLabel.isSelected = true
-            if (!utilities.db.getBoolean(utilities.SCROLLING_TEXT, true)) accountAndLabel.ellipsize = null
 
             accountIcon.text = if (item.issuer.isNotEmpty()) item.issuer[0].toString() else ""
             issuer.text = item.issuer
@@ -976,12 +1084,12 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
 
                 plus.setOnClickListener {
                     val incrementDialog = CustomFullscreenDialogFragment(
-                        title = "Increment",
-                        message = "Increment ${item.issuer} from\n${item.counter} to ${item.counter+1}?",
-                        positiveButtonText =  "Increment",
-                        positiveButtonIcon = context.getDrawable(R.drawable.ic_add_white_24dp)!!,
-                        negativeButtonText = "Go back",
-                        negativeButtonIcon = context.getDrawable(R.drawable.ic_prev)!!,
+                        title = context.getString(R.string.increment),
+                        message = "${context.getString(R.string.increment)} ${item.issuer} from\n${item.counter} to ${item.counter+1}?",
+                        positiveButtonText =  context.getString(R.string.increment),
+                        positiveButtonIcon = R.drawable.ic_add_white_24dp,
+                        negativeButtonText = context.getString(R.string.back),
+                        negativeButtonIcon = R.drawable.ic_prev,
                     )
 
                     incrementDialog.setOnPositiveClickListener {
@@ -1004,12 +1112,12 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
                 minus.setOnClickListener {
 
                     val decrementDialog = CustomFullscreenDialogFragment(
-                        title = "Decrement",
-                        message = "Decrement ${item.issuer} from\n${item.counter} to ${item.counter-1}?",
-                        positiveButtonText =  "Decrement",
-                        positiveButtonIcon = context.getDrawable(R.drawable.ic_prev_selector)!!,
-                        negativeButtonText = "Go back",
-                        negativeButtonIcon = context.getDrawable(R.drawable.ic_prev)!!,
+                        title = context.getString(R.string.decrement),
+                        message = "${context.getString(R.string.decrement)} ${item.issuer} from\n${item.counter} to ${item.counter-1}?",
+                        positiveButtonText =  context.getString(R.string.decrement),
+                        positiveButtonIcon = R.drawable.ic_prev_selector,
+                        negativeButtonText = context.getString(R.string.back),
+                        negativeButtonIcon = R.drawable.ic_prev,
                     )
 
                     decrementDialog.setOnPositiveClickListener {
@@ -1037,7 +1145,7 @@ class LoginsAdapter(private var data: MutableList<Utilities.MfaCode>, val timer:
     }
 }
 
-class Server(port: Int, val responseString: String) : NanoHTTPD(port) {
+class Server(val context: Context, port: Int, val responseString: String) : NanoHTTPD(port) {
     var encryptedVault: String = ""
     var deviceName: String = ""
     override fun serve(session: NanoHTTPD.IHTTPSession): Response {
@@ -1046,11 +1154,11 @@ class Server(port: Int, val responseString: String) : NanoHTTPD(port) {
             try {
                 session.parseBody(files)
             } catch (ioe: IOException) {
-                return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "Server Internal Error")
+                return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, context.getString(R.string.server_internal_error))
             } catch (re: ResponseException) {
                 return newFixedLengthResponse(re.status, MIME_PLAINTEXT, re.message)
             }
-            val data = files["postData"] ?: "No POST body received"
+            val data = files["postData"] ?: context.getString(R.string.no_post_body)
             // Log.d("Wristkey-Transfer Log", data)
             if (data.contains("encryptedVault")) {
                 encryptedVault = JSONObject(data)["encryptedVault"] as String
@@ -1058,6 +1166,6 @@ class Server(port: Int, val responseString: String) : NanoHTTPD(port) {
             }
             return newFixedLengthResponse(Response.Status.OK, "text/plain", responseString)
         }
-        return newFixedLengthResponse("This server only handles POST requests.")
+        return newFixedLengthResponse(context.getString(R.string.only_post_requests))
     }
 }
