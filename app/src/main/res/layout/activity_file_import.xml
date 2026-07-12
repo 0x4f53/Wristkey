@@ -46,7 +46,7 @@
                 android:letterSpacing="0.05"
                 android:textColor="@color/grayAccents"
                 android:textSize="16sp"
-                android:text="Import from file" />
+                android:text="@string/import_from_file" />
 
             <TextView
                 android:id="@+id/description"
@@ -68,7 +68,7 @@
                 android:id="@+id/filePickerButton"
                 style="@style/Wristkey.Button"
                 app:icon="@drawable/outline_attach_file_24"
-                android:text="Pick file" />
+                android:text="@string/pick_file" />
 
             <View
                 android:layout_width="0dp"
@@ -79,7 +79,7 @@
                 android:id="@+id/backButton"
                 app:icon="@drawable/ic_prev"
                 style="@style/Wristkey.Button"
-                android:text="Back" />
+                android:text="@string/back" />
 
         </LinearLayout>
     </ScrollView>

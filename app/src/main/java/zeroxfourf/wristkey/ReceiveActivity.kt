@@ -115,7 +115,7 @@ class ReceiveActivity : AppCompatActivity() {
 
         receiverServerURL = "http://$receiverIP:$receiverPort"
 
-        receiverServer = Server(receiverPort, """{"deviceName":"${utilities.deviceName()}", "publicKey":"${receiverKeyPair.publicKey.asHexString}"}""".trimIndent())
+        receiverServer = Server(applicationContext, receiverPort, """{"deviceName":"${utilities.deviceName()}", "publicKey":"${receiverKeyPair.publicKey.asHexString}"}""".trimIndent())
         receiverServer.start()
 
         val cipherTextListenerTimer = Timer()
@@ -127,7 +127,7 @@ class ReceiveActivity : AppCompatActivity() {
                     val decryptedVault = utilities.fromBase64(decryptedBase64String)
                     receiverServer.encryptedVault
                     runOnUiThread {
-                        Toast.makeText(this@ReceiveActivity, "Received data from ${receiverServer.deviceName}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ReceiveActivity, getString(R.string.received_data_from, receiverServer.deviceName), Toast.LENGTH_SHORT).show()
                         utilities.db.edit().remove(utilities.DATA_STORE).apply()
                         utilities.db.edit().putString(utilities.DATA_STORE, decryptedVault).apply()
 

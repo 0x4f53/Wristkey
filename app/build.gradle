@@ -1,22 +1,22 @@
 plugins {
-    id 'kotlin-android'
     id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
 }
 
-apply plugin: 'com.android.application'
-
 android {
-    compileSdk 34
-
+    compileSdk 35
     packagingOptions {
-        exclude 'META-INF/INDEX.LIST'
-        exclude 'META-INF/io.netty.versions.properties'
+        resources {
+            excludes += ['META-INF/INDEX.LIST', 'META-INF/io.netty.versions.properties']
+        }
     }
+
 
     defaultConfig {
         applicationId 'zeroxfourf.wristkey'
-        minSdk 23  // Wear OS 2.0 / Android 7.1.1
-        targetSdkVersion 33  // Play Store requires API29+
+        minSdk 25
+        targetSdkVersion 33
         versionCode 33
         versionName "3.1"
 
@@ -33,14 +33,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
     buildFeatures {
         viewBinding true
+        compose true
     }
     ndkVersion '21.4.7075529'
     lint {
@@ -87,6 +88,19 @@ dependencies {
     implementation "com.goterl:lazysodium-android:5.1.0@aar"
     implementation "net.java.dev.jna:jna:5.8.0@aar"
     implementation "com.squareup.okhttp3:okhttp:4.9.0"
-    implementation "com.goterl:lazysodium-android:VERSION_NUMBER@aar"
-    implementation "net.java.dev.jna:jna:5.8.0@aar"
+    implementation 'androidx.core:core-splashscreen:1.0.1'
+
+    // Wear OS Compose
+    implementation "androidx.compose.ui:ui:1.5.4"
+    implementation "androidx.compose.foundation:foundation:1.5.4"
+    implementation "androidx.compose.animation:animation:1.5.4"
+    implementation "androidx.wear.compose:compose-material:1.2.1"
+    implementation "androidx.wear.compose:compose-material3:1.6.2"
+    implementation "androidx.wear.compose:compose-foundation:1.2.1"
+    implementation "androidx.compose.ui:ui-tooling-preview:1.5.4"
+    implementation 'androidx.activity:activity-compose:1.8.2'
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.10.0"
+
+    // Company/Brand Icons
+    implementation "br.com.devsrsouza.compose.icons:simple-icons:1.1.1"
 }

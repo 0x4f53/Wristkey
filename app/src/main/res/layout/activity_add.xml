@@ -46,37 +46,37 @@
                 android:letterSpacing="0.05"
                 android:textColor="@color/grayAccents"
                 android:textSize="16sp"
-                android:text="Add data" />
+                android:text="@string/add_data" />
 
             <Button
                 android:id="@+id/scanQrCode"
                 style="@style/Wristkey.Button"
                 app:icon="@drawable/ic_baseline_qr_code_scanner_24"
-                android:text="Scan code" />
+                android:text="@string/scan_code" />
 
             <Button
                 android:id="@+id/manualEntry"
                 style="@style/Wristkey.Button"
                 app:icon="@drawable/ic_baseline_edit_24"
-                android:text="Manual entry" />
+                android:text="@string/manual_entry" />
 
             <Button
                 android:id="@+id/wifiTransfer"
                 style="@style/Wristkey.Button"
                 app:icon="@drawable/baseline_wifi_24"
-                android:text="Wi-Fi transfer" />
+                android:text="@string/wifi_transfer" />
 
             <Button
                 android:id="@+id/fileImport"
                 style="@style/Wristkey.Button"
-                android:text="Import from file"
+                android:text="@string/import_from_file"
                 app:icon="@drawable/ic_outline_insert_drive_file_24" />
 
             <Button
                 android:id="@+id/adbTransfer"
                 style="@style/Wristkey.Button"
                 app:icon="@drawable/baseline_usb_24"
-                android:text="Import via ADB" />
+                android:text="@string/import_via_adb" />
 
             <View
                 android:layout_width="0dp"
@@ -87,7 +87,7 @@
                 android:id="@+id/backButton"
                 app:icon="@drawable/ic_prev"
                 style="@style/Wristkey.Button"
-                android:text="Back" />
+                android:text="@string/back" />
 
         </LinearLayout>
     </ScrollView>

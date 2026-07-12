@@ -11,7 +11,8 @@
     <color name="darkDemo">#433939</color>
     <color name="grayDemo">#5C5C5C</color>
 
-    <color name="darkTheme">#000000</color>
+    <color name="darkTheme">#1C1C1C</color>
+    <color name="black">#000000</color>
     <color name="grayTheme">#192835</color>
     <color name="lightTheme">#FFFFFF</color>
 

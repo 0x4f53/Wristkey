@@ -16,6 +16,8 @@
     <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_add">AddActivity</string>
 
+    <string name="version_template">v%1$s</string>
+
     <string name="use_adb_blurb">You can use the file picker, ADB or a file transfer app for this.</string>
 
     <string name="next">Next</string>
@@ -43,10 +45,10 @@
 
     <string name="donation_uri">https://github.com/0x4f53/0x4f53/blob/main/README.md</string>
 
-    <string name="copyright">Copyright © 2023 Owais Shaikh\n(me@0x4f.in)
-\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+    <string name="copyright">Copyright © 2023 Owais Shaikh\n(owais@0x4f.in)
+\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 \n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     </string>
     <string name="settings_label">Settings</string>
     <string name="wifi_error">Can\'t connect to Wi-Fi network. Go to your device settings and connect to one before continuing.\n\nIf your device doesn\'t support Wi-Fi, try using the ADB transfer method instead.</string>
@@ -68,4 +70,107 @@
     <string name="qrCode_content_description_receiver">Scan this QR Code or enter the IP address shown below it.</string>
 
     <string name="tile_description">View up to 4 2FA codes instantly. To change what tiles appear, open the Wristkey app on your watch and drag to reorder.</string>
+
+    <!-- Newly added strings -->
+    <string name="add_item">Add Item</string>
+    <string name="issuer">Issuer</string>
+    <string name="secret">Secret</string>
+    <string name="account">Account</string>
+    <string name="label">Label</string>
+    <string name="mode">Mode</string>
+    <string name="time">Time</string>
+    <string name="counter">Counter</string>
+    <string name="count">Count</string>
+    <string name="validity">Validity</string>
+    <string name="algorithm">Algorithm</string>
+    <string name="sha1">SHA-1</string>
+    <string name="sha256">SHA-256</string>
+    <string name="sha512">SHA-512</string>
+    <string name="digits">Digits</string>
+    <string name="digits_4">4 digits</string>
+    <string name="digits_6">6 digits</string>
+    <string name="digits_8">8 digits</string>
+    <string name="delete_label">Delete</string>
+    <string name="done">Done</string>
+    <string name="back">Back</string>
+    <string name="search_bar">Search Bar</string>
+    <string name="status_clock">Status Clock</string>
+    <string name="security_lock">Security Lock</string>
+    <string name="round_screen">Round Screen</string>
+    <string name="marquee_text">Marquee Text</string>
+    <string name="compact_mode">Compact Mode</string>
+    <string name="about_wristkey">About Wristkey</string>
+    <string name="add_data">Add data</string>
+    <string name="search_label">Search</string>
+    <string name="app_locked">App locked</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="manual">Manual</string>
+    <string name="wifi">WiFi</string>
+    <string name="qr">QR</string>
+    <string name="file">File</string>
+    <string name="adb">ADB</string>
+    <string name="reading_data">Reading data</string>
+    <string name="error">Error</string>
+    <string name="import_from_file">Import from file</string>
+    <string name="open_repo_url">Opening repository URL</string>
+    <string name="source_code">Source Code</string>
+    <string name="with_text">With </string>
+    <string name="by_owais"> by Owais</string>
+    <string name="view_license">View License</string>
+    <string name="license_label">License</string>
+    <string name="mit_license">MIT License</string>
+    <string name="network_error">Network error</string>
+    <string name="camera_permission_denied">Please grant camera permissions in settings</string>
+    <string name="storage_permission_denied">Please grant Wristkey storage permissions in settings</string>
+    <string name="no_data_found">No data found</string>
+    <string name="unknown_issuer">Unknown issuer</string>
+    <string name="increment">Increment</string>
+    <string name="decrement">Decrement</string>
+    <string name="no_post_body">No POST body received</string>
+    <string name="server_internal_error">Server Internal Error</string>
+    <string name="only_post_requests">This server only handles POST requests.</string>
+    <string name="clock_label">Clock</string>
+    <string name="round_device">Round device</string>
+    <string name="scrolling_text">Scrolling Text</string>
+    <string name="compact_view">Compact view</string>
+    <string name="concealed_view">Concealed view</string>
+    <string name="enable_lock_toast">Enable screen lock in device settings first!</string>
+    <string name="app_icon">App Icon</string>
+    <string name="manual_entry">Manual Entry</string>
+    <string name="wifi_transfer">WiFi Transfer</string>
+    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="file_import">File Import</string>
+    <string name="adb_transfer_label">ADB Transfer</string>
+    <string name="imported_accounts">Imported %1$d account(s)!</string>
+    <string name="couldnt_access_file">Couldn\'t access file.</string>
+    <string name="invalid_file">Invalid file. Please follow the instructions on the previous screen.</string>
+    <string name="no_data_found_in_file">No data found in file. It may be corrupt or may have no 2FA secrets in it.</string>
+    <string name="transfer_complete">Transfer complete!</string>
+    <string name="invalid_issuer_title">Invalid Issuer</string>
+    <string name="keep_editing">Keep editing</string>
+    <string name="delete_issuer_title">Delete \"%1$s\"</string>
+    <string name="opening_donation_page">Opening GitHub donation page</string>
+    <string name="sending_to">Sending to %1$s</string>
+    <string name="send_label">Send</string>
+    <string name="receive_label">Receive</string>
+    <string name="scan_code">Scan code</string>
+    <string name="ip_placeholder">192.168.xxx.xxx:xxxxx</string>
+    <string name="received_data_from">Received data from %1$s</string>
+    <string name="dimmed">Dimmed</string>
+    <string name="vault_empty">Your vault is empty!</string>
+    <string name="exported_vault">Exported Wristkey vault to %1$s</string>
+    <string name="done_exclamation">Done!</string>
+    <string name="export_label">Export</string>
+    <string name="export_via_qr">Export via QR codes</string>
+    <string name="export_via_file">Export via file</string>
+    <string name="pick_file">Pick file</string>
+    <string name="import_via_adb">Import via ADB</string>
+    <string name="developer_options">Developer Options</string>
+    <string name="layout_type">Layout</string>
+    <string name="view_type_list">List</string>
+    <string name="view_type_dash">Dash</string>
+    <string name="view_type_bubbles">Bubbles</string>
+    <string name="favorites_section">Favorites</string>
+    <string name="generate_fake_accounts">Generate Fake Accounts</string>
+    <string name="fake_accounts_generated">Generated 25 fake accounts</string>
 </resources>

@@ -65,7 +65,7 @@ class AdbImportActivity : AppCompatActivity() {
 
         backButton = findViewById (R.id.backButton)
 
-        isRound = utilities.db.getBoolean (utilities.CONFIG_SCREEN_ROUND, resources.configuration.isScreenRound)
+        isRound = resources.configuration.isScreenRound
 
         backButton.setOnClickListener {
             backButton.performHapticFeedback(HapticGenerator.SUCCESS)
@@ -80,10 +80,7 @@ class AdbImportActivity : AppCompatActivity() {
     }
 
     private fun setShape() {
-        isRound = utilities.db.getBoolean(
-            utilities.CONFIG_SCREEN_ROUND,
-            resources.configuration.isScreenRound
-        )
+        isRound = resources.configuration.isScreenRound
         if (isRound) {
             progressRound.visibility = View.VISIBLE
             progress.visibility = View.GONE
@@ -135,13 +132,13 @@ class AdbImportActivity : AppCompatActivity() {
         storageHelper.storage.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == utilities.FILES_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 readData(null)
             } else {
-                Toast.makeText(this@AdbImportActivity, "Please grant Wristkey storage permissions in settings", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@AdbImportActivity, getString(R.string.storage_permission_denied), Toast.LENGTH_LONG).show()
                 val intent = Intent (android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 intent.data = Uri.parse("package:$packageName")
                 startActivity(intent)
@@ -173,11 +170,11 @@ class AdbImportActivity : AppCompatActivity() {
 
         val doneButton: Button = findViewById(R.id.doneButton)
 
-        description.text = "Reading data"
+        description.text = getString(R.string.reading_data)
         doneButton.visibility = View.GONE
 
         fun setNegative(message: String) {
-            title.text = "Error"
+            title.text = getString(R.string.error)
             description.text = message
 
             progress.visibility = View.GONE
@@ -185,7 +182,7 @@ class AdbImportActivity : AppCompatActivity() {
             doneButton.visibility = View.VISIBLE
 
             doneButton.setCompoundDrawablesWithIntrinsicBounds (getDrawable(R.drawable.ic_prev)!!, null, null, null)
-            doneButton.text = "Go back"
+            doneButton.text = getString(R.string.back)
             doneButton.setOnClickListener { finish() }
         }
 
@@ -201,8 +198,8 @@ class AdbImportActivity : AppCompatActivity() {
                     withContext(Dispatchers.IO) { file.close() }
                     if (logins.isEmpty()) throw NoSuchFieldException()
                     withContext(Dispatchers.Main) {
-                        title.text = "Import from file"
-                        description.text = "Imported ${logins.size} account(s)!"
+                        title.text = getString(R.string.import_from_file)
+                        description.text = getString(R.string.imported_accounts, logins.size)
                         description.append("\n\n")
                         for ((index, login) in logins.withIndex()) description.append("${if (index != 0) " ⋅ " else ""}${login.issuer}")
                         progress.visibility = View.GONE
@@ -216,11 +213,11 @@ class AdbImportActivity : AppCompatActivity() {
                         }
                     }
                 } catch (noDirectory: NullPointerException) {
-                    withContext(Dispatchers.Main) { setNegative("Couldn't access file.") }
+                    withContext(Dispatchers.Main) { setNegative(getString(R.string.couldnt_access_file)) }
                 } catch (invalidFile: JSONException) {
-                    withContext(Dispatchers.Main) { setNegative("Invalid file. Please follow the instructions on the previous screen.") }
+                    withContext(Dispatchers.Main) { setNegative(getString(R.string.invalid_file)) }
                 } catch (noData: NoSuchFieldException) {
-                    withContext(Dispatchers.Main) { setNegative("No data found in file. It may be corrupt or may have no 2FA secrets in it.") }
+                    withContext(Dispatchers.Main) { setNegative(getString(R.string.no_data_found_in_file)) }
                 }
             }
         }

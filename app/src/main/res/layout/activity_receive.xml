@@ -42,7 +42,7 @@
                 android:foregroundGravity="center"
                 android:gravity="center"
                 android:letterSpacing="0.05"
-                android:text="Receive"
+                android:text="@string/receive_label"
                 android:textSize="16sp"
                 android:textStyle="normal" />
 
@@ -70,8 +70,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:fontFamily="@font/sfmono"
-                android:text="192.168.xxx.xxx:xxxxx" />
+                android:fontFamily="@font/productsans"
+                android:text="@string/ip_placeholder" />
 
             <View
                 android:layout_width="0dp"
@@ -82,7 +82,7 @@
                 style="@style/Wristkey.Button"
                 android:id="@+id/backButton"
                 app:icon="@drawable/ic_prev"
-                android:text="Back" />
+                android:text="@string/back" />
 
         </LinearLayout>
     </ScrollView>

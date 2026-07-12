@@ -42,7 +42,7 @@
                 android:foregroundGravity="center"
                 android:gravity="center"
                 android:letterSpacing="0.05"
-                android:text="WiFi Transfer"
+                android:text="@string/wifi_transfer"
                 android:textSize="16dp"
                 android:textStyle="normal" />
 
@@ -65,13 +65,13 @@
                 android:id="@+id/send"
                 app:icon="@drawable/baseline_file_upload_24"
                 style="@style/Wristkey.Button"
-                android:text="Send"/>
+                android:text="@string/send_label"/>
 
             <Button
                 android:id="@+id/receive"
                 style="@style/Wristkey.Button"
                 app:icon="@drawable/baseline_file_download_24"
-                android:text="Receive" />
+                android:text="@string/receive_label" />
 
             <View
                 android:layout_width="0dp"
@@ -82,7 +82,7 @@
                 android:id="@+id/backButton"
                 style="@style/Wristkey.Button"
                 app:icon="@drawable/ic_prev"
-                android:text="Back" />
+                android:text="@string/back" />
 
         </LinearLayout>
     </ScrollView>

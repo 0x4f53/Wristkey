@@ -149,7 +149,7 @@ class SendActivity : AppCompatActivity() {
             } else {
                 AlertDialog.Builder(this@SendActivity)
                     .setMessage(R.string.invalid_qr_code)
-                    .setNegativeButton("Go back") { _, _ -> finish() }
+                    .setNegativeButton(getString(R.string.back)) { _, _ -> finish() }
                     .create().show()
             }
         }
@@ -175,7 +175,7 @@ class SendActivity : AppCompatActivity() {
 
         senderServerURL = "http://$senderIP:$senderPort"
 
-        senderServer = Server(senderPort, "")
+        senderServer = Server(applicationContext, senderPort, "")
         senderServer.start()
 
         Log.d("Wristkey-Transfer", "Started sender server at $senderServerURL")
@@ -192,7 +192,7 @@ class SendActivity : AppCompatActivity() {
                 val responseJson = JSONObject(receiverResponse)
 
                 val deviceName = responseJson["deviceName"]
-                Toast.makeText(this@SendActivity, "Sending to $deviceName", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SendActivity, getString(R.string.sending_to, deviceName), Toast.LENGTH_SHORT).show()
 
                 val publicKeyString = responseJson["publicKey"] as String
                 val publicKey = Key.fromHexString(publicKeyString)
@@ -211,7 +211,7 @@ class SendActivity : AppCompatActivity() {
                         finishAffinity()
                         startActivity(Intent(applicationContext, MainActivity::class.java))
                         Log.d("Wristkey-Transfer", "Data to send: $encryptedData")
-                        Toast.makeText(this@SendActivity, "Transfer complete!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@SendActivity, getString(R.string.transfer_complete), Toast.LENGTH_SHORT).show()
                         senderServer.stop()
                     }
                 }
