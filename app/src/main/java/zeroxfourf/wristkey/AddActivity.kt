@@ -46,10 +46,6 @@ class AddActivity : AppCompatActivity() {
                 ) {
                     AddScreen(
                         utilities = utilities,
-                        onManualEntry = {
-                            startActivity(Intent(this@AddActivity, ManualEntryActivity::class.java))
-                            finish()
-                        },
                         onWifiTransfer = {
                             if (utilities.wiFiExists(applicationContext)) {
                                 startActivity(Intent(this@AddActivity, WiFiTransferActivity::class.java))
@@ -135,7 +131,6 @@ class AddActivity : AppCompatActivity() {
 @Composable
 fun AddScreen(
     utilities: Utilities,
-    onManualEntry: () -> Unit,
     onWifiTransfer: () -> Unit,
     onScanQRCode: () -> Unit,
     onFileImport: () -> Unit,
@@ -187,27 +182,7 @@ fun AddScreen(
                 )
             }
 
-            item {
-                Button(
-                    onClick = onManualEntry,
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp),
-                    shape = CircleShape,
-                    border = if (amoled) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (amoled) Color.Transparent else MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = if (amoled) Color.White else MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Icon(painterResource(R.drawable.ic_baseline_edit_24), contentDescription = null, tint = Color.White)
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(stringResource(R.string.manual_entry), maxLines = 2, softWrap = true)
-                    }
-                }
-            }
+
 
             item {
                 Button(

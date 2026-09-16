@@ -33,12 +33,13 @@
 
             <ImageView
                 android:id="@+id/qrCode"
-                android:layout_marginVertical="25dp"
-                android:scaleX="1.5"
-                android:scaleY="1.5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="28dp"
+                android:layout_marginBottom="12dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
                 android:backgroundTint="@color/white"
                 android:tintMode="multiply" />
 

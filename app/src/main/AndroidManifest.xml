@@ -73,9 +73,7 @@
             android:name="zeroxfourf.wristkey.ReceiveActivity"
             android:label="Receive" />
 
-        <activity
-            android:name="zeroxfourf.wristkey.ManualEntryActivity"
-            android:label="Add account" />
+
 
         <activity
             android:name="zeroxfourf.wristkey.ExportActivity"
