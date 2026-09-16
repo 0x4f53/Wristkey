@@ -287,9 +287,8 @@ class Utilities (context: Context) {
         val display = windowManager.defaultDisplay
         val point = Point()
         display.getSize(point)
-        val width: Int = point.x + 150
-        val height: Int = point.y + 150
-        val dimensions = if (width < height) width else height
+        val screenMin = if (point.x < point.y) point.x else point.y
+        val dimensions = (screenMin * 0.75f).toInt().coerceAtLeast(120)
 
         val qrEncoder = QRGEncoder(qrData, null, QRGContents.Type.TEXT, dimensions)
         return qrEncoder.bitmap
@@ -616,8 +615,8 @@ class Utilities (context: Context) {
         return String(decodedBytes, Charsets.UTF_8)
     }
 
-    fun overwriteLogin (otpAuthURL: String): Boolean {  // Overwrites an otpAuth String if it already exists
-        var data = objectMapper.writeValueAsString (
+    fun overwriteLogin(otpAuthURL: String): Boolean {  // Overwrites an otpAuth String if it already exists
+        var data = objectMapper.writeValueAsString(
             WristkeyFileSystem(
                 mutableListOf()
             )
@@ -625,23 +624,32 @@ class Utilities (context: Context) {
 
         data = db.getString(DATA_STORE, data)
 
-        val dataStore =
-            objectMapper.readValue (
-                data,
-                WristkeyFileSystem::class.java
-            )
+        val dataStore = objectMapper.readValue(
+            data,
+            WristkeyFileSystem::class.java
+        )
 
-        val iterator = dataStore.otpauth.iterator()
-        while (iterator.hasNext()) {
-            val login = iterator.next()
+        val secretToWrite = try {
+            decodeOtpAuthURL(otpAuthURL)?.secret?.lowercase()?.replace(" ", "") ?: ""
+        } catch (_: java.lang.Exception) { "" }
+
+        var targetIndex = -1
+        for (i in 0 until dataStore.otpauth.size) {
             try {
-                val loginSecret = decodeOtpAuthURL(login)!!.secret.lowercase().replace(" ", "")
-                val secretToWrite = decodeOtpAuthURL(otpAuthURL)!!.secret.lowercase()
-                if (loginSecret.contains(secretToWrite)) iterator.remove()
+                val loginSecret = decodeOtpAuthURL(dataStore.otpauth[i])?.secret?.lowercase()?.replace(" ", "") ?: ""
+                if (secretToWrite.isNotEmpty() && loginSecret.contains(secretToWrite)) {
+                    targetIndex = i
+                    break
+                }
             } catch (_: java.lang.Exception) { }
         }
 
-        dataStore.otpauth.add(otpAuthURL)
+        if (targetIndex != -1) {
+            dataStore.otpauth[targetIndex] = otpAuthURL
+        } else {
+            dataStore.otpauth.add(otpAuthURL)
+        }
+
         data = objectMapper.writeValueAsString(dataStore)
         db.edit().putString(DATA_STORE, data).apply()
 
@@ -708,7 +716,7 @@ class Utilities (context: Context) {
         return null
     }
 
-    fun generateTotp (secret: String, algorithm: String, digits: Int, period: Int): String {
+    fun generateTotp (secret: String, algorithm: String, digits: Int, period: Int, timestamp: Long = System.currentTimeMillis()): String {
         lateinit var _algorithm: HmacAlgorithm
         when (algorithm) {
             ALGO_SHA1 -> _algorithm = HmacAlgorithm.SHA1
@@ -723,9 +731,10 @@ class Utilities (context: Context) {
             timeStepUnit = TimeUnit.SECONDS
         )
 
-        if (algorithm == ALGO_SHA1 && period == 30 && digits == 6) return GoogleAuthenticator(secret.toByteArray(Charset.defaultCharset())).generate()
+        val date = java.util.Date(timestamp)
+        if (algorithm == ALGO_SHA1 && period == 30 && digits == 6) return GoogleAuthenticator(secret.toByteArray(Charset.defaultCharset())).generate(date)
 
-        return TimeBasedOneTimePasswordGenerator(secret.toByteArray(Charset.defaultCharset()), config).generate()
+        return TimeBasedOneTimePasswordGenerator(secret.toByteArray(Charset.defaultCharset()), config).generate(date)
     }
 
     private fun pixelsToSp(context: Context, px: Float): Float {
@@ -852,12 +861,6 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter, val l
 
         adapter.onItemDismiss(viewHolder.bindingAdapterPosition)
         _recyclerView.adapter?.notifyItemChanged(viewHolder.bindingAdapterPosition)
-
-        val position = viewHolder.absoluteAdapterPosition
-        val intent = Intent(context, ManualEntryActivity::class.java)
-        intent.putExtra(utilities.INTENT_EDIT, utilities.getData().otpauth[position])
-        context.startActivity(intent)
-
     }
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)

@@ -1,169 +1,204 @@
 package zeroxfourf.wristkey
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.media.audiofx.HapticGenerator
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.View
 import android.view.WindowManager
-import android.widget.*
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.zxing.WriterException
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import androidx.wear.compose.foundation.lazy.AutoCenteringParams
+import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.material3.*
 import wristkey.R
-import java.util.*
 
-class QRCodeActivity : AppCompatActivity() {
+class QRCodeActivity : ComponentActivity() {
 
-    lateinit var mfaCodesTimer: Timer
+    private lateinit var utilities: Utilities
 
-    lateinit var utilities: Utilities
-
-    lateinit var data: String
-    lateinit var metadata: String
-
-    private lateinit var roundTimeLeft: ProgressBar
-    private lateinit var squareTimeLeft: ProgressBar
-
-    lateinit var qrCodeRoot: ConstraintLayout
-    lateinit var qrCode: ImageView
-    lateinit var qrCodeSubtitle: TextView
-
-    lateinit var backButton: Button
-
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_qrcode)
 
         utilities = Utilities(applicationContext)
-        mfaCodesTimer = Timer()
 
-        data = intent.getStringExtra(utilities.INTENT_QR_DATA)!!
-        metadata = intent.getStringExtra(utilities.INTENT_QR_METADATA)!!
+        val data = intent.getStringExtra(utilities.INTENT_QR_DATA) ?: ""
+        val issuer = intent.getStringExtra(utilities.INTENT_QR_METADATA) ?: ""
+        val account = intent.getStringExtra("INTENT_ACCOUNT") ?: ""
+        val label = intent.getStringExtra("INTENT_LABEL") ?: ""
 
-        initializeUI()
-        setShape()
-        startTimer()
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun setShape () {
-        if (resources.configuration.isScreenRound) {
-            roundTimeLeft.visibility = View.VISIBLE
-            squareTimeLeft.visibility = View.GONE
-        } else {
-            roundTimeLeft.visibility = View.GONE
-            squareTimeLeft.visibility = View.VISIBLE
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mfaCodesTimer.cancel()
-        finish()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mfaCodesTimer.cancel()
-        finish()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        mfaCodesTimer = Timer()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mfaCodesTimer = Timer()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun startTimer () {
-        try {
-            var timerDuration = utilities.QR_TIMER_DURATION
-            mfaCodesTimer.scheduleAtFixedRate(object : TimerTask() {
-                override fun run() {
-                    if (timerDuration <= 0) {
+        setContent {
+            WristkeyM3Theme {
+                QRCodeScreen(
+                    data = data,
+                    issuer = issuer,
+                    account = account,
+                    label = label,
+                    utilities = utilities,
+                    onDismiss = {
                         setResult(Activity.RESULT_OK, Intent())
                         finish()
                     }
-                    timerDuration -= 1
-                } }, 0, 1000)
-        } catch (_: IllegalStateException) {}
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun initializeUI () {
-        qrCodeRoot = findViewById(R.id.qrCodeRoot)
-        qrCode = findViewById(R.id.qrCode)
-        qrCodeSubtitle = findViewById(R.id.qrCodeSubtitle)
-
-        roundTimeLeft = findViewById(R.id.RoundTimeLeft)
-        squareTimeLeft = findViewById(R.id.SquareTimeLeftTop)
-        startProgressBarAnimation(roundTimeLeft, utilities.QR_TIMER_DURATION)
-        startProgressBarAnimation(squareTimeLeft, utilities.QR_TIMER_DURATION)
-
-        backButton = findViewById(R.id.backButton)
-
-        val wm = getSystemService(WINDOW_SERVICE) as WindowManager
-        try { qrCode.setImageDrawable(BitmapDrawable(utilities.generateQrCode(data, wm))) } catch (_: WriterException) { }
-
-        qrCodeSubtitle.text = metadata
-
-        var state = 0
-        qrCode.setOnClickListener {
-            when (state) {
-
-                0 -> {
-                    state += 1
-                    qrCode.imageTintList = ColorStateList.valueOf(Color.parseColor("#818181"))
-                    Toast.makeText(this, getString(R.string.dimmed), Toast.LENGTH_SHORT).show()
-                }
-
-                1 -> {
-                    state = 0
-                    qrCode.imageTintList = ColorStateList.valueOf(Color.WHITE)
-                }
-
-            }
-
-        }
-
-        backButton.setOnClickListener {
-            backButton.performHapticFeedback(HapticGenerator.SUCCESS)
-            finish()
-        }
-
-    }
-
-    private fun startProgressBarAnimation(progressBar: ProgressBar, durationInSeconds: Int) {
-        val animationDuration = durationInSeconds*1000 // 5000 milliseconds (5 seconds)
-        val animationSteps = 100 // Number of animation steps
-        var progress = 100
-        val handler = Handler(Looper.getMainLooper())
-        val delay = animationDuration / animationSteps.toLong()
-        val runnable = object : Runnable {
-            override fun run() {
-                if (progress >= 0) {
-                    progressBar.progress = progress
-                    progressBar.animate()
-                    progress--
-                    handler.postDelayed(this, delay)
-                }
+                )
             }
         }
-        handler.postDelayed(runnable, delay)
+    }
+}
+
+@Composable
+fun QRCodeScreen(
+    data: String,
+    issuer: String = "",
+    account: String = "",
+    label: String = "",
+    utilities: Utilities,
+    onDismiss: () -> Unit
+) {
+    val context = LocalContext.current
+    val listState = rememberScalingLazyListState(
+        initialCenterItemIndex = 0,
+        initialCenterItemScrollOffset = 0
+    )
+    val amoled = remember { utilities.db.getBoolean(utilities.SETTINGS_AMOLED_ENABLED, false) }
+
+    val totalSeconds = utilities.QR_TIMER_DURATION
+    val totalDurationMillis = totalSeconds * 1000L
+    val startTime = remember { System.currentTimeMillis() }
+    var currentTime by remember { mutableLongStateOf(System.currentTimeMillis()) }
+
+    LaunchedEffect(Unit) {
+        listState.scrollToItem(0, 0)
+        while (true) {
+            currentTime = System.currentTimeMillis()
+            kotlinx.coroutines.delay(16) // 60 FPS smooth animation loop
+        }
     }
 
+    val elapsedMillis = (currentTime - startTime).coerceAtLeast(0L)
+    val remainingMillis = (totalDurationMillis - elapsedMillis).coerceAtLeast(0L)
+
+    LaunchedEffect(remainingMillis) {
+        if (remainingMillis <= 0L) {
+            onDismiss()
+        }
+    }
+
+    val currentProgress = (remainingMillis.toFloat() / totalDurationMillis.toFloat()).coerceIn(0f, 1f)
+
+    val activity = context as? Activity
+    val qrBitmap = remember(data, activity) {
+        if (activity != null && data.isNotBlank()) {
+            val wm = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            utilities.generateQrCode(data, wm)
+        } else null
+    }
+
+    var isDimmed by remember { mutableStateOf(false) }
+
+    ScreenScaffold(
+        scrollState = listState,
+        timeText = { TimeText() },
+        scrollIndicator = null,
+        edgeButton = {
+            EdgeButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(62.dp),
+                border = if (amoled) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (amoled) Color.Transparent else MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = if (amoled) Color.White else MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            ) {
+                Text(
+                    text = stringResource(R.string.back),
+                    style = MaterialTheme.typography.labelMedium,
+                    maxLines = 1,
+                    softWrap = false
+                )
+            }
+        }
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            ScalingLazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = listState,
+                contentPadding = PaddingValues(
+                    top = 0.dp,
+                    start = 12.dp,
+                    end = 12.dp,
+                    bottom = 84.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                autoCentering = AutoCenteringParams(itemIndex = 0)
+            ) {
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        if (qrBitmap != null) {
+                            Image(
+                                bitmap = qrBitmap.asImageBitmap(),
+                                contentDescription = "QR Code",
+                                modifier = Modifier
+                                    .size(138.dp)
+                                    .clickable {
+                                        isDimmed = !isDimmed
+                                        val msg = if (isDimmed) context.getString(R.string.dimmed) else "Bright"
+                                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                    },
+                                colorFilter = if (isDimmed) ColorFilter.tint(Color(0xFF818181), BlendMode.Modulate) else null
+                            )
+                        }
+                        if (issuer.isNotBlank()) {
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = issuer,
+                                style = MaterialTheme.typography.labelMedium.copy(fontSize = 13.sp),
+                                color = if (amoled) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                                textAlign = TextAlign.Center,
+                                maxLines = 1,
+                                modifier = Modifier.basicMarquee()
+                            )
+                        }
+                    }
+                }
+            }
+
+            SpeedometerProgressIndicator(
+                progress = currentProgress,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .zIndex(2f),
+                activeColor = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.25f),
+                knobColor = Color.White
+            )
+        }
+    }
 }
